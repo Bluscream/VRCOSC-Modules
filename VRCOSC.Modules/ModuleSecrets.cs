@@ -3,18 +3,15 @@
 
 namespace VRCOSC.Modules;
 
-public static class OfficialModuleSecrets
+public static class ModuleSecrets
 {
     private static readonly Dictionary<Enum, string> secrets = new()
     {
     };
 
-    public static string GetSecret(OfficialModuleSecretsKeys lookup) => secrets[lookup];
+    public static string GetSecret(ModuleSecretsKeys lookup) => secrets[lookup];
 }
 
-public enum OfficialModuleSecretsKeys
+public enum ModuleSecretsKeys
 {
-    Hyperate,
-    Weather
-
 }

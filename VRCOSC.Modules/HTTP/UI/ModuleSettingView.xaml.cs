@@ -3,13 +3,13 @@
 
 using System.Windows;
 
-namespace VRCOSC.Modules.PiShock.UI;
+namespace VRCOSC.Modules.HTTP.UI;
 
-public partial class ShockerModuleSettingView
+public partial class ModuleSettingView
 {
-    private readonly ShockerModuleSetting moduleSetting;
+    private readonly ModuleSetting moduleSetting;
 
-    public ShockerModuleSettingView(PiShockModule _, ShockerModuleSetting moduleSetting)
+    public ModuleSettingView(HTTPModule _, ModuleSetting moduleSetting)
     {
         this.moduleSetting = moduleSetting;
 

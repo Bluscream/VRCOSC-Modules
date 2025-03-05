@@ -4,22 +4,22 @@
 using Newtonsoft.Json;
 using VRCOSC.App.SDK.Modules.Attributes.Settings;
 using VRCOSC.App.Utils;
-using VRCOSC.Modules.PiShock.UI;
+using VRCOSC.Modules.HTTP.UI;
 
-namespace VRCOSC.Modules.PiShock;
+namespace VRCOSC.Modules.HTTP;
 
-public class ShockerModuleSetting : ListModuleSetting<Shocker>
+public class ModuleSetting : ListModuleSetting<Request>
 {
-    public ShockerModuleSetting()
-        : base("Shockers", "Individual shockers. Name them something recognisable", typeof(ShockerModuleSettingView), [])
+    public ModuleSetting()
+        : base("Shockers", "Individual shockers. Name them something recognisable", typeof(ModuleSettingView), [])
     {
     }
 
-    protected override Shocker CreateItem() => new();
+    protected override Request CreateItem() => new();
 }
 
 [JsonObject(MemberSerialization.OptIn)]
-public class Shocker : IEquatable<Shocker>
+public class Request : IEquatable<Request>
 {
     [JsonProperty("id")]
     public string ID { get; set; } = Guid.NewGuid().ToString();
@@ -31,11 +31,11 @@ public class Shocker : IEquatable<Shocker>
     public Observable<string> Sharecode { get; set; } = new(string.Empty);
 
     [JsonConstructor]
-    public Shocker()
+    public Request()
     {
     }
 
-    public bool Equals(Shocker? other)
+    public bool Equals(Request? other)
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;

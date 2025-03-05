@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0-windows10.0.26100.0</TargetFramework>
+        <UseWPF>true</UseWPF>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <LangVersion>latestmajor</LangVersion>
+        <WindowsSdkPackageVersion>10.0.26100.1</WindowsSdkPackageVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Remove="C:\Users\Bluscream\.nuget\packages\volcanicarts.vrcosc.sdk\2025.212.0\contentFiles\any\net8.0-windows10.0.26100\ggml-base-whisper.dll" />
+      <None Remove="C:\Users\Bluscream\.nuget\packages\volcanicarts.vrcosc.sdk\2025.212.0\contentFiles\any\net8.0-windows10.0.26100\ggml-cpu-whisper.dll" />
+      <None Remove="C:\Users\Bluscream\.nuget\packages\volcanicarts.vrcosc.sdk\2025.212.0\contentFiles\any\net8.0-windows10.0.26100\ggml-vulkan-whisper.dll" />
+      <None Remove="C:\Users\Bluscream\.nuget\packages\volcanicarts.vrcosc.sdk\2025.212.0\contentFiles\any\net8.0-windows10.0.26100\ggml-whisper.dll" />
+      <None Remove="C:\Users\Bluscream\.nuget\packages\volcanicarts.vrcosc.sdk\2025.212.0\contentFiles\any\net8.0-windows10.0.26100\libggml-base-whisper.so" />
+      <None Remove="C:\Users\Bluscream\.nuget\packages\volcanicarts.vrcosc.sdk\2025.212.0\contentFiles\any\net8.0-windows10.0.26100\libggml-cpu-whisper.so" />
+      <None Remove="C:\Users\Bluscream\.nuget\packages\volcanicarts.vrcosc.sdk\2025.212.0\contentFiles\any\net8.0-windows10.0.26100\libggml-vulkan-whisper.so" />
+      <None Remove="C:\Users\Bluscream\.nuget\packages\volcanicarts.vrcosc.sdk\2025.212.0\contentFiles\any\net8.0-windows10.0.26100\libggml-whisper.so" />
+      <None Remove="C:\Users\Bluscream\.nuget\packages\volcanicarts.vrcosc.sdk\2025.212.0\contentFiles\any\net8.0-windows10.0.26100\libwhisper.so" />
+      <None Remove="C:\Users\Bluscream\.nuget\packages\volcanicarts.vrcosc.sdk\2025.212.0\contentFiles\any\net8.0-windows10.0.26100\whisper.dll" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="VolcanicArts.VRCOSC.SDK" Version="2025.212.0" />
+    </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="xcopy /Q /S /R /F /Y /-I &quot;$(TargetDir)$(TargetName).dll&quot; &quot;%25appdata%25\VRCOSC\packages\local\$(TargetName).dll&quot;" />
+    </Target>
+
+</Project>
