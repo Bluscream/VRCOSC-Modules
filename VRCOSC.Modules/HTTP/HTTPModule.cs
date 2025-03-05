@@ -15,7 +15,7 @@ using VRCOSC.Modules.HTTP.UI;
 namespace VRCOSC.Modules.HTTP;
 
 [ModuleTitle("HTTP")]
-[ModuleDescription("Allows for sending and recieving HTTP requests")]
+[ModuleDescription("This module is work in progress and cannot be used yet!")] // Allows for sending and recieving HTTP requests
 [ModuleType(ModuleType.Integrations)]
 [ModulePrefab("Official Prefabs", "https://vrcosc.com/docs/downloads#prefabs")]
 public class HTTPModule : Module
