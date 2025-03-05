@@ -1,2 +1,2 @@
-# VRCOSC-Modules
-The official modules for VRCOSC
+# Bluscream's VRCOSC-Modules
+Bluscream's modules for VRCOSC
