@@ -489,20 +489,27 @@ public class VRCXBridgeModule : Module
         {
             // Parse value based on type
             object oscValue;
-
             if (value is JsonArray array)
             {
-                // Array of values
                 oscValue = array.Select(ParseJsonValue).ToArray();
             }
             else
             {
-                // Single value
                 oscValue = ParseJsonValue(value);
             }
 
-            // Send via VRCOSC's OSC system
-            SendParameter(address, oscValue);
+            // Check if this is an avatar parameter (VRCOSC's SendParameter adds /avatar/parameters/ prefix automatically)
+            if (address.StartsWith("/avatar/parameters/"))
+            {
+                // Strip prefix before calling SendParameter
+                var paramName = address.Substring("/avatar/parameters/".Length);
+                SendParameter(paramName, oscValue);
+            }
+            else
+            {
+                // For other addresses (chatbox, input, etc), send raw OSC
+                SendParameter(address, oscValue);
+            }
 
             if (GetSettingValue<bool>(VRCXBridgeSetting.LogCommands))
             {
