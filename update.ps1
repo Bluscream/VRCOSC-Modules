@@ -8,11 +8,39 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+
+# Configuration
+$repoUrl = "https://github.com/Bluscream/VRCOSC-Modules"
 $ProjectDir = "$PSScriptRoot\VRCOSC.Modules"
 $ProjectFile = "$ProjectDir\Bluscream.Modules.csproj"
 $AssemblyInfoPath = "$ProjectDir\AssemblyInfo.cs"
 $SourceDll = "$ProjectDir\bin\Release\net8.0-windows10.0.26100.0\Bluscream.Modules.dll"
 $ReleaseDll = "$PSScriptRoot\VRCOSC.Modules.dll"
+
+# Functions
+function New-GitHubRelease {
+    param(
+        [string]$Tag,
+        [string]$Title,
+        [string]$Notes,
+        [string]$AssetPath
+    )
+    
+    gh release create $Tag `
+        --title $Title `
+        --notes $Notes `
+        "$AssetPath#VRCOSC.Modules.dll"
+    
+    return $LASTEXITCODE -eq 0
+}
+
+function Open-ManualReleasePage {
+    param([string]$Tag)
+    
+    Write-Host "  Opening GitHub releases page and DLL location..." -ForegroundColor Cyan
+    Start-Process "$repoUrl/releases/new?tag=$Tag&title=VRCOSC+Modules+v$Tag"
+    Start-Process "explorer.exe" -ArgumentList "/select,`"$ReleaseDll`""
+}
 
 Write-Host "╔════════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
 Write-Host "║        VRCOSC Modules - Build & Release Script            ║" -ForegroundColor Cyan
@@ -151,15 +179,13 @@ if (-not $SkipRelease -and $hasGhCli) {
     
     Push-Location $PSScriptRoot
     try {
-        # Use version from AssemblyInfo (no 'v' prefix)
         $tag = $ReleaseTag
+        $title = "VRCOSC Modules v$tag"
+        $notes = "Automated release of Bluscream's VRCOSC modules`n`nVersion: $tag`n`nChanges:`n- $CommitMessage"
         
         # Create release
         Write-Host "Creating release: $tag" -ForegroundColor Cyan
-        gh release create $tag `
-            --title "VRCOSC Modules v$tag" `
-            --notes "Automated release of Bluscream's VRCOSC modules`n`nVersion: $tag`n`nChanges:`n- $CommitMessage" `
-            $ReleaseDll#VRCOSC.Modules.dll
+        $releaseOutput = gh release create $tag --title $title --notes $notes "$ReleaseDll#VRCOSC.Modules.dll" 2>&1
         
         if ($LASTEXITCODE -eq 0) {
             Write-Host "✓ Release created: $tag" -ForegroundColor Green
@@ -167,10 +193,41 @@ if (-not $SkipRelease -and $hasGhCli) {
         }
         else {
             Write-Host "⚠️  Release creation failed (exit code: $LASTEXITCODE)" -ForegroundColor Yellow
+            
+            # Check if it's a workflow scope issue
+            if ($releaseOutput -match "workflow.*scope") {
+                Write-Host ""
+                Write-Host "  GitHub CLI needs additional permissions." -ForegroundColor Yellow
+                Write-Host "  Attempting to refresh auth with workflow scope..." -ForegroundColor Cyan
+                
+                gh auth refresh -h github.com -s workflow
+                
+                if ($LASTEXITCODE -eq 0) {
+                    Write-Host ""
+                    Write-Host "  ✓ Auth refreshed. Retrying release creation..." -ForegroundColor Green
+                    
+                    if (New-GitHubRelease -Tag $tag -Title $title -Notes $notes -AssetPath $ReleaseDll) {
+                        Write-Host "  ✓ Release created successfully after auth refresh!" -ForegroundColor Green
+                    }
+                    else {
+                        Write-Host "  ⚠️  Release creation still failed" -ForegroundColor Yellow
+                        Open-ManualReleasePage -Tag $tag
+                    }
+                }
+                else {
+                    Write-Host "  ⚠️  Auth refresh failed" -ForegroundColor Yellow
+                    Open-ManualReleasePage -Tag $tag
+                }
+            }
+            else {
+                # Some other error - open browser
+                Open-ManualReleasePage -Tag $tag
+            }
         }
     }
     catch {
         Write-Host "⚠️  Release creation failed: $_" -ForegroundColor Yellow
+        Open-ManualReleasePage -Tag $ReleaseTag
     }
     finally {
         Pop-Location
@@ -206,7 +263,7 @@ Write-Host "╔═════════════════════�
 Write-Host "║                    ✓ ALL DONE!                             ║" -ForegroundColor Green
 Write-Host "╚════════════════════════════════════════════════════════════╝" -ForegroundColor Green
 Write-Host ""
-Write-Host "📦 Release: https://github.com/Bluscream/VRCOSC-Modules/releases/tag/$ReleaseTag" -ForegroundColor Magenta
+Write-Host "📦 Release: $repoUrl/releases/tag/$ReleaseTag" -ForegroundColor Magenta
 Write-Host "📍 Release DLL: $ReleaseDll" -ForegroundColor Cyan
 Write-Host "📍 Local VRCOSC: %APPDATA%\VRCOSC\packages\local\Bluscream.Modules.dll (Debug)" -ForegroundColor Cyan
 Write-Host ""
