@@ -1,89 +1,131 @@
 // Copyright (c) VolcanicArts. Licensed under the GPL-3.0 License.
 // See the LICENSE file in the repository root for full license text.
 
-using System.Diagnostics.CodeAnalysis;
-using System.Net;
-using VRCOSC.App.SDK.Handlers;
+using System.Net.Http;
+using System.Text.Json;
 using VRCOSC.App.SDK.Modules;
-using VRCOSC.App.SDK.Modules.Attributes.Settings;
 using VRCOSC.App.SDK.Parameters;
-using VRCOSC.App.SDK.Providers.PiShock;
-using VRCOSC.App.SDK.VRChat;
-using VRCOSC.App.Utils;
-using VRCOSC.Modules.HTTP.UI;
 
-namespace VRCOSC.Modules.HTTP;
+namespace Bluscream.Modules.HTTP;
 
 [ModuleTitle("HTTP")]
-[ModuleDescription("This module is work in progress and cannot be used yet!")] // Allows for sending and recieving HTTP requests
+[ModuleDescription("Send HTTP requests and receive responses for automation")]
 [ModuleType(ModuleType.Integrations)]
-[ModulePrefab("Official Prefabs", "https://vrcosc.com/docs/downloads#prefabs")]
 public class HTTPModule : Module
 {
-    private WebClient webClient = null!;
+    private readonly HttpClient _httpClient = new();
 
     protected override void OnPreLoad()
     {
-        //CreateTextBox(HTTPSetting.Username, "Username", "Your PiShock username", string.Empty);
-        //CreateCustomSetting(HTTPSetting.APIKey, new StringModuleSetting("API Key", "Your PiShock API key", typeof(PiShockAPIKeyView), string.Empty));
+        CreateToggle(HTTPSetting.LogRequests, "Log Requests", "Log all HTTP requests to console", false);
+        CreateTextBox(HTTPSetting.Timeout, "Timeout (ms)", "HTTP request timeout", 30000);
 
-        //CreateTextBox(HTTPSetting.ButtonDelay, "Button Delay", "The amount of time in milliseconds the shock, vibrate, and beep parameters need to be true to execute the action. This is helpful for if you accidentally press buttons on your action menu", 0);
+        RegisterParameter<bool>(HTTPParameter.Success, "VRCOSC/HTTP/Success", ParameterMode.Write, "Success", "True for 1 second when request succeeds");
+        RegisterParameter<bool>(HTTPParameter.Failed, "VRCOSC/HTTP/Failed", ParameterMode.Write, "Failed", "True for 1 second when request fails");
+        RegisterParameter<int>(HTTPParameter.StatusCode, "VRCOSC/HTTP/StatusCode", ParameterMode.Write, "Status Code", "Last HTTP status code");
 
-        //CreateCustomSetting(HTTPSetting.Shockers, new ModuleSetting());
-        //CreateCustomSetting(HTTPSetting.Groups, new ShockerGroupModuleSetting());
-        //CreateCustomSetting(HTTPSetting.Phrases, new PhraseModuleSetting());
-
-        //CreateGroup("Credentials", HTTPSetting.Username, HTTPSetting.APIKey);
-        //CreateGroup("Management", HTTPSetting.Shockers, HTTPSetting.Groups);
-        //CreateGroup("Tweaks", HTTPSetting.ButtonDelay);
-        //CreateGroup("Speech", HTTPSetting.Phrases);
-
-        RegisterParameter<bool>(HTTPParameter.Success, "VRCOSC/HTTP/Success", ParameterMode.Write, "Success", "Becomes true for 1 second if the action has succeeded");
-    }
-
-    protected override void OnPostLoad()
-    {
-        //GetSetting<ModuleSetting>(HTTPSetting.).Attribute.OnCollectionChanged((_, _) =>
-        //{
-        //});
+        CreateGroup("Settings", HTTPSetting.LogRequests, HTTPSetting.Timeout);
     }
 
     protected override Task<bool> OnModuleStart()
     {
-        webClient = new();
-
+        _httpClient.Timeout = TimeSpan.FromMilliseconds(GetSettingValue<int>(HTTPSetting.Timeout));
         return Task.FromResult(true);
     }
 
-    [ModuleUpdate(ModuleUpdateMode.Custom, updateImmediately: true, deltaMilliseconds: 5000)]
-    private void sendRequests()
+    public async Task<HttpResponse> SendRequest(string method, string url, string? body = null, Dictionary<string, string>? headers = null)
     {
-        
+        try
+        {
+            if (GetSettingValue<bool>(HTTPSetting.LogRequests))
+            {
+                Log($"HTTP {method} {url}");
+            }
+
+            var request = new HttpRequestMessage(new HttpMethod(method), url);
+
+            if (headers != null)
+            {
+                foreach (var header in headers)
+                {
+                    request.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(body))
+            {
+                request.Content = new StringContent(body);
+            }
+
+            var response = await _httpClient.SendAsync(request);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            SendParameter(HTTPParameter.StatusCode, (int)response.StatusCode);
+
+            if (response.IsSuccessStatusCode)
+            {
+                await SendSuccessParameter();
+            }
+            else
+            {
+                await SendFailedParameter();
+            }
+
+            return new HttpResponse
+            {
+                Success = response.IsSuccessStatusCode,
+                StatusCode = (int)response.StatusCode,
+                Body = responseBody,
+                Headers = response.Headers.ToDictionary(h => h.Key, h => string.Join(", ", h.Value))
+            };
+        }
+        catch (Exception ex)
+        {
+            Log($"HTTP request failed: {ex.Message}");
+            await SendFailedParameter();
+            
+            return new HttpResponse
+            {
+                Success = false,
+                StatusCode = 0,
+                Body = ex.Message,
+                Headers = new Dictionary<string, string>()
+            };
+        }
     }
 
-    private async void sendSuccessParameter()
+    private async Task SendSuccessParameter()
     {
         var wasAcknowledged = await SendParameterAndWait(HTTPParameter.Success, true);
-
         if (wasAcknowledged)
             SendParameter(HTTPParameter.Success, false);
     }
 
-    protected override void OnRegisteredParameterReceived(RegisteredParameter parameter)
+    private async Task SendFailedParameter()
     {
-        switch (parameter.Lookup)
-        {
-            //case HTTPParameter.Group:
-
-        }
+        var wasAcknowledged = await SendParameterAndWait(HTTPParameter.Failed, true);
+        if (wasAcknowledged)
+            SendParameter(HTTPParameter.Failed, false);
     }
 
-    private enum HTTPSetting
+    public enum HTTPSetting
     {
+        LogRequests,
+        Timeout
     }
 
-    private enum HTTPParameter
+    public enum HTTPParameter
     {
-        Success
+        Success,
+        Failed,
+        StatusCode
     }
+}
+
+public class HttpResponse
+{
+    public bool Success { get; init; }
+    public int StatusCode { get; init; }
+    public string Body { get; init; } = string.Empty;
+    public Dictionary<string, string> Headers { get; init; } = new();
 }
