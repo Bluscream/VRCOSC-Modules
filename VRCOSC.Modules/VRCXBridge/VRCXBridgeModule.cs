@@ -4,18 +4,20 @@
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Parameters;
+using VRCOSCModule = VRCOSC.App.SDK.Modules.Module;
 
 namespace Bluscream.Modules.VRCXBridge;
 
 [ModuleTitle("VRCX Bridge")]
 [ModuleDescription("Bidirectional bridge between VRCOSC and VRCX for OSC + VRChat API integration")]
 [ModuleType(ModuleType.Integrations)]
-public class VRCXBridgeModule : Module
+public class VRCXBridgeModule : VRCOSCModule
 {
     private NamedPipeClientStream? _pipeClient;
     private StreamWriter? _pipeWriter;
@@ -487,33 +489,67 @@ public class VRCXBridgeModule : Module
     {
         try
         {
-            // Parse value based on type
-            object oscValue;
+            // Handle ChatBox specially
+            if (address == "/chatbox/input")
+            {
+                if (value is JsonArray chatboxArray && chatboxArray.Count > 0)
+                {
+                    var text = chatboxArray[0]?.ToString() ?? "";
+                    var minimalBg = chatboxArray.Count > 1 && chatboxArray[1]?.GetValue<bool>() == false;
+                    
+                    SendChatBox(text, minimalBg);
+                    
+                    if (GetSettingValue<bool>(VRCXBridgeSetting.LogCommands))
+                    {
+                        Log($"ChatBox: {text} (minimal: {minimalBg})");
+                    }
+                }
+                return Task.CompletedTask;
+            }
+
+            // Handle different message types
             if (value is JsonArray array)
             {
-                oscValue = array.Select(ParseJsonValue).ToArray();
+                // Array of values - convert to object array
+                var args = array.Select(ParseJsonValue).ToArray();
+                
+                // For avatar parameters, strip prefix and use single value
+                if (address.StartsWith("/avatar/parameters/"))
+                {
+                    var paramName = address.Substring("/avatar/parameters/".Length);
+                    SendParameter(paramName, args.Length == 1 ? args[0] : args);
+                }
+                else
+                {
+                    // For other multi-param messages, use raw OSC client
+                    SendRawOSC(address, args);
+                }
+
+                if (GetSettingValue<bool>(VRCXBridgeSetting.LogCommands))
+                {
+                    Log($"OSC → VRChat: {address} = {JsonSerializer.Serialize(args)}");
+                }
             }
             else
             {
-                oscValue = ParseJsonValue(value);
-            }
+                // Single value
+                var oscValue = ParseJsonValue(value);
+                
+                // For avatar parameters, strip prefix
+                if (address.StartsWith("/avatar/parameters/"))
+                {
+                    var paramName = address.Substring("/avatar/parameters/".Length);
+                    SendParameter(paramName, oscValue);
+                }
+                else
+                {
+                    SendRawOSC(address, oscValue);
+                }
 
-            // Check if this is an avatar parameter (VRCOSC's SendParameter adds /avatar/parameters/ prefix automatically)
-            if (address.StartsWith("/avatar/parameters/"))
-            {
-                // Strip prefix before calling SendParameter
-                var paramName = address.Substring("/avatar/parameters/".Length);
-                SendParameter(paramName, oscValue);
-            }
-            else
-            {
-                // For other addresses (chatbox, input, etc), send raw OSC
-                SendParameter(address, oscValue);
-            }
-
-            if (GetSettingValue<bool>(VRCXBridgeSetting.LogCommands))
-            {
-                Log($"OSC → VRChat: {address} = {JsonSerializer.Serialize(oscValue)}");
+                if (GetSettingValue<bool>(VRCXBridgeSetting.LogCommands))
+                {
+                    Log($"OSC → VRChat: {address} = {JsonSerializer.Serialize(oscValue)}");
+                }
             }
         }
         catch (Exception ex)
@@ -522,6 +558,117 @@ public class VRCXBridgeModule : Module
         }
         
         return Task.CompletedTask;
+    }
+
+    private void SendChatBox(string text, bool minimalBackground)
+    {
+        try
+        {
+            // Use reflection to access ChatBoxManager.GetInstance()
+            var chatBoxManagerType = System.Type.GetType("VRCOSC.App.ChatBox.ChatBoxManager, VRCOSC.App");
+            if (chatBoxManagerType == null)
+            {
+                Log("Failed to get ChatBoxManager type - falling back to raw OSC");
+                SendRawOSC("/chatbox/input", text, true, false);
+                return;
+            }
+
+            var getInstanceMethod = chatBoxManagerType.GetMethod("GetInstance", BindingFlags.NonPublic | BindingFlags.Static);
+            if (getInstanceMethod == null)
+            {
+                Log("Failed to get ChatBoxManager.GetInstance - falling back to raw OSC");
+                SendRawOSC("/chatbox/input", text, true, false);
+                return;
+            }
+
+            var chatBoxManager = getInstanceMethod.Invoke(null, null);
+            if (chatBoxManager == null)
+            {
+                Log("ChatBoxManager instance is null - falling back to raw OSC");
+                SendRawOSC("/chatbox/input", text, true, false);
+                return;
+            }
+
+            // Set PulseText property
+            var pulseTextProp = chatBoxManagerType.GetProperty("PulseText");
+            if (pulseTextProp != null)
+            {
+                pulseTextProp.SetValue(chatBoxManager, text);
+            }
+
+            // Set PulseMinimalBackground property
+            var pulseMinimalBgProp = chatBoxManagerType.GetProperty("PulseMinimalBackground");
+            if (pulseMinimalBgProp != null)
+            {
+                pulseMinimalBgProp.SetValue(chatBoxManager, minimalBackground);
+            }
+        }
+        catch (Exception ex)
+        {
+            Log($"Failed to send chatbox via ChatBoxManager: {ex.Message}");
+            SendRawOSC("/chatbox/input", text, true, false);
+        }
+    }
+
+    private void SendRawOSC(string address, params object[] args)
+    {
+        try
+        {
+            // Use reflection to access AppManager.GetInstance().VRChatOscClient.Send
+            var appManagerType = System.Type.GetType("VRCOSC.App.Modules.AppManager, VRCOSC.App");
+            if (appManagerType == null)
+            {
+                Log("Failed to get AppManager type");
+                return;
+            }
+
+            var getInstanceMethod = appManagerType.GetMethod("GetInstance", BindingFlags.Public | BindingFlags.Static);
+            if (getInstanceMethod == null)
+            {
+                Log("Failed to get GetInstance method");
+                return;
+            }
+
+            var appManager = getInstanceMethod.Invoke(null, null);
+            if (appManager == null)
+            {
+                Log("AppManager instance is null");
+                return;
+            }
+
+            var oscClientProp = appManagerType.GetProperty("VRChatOscClient");
+            if (oscClientProp == null)
+            {
+                Log("Failed to get VRChatOscClient property");
+                return;
+            }
+
+            var oscClient = oscClientProp.GetValue(appManager);
+            if (oscClient == null)
+            {
+                Log("OSC client is null");
+                return;
+            }
+
+            // Call Send method
+            var sendMethod = oscClient.GetType().GetMethod("Send", BindingFlags.Public | BindingFlags.Instance);
+            if (sendMethod == null)
+            {
+                Log("Failed to get Send method");
+                return;
+            }
+
+            // Combine address with args
+            var allArgs = new object[args.Length + 1];
+            allArgs[0] = address;
+            Array.Copy(args, 0, allArgs, 1, args.Length);
+
+            sendMethod.Invoke(oscClient, allArgs);
+        }
+        catch (Exception ex)
+        {
+            Log($"Failed to send raw OSC: {ex.Message}");
+        }
     }
 
     private static object ParseJsonValue(JsonNode? node)
