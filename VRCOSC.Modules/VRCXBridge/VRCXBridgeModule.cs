@@ -472,6 +472,11 @@ public class VRCXBridgeModule : Module
                     }
                     break;
 
+                case "VRCXLaunch":
+                    // VRCX startup notification
+                    Log("VRCX launched");
+                    break;
+
                 default:
                     Log($"Unknown message type: {msgType}");
                     break;
