@@ -110,7 +110,7 @@ public sealed class VRCXGetUserInfoNode : ModuleNode<VRCXBridgeModule>{
     public ValueInput<string> UserId = new("User ID");
     
     public ValueOutput<string> UserJson = new("User JSON");
-    public ValueOutput<string> DisplayName = new("Display Name");
+    public new ValueOutput<string> DisplayName = new("Display Name");
     public ValueOutput<string> Error = new();
 
     protected override async Task Process(PulseContext c)
@@ -158,7 +158,7 @@ public sealed class VRCXGetCurrentLocationNode : ModuleNode<VRCXBridgeModule>{
     public ValueOutput<string> WorldId = new("World ID");
     public ValueOutput<string> InstanceId = new("Instance ID");
     public ValueOutput<string> UserId = new("User ID");
-    public ValueOutput<string> DisplayName = new("Display Name");
+    public new ValueOutput<string> DisplayName = new("Display Name");
     public ValueOutput<string> LocationJson = new("Location JSON");
     public ValueOutput<string> Error = new();
 

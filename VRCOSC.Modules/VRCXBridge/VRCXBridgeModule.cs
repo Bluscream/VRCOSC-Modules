@@ -35,8 +35,8 @@ public class VRCXBridgeModule : Module
 
         RegisterParameter<bool>(VRCXBridgeParameter.Connected, "VRCOSC/VRCXBridge/Connected", ParameterMode.Write, "Connected", "True when connected to VRCX");
 
-        CreateGroup("Connection", VRCXBridgeSetting.Enabled, VRCXBridgeSetting.AutoReconnect, VRCXBridgeSetting.ReconnectDelay);
-        CreateGroup("Debug", VRCXBridgeSetting.LogOscParams, VRCXBridgeSetting.LogCommands);
+        CreateGroup("Connection", "Connection settings", VRCXBridgeSetting.Enabled, VRCXBridgeSetting.AutoReconnect, VRCXBridgeSetting.ReconnectDelay);
+        CreateGroup("Debug", "Debug logging options", VRCXBridgeSetting.LogOscParams, VRCXBridgeSetting.LogCommands);
     }
 
     protected override async Task<bool> OnModuleStart()
@@ -70,27 +70,93 @@ public class VRCXBridgeModule : Module
 
     private async Task ConnectToVRCX()
     {
+        // Cleanup any existing connection first
+        try
+        {
+            if (_isConnected)
+            {
+                DisconnectFromVRCX();
+                await Task.Delay(500); // Brief delay before reconnecting
+            }
+        }
+        catch (Exception cleanupEx)
+        {
+            Log($"Error during cleanup: {cleanupEx.Message}");
+        }
+
         try
         {
             var pipeName = GetVRCXPipeName();
             _cancellationSource = new CancellationTokenSource();
-            _pipeClient = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut, PipeOptions.Asynchronous);
+            
+            // Create pipe with error protection
+            try
+            {
+                _pipeClient = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut, PipeOptions.Asynchronous);
+            }
+            catch (Exception pipeEx)
+            {
+                throw new Exception($"Failed to create pipe client: {pipeEx.Message}", pipeEx);
+            }
 
             Log($"Connecting to VRCX IPC ({pipeName})...");
-            await _pipeClient.ConnectAsync(5000, _cancellationSource.Token);
+            
+            // Connect with timeout
+            try
+            {
+                await _pipeClient.ConnectAsync(5000, _cancellationSource.Token);
+            }
+            catch (TimeoutException)
+            {
+                throw new Exception("Connection timeout - is VRCX running?");
+            }
+            catch (OperationCanceledException)
+            {
+                throw new Exception("Connection cancelled");
+            }
 
-            _pipeWriter = new StreamWriter(_pipeClient, Encoding.UTF8) { AutoFlush = true };
-            _pipeReader = new StreamReader(_pipeClient, Encoding.UTF8);
+            // Setup streams with error protection
+            try
+            {
+                _pipeWriter = new StreamWriter(_pipeClient, Encoding.UTF8) { AutoFlush = false };
+                _pipeReader = new StreamReader(_pipeClient, Encoding.UTF8);
+            }
+            catch (Exception streamEx)
+            {
+                throw new Exception($"Failed to create streams: {streamEx.Message}", streamEx);
+            }
 
             _isConnected = true;
             SendParameter(VRCXBridgeParameter.Connected, true);
             Log("✓ Connected to VRCX");
 
-            // Start read task
-            _readTask = Task.Run(ReadMessages, _cancellationSource.Token);
+            // Start read task with error protection
+            _readTask = Task.Run(async () =>
+            {
+                try
+                {
+                    await ReadMessages();
+                }
+                catch (Exception readEx)
+                {
+                    Log($"Read task error: {readEx.Message}");
+                    if (_isConnected)
+                    {
+                        DisconnectFromVRCX();
+                        TryReconnect();
+                    }
+                }
+            }, _cancellationSource.Token);
 
             // Send INIT message to VRCX
-            await SendToVRCX("OSC_READY", new { timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds() });
+            try
+            {
+                await SendToVRCX("OSC_READY", new { timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds() });
+            }
+            catch (Exception initEx)
+            {
+                Log($"Failed to send INIT message: {initEx.Message}");
+            }
         }
         catch (Exception ex)
         {
@@ -98,72 +164,249 @@ public class VRCXBridgeModule : Module
             SendParameter(VRCXBridgeParameter.Connected, false);
             _isConnected = false;
 
-            // Auto-reconnect
-            if (GetSettingValue<bool>(VRCXBridgeSetting.AutoReconnect))
+            // Cleanup on failure
+            try
             {
-                var delay = GetSettingValue<int>(VRCXBridgeSetting.ReconnectDelay);
-                _ = Task.Delay(delay).ContinueWith(_ => ConnectToVRCX());
+                _pipeWriter?.Dispose();
+                _pipeReader?.Dispose();
+                _pipeClient?.Dispose();
+                _cancellationSource?.Dispose();
             }
+            catch { /* Ignore cleanup errors */ }
+
+            TryReconnect();
+        }
+    }
+
+    private void TryReconnect()
+    {
+        // Auto-reconnect
+        if (GetSettingValue<bool>(VRCXBridgeSetting.AutoReconnect))
+        {
+            var delay = GetSettingValue<int>(VRCXBridgeSetting.ReconnectDelay);
+            Log($"Reconnecting in {delay}ms...");
+            _ = Task.Delay(delay).ContinueWith(async _ =>
+            {
+                try
+                {
+                    await ConnectToVRCX();
+                }
+                catch (Exception reconnectEx)
+                {
+                    Log($"Reconnection attempt failed: {reconnectEx.Message}");
+                }
+            });
         }
     }
 
     private void DisconnectFromVRCX()
     {
-        _cancellationSource?.Cancel();
-        _pipeWriter?.Dispose();
-        _pipeReader?.Dispose();
-        _pipeClient?.Dispose();
-        _isConnected = false;
-        SendParameter(VRCXBridgeParameter.Connected, false);
-        Log("Disconnected from VRCX");
+        try
+        {
+            _isConnected = false;
+            SendParameter(VRCXBridgeParameter.Connected, false);
+
+            // Cancel operations
+            try
+            {
+                _cancellationSource?.Cancel();
+            }
+            catch (Exception cancelEx)
+            {
+                Log($"Error cancelling operations: {cancelEx.Message}");
+            }
+
+            // Dispose resources in reverse order
+            try
+            {
+                _pipeWriter?.Dispose();
+            }
+            catch { /* Ignore */ }
+
+            try
+            {
+                _pipeReader?.Dispose();
+            }
+            catch { /* Ignore */ }
+
+            try
+            {
+                _pipeClient?.Dispose();
+            }
+            catch { /* Ignore */ }
+
+            try
+            {
+                _cancellationSource?.Dispose();
+            }
+            catch { /* Ignore */ }
+
+            _pipeWriter = null;
+            _pipeReader = null;
+            _pipeClient = null;
+            _cancellationSource = null;
+
+            Log("Disconnected from VRCX");
+        }
+        catch (Exception ex)
+        {
+            Log($"Error during disconnect: {ex.Message}");
+        }
     }
 
     private async Task ReadMessages()
     {
         try
         {
+            var buffer = new StringBuilder();
+            var charBuffer = new char[1024];
+            
             while (_isConnected && _pipeReader != null && !_cancellationSource!.Token.IsCancellationRequested)
             {
-                var line = await _pipeReader.ReadLineAsync(_cancellationSource.Token);
-                if (string.IsNullOrEmpty(line)) continue;
+                int charsRead = 0;
+                
+                try
+                {
+                    charsRead = await _pipeReader.ReadAsync(charBuffer.AsMemory(0, charBuffer.Length), _cancellationSource.Token);
+                }
+                catch (OperationCanceledException)
+                {
+                    break;
+                }
+                catch (IOException ioEx)
+                {
+                    Log($"Pipe read error: {ioEx.Message}");
+                    break;
+                }
+                catch (Exception readEx)
+                {
+                    Log($"Unexpected read error: {readEx.Message}");
+                    continue;
+                }
 
-                await HandleVRCXMessage(line);
+                if (charsRead == 0)
+                {
+                    if (_isConnected)
+                    {
+                        Log("Pipe closed by VRCX");
+                        break;
+                    }
+                    continue;
+                }
+
+                // Process characters and split on null terminators
+                for (int i = 0; i < charsRead; i++)
+                {
+                    char c = charBuffer[i];
+                    
+                    if (c == '\0')
+                    {
+                        // End of message
+                        if (buffer.Length > 0)
+                        {
+                            var message = buffer.ToString();
+                            buffer.Clear();
+                            
+                            try
+                            {
+                                await HandleVRCXMessage(message);
+                            }
+                            catch (Exception handleEx)
+                            {
+                                Log($"Error handling message: {handleEx.Message}");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        buffer.Append(c);
+                    }
+                }
             }
         }
         catch (Exception ex)
         {
             if (_isConnected)
             {
-                Log($"Read error: {ex.Message}");
+                Log($"Read loop error: {ex.Message}");
+            }
+        }
+        finally
+        {
+            if (_isConnected)
+            {
+                Log("Read loop ended");
                 DisconnectFromVRCX();
-
-                if (GetSettingValue<bool>(VRCXBridgeSetting.AutoReconnect))
-                {
-                    await Task.Delay(GetSettingValue<int>(VRCXBridgeSetting.ReconnectDelay));
-                    await ConnectToVRCX();
-                }
+                TryReconnect();
             }
         }
     }
 
     private async Task HandleVRCXMessage(string message)
     {
+        if (string.IsNullOrWhiteSpace(message))
+        {
+            Log("Received empty message");
+            return;
+        }
+
+        JsonNode? json = null;
         try
         {
-            var json = JsonNode.Parse(message);
-            if (json == null) return;
+            json = JsonNode.Parse(message);
+        }
+        catch (JsonException jsonEx)
+        {
+            Log($"Invalid JSON received: {jsonEx.Message}");
+            return;
+        }
 
-            var msgType = json["MsgType"]?.ToString();
-            var dataStr = json["Data"]?.ToString();
+        if (json == null)
+        {
+            Log("Null JSON after parse");
+            return;
+        }
 
-            if (string.IsNullOrEmpty(msgType) || string.IsNullOrEmpty(dataStr)) return;
+        string? msgType = null;
+        string? dataStr = null;
 
-            var data = JsonNode.Parse(dataStr);
+        try
+        {
+            msgType = json["MsgType"]?.ToString();
+            dataStr = json["Data"]?.ToString();
+        }
+        catch (Exception parseEx)
+        {
+            Log($"Error extracting message fields: {parseEx.Message}");
+            return;
+        }
 
+        if (string.IsNullOrEmpty(msgType))
+        {
+            Log("Message missing MsgType");
+            return;
+        }
+
+        JsonNode? data = null;
+        if (!string.IsNullOrEmpty(dataStr))
+        {
+            try
+            {
+                data = JsonNode.Parse(dataStr);
+            }
+            catch (JsonException dataEx)
+            {
+                Log($"Error parsing Data field: {dataEx.Message}");
+            }
+        }
+
+        try
+        {
             switch (msgType)
             {
                 case "OSC_INIT":
                     // VRCX plugin initialized
+                    Log("Received OSC_INIT from VRCX");
                     await SendToVRCX("OSC_READY", new { timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds() });
                     break;
 
@@ -174,11 +417,18 @@ public class VRCXBridgeModule : Module
 
                     if (!string.IsNullOrEmpty(address) && valueNode != null)
                     {
-                        await SendOSCToVRChat(address, valueNode);
-                        
-                        if (GetSettingValue<bool>(VRCXBridgeSetting.LogOscParams))
+                        try
                         {
-                            Log($"OSC → VRChat: {address} = {valueNode}");
+                            await SendOSCToVRChat(address, valueNode);
+                            
+                            if (GetSettingValue<bool>(VRCXBridgeSetting.LogOscParams))
+                            {
+                                Log($"OSC → VRChat: {address} = {valueNode}");
+                            }
+                        }
+                        catch (Exception oscEx)
+                        {
+                            Log($"Error sending OSC to VRChat: {oscEx.Message}");
                         }
                     }
                     break;
@@ -188,26 +438,41 @@ public class VRCXBridgeModule : Module
                     var requestId = data?["requestId"]?.ToString();
                     var result = data?["result"];
 
-                    if (!string.IsNullOrEmpty(requestId) && _pendingRequests.TryGetValue(requestId, out var tcs))
+                    if (!string.IsNullOrEmpty(requestId))
                     {
-                        tcs.SetResult(result!);
-                        _pendingRequests.Remove(requestId);
+                        if (_pendingRequests.TryGetValue(requestId, out var tcs))
+                        {
+                            try
+                            {
+                                tcs.SetResult(result!);
+                                _pendingRequests.Remove(requestId);
+                            }
+                            catch (Exception tcsEx)
+                            {
+                                Log($"Error setting result for {requestId}: {tcsEx.Message}");
+                            }
+                        }
                     }
                     break;
 
                 case "OSC_SHUTDOWN":
                     // VRCX shutting down
+                    Log("VRCX shutting down");
                     DisconnectFromVRCX();
+                    break;
+
+                default:
+                    Log($"Unknown message type: {msgType}");
                     break;
             }
         }
         catch (Exception ex)
         {
-            Log($"Error handling VRCX message: {ex.Message}");
+            Log($"Error processing {msgType}: {ex.Message}");
         }
     }
 
-    private async Task SendOSCToVRChat(string address, JsonNode value)
+    private Task SendOSCToVRChat(string address, JsonNode value)
     {
         try
         {
@@ -237,10 +502,14 @@ public class VRCXBridgeModule : Module
         {
             Log($"Error sending OSC: {ex.Message}");
         }
+        
+        return Task.CompletedTask;
     }
 
-    private static object ParseJsonValue(JsonNode node)
+    private static object ParseJsonValue(JsonNode? node)
     {
+        if (node == null) return string.Empty;
+        
         return node.GetValueKind() switch
         {
             JsonValueKind.String => node.ToString(),
@@ -294,7 +563,11 @@ public class VRCXBridgeModule : Module
 
     private async Task SendToVRCX(string msgType, object data)
     {
-        if (!_isConnected || _pipeWriter == null) return;
+        if (!_isConnected || _pipeWriter == null)
+        {
+            Log($"Cannot send {msgType}: Not connected");
+            return;
+        }
 
         try
         {
@@ -306,12 +579,47 @@ public class VRCXBridgeModule : Module
             };
 
             var json = JsonSerializer.Serialize(ipcMessage);
-            await _pipeWriter.WriteLineAsync(json);
+            
+            // Write with null terminator (VRCX IPC format)
+            var writeTask = Task.Run(async () =>
+            {
+                await _pipeWriter.WriteAsync(json);
+                await _pipeWriter.WriteAsync('\0'); // Null terminator
+                await _pipeWriter.FlushAsync();
+            });
+            
+            var timeoutTask = Task.Delay(5000);
+            var completedTask = await Task.WhenAny(writeTask, timeoutTask);
+
+            if (completedTask == timeoutTask)
+            {
+                throw new TimeoutException($"Send timeout for {msgType}");
+            }
+
+            await writeTask;
+        }
+        catch (TimeoutException timeoutEx)
+        {
+            Log($"Send timeout: {timeoutEx.Message}");
+            DisconnectFromVRCX();
+            TryReconnect();
+        }
+        catch (IOException ioEx)
+        {
+            Log($"Pipe write error: {ioEx.Message}");
+            DisconnectFromVRCX();
+            TryReconnect();
+        }
+        catch (ObjectDisposedException)
+        {
+            Log("Pipe already disposed");
+            _isConnected = false;
         }
         catch (Exception ex)
         {
-            Log($"Error sending to VRCX: {ex.Message}");
+            Log($"Error sending to VRCX ({msgType}): {ex.Message}");
             DisconnectFromVRCX();
+            TryReconnect();
         }
     }
 

@@ -24,7 +24,7 @@ public class HTTPModule : Module
         RegisterParameter<bool>(HTTPParameter.Failed, "VRCOSC/HTTP/Failed", ParameterMode.Write, "Failed", "True for 1 second when request fails");
         RegisterParameter<int>(HTTPParameter.StatusCode, "VRCOSC/HTTP/StatusCode", ParameterMode.Write, "Status Code", "Last HTTP status code");
 
-        CreateGroup("Settings", HTTPSetting.LogRequests, HTTPSetting.Timeout);
+        CreateGroup("Settings", "HTTP module settings", HTTPSetting.LogRequests, HTTPSetting.Timeout);
     }
 
     protected override Task<bool> OnModuleStart()
