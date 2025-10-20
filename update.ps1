@@ -198,25 +198,26 @@ if (-not $SkipRelease -and $hasGhCli) {
             if ($releaseOutput -match "workflow.*scope") {
                 Write-Host ""
                 Write-Host "  GitHub CLI needs additional permissions." -ForegroundColor Yellow
-                Write-Host "  Attempting to refresh auth with workflow scope..." -ForegroundColor Cyan
-                
-                gh auth refresh -h github.com -s workflow
-                
-                if ($LASTEXITCODE -eq 0) {
-                    Write-Host ""
-                    Write-Host "  ✓ Auth refreshed. Retrying release creation..." -ForegroundColor Green
+                Open-ManualReleasePage -Tag $tag
+                if ($false) {
+                    gh auth refresh -h github.com -s workflow
                     
-                    if (New-GitHubRelease -Tag $tag -Title $title -Notes $notes -AssetPath $ReleaseDll) {
-                        Write-Host "  ✓ Release created successfully after auth refresh!" -ForegroundColor Green
+                    if ($LASTEXITCODE -eq 0) {
+                        Write-Host ""
+                        Write-Host "  ✓ Auth refreshed. Retrying release creation..." -ForegroundColor Green
+                        
+                        if (New-GitHubRelease -Tag $tag -Title $title -Notes $notes -AssetPath $ReleaseDll) {
+                            Write-Host "  ✓ Release created successfully after auth refresh!" -ForegroundColor Green
+                        }
+                        else {
+                            Write-Host "  ⚠️  Release creation still failed" -ForegroundColor Yellow
+                            Open-ManualReleasePage -Tag $tag
+                        }
                     }
                     else {
-                        Write-Host "  ⚠️  Release creation still failed" -ForegroundColor Yellow
+                        Write-Host "  ⚠️  Auth refresh failed" -ForegroundColor Yellow
                         Open-ManualReleasePage -Tag $tag
                     }
-                }
-                else {
-                    Write-Host "  ⚠️  Auth refresh failed" -ForegroundColor Yellow
-                    Open-ManualReleasePage -Tag $tag
                 }
             }
             else {
