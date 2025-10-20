@@ -421,11 +421,6 @@ public class VRCXBridgeModule : Module
                         try
                         {
                             await SendOSCToVRChat(address, valueNode);
-                            
-                            if (GetSettingValue<bool>(VRCXBridgeSetting.LogOscParams))
-                            {
-                                Log($"OSC → VRChat: {address} = {valueNode}");
-                            }
                         }
                         catch (Exception oscEx)
                         {
