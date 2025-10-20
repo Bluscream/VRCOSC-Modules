@@ -56,7 +56,7 @@ The `update.ps1` script will:
 1. ✅ Bump version in `AssemblyInfo.cs` (auto-increments build number)
 2. ✅ Build in Release mode
 3. ✅ Commit and push changes
-4. ✅ Create GitHub release with DLL attached (using version as tag)
+4. ✅ Create GitHub **pre-release (Beta)** with DLL attached (using version as tag)
 5. ✅ Build in Debug mode (for local testing)
 
 **Script Options:**

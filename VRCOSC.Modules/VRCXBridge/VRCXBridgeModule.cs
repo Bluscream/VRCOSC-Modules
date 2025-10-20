@@ -115,11 +115,12 @@ public class VRCXBridgeModule : Module
                 throw new Exception("Connection cancelled");
             }
 
-            // Setup streams with error protection
+            // Setup streams with error protection (UTF8 without BOM)
             try
             {
-                _pipeWriter = new StreamWriter(_pipeClient, Encoding.UTF8) { AutoFlush = false };
-                _pipeReader = new StreamReader(_pipeClient, Encoding.UTF8);
+                var utf8NoBom = new UTF8Encoding(false);
+                _pipeWriter = new StreamWriter(_pipeClient, utf8NoBom) { AutoFlush = false };
+                _pipeReader = new StreamReader(_pipeClient, utf8NoBom);
             }
             catch (Exception streamEx)
             {

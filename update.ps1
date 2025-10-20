@@ -23,13 +23,16 @@ function New-GitHubRelease {
         [string]$Tag,
         [string]$Title,
         [string]$Notes,
-        [string]$AssetPath
+        [string]$AssetPath,
+        [switch]$Prerelease
     )
     
-    gh release create $Tag `
-        --title $Title `
-        --notes $Notes `
-        "$AssetPath#VRCOSC.Modules.dll"
+    $args = @($Tag, '--title', $Title, '--notes', $Notes, "$AssetPath#VRCOSC.Modules.dll")
+    if ($Prerelease) {
+        $args += '--prerelease'
+    }
+    
+    gh release create @args
     
     return $LASTEXITCODE -eq 0
 }
@@ -37,8 +40,8 @@ function New-GitHubRelease {
 function Open-ManualReleasePage {
     param([string]$Tag)
     
-    Write-Host "  Opening GitHub releases page and DLL location..." -ForegroundColor Cyan
-    Start-Process "$repoUrl/releases/new?tag=$Tag&title=VRCOSC+Modules+v$Tag"
+    Write-Host "  Opening GitHub pre-release page and DLL location..." -ForegroundColor Cyan
+    Start-Process "$repoUrl/releases/new?prerelease=1&tag=$Tag&title=VRCOSC+Modules+v$Tag"
     Start-Process "explorer.exe" -ArgumentList "/select,`"$ReleaseDll`""
 }
 
@@ -180,15 +183,15 @@ if (-not $SkipRelease -and $hasGhCli) {
     Push-Location $PSScriptRoot
     try {
         $tag = $ReleaseTag
-        $title = "VRCOSC Modules v$tag"
-        $notes = "Automated release of Bluscream's VRCOSC modules`n`nVersion: $tag`n`nChanges:`n- $CommitMessage"
+        $title = "VRCOSC Modules v$tag (Beta)"
+        $notes = "⚠️ **Beta Release** - Automated pre-release of Bluscream's VRCOSC modules`n`nVersion: $tag`n`nChanges:`n- $CommitMessage"
         
         # Create release
-        Write-Host "Creating release: $tag" -ForegroundColor Cyan
-        $releaseOutput = gh release create $tag --title $title --notes $notes "$ReleaseDll#VRCOSC.Modules.dll" 2>&1
+        Write-Host "Creating pre-release: $tag" -ForegroundColor Cyan
+        $releaseOutput = gh release create $tag --title $title --notes $notes --prerelease "$ReleaseDll#VRCOSC.Modules.dll" 2>&1
         
         if ($LASTEXITCODE -eq 0) {
-            Write-Host "✓ Release created: $tag" -ForegroundColor Green
+            Write-Host "✓ Pre-release created: $tag (Beta)" -ForegroundColor Green
             Write-Host "   Attached: VRCOSC.Modules.dll" -ForegroundColor Green
         }
         else {
@@ -200,14 +203,15 @@ if (-not $SkipRelease -and $hasGhCli) {
                 Write-Host "  GitHub CLI needs additional permissions." -ForegroundColor Yellow
                 Open-ManualReleasePage -Tag $tag
                 if ($false) {
+                    Write-Host "  Attempting to refresh auth with workflow scope..." -ForegroundColor Cyan
                     gh auth refresh -h github.com -s workflow
                     
                     if ($LASTEXITCODE -eq 0) {
                         Write-Host ""
                         Write-Host "  ✓ Auth refreshed. Retrying release creation..." -ForegroundColor Green
                         
-                        if (New-GitHubRelease -Tag $tag -Title $title -Notes $notes -AssetPath $ReleaseDll) {
-                            Write-Host "  ✓ Release created successfully after auth refresh!" -ForegroundColor Green
+                        if (New-GitHubRelease -Tag $tag -Title $title -Notes $notes -AssetPath $ReleaseDll -Prerelease) {
+                            Write-Host "  ✓ Pre-release created successfully after auth refresh!" -ForegroundColor Green
                         }
                         else {
                             Write-Host "  ⚠️  Release creation still failed" -ForegroundColor Yellow
