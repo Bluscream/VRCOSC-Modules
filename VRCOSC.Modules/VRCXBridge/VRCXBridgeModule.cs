@@ -462,6 +462,16 @@ public class VRCXBridgeModule : Module
                     DisconnectFromVRCX();
                     break;
 
+                case "PluginEvent":
+                    // Plugin event broadcast from VRCX
+                    if (GetSettingValue<bool>(VRCXBridgeSetting.LogCommands))
+                    {
+                        var pluginName = data?["pluginName"]?.ToString();
+                        var eventName = data?["eventName"]?.ToString();
+                        Log($"Plugin Event: {pluginName} -> {eventName}");
+                    }
+                    break;
+
                 default:
                     Log($"Unknown message type: {msgType}");
                     break;
