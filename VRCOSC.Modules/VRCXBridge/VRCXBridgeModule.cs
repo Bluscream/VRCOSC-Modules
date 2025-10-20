@@ -57,14 +57,26 @@ public class VRCXBridgeModule : Module
         return Task.CompletedTask;
     }
 
+    private static string GetVRCXPipeName()
+    {
+        // VRCX uses username hash for pipe name: vrcx-ipc-{hash}
+        var hash = 0;
+        foreach (var c in Environment.UserName)
+        {
+            hash += c;
+        }
+        return $"vrcx-ipc-{hash}";
+    }
+
     private async Task ConnectToVRCX()
     {
         try
         {
+            var pipeName = GetVRCXPipeName();
             _cancellationSource = new CancellationTokenSource();
-            _pipeClient = new NamedPipeClientStream(".", "vrcx-ipc", PipeDirection.InOut, PipeOptions.Asynchronous);
+            _pipeClient = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut, PipeOptions.Asynchronous);
 
-            Log("Connecting to VRCX IPC...");
+            Log($"Connecting to VRCX IPC ({pipeName})...");
             await _pipeClient.ConnectAsync(5000, _cancellationSource.Token);
 
             _pipeWriter = new StreamWriter(_pipeClient, Encoding.UTF8) { AutoFlush = true };
