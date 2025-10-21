@@ -26,18 +26,23 @@ public class VRCXBridgeModule : VRCOSCModule
     private CancellationTokenSource? _cancellationSource;
     private bool _isConnected;
     private readonly Dictionary<string, TaskCompletionSource<JsonNode>> _pendingRequests = new();
+    private readonly List<OscEvent> _eventBuffer = new();
+    private readonly object _bufferLock = new object();
+    private System.Timers.Timer? _flushTimer;
 
     protected override void OnPreLoad()
     {
         CreateToggle(VRCXBridgeSetting.Enabled, "Enabled", "Enable VRCX bridge", true);
         CreateToggle(VRCXBridgeSetting.AutoReconnect, "Auto Reconnect", "Automatically reconnect if connection lost", true);
         CreateTextBox(VRCXBridgeSetting.ReconnectDelay, "Reconnect Delay (ms)", "Delay before reconnect attempt", 5000);
+        CreateTextBox(VRCXBridgeSetting.BatchInterval, "Batch Interval (ms)", "Collect events and send in bulk every X ms", 2000);
         CreateToggle(VRCXBridgeSetting.LogOscParams, "Log OSC Parameters", "Log OSC parameter changes to console", false);
         CreateToggle(VRCXBridgeSetting.LogCommands, "Log VRCX Commands", "Log commands to/from VRCX", false);
 
         RegisterParameter<bool>(VRCXBridgeParameter.Connected, "VRCOSC/VRCXBridge/Connected", ParameterMode.Write, "Connected", "True when connected to VRCX");
 
         CreateGroup("Connection", "Connection settings", VRCXBridgeSetting.Enabled, VRCXBridgeSetting.AutoReconnect, VRCXBridgeSetting.ReconnectDelay);
+        CreateGroup("Performance", "Performance settings", VRCXBridgeSetting.BatchInterval);
         CreateGroup("Debug", "Debug logging options", VRCXBridgeSetting.LogOscParams, VRCXBridgeSetting.LogCommands);
     }
 
@@ -49,12 +54,15 @@ public class VRCXBridgeModule : VRCOSCModule
             return true;
         }
 
+        StartFlushTimer();
         await ConnectToVRCX();
         return true;
     }
 
     protected override Task OnModuleStop()
     {
+        StopFlushTimer();
+        FlushEventBuffer();
         DisconnectFromVRCX();
         return Task.CompletedTask;
     }
@@ -687,43 +695,41 @@ public class VRCXBridgeModule : VRCOSCModule
 
     protected override void OnAnyParameterReceived(VRChatParameter parameter)
     {
-        // Forward all OSC parameters from VRChat to VRCX
-        _ = Task.Run(async () =>
+        try
         {
-            try
+            var paramValue = parameter.GetValue<object>();
+            
+            string oscType = paramValue switch
             {
-                var paramValue = parameter.GetValue<object>();
-                
-                // Determine OSC type
-                string oscType = paramValue switch
-                {
-                    bool _ => "bool",
-                    int _ => "int",
-                    float _ => "float",
-                    double _ => "float",
-                    _ => "string"
-                };
-                
-                if (GetSettingValue<bool>(VRCXBridgeSetting.LogOscParams))
-                {
-                    Log($"OSC ← VRChat: {parameter.Name} = {paramValue} ({oscType})");
-                }
+                bool _ => "bool",
+                int _ => "int",
+                float _ => "float",
+                double _ => "float",
+                _ => "string"
+            };
+            
+            var oscEvent = new OscEvent
+            {
+                Address = parameter.Name,
+                Type = oscType,
+                Value = paramValue,
+                Timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds()
+            };
 
-                await SendToVRCX("OSC_RECEIVED", new
-                {
-                    payload = new
-                    {
-                        address = parameter.Name,
-                        type = oscType,
-                        value = paramValue
-                    }
-                });
-            }
-            catch (Exception ex)
+            lock (_bufferLock)
             {
-                Log($"Error forwarding OSC to VRCX: {ex.Message}");
+                _eventBuffer.Add(oscEvent);
             }
-        });
+
+            if (GetSettingValue<bool>(VRCXBridgeSetting.LogOscParams))
+            {
+                Log($"OSC ← VRChat: {parameter.Name} = {paramValue} ({oscType}) [buffered]");
+            }
+        }
+        catch (Exception ex)
+        {
+            Log($"Error buffering OSC event: {ex.Message}");
+        }
     }
 
     private async Task SendToVRCX(string msgType, object data)
@@ -841,11 +847,75 @@ public class VRCXBridgeModule : VRCOSCModule
         return await SendCommandToVRCX("SHOW_TOAST", new { message, type });
     }
 
+    private void StartFlushTimer()
+    {
+        var interval = GetSettingValue<int>(VRCXBridgeSetting.BatchInterval);
+        if (interval <= 0) interval = 2000;
+
+        _flushTimer = new System.Timers.Timer(interval);
+        _flushTimer.Elapsed += (sender, e) => FlushEventBuffer();
+        _flushTimer.AutoReset = true;
+        _flushTimer.Start();
+        
+        Log($"Started event batching (interval: {interval}ms)");
+    }
+
+    private void StopFlushTimer()
+    {
+        if (_flushTimer != null)
+        {
+            _flushTimer.Stop();
+            _flushTimer.Dispose();
+            _flushTimer = null;
+        }
+    }
+
+    private void FlushEventBuffer()
+    {
+        List<OscEvent> eventsToSend;
+        
+        lock (_bufferLock)
+        {
+            if (_eventBuffer.Count == 0) return;
+            
+            eventsToSend = new List<OscEvent>(_eventBuffer);
+            _eventBuffer.Clear();
+        }
+
+        if (!_isConnected || eventsToSend.Count == 0) return;
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                if (GetSettingValue<bool>(VRCXBridgeSetting.LogOscParams))
+                {
+                    Log($"Flushing {eventsToSend.Count} OSC events to VRCX");
+                }
+
+                await SendToVRCX("OSC_RECEIVED_BULK", new { events = eventsToSend });
+            }
+            catch (Exception ex)
+            {
+                Log($"Error flushing events to VRCX: {ex.Message}");
+            }
+        });
+    }
+
+    private class OscEvent
+    {
+        public string Address { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;
+        public object? Value { get; set; }
+        public long Timestamp { get; set; }
+    }
+
     public enum VRCXBridgeSetting
     {
         Enabled,
         AutoReconnect,
         ReconnectDelay,
+        BatchInterval,
         LogOscParams,
         LogCommands
     }
