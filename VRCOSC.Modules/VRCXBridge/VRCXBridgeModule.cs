@@ -392,18 +392,31 @@ public class VRCXBridgeModule : VRCOSCModule
 
         try
         {
-            msgType = json["MsgType"]?.ToString();
+            // Try MsgType first (VrcxMessage format), fall back to Type (direct IPC)
+            msgType = json["MsgType"]?.ToString() ?? json["Type"]?.ToString();
             dataStr = json["Data"]?.ToString();
         }
         catch (Exception parseEx)
         {
-            Log($"Error extracting message fields: {parseEx.Message}");
+            if (GetSettingValue<bool>(VRCXBridgeSetting.LogRawIpc))
+            {
+                Log($"Error extracting message fields: {parseEx.Message}");
+            }
             return;
         }
 
         if (string.IsNullOrEmpty(msgType))
         {
-            Log("Message missing MsgType");
+            if (GetSettingValue<bool>(VRCXBridgeSetting.LogRawIpc))
+            {
+                Log("Message missing MsgType/Type");
+            }
+            return;
+        }
+        
+        // Silently ignore non-OSC related messages
+        if (!msgType.StartsWith("OSC_") && msgType != "PluginEvent" && msgType != "VRCXLaunch")
+        {
             return;
         }
 
@@ -416,7 +429,11 @@ public class VRCXBridgeModule : VRCOSCModule
             }
             catch (JsonException dataEx)
             {
-                Log($"Error parsing Data field: {dataEx.Message}");
+                if (GetSettingValue<bool>(VRCXBridgeSetting.LogRawIpc))
+                {
+                    Log($"Error parsing Data field: {dataEx.Message}");
+                }
+                return; // Skip messages with invalid data
             }
         }
 
