@@ -34,8 +34,21 @@ public class VRCXBridgeModule : VRCOSCModule
 
     protected override void OnPostLoad()
     {
-        // Variables are created in OnPostLoad for chat timeline
+        // Single JSON variable to store all VRCX data
         CreateVariable<string>("vrcx_data", "VRCX Data");
+    }
+
+    private void UpdateVrcxDataVariable()
+    {
+        try
+        {
+            var json = JsonSerializer.Serialize(_chatVariables);
+            SetVariableValue("vrcx_data", json);
+        }
+        catch (Exception ex)
+        {
+            Log($"Error updating vrcx_data variable: {ex.Message}");
+        }
     }
 
     protected override void OnPreLoad()
@@ -971,17 +984,8 @@ public class VRCXBridgeModule : VRCOSCModule
                     {
                         var varValue = ParseJsonValue(setValue);
                         _chatVariables[setVarName] = varValue;
-                        
-                        try
-                        {
-                            SetVariableValue($"vrcx_{setVarName}", varValue);
-                            result = new { success = true };
-                        }
-                        catch (Exception varEx)
-                        {
-                            Log($"Error setting variable: {varEx.Message}");
-                            result = new { success = false, error = varEx.Message };
-                        }
+                        UpdateVrcxDataVariable();
+                        result = new { success = true };
                     }
                     else
                     {
