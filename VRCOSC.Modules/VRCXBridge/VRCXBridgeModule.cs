@@ -39,12 +39,13 @@ public class VRCXBridgeModule : VRCOSCModule
         CreateToggle(VRCXBridgeSetting.DeduplicateEvents, "Deduplicate Events", "Only send latest value per parameter (discard intermediate values)", true);
         CreateToggle(VRCXBridgeSetting.LogOscParams, "Log OSC Parameters", "Log OSC parameter changes to console", false);
         CreateToggle(VRCXBridgeSetting.LogCommands, "Log VRCX Commands", "Log commands to/from VRCX", false);
+        CreateToggle(VRCXBridgeSetting.LogRawIpc, "Log Raw IPC", "Log raw IPC message traffic (very verbose)", false);
 
         RegisterParameter<bool>(VRCXBridgeParameter.Connected, "VRCOSC/VRCXBridge/Connected", ParameterMode.Write, "Connected", "True when connected to VRCX");
 
         CreateGroup("Connection", "Connection settings", VRCXBridgeSetting.Enabled, VRCXBridgeSetting.AutoReconnect, VRCXBridgeSetting.ReconnectDelay);
         CreateGroup("Performance", "Performance settings", VRCXBridgeSetting.BatchInterval, VRCXBridgeSetting.DeduplicateEvents);
-        CreateGroup("Debug", "Debug logging options", VRCXBridgeSetting.LogOscParams, VRCXBridgeSetting.LogCommands);
+        CreateGroup("Debug", "Debug logging options", VRCXBridgeSetting.LogOscParams, VRCXBridgeSetting.LogCommands, VRCXBridgeSetting.LogRawIpc);
     }
 
     protected override async Task<bool> OnModuleStart()
@@ -360,6 +361,12 @@ public class VRCXBridgeModule : VRCOSCModule
         {
             Log("Received empty message");
             return;
+        }
+
+        if (GetSettingValue<bool>(VRCXBridgeSetting.LogRawIpc))
+        {
+            var preview = message.Length > 100 ? message.Substring(0, 100) + "..." : message;
+            Log($"IPC ← VRCX: {preview}");
         }
 
         JsonNode? json = null;
@@ -943,7 +950,8 @@ public class VRCXBridgeModule : VRCOSCModule
         BatchInterval,
         DeduplicateEvents,
         LogOscParams,
-        LogCommands
+        LogCommands,
+        LogRawIpc
     }
 
     public enum VRCXBridgeParameter
