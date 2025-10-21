@@ -31,6 +31,7 @@ public class VRCXBridgeModule : VRCOSCModule
     private readonly object _bufferLock = new object();
     private System.Timers.Timer? _flushTimer;
     private readonly Dictionary<string, object> _chatVariables = new();
+    private readonly Dictionary<string, Type> _variableTypes = new();
 
     protected override void OnPostLoad()
     {
@@ -968,9 +969,7 @@ public class VRCXBridgeModule : VRCOSCModule
                     
                     if (!string.IsNullOrEmpty(setVarName) && setValue != null)
                     {
-                        // Parse the value and determine its type
                         var valueKind = setValue.GetValueKind();
-                        
                         var varKey = $"vrcx_{setVarName}";
                         
                         // Create variable if it doesn't exist yet
@@ -978,37 +977,66 @@ public class VRCXBridgeModule : VRCOSCModule
                         {
                             try
                             {
+                                Type varType;
                                 // Determine type from JsonValueKind
                                 switch (valueKind)
                                 {
                                     case JsonValueKind.True:
                                     case JsonValueKind.False:
                                         CreateVariable<bool>(varKey, setVarName);
+                                        varType = typeof(bool);
                                         break;
                                     case JsonValueKind.Number:
-                                        // Check if it's an integer or float
                                         if (setValue.ToString().Contains('.'))
                                         {
                                             CreateVariable<float>(varKey, setVarName);
+                                            varType = typeof(float);
                                         }
                                         else
                                         {
                                             CreateVariable<int>(varKey, setVarName);
+                                            varType = typeof(int);
                                         }
                                         break;
                                     default:
                                         CreateVariable<string>(varKey, setVarName);
+                                        varType = typeof(string);
                                         break;
                                 }
+                                _variableTypes[setVarName] = varType;
                             }
                             catch (Exception createEx)
                             {
                                 Log($"Failed to create variable {varKey}: {createEx.Message}");
+                                result = new { success = false, error = createEx.Message };
+                                break;
                             }
                         }
                         
-                        // Parse and store the value with proper type
-                        var varValue = ParseJsonValue(setValue);
+                        // Parse value with correct type based on JsonValueKind (not parsed type)
+                        object varValue;
+                        
+                        switch (valueKind)
+                        {
+                            case JsonValueKind.True:
+                            case JsonValueKind.False:
+                                varValue = setValue.GetValue<bool>();
+                                break;
+                            case JsonValueKind.Number:
+                                if (setValue.ToString().Contains('.'))
+                                {
+                                    varValue = setValue.GetValue<float>();
+                                }
+                                else
+                                {
+                                    varValue = setValue.GetValue<int>();
+                                }
+                                break;
+                            default:
+                                varValue = setValue.GetValue<string>();
+                                break;
+                        }
+                        
                         _chatVariables[setVarName] = varValue;
                         
                         try
