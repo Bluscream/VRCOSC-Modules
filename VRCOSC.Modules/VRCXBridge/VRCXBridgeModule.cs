@@ -968,7 +968,9 @@ public class VRCXBridgeModule : VRCOSCModule
                     
                     if (!string.IsNullOrEmpty(setVarName) && setValue != null)
                     {
-                        var varValue = ParseJsonValue(setValue);
+                        // Parse the value and determine its type
+                        var valueKind = setValue.GetValueKind();
+                        
                         var varKey = $"vrcx_{setVarName}";
                         
                         // Create variable if it doesn't exist yet
@@ -976,18 +978,23 @@ public class VRCXBridgeModule : VRCOSCModule
                         {
                             try
                             {
-                                // Determine type and create variable
-                                switch (varValue)
+                                // Determine type from JsonValueKind
+                                switch (valueKind)
                                 {
-                                    case bool:
+                                    case JsonValueKind.True:
+                                    case JsonValueKind.False:
                                         CreateVariable<bool>(varKey, setVarName);
                                         break;
-                                    case int:
-                                        CreateVariable<int>(varKey, setVarName);
-                                        break;
-                                    case float:
-                                    case double:
-                                        CreateVariable<float>(varKey, setVarName);
+                                    case JsonValueKind.Number:
+                                        // Check if it's an integer or float
+                                        if (setValue.ToString().Contains('.'))
+                                        {
+                                            CreateVariable<float>(varKey, setVarName);
+                                        }
+                                        else
+                                        {
+                                            CreateVariable<int>(varKey, setVarName);
+                                        }
                                         break;
                                     default:
                                         CreateVariable<string>(varKey, setVarName);
@@ -1000,6 +1007,8 @@ public class VRCXBridgeModule : VRCOSCModule
                             }
                         }
                         
+                        // Parse and store the value with proper type
+                        var varValue = ParseJsonValue(setValue);
                         _chatVariables[setVarName] = varValue;
                         
                         try
