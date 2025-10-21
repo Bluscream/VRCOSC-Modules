@@ -750,9 +750,12 @@ public class VRCXBridgeModule : VRCOSCModule
 
         try
         {
+            // Use Event7List type for OSC events to avoid default case logging
+            var messageType = msgType == "OSC_RECEIVED_BULK" ? "Event7List" : "VrcxMessage";
+            
             var ipcMessage = new
             {
-                Type = "VrcxMessage",
+                Type = messageType,
                 MsgType = msgType,
                 Data = JsonSerializer.Serialize(data)
             };
