@@ -25,6 +25,7 @@ public class VRCXBridgeModule : VRCOSCModule
     private Task? _readTask;
     private CancellationTokenSource? _cancellationSource;
     private bool _isConnected;
+    private bool _hasLoggedDisconnection;
     private readonly Dictionary<string, TaskCompletionSource<JsonNode>> _pendingRequests = new();
     private readonly List<OscEvent> _eventBuffer = new();
     private readonly object _bufferLock = new object();
@@ -112,7 +113,11 @@ public class VRCXBridgeModule : VRCOSCModule
                 throw new Exception($"Failed to create pipe client: {pipeEx.Message}", pipeEx);
             }
 
-            Log($"Connecting to VRCX IPC ({pipeName})...");
+            // Only log initial connection attempts, not retries
+            if (!_hasLoggedDisconnection)
+            {
+                Log($"Connecting to VRCX IPC ({pipeName})...");
+            }
             
             // Connect with timeout
             try
@@ -142,7 +147,17 @@ public class VRCXBridgeModule : VRCOSCModule
 
             _isConnected = true;
             SendParameter(VRCXBridgeParameter.Connected, true);
-            Log("✓ Connected to VRCX");
+            
+            // Log successful connection (especially important if we were reconnecting)
+            if (_hasLoggedDisconnection)
+            {
+                Log("✓ Reconnected to VRCX");
+                _hasLoggedDisconnection = false;
+            }
+            else
+            {
+                Log("✓ Connected to VRCX");
+            }
 
             // Start read task with error protection
             _readTask = Task.Run(async () =>
@@ -174,7 +189,13 @@ public class VRCXBridgeModule : VRCOSCModule
         }
         catch (Exception ex)
         {
-            Log($"Failed to connect to VRCX: {ex.Message}");
+            // Only log the first disconnection/failure
+            if (!_hasLoggedDisconnection)
+            {
+                Log($"Failed to connect to VRCX: {ex.Message}");
+                _hasLoggedDisconnection = true;
+            }
+            
             SendParameter(VRCXBridgeParameter.Connected, false);
             _isConnected = false;
 
@@ -198,16 +219,23 @@ public class VRCXBridgeModule : VRCOSCModule
         if (GetSettingValue<bool>(VRCXBridgeSetting.AutoReconnect))
         {
             var delay = GetSettingValue<int>(VRCXBridgeSetting.ReconnectDelay);
-            Log($"Reconnecting in {delay}ms...");
+            
+            // Only log reconnect delay on first failure
+            if (!_hasLoggedDisconnection)
+            {
+                Log($"Reconnecting in {delay}ms...");
+                _hasLoggedDisconnection = true;
+            }
+            
             _ = Task.Delay(delay).ContinueWith(async _ =>
             {
                 try
                 {
                     await ConnectToVRCX();
                 }
-                catch (Exception reconnectEx)
+                catch (Exception)
                 {
-                    Log($"Reconnection attempt failed: {reconnectEx.Message}");
+                    // Silently retry - errors are already logged in ConnectToVRCX
                 }
             });
         }
@@ -217,6 +245,7 @@ public class VRCXBridgeModule : VRCOSCModule
     {
         try
         {
+            var wasConnected = _isConnected;
             _isConnected = false;
             SendParameter(VRCXBridgeParameter.Connected, false);
 
@@ -260,7 +289,11 @@ public class VRCXBridgeModule : VRCOSCModule
             _pipeClient = null;
             _cancellationSource = null;
 
-            Log("Disconnected from VRCX");
+            // Only log intentional disconnections, not during cleanup/errors
+            if (wasConnected)
+            {
+                Log("Disconnected from VRCX");
+            }
         }
         catch (Exception ex)
         {
