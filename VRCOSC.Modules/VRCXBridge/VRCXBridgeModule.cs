@@ -36,13 +36,14 @@ public class VRCXBridgeModule : VRCOSCModule
         CreateToggle(VRCXBridgeSetting.AutoReconnect, "Auto Reconnect", "Automatically reconnect if connection lost", true);
         CreateTextBox(VRCXBridgeSetting.ReconnectDelay, "Reconnect Delay (ms)", "Delay before reconnect attempt", 5000);
         CreateTextBox(VRCXBridgeSetting.BatchInterval, "Batch Interval (ms)", "Collect events and send in bulk every X ms", 2000);
+        CreateToggle(VRCXBridgeSetting.DeduplicateEvents, "Deduplicate Events", "Only send latest value per parameter (discard intermediate values)", true);
         CreateToggle(VRCXBridgeSetting.LogOscParams, "Log OSC Parameters", "Log OSC parameter changes to console", false);
         CreateToggle(VRCXBridgeSetting.LogCommands, "Log VRCX Commands", "Log commands to/from VRCX", false);
 
         RegisterParameter<bool>(VRCXBridgeParameter.Connected, "VRCOSC/VRCXBridge/Connected", ParameterMode.Write, "Connected", "True when connected to VRCX");
 
         CreateGroup("Connection", "Connection settings", VRCXBridgeSetting.Enabled, VRCXBridgeSetting.AutoReconnect, VRCXBridgeSetting.ReconnectDelay);
-        CreateGroup("Performance", "Performance settings", VRCXBridgeSetting.BatchInterval);
+        CreateGroup("Performance", "Performance settings", VRCXBridgeSetting.BatchInterval, VRCXBridgeSetting.DeduplicateEvents);
         CreateGroup("Debug", "Debug logging options", VRCXBridgeSetting.LogOscParams, VRCXBridgeSetting.LogCommands);
     }
 
@@ -873,12 +874,28 @@ public class VRCXBridgeModule : VRCOSCModule
     private void FlushEventBuffer()
     {
         List<OscEvent> eventsToSend;
+        int originalCount;
         
         lock (_bufferLock)
         {
             if (_eventBuffer.Count == 0) return;
             
-            eventsToSend = new List<OscEvent>(_eventBuffer);
+            originalCount = _eventBuffer.Count;
+            
+            if (GetSettingValue<bool>(VRCXBridgeSetting.DeduplicateEvents))
+            {
+                var deduplicated = new Dictionary<string, OscEvent>();
+                foreach (var evt in _eventBuffer)
+                {
+                    deduplicated[evt.Address] = evt;
+                }
+                eventsToSend = deduplicated.Values.ToList();
+            }
+            else
+            {
+                eventsToSend = new List<OscEvent>(_eventBuffer);
+            }
+            
             _eventBuffer.Clear();
         }
 
@@ -890,7 +907,15 @@ public class VRCXBridgeModule : VRCOSCModule
             {
                 if (GetSettingValue<bool>(VRCXBridgeSetting.LogOscParams))
                 {
-                    Log($"Flushing {eventsToSend.Count} OSC events to VRCX");
+                    var dedupEnabled = GetSettingValue<bool>(VRCXBridgeSetting.DeduplicateEvents);
+                    if (dedupEnabled && originalCount != eventsToSend.Count)
+                    {
+                        Log($"Flushing {eventsToSend.Count} OSC events to VRCX ({originalCount - eventsToSend.Count} duplicates removed)");
+                    }
+                    else
+                    {
+                        Log($"Flushing {eventsToSend.Count} OSC events to VRCX");
+                    }
                 }
 
                 await SendToVRCX("OSC_RECEIVED_BULK", new { events = eventsToSend });
@@ -916,6 +941,7 @@ public class VRCXBridgeModule : VRCOSCModule
         AutoReconnect,
         ReconnectDelay,
         BatchInterval,
+        DeduplicateEvents,
         LogOscParams,
         LogCommands
     }
