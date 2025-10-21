@@ -35,7 +35,19 @@ public class VRCXBridgeModule : VRCOSCModule
 
     protected override void OnPostLoad()
     {
-        // Variables will be created dynamically when first set
+        // Pre-create 4 string variables for reliable storage
+        CreateVariable<string>("vrcx_variable1", "Variable 1");
+        CreateVariable<string>("vrcx_variable2", "Variable 2");
+        CreateVariable<string>("vrcx_variable3", "Variable 3");
+        CreateVariable<string>("vrcx_variable4", "Variable 4");
+        
+        // Track pre-created variable types
+        _variableTypes["variable1"] = typeof(string);
+        _variableTypes["variable2"] = typeof(string);
+        _variableTypes["variable3"] = typeof(string);
+        _variableTypes["variable4"] = typeof(string);
+        
+        // Other variables will be created dynamically when first set
     }
 
     protected override void OnPreLoad()
