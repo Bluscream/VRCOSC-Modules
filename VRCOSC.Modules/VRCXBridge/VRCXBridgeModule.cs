@@ -30,6 +30,13 @@ public class VRCXBridgeModule : VRCOSCModule
     private readonly List<OscEvent> _eventBuffer = new();
     private readonly object _bufferLock = new object();
     private System.Timers.Timer? _flushTimer;
+    private readonly Dictionary<string, object> _chatVariables = new();
+
+    protected override void OnPostLoad()
+    {
+        // Variables are created in OnPostLoad for chat timeline
+        CreateVariable<string>("vrcx_data", "VRCX Data");
+    }
 
     protected override void OnPreLoad()
     {
@@ -498,8 +505,27 @@ public class VRCXBridgeModule : VRCOSCModule
                     }
                     break;
 
+                case "OSC_COMMAND":
+                    // Command FROM VRCX to control VRCOSC
+                    var command = data?["command"]?.ToString();
+                    var cmdArgs = data?["args"];
+                    var cmdRequestId = data?["requestId"]?.ToString();
+
+                    if (!string.IsNullOrEmpty(command))
+                    {
+                        try
+                        {
+                            await HandleVRCXCommand(command, cmdArgs, cmdRequestId);
+                        }
+                        catch (Exception cmdEx)
+                        {
+                            Log($"Error handling command {command}: {cmdEx.Message}");
+                        }
+                    }
+                    break;
+
                 case "OSC_RESPONSE":
-                    // Response to our command
+                    // Response to our command sent to VRCX
                     var requestId = data?["requestId"]?.ToString();
                     var result = data?["result"];
 
@@ -915,6 +941,71 @@ public class VRCXBridgeModule : VRCOSCModule
     public async Task<JsonNode?> ShowVRCXToast(string message, string type = "info")
     {
         return await SendCommandToVRCX("SHOW_TOAST", new { message, type });
+    }
+
+    private async Task<object?> HandleVRCXCommand(string command, JsonNode? args, string? requestId)
+    {
+        object? result = null;
+
+        try
+        {
+            switch (command)
+            {
+                case "GET_VARIABLE":
+                    var getVarName = args?["name"]?.ToString();
+                    if (!string.IsNullOrEmpty(getVarName) && _chatVariables.TryGetValue(getVarName, out var value))
+                    {
+                        result = new { success = true, value };
+                    }
+                    else
+                    {
+                        result = new { success = false, error = "Variable not found" };
+                    }
+                    break;
+
+                case "SET_VARIABLE":
+                    var setVarName = args?["name"]?.ToString();
+                    var setValue = args?["value"];
+                    
+                    if (!string.IsNullOrEmpty(setVarName) && setValue != null)
+                    {
+                        var varValue = ParseJsonValue(setValue);
+                        _chatVariables[setVarName] = varValue;
+                        
+                        try
+                        {
+                            SetVariableValue($"vrcx_{setVarName}", varValue);
+                            result = new { success = true };
+                        }
+                        catch (Exception varEx)
+                        {
+                            Log($"Error setting variable: {varEx.Message}");
+                            result = new { success = false, error = varEx.Message };
+                        }
+                    }
+                    else
+                    {
+                        result = new { success = false, error = "Missing name or value" };
+                    }
+                    break;
+
+                default:
+                    result = new { success = false, error = $"Unknown command: {command}" };
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Log($"Error processing command {command}: {ex.Message}");
+            result = new { success = false, error = ex.Message };
+        }
+
+        if (!string.IsNullOrEmpty(requestId))
+        {
+            await SendToVRCX("OSC_RESPONSE", new { requestId, result });
+        }
+
+        return result;
     }
 
     private void StartFlushTimer()
