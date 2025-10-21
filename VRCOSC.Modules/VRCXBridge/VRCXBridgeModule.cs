@@ -37,6 +37,7 @@ public class VRCXBridgeModule : VRCOSCModule
         CreateTextBox(VRCXBridgeSetting.ReconnectDelay, "Reconnect Delay (ms)", "Delay before reconnect attempt", 5000);
         CreateTextBox(VRCXBridgeSetting.BatchInterval, "Batch Interval (ms)", "Collect events and send in bulk every X ms", 2000);
         CreateToggle(VRCXBridgeSetting.DeduplicateEvents, "Deduplicate Events", "Only send latest value per parameter (discard intermediate values)", true);
+        CreateTextBox(VRCXBridgeSetting.IpcMessageType, "IPC Message Type", "Type wrapper for OSC bulk events (Event7List=silent, VrcxMessage=verbose)", "Event7List");
         CreateToggle(VRCXBridgeSetting.LogOscParams, "Log OSC Parameters", "Log OSC parameter changes to console", false);
         CreateToggle(VRCXBridgeSetting.LogCommands, "Log VRCX Commands", "Log commands to/from VRCX", false);
         CreateToggle(VRCXBridgeSetting.LogRawIpc, "Log Raw IPC", "Log raw IPC message traffic (very verbose)", false);
@@ -44,7 +45,7 @@ public class VRCXBridgeModule : VRCOSCModule
         RegisterParameter<bool>(VRCXBridgeParameter.Connected, "VRCOSC/VRCXBridge/Connected", ParameterMode.Write, "Connected", "True when connected to VRCX");
 
         CreateGroup("Connection", "Connection settings", VRCXBridgeSetting.Enabled, VRCXBridgeSetting.AutoReconnect, VRCXBridgeSetting.ReconnectDelay);
-        CreateGroup("Performance", "Performance settings", VRCXBridgeSetting.BatchInterval, VRCXBridgeSetting.DeduplicateEvents);
+        CreateGroup("Performance", "Performance settings", VRCXBridgeSetting.BatchInterval, VRCXBridgeSetting.DeduplicateEvents, VRCXBridgeSetting.IpcMessageType);
         CreateGroup("Debug", "Debug logging options", VRCXBridgeSetting.LogOscParams, VRCXBridgeSetting.LogCommands, VRCXBridgeSetting.LogRawIpc);
     }
 
@@ -750,8 +751,16 @@ public class VRCXBridgeModule : VRCOSCModule
 
         try
         {
-            // Use Event7List type for OSC events to avoid default case logging
-            var messageType = msgType == "OSC_RECEIVED_BULK" ? "Event7List" : "VrcxMessage";
+            // Use configurable message type for OSC events (Event7List=silent, VrcxMessage=verbose)
+            var messageType = msgType == "OSC_RECEIVED_BULK" 
+                ? (GetSettingValue<string>(VRCXBridgeSetting.IpcMessageType) ?? "Event7List")
+                : "VrcxMessage";
+            
+            // Fallback to Event7List if empty
+            if (string.IsNullOrWhiteSpace(messageType))
+            {
+                messageType = "Event7List";
+            }
             
             var ipcMessage = new
             {
@@ -952,6 +961,7 @@ public class VRCXBridgeModule : VRCOSCModule
         ReconnectDelay,
         BatchInterval,
         DeduplicateEvents,
+        IpcMessageType,
         LogOscParams,
         LogCommands,
         LogRawIpc
