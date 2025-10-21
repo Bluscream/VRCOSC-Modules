@@ -223,7 +223,7 @@ public class VRCXBridgeModule : VRCOSCModule
             // Only log reconnect delay on first failure
             if (!_hasLoggedDisconnection)
             {
-                Log($"Reconnecting in {delay}ms...");
+                Log($"Trying to reconnect every {delay}ms...");
                 _hasLoggedDisconnection = true;
             }
             
