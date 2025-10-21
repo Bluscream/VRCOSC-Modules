@@ -34,21 +34,7 @@ public class VRCXBridgeModule : VRCOSCModule
 
     protected override void OnPostLoad()
     {
-        // Single JSON variable to store all VRCX data
-        CreateVariable<string>("vrcx_data", "VRCX Data");
-    }
-
-    private void UpdateVrcxDataVariable()
-    {
-        try
-        {
-            var json = JsonSerializer.Serialize(_chatVariables);
-            SetVariableValue("vrcx_data", json);
-        }
-        catch (Exception ex)
-        {
-            Log($"Error updating vrcx_data variable: {ex.Message}");
-        }
+        // Variables will be created dynamically when first set
     }
 
     protected override void OnPreLoad()
@@ -983,9 +969,49 @@ public class VRCXBridgeModule : VRCOSCModule
                     if (!string.IsNullOrEmpty(setVarName) && setValue != null)
                     {
                         var varValue = ParseJsonValue(setValue);
+                        var varKey = $"vrcx_{setVarName}";
+                        
+                        // Create variable if it doesn't exist yet
+                        if (!_chatVariables.ContainsKey(setVarName))
+                        {
+                            try
+                            {
+                                // Determine type and create variable
+                                switch (varValue)
+                                {
+                                    case bool:
+                                        CreateVariable<bool>(varKey, setVarName);
+                                        break;
+                                    case int:
+                                        CreateVariable<int>(varKey, setVarName);
+                                        break;
+                                    case float:
+                                    case double:
+                                        CreateVariable<float>(varKey, setVarName);
+                                        break;
+                                    default:
+                                        CreateVariable<string>(varKey, setVarName);
+                                        break;
+                                }
+                            }
+                            catch (Exception createEx)
+                            {
+                                Log($"Failed to create variable {varKey}: {createEx.Message}");
+                            }
+                        }
+                        
                         _chatVariables[setVarName] = varValue;
-                        UpdateVrcxDataVariable();
-                        result = new { success = true };
+                        
+                        try
+                        {
+                            SetVariableValue(varKey, varValue);
+                            result = new { success = true };
+                        }
+                        catch (Exception setEx)
+                        {
+                            Log($"Error setting variable {varKey}: {setEx.Message}");
+                            result = new { success = false, error = setEx.Message };
+                        }
                     }
                     else
                     {
