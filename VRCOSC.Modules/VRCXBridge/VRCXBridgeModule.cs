@@ -30,11 +30,15 @@ public class VRCXBridgeModule : VRCOSCModule
     private System.Timers.Timer? _flushTimer;
     private readonly Dictionary<string, object> _chatVariables = new();
     private readonly Dictionary<string, Type> _variableTypes = new();
+    private readonly Dictionary<string, string> _chatStates = new(); // name -> displayName
+    private readonly Dictionary<string, string> _chatEvents = new(); // name -> displayName
     [ModulePersistent("vrcx_variables")]
     public Dictionary<string, VariableInfo> PersistedVariables { get; set; } = new();
     protected override void OnPreLoad()
     {
         CreateState(VRCXBridgeState.Default, "Default");
+        _chatStates["default"] = "Default";
+        
         CreateToggle(VRCXBridgeSetting.Enabled, "Enabled", "Enable VRCX bridge", true);
         CreateToggle(VRCXBridgeSetting.AutoReconnect, "Auto Reconnect", "Automatically reconnect if connection lost", true);
         CreateTextBox(VRCXBridgeSetting.ReconnectDelay, "Reconnect Delay (ms)", "Delay before reconnect attempt", 5000);
@@ -1055,7 +1059,9 @@ public class VRCXBridgeModule : VRCOSCModule
                         try
                         {
                             var stateKey = $"vrcx_{stateName}";
-                            CreateState(stateKey, stateDisplay ?? stateName);
+                            var displayName = stateDisplay ?? stateName;
+                            CreateState(stateKey, displayName);
+                            _chatStates[stateName] = displayName;
                             result = new { success = true };
                             Log($"Created state: {stateKey}");
                         }
@@ -1093,8 +1099,13 @@ public class VRCXBridgeModule : VRCOSCModule
                     break;
 
                 case "GET_STATES":
-                    // States are managed by ChatBox, we only track what we created
-                    result = new { success = true, message = "States are managed by VRCOSC ChatBox system. Check ChatBox UI." };
+                    var states = _chatStates.Select(kvp => new
+                    {
+                        name = kvp.Key,
+                        key = $"vrcx_{kvp.Key}",
+                        displayName = kvp.Value
+                    }).ToList();
+                    result = new { success = true, states };
                     break;
 
                 case "CREATE_EVENT":
@@ -1105,7 +1116,9 @@ public class VRCXBridgeModule : VRCOSCModule
                         try
                         {
                             var eventKey = $"vrcx_{eventName}";
-                            CreateEvent(eventKey, eventDisplay ?? eventName);
+                            var eventDisplayName = eventDisplay ?? eventName;
+                            CreateEvent(eventKey, eventDisplayName);
+                            _chatEvents[eventName] = eventDisplayName;
                             result = new { success = true };
                             Log($"Created event: {eventKey}");
                         }
@@ -1143,8 +1156,13 @@ public class VRCXBridgeModule : VRCOSCModule
                     break;
 
                 case "GET_EVENTS":
-                    // Events are managed by ChatBox
-                    result = new { success = true, message = "Events are managed by VRCOSC ChatBox system. Check ChatBox UI." };
+                    var events = _chatEvents.Select(kvp => new
+                    {
+                        name = kvp.Key,
+                        key = $"vrcx_{kvp.Key}",
+                        displayName = kvp.Value
+                    }).ToList();
+                    result = new { success = true, events };
                     break;
 
                 default:
