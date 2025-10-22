@@ -40,6 +40,16 @@ public class VRCXBridgeModule : VRCOSCModule
     {
         // Recreate all previously created variables from persistent storage
         // This ensures ChatBox won't fail if VRCX isn't started yet
+        Log($"OnPostLoad: PersistedVariables is {(PersistedVariables == null ? "NULL" : "not null")}, Count = {PersistedVariables?.Count ?? -1}");
+        
+        if (PersistedVariables != null)
+        {
+            foreach (var key in PersistedVariables.Keys)
+            {
+                Log($"  Found persisted variable key: {key}");
+            }
+        }
+        
         foreach (var kvp in PersistedVariables)
         {
             var varKey = $"vrcx_{kvp.Key}";
