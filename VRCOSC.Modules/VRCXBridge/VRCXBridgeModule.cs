@@ -30,15 +30,11 @@ public class VRCXBridgeModule : VRCOSCModule
     private System.Timers.Timer? _flushTimer;
     private readonly Dictionary<string, object> _chatVariables = new();
     private readonly Dictionary<string, Type> _variableTypes = new();
-    private readonly Dictionary<string, string> _chatStates = new(); // name -> displayName
-    private readonly Dictionary<string, string> _chatEvents = new(); // name -> displayName
     [ModulePersistent("vrcx_variables")]
     public Dictionary<string, VariableInfo> PersistedVariables { get; set; } = new();
     protected override void OnPreLoad()
     {
         CreateState(VRCXBridgeState.Default, "Default");
-        _chatStates["default"] = "Default";
-        
         CreateToggle(VRCXBridgeSetting.Enabled, "Enabled", "Enable VRCX bridge", true);
         CreateToggle(VRCXBridgeSetting.AutoReconnect, "Auto Reconnect", "Automatically reconnect if connection lost", true);
         CreateTextBox(VRCXBridgeSetting.ReconnectDelay, "Reconnect Delay (ms)", "Delay before reconnect attempt", 5000);
@@ -1051,39 +1047,21 @@ public class VRCXBridgeModule : VRCOSCModule
                     result = new { success = true, variables };
                     break;
 
-                case "CREATE_STATE":
-                    var stateName = args?["name"]?.ToString();
-                    var stateDisplay = args?["displayName"]?.ToString();
-                    if (!string.IsNullOrEmpty(stateName))
-                    {
-                        try
-                        {
-                            var stateKey = $"vrcx_{stateName}";
-                            var displayName = stateDisplay ?? stateName;
-                            CreateState(stateKey, displayName);
-                            _chatStates[stateName] = displayName;
-                            result = new { success = true };
-                            Log($"Created state: {stateKey}");
-                        }
-                        catch (Exception stateEx)
-                        {
-                            result = new { success = false, error = stateEx.Message };
-                        }
-                    }
-                    else
-                    {
-                        result = new { success = false, error = "Missing name" };
-                    }
-                    break;
-
                 case "SET_STATE":
                 case "CHANGE_STATE":
                     var changeStateName = args?["name"]?.ToString();
+                    var changeStateDisplay = args?["displayName"]?.ToString();
                     if (!string.IsNullOrEmpty(changeStateName))
                     {
                         try
                         {
                             var stateKey = $"vrcx_{changeStateName}";
+                            // Auto-create state if it doesn't exist
+                            if (GetState(stateKey) == null)
+                            {
+                                CreateState(stateKey, changeStateDisplay ?? changeStateName);
+                                Log($"Auto-created state: {stateKey}");
+                            }
                             ChangeState(stateKey);
                             result = new { success = true };
                         }
@@ -1098,49 +1076,21 @@ public class VRCXBridgeModule : VRCOSCModule
                     }
                     break;
 
-                case "GET_STATES":
-                    var states = _chatStates.Select(kvp => new
-                    {
-                        name = kvp.Key,
-                        key = $"vrcx_{kvp.Key}",
-                        displayName = kvp.Value
-                    }).ToList();
-                    result = new { success = true, states };
-                    break;
-
-                case "CREATE_EVENT":
-                    var eventName = args?["name"]?.ToString();
-                    var eventDisplay = args?["displayName"]?.ToString();
-                    if (!string.IsNullOrEmpty(eventName))
-                    {
-                        try
-                        {
-                            var eventKey = $"vrcx_{eventName}";
-                            var eventDisplayName = eventDisplay ?? eventName;
-                            CreateEvent(eventKey, eventDisplayName);
-                            _chatEvents[eventName] = eventDisplayName;
-                            result = new { success = true };
-                            Log($"Created event: {eventKey}");
-                        }
-                        catch (Exception eventEx)
-                        {
-                            result = new { success = false, error = eventEx.Message };
-                        }
-                    }
-                    else
-                    {
-                        result = new { success = false, error = "Missing name" };
-                    }
-                    break;
-
                 case "TRIGGER_EVENT":
                 case "SET_EVENT":
                     var triggerEventName = args?["name"]?.ToString();
+                    var triggerEventDisplay = args?["displayName"]?.ToString();
                     if (!string.IsNullOrEmpty(triggerEventName))
                     {
                         try
                         {
                             var eventKey = $"vrcx_{triggerEventName}";
+                            // Auto-create event if it doesn't exist
+                            if (GetEvent(eventKey) == null)
+                            {
+                                CreateEvent(eventKey, triggerEventDisplay ?? triggerEventName);
+                                Log($"Auto-created event: {eventKey}");
+                            }
                             TriggerEvent(eventKey);
                             result = new { success = true };
                         }
@@ -1153,16 +1103,6 @@ public class VRCXBridgeModule : VRCOSCModule
                     {
                         result = new { success = false, error = "Missing name" };
                     }
-                    break;
-
-                case "GET_EVENTS":
-                    var events = _chatEvents.Select(kvp => new
-                    {
-                        name = kvp.Key,
-                        key = $"vrcx_{kvp.Key}",
-                        displayName = kvp.Value
-                    }).ToList();
-                    result = new { success = true, events };
                     break;
 
                 default:
