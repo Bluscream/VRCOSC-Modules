@@ -41,16 +41,16 @@ public class VRCXBridgeModule : VRCOSCModule
 
     protected override void OnPostLoad()
     {
+        Log(">>>>> OnPostLoad <<<<<");
         // Recreate all previously created variables from persistent storage
         // This ensures ChatBox won't fail if VRCX isn't started yet
         Log($"OnPostLoad: PersistedVariables is {(PersistedVariables == null ? "NULL" : "not null")}, Count = {PersistedVariables?.Count ?? -1}");
         
-        if (PersistedVariables != null)
+        if (PersistedVariables == null) return;
+        
+        foreach (var key in PersistedVariables.Keys)
         {
-            foreach (var key in PersistedVariables.Keys)
-            {
-                Log($"  Found persisted variable key: {key}");
-            }
+            Log($"  Found persisted variable key: {key}");
         }
         
         foreach (var kvp in PersistedVariables)
@@ -100,6 +100,7 @@ public class VRCXBridgeModule : VRCOSCModule
 
     protected override void OnPreLoad()
     {
+        Log(">>>>> OnPreLoad <<<<<");
         CreateToggle(VRCXBridgeSetting.Enabled, "Enabled", "Enable VRCX bridge", true);
         CreateToggle(VRCXBridgeSetting.AutoReconnect, "Auto Reconnect", "Automatically reconnect if connection lost", true);
         CreateTextBox(VRCXBridgeSetting.ReconnectDelay, "Reconnect Delay (ms)", "Delay before reconnect attempt", 5000);
@@ -119,6 +120,7 @@ public class VRCXBridgeModule : VRCOSCModule
 
     protected override async Task<bool> OnModuleStart()
     {
+        Log(">>>>> OnModuleStart <<<<<");
         if (!GetSettingValue<bool>(VRCXBridgeSetting.Enabled))
         {
             Log("VRCX Bridge disabled in settings");
@@ -132,9 +134,13 @@ public class VRCXBridgeModule : VRCOSCModule
 
     protected override Task OnModuleStop()
     {
+        Log(">>>>> OnModuleStop <<<<<");
+        Log(
+            $"OnModuleStop: PersistedVariables is {(PersistedVariables == null ? "NULL" : "not null")}, Count = {PersistedVariables?.Count ?? -1}");
         StopFlushTimer();
         FlushEventBuffer();
         DisconnectFromVRCX();
+        Log("OnModuleStop: Completed");
         return Task.CompletedTask;
     }
 
@@ -151,6 +157,7 @@ public class VRCXBridgeModule : VRCOSCModule
 
     private async Task ConnectToVRCX()
     {
+        Log(">>>>> ConnectToVRCX <<<<<");
         // Cleanup any existing connection first
         try
         {
@@ -282,6 +289,7 @@ public class VRCXBridgeModule : VRCOSCModule
 
     private void TryReconnect()
     {
+        Log(">>>>> TryReconnect <<<<<");
         // Auto-reconnect
         if (GetSettingValue<bool>(VRCXBridgeSetting.AutoReconnect))
         {
@@ -310,6 +318,7 @@ public class VRCXBridgeModule : VRCOSCModule
 
     private void DisconnectFromVRCX()
     {
+        Log(">>>>> DisconnectFromVRCX <<<<<");
         try
         {
             var wasConnected = _isConnected;
@@ -715,6 +724,7 @@ public class VRCXBridgeModule : VRCOSCModule
 
     private void SendChatBox(string text, bool minimalBackground)
     {
+        Log(">>>>> SendChatBox <<<<<");
         try
         {
             // Use reflection to access ChatBoxManager.GetInstance()
