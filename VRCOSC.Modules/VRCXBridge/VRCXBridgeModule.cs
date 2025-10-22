@@ -42,11 +42,59 @@ public class VRCXBridgeModule : VRCOSCModule
     protected override void OnPostLoad()
     {
         Log(">>>>> OnPostLoad <<<<<");
-        // Recreate all previously created variables from persistent storage
-        // This ensures ChatBox won't fail if VRCX isn't started yet
-        Log($"OnPostLoad: PersistedVariables is {(PersistedVariables == null ? "NULL" : "not null")}, Count = {PersistedVariables?.Count ?? -1}");
+    }
+
+    protected override void OnPreLoad()
+    {
+        Log(">>>>> OnPreLoad <<<<<");
         
-        if (PersistedVariables == null) return;
+        CreateState(VRCXBridgeState.Default, "Default");
+        
+        CreateToggle(VRCXBridgeSetting.Enabled, "Enabled", "Enable VRCX bridge", true);
+        CreateToggle(VRCXBridgeSetting.AutoReconnect, "Auto Reconnect", "Automatically reconnect if connection lost", true);
+        CreateTextBox(VRCXBridgeSetting.ReconnectDelay, "Reconnect Delay (ms)", "Delay before reconnect attempt", 5000);
+        CreateTextBox(VRCXBridgeSetting.BatchInterval, "Batch Interval (ms)", "Collect events and send in bulk every X ms", 2000);
+        CreateToggle(VRCXBridgeSetting.DeduplicateEvents, "Deduplicate Events", "Only send latest value per parameter (discard intermediate values)", true);
+        CreateTextBox(VRCXBridgeSetting.IpcMessageType, "IPC Message Type", "Type wrapper for OSC bulk events (Event7List=silent, VrcxMessage=verbose)", "Event7List");
+        CreateToggle(VRCXBridgeSetting.LogOscParams, "Log OSC Parameters", "Log OSC parameter changes to console", false);
+        CreateToggle(VRCXBridgeSetting.LogCommands, "Log VRCX Commands", "Log commands to/from VRCX", false);
+        CreateToggle(VRCXBridgeSetting.LogRawIpc, "Log Raw IPC", "Log raw IPC message traffic (very verbose)", false);
+
+        RegisterParameter<bool>(VRCXBridgeParameter.Connected, "VRCOSC/VRCXBridge/Connected", ParameterMode.Write, "Connected", "True when connected to VRCX");
+
+        CreateGroup("Connection", "Connection settings", VRCXBridgeSetting.Enabled, VRCXBridgeSetting.AutoReconnect, VRCXBridgeSetting.ReconnectDelay);
+        CreateGroup("Performance", "Performance settings", VRCXBridgeSetting.BatchInterval, VRCXBridgeSetting.DeduplicateEvents, VRCXBridgeSetting.IpcMessageType);
+        CreateGroup("Debug", "Debug logging options", VRCXBridgeSetting.LogOscParams, VRCXBridgeSetting.LogCommands, VRCXBridgeSetting.LogRawIpc);
+    }
+
+    protected override async Task<bool> OnModuleStart()
+    {
+        Log(">>>>> OnModuleStart <<<<<");
+        if (!GetSettingValue<bool>(VRCXBridgeSetting.Enabled))
+        {
+            Log("VRCX Bridge disabled in settings");
+            return true;
+        }
+
+        ChangeState(VRCXBridgeState.Default);
+        
+        // Restore variables from persistent storage (like Counter's auditCounts)
+        RestorePersistedVariables();
+        
+        StartFlushTimer();
+        await ConnectToVRCX();
+        return true;
+    }
+    
+    private void RestorePersistedVariables()
+    {
+        Log($"RestorePersistedVariables: PersistedVariables is {(PersistedVariables == null ? "NULL" : "not null")}, Count = {PersistedVariables?.Count ?? -1}");
+        
+        if (PersistedVariables == null || PersistedVariables.Count == 0) 
+        {
+            Log("No persisted variables to restore");
+            return;
+        }
         
         foreach (var key in PersistedVariables.Keys)
         {
@@ -113,44 +161,6 @@ public class VRCXBridgeModule : VRCOSCModule
         }
         
         Log($"Restored {PersistedVariables.Count} variables from persistent storage");
-    }
-
-    protected override void OnPreLoad()
-    {
-        Log(">>>>> OnPreLoad <<<<<");
-        
-        CreateState(VRCXBridgeState.Default, "Default");
-        
-        CreateToggle(VRCXBridgeSetting.Enabled, "Enabled", "Enable VRCX bridge", true);
-        CreateToggle(VRCXBridgeSetting.AutoReconnect, "Auto Reconnect", "Automatically reconnect if connection lost", true);
-        CreateTextBox(VRCXBridgeSetting.ReconnectDelay, "Reconnect Delay (ms)", "Delay before reconnect attempt", 5000);
-        CreateTextBox(VRCXBridgeSetting.BatchInterval, "Batch Interval (ms)", "Collect events and send in bulk every X ms", 2000);
-        CreateToggle(VRCXBridgeSetting.DeduplicateEvents, "Deduplicate Events", "Only send latest value per parameter (discard intermediate values)", true);
-        CreateTextBox(VRCXBridgeSetting.IpcMessageType, "IPC Message Type", "Type wrapper for OSC bulk events (Event7List=silent, VrcxMessage=verbose)", "Event7List");
-        CreateToggle(VRCXBridgeSetting.LogOscParams, "Log OSC Parameters", "Log OSC parameter changes to console", false);
-        CreateToggle(VRCXBridgeSetting.LogCommands, "Log VRCX Commands", "Log commands to/from VRCX", false);
-        CreateToggle(VRCXBridgeSetting.LogRawIpc, "Log Raw IPC", "Log raw IPC message traffic (very verbose)", false);
-
-        RegisterParameter<bool>(VRCXBridgeParameter.Connected, "VRCOSC/VRCXBridge/Connected", ParameterMode.Write, "Connected", "True when connected to VRCX");
-
-        CreateGroup("Connection", "Connection settings", VRCXBridgeSetting.Enabled, VRCXBridgeSetting.AutoReconnect, VRCXBridgeSetting.ReconnectDelay);
-        CreateGroup("Performance", "Performance settings", VRCXBridgeSetting.BatchInterval, VRCXBridgeSetting.DeduplicateEvents, VRCXBridgeSetting.IpcMessageType);
-        CreateGroup("Debug", "Debug logging options", VRCXBridgeSetting.LogOscParams, VRCXBridgeSetting.LogCommands, VRCXBridgeSetting.LogRawIpc);
-    }
-
-    protected override async Task<bool> OnModuleStart()
-    {
-        Log(">>>>> OnModuleStart <<<<<");
-        if (!GetSettingValue<bool>(VRCXBridgeSetting.Enabled))
-        {
-            Log("VRCX Bridge disabled in settings");
-            return true;
-        }
-
-        ChangeState(VRCXBridgeState.Default);
-        StartFlushTimer();
-        await ConnectToVRCX();
-        return true;
     }
 
     protected override Task OnModuleStop()
