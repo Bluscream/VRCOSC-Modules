@@ -118,6 +118,9 @@ public class VRCXBridgeModule : VRCOSCModule
     protected override void OnPreLoad()
     {
         Log(">>>>> OnPreLoad <<<<<");
+        
+        CreateState(VRCXBridgeState.Default, "Default");
+        
         CreateToggle(VRCXBridgeSetting.Enabled, "Enabled", "Enable VRCX bridge", true);
         CreateToggle(VRCXBridgeSetting.AutoReconnect, "Auto Reconnect", "Automatically reconnect if connection lost", true);
         CreateTextBox(VRCXBridgeSetting.ReconnectDelay, "Reconnect Delay (ms)", "Delay before reconnect attempt", 5000);
@@ -144,6 +147,7 @@ public class VRCXBridgeModule : VRCOSCModule
             return true;
         }
 
+        ChangeState(VRCXBridgeState.Default);
         StartFlushTimer();
         await ConnectToVRCX();
         return true;
@@ -1305,6 +1309,11 @@ public class VRCXBridgeModule : VRCOSCModule
     public enum VRCXBridgeParameter
     {
         Connected
+    }
+
+    public enum VRCXBridgeState
+    {
+        Default
     }
 }
 
