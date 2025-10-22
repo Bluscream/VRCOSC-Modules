@@ -85,8 +85,25 @@ public class VRCXBridgeModule : VRCOSCModule
                         break;
                 }
                 
-                // Set display name after creation (like Counter module does)
+                // Set display name and initial value after creation (like Counter module does)
                 GetVariable(varKey)!.DisplayName.Value = varInfo.DisplayName;
+                
+                // Set initial value to ensure variable is properly initialized
+                switch (varInfo.TypeName)
+                {
+                    case "Boolean":
+                        SetVariableValue(varKey, false);
+                        break;
+                    case "Int32":
+                        SetVariableValue(varKey, 0);
+                        break;
+                    case "Single":
+                        SetVariableValue(varKey, 0f);
+                        break;
+                    default:
+                        SetVariableValue(varKey, string.Empty);
+                        break;
+                }
                 
             }
             catch (Exception ex)
