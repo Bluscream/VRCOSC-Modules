@@ -51,26 +51,29 @@ public class VRCXBridgeModule : VRCOSCModule
                 switch (varInfo.TypeName)
                 {
                     case "Boolean":
-                        CreateVariable<bool>(varKey, varInfo.DisplayName);
+                        CreateVariable<bool>(varKey, string.Empty);
                         _variableTypes[kvp.Key] = typeof(bool);
                         _chatVariables[kvp.Key] = false;
                         break;
                     case "Int32":
-                        CreateVariable<int>(varKey, varInfo.DisplayName);
+                        CreateVariable<int>(varKey, string.Empty);
                         _variableTypes[kvp.Key] = typeof(int);
                         _chatVariables[kvp.Key] = 0;
                         break;
                     case "Single":
-                        CreateVariable<float>(varKey, varInfo.DisplayName);
+                        CreateVariable<float>(varKey, string.Empty);
                         _variableTypes[kvp.Key] = typeof(float);
                         _chatVariables[kvp.Key] = 0f;
                         break;
                     default: // String
-                        CreateVariable<string>(varKey, varInfo.DisplayName);
+                        CreateVariable<string>(varKey, string.Empty);
                         _variableTypes[kvp.Key] = typeof(string);
                         _chatVariables[kvp.Key] = string.Empty;
                         break;
                 }
+                
+                // Set display name after creation (like Counter module does)
+                GetVariable(varKey)!.DisplayName.Value = varInfo.DisplayName;
                 
                 Log($"Restored variable: {varKey} ({varInfo.TypeName})");
             }
@@ -1033,30 +1036,33 @@ public class VRCXBridgeModule : VRCOSCModule
                                 {
                                     case JsonValueKind.True:
                                     case JsonValueKind.False:
-                                        CreateVariable<bool>(varKey, setVarName);
+                                        CreateVariable<bool>(varKey, string.Empty);
                                         varType = typeof(bool);
                                         typeName = "Boolean";
                                         break;
                                     case JsonValueKind.Number:
                                         if (setValue.ToString().Contains('.'))
                                         {
-                                            CreateVariable<float>(varKey, setVarName);
+                                            CreateVariable<float>(varKey, string.Empty);
                                             varType = typeof(float);
                                             typeName = "Single";
                                         }
                                         else
                                         {
-                                            CreateVariable<int>(varKey, setVarName);
+                                            CreateVariable<int>(varKey, string.Empty);
                                             varType = typeof(int);
                                             typeName = "Int32";
                                         }
                                         break;
                                     default:
-                                        CreateVariable<string>(varKey, setVarName);
+                                        CreateVariable<string>(varKey, string.Empty);
                                         varType = typeof(string);
                                         typeName = "String";
                                         break;
                                 }
+                                
+                                // Set display name after creation (like Counter module does)
+                                GetVariable(varKey)!.DisplayName.Value = setVarName;
                                 
                                 _variableTypes[setVarName] = varType;
                                 
