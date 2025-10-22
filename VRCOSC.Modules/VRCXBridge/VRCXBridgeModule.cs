@@ -1083,6 +1083,7 @@ public class VRCXBridgeModule : VRCOSCModule
                                 };
                                 
                                 Log($"Created new ChatBox variable: {varKey} ({typeName})");
+                                Log($"PersistedVariables now has {PersistedVariables.Count} items");
                             }
                             catch (Exception createEx)
                             {
