@@ -75,7 +75,6 @@ public class VRCXBridgeModule : VRCOSCModule
                 // Set display name after creation (like Counter module does)
                 GetVariable(varKey)!.DisplayName.Value = varInfo.DisplayName;
                 
-                Log($"Restored variable: {varKey} ({varInfo.TypeName})");
             }
             catch (Exception ex)
             {
@@ -83,10 +82,7 @@ public class VRCXBridgeModule : VRCOSCModule
             }
         }
         
-        if (PersistedVariables.Count > 0)
-        {
-            Log($"Restored {PersistedVariables.Count} VRCX ChatBox variables from storage");
-        }
+        Log($"Restored {PersistedVariables.Count} variables from persistent storage");
     }
 
     protected override void OnPreLoad()
