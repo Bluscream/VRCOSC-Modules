@@ -8,9 +8,12 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Newtonsoft.Json;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Parameters;
 using VRCOSCModule = VRCOSC.App.SDK.Modules.Module;
+using JsonException = System.Text.Json.JsonException;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Bluscream.Modules.VRCXBridge;
 
@@ -1277,16 +1280,16 @@ public class VRCXBridgeModule : VRCOSCModule
     }
 }
 
-[Newtonsoft.Json.JsonObject(Newtonsoft.Json.MemberSerialization.OptIn)]
+[JsonObject(MemberSerialization.OptIn)]
 public class VariableInfo
 {
-    [Newtonsoft.Json.JsonProperty("DisplayName")]
+    [JsonProperty("DisplayName")]
     public string DisplayName { get; set; } = string.Empty;
     
-    [Newtonsoft.Json.JsonProperty("TypeName")]
+    [JsonProperty("TypeName")]
     public string TypeName { get; set; } = "String";
 
-    [Newtonsoft.Json.JsonConstructor]
+    [JsonConstructor]
     public VariableInfo()
     {
     }
