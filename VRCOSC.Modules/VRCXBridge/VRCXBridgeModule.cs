@@ -1266,9 +1266,18 @@ public class VRCXBridgeModule : VRCOSCModule
         Connected
     }
 
+    [Newtonsoft.Json.JsonObject(Newtonsoft.Json.MemberSerialization.OptIn)]
     public class VariableInfo
     {
+        [Newtonsoft.Json.JsonProperty("displayName")]
         public string DisplayName { get; set; } = string.Empty;
+        
+        [Newtonsoft.Json.JsonProperty("typeName")]
         public string TypeName { get; set; } = "String";
+
+        [Newtonsoft.Json.JsonConstructor]
+        public VariableInfo()
+        {
+        }
     }
 }
