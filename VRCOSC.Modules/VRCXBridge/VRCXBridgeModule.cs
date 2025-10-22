@@ -1269,10 +1269,10 @@ public class VRCXBridgeModule : VRCOSCModule
     [Newtonsoft.Json.JsonObject(Newtonsoft.Json.MemberSerialization.OptIn)]
     public class VariableInfo
     {
-        [Newtonsoft.Json.JsonProperty("displayName")]
+        [Newtonsoft.Json.JsonProperty("DisplayName")]
         public string DisplayName { get; set; } = string.Empty;
         
-        [Newtonsoft.Json.JsonProperty("typeName")]
+        [Newtonsoft.Json.JsonProperty("TypeName")]
         public string TypeName { get; set; } = "String";
 
         [Newtonsoft.Json.JsonConstructor]
