@@ -1035,6 +1035,118 @@ public class VRCXBridgeModule : VRCOSCModule
                         result = new { success = false, error = "Missing name or value" };
                     }
                     break;
+
+                case "GET_VARIABLES":
+                    var variables = _chatVariables.Keys.Select(key => new
+                    {
+                        name = key,
+                        key = $"vrcx_{key}",
+                        type = _variableTypes.ContainsKey(key) ? _variableTypes[key].Name : "Unknown",
+                        value = _chatVariables[key]
+                    }).ToList();
+                    result = new { success = true, variables };
+                    break;
+
+                case "CREATE_STATE":
+                    var stateName = args?["name"]?.ToString();
+                    var stateDisplay = args?["displayName"]?.ToString();
+                    if (!string.IsNullOrEmpty(stateName))
+                    {
+                        try
+                        {
+                            var stateKey = $"vrcx_{stateName}";
+                            CreateState(stateKey, stateDisplay ?? stateName);
+                            result = new { success = true };
+                            Log($"Created state: {stateKey}");
+                        }
+                        catch (Exception stateEx)
+                        {
+                            result = new { success = false, error = stateEx.Message };
+                        }
+                    }
+                    else
+                    {
+                        result = new { success = false, error = "Missing name" };
+                    }
+                    break;
+
+                case "SET_STATE":
+                case "CHANGE_STATE":
+                    var changeStateName = args?["name"]?.ToString();
+                    if (!string.IsNullOrEmpty(changeStateName))
+                    {
+                        try
+                        {
+                            var stateKey = $"vrcx_{changeStateName}";
+                            ChangeState(stateKey);
+                            result = new { success = true };
+                        }
+                        catch (Exception stateEx)
+                        {
+                            result = new { success = false, error = stateEx.Message };
+                        }
+                    }
+                    else
+                    {
+                        result = new { success = false, error = "Missing name" };
+                    }
+                    break;
+
+                case "GET_STATES":
+                    // States are managed by ChatBox, we only track what we created
+                    result = new { success = true, message = "States are managed by VRCOSC ChatBox system. Check ChatBox UI." };
+                    break;
+
+                case "CREATE_EVENT":
+                    var eventName = args?["name"]?.ToString();
+                    var eventDisplay = args?["displayName"]?.ToString();
+                    if (!string.IsNullOrEmpty(eventName))
+                    {
+                        try
+                        {
+                            var eventKey = $"vrcx_{eventName}";
+                            CreateEvent(eventKey, eventDisplay ?? eventName);
+                            result = new { success = true };
+                            Log($"Created event: {eventKey}");
+                        }
+                        catch (Exception eventEx)
+                        {
+                            result = new { success = false, error = eventEx.Message };
+                        }
+                    }
+                    else
+                    {
+                        result = new { success = false, error = "Missing name" };
+                    }
+                    break;
+
+                case "TRIGGER_EVENT":
+                case "SET_EVENT":
+                    var triggerEventName = args?["name"]?.ToString();
+                    if (!string.IsNullOrEmpty(triggerEventName))
+                    {
+                        try
+                        {
+                            var eventKey = $"vrcx_{triggerEventName}";
+                            TriggerEvent(eventKey);
+                            result = new { success = true };
+                        }
+                        catch (Exception eventEx)
+                        {
+                            result = new { success = false, error = eventEx.Message };
+                        }
+                    }
+                    else
+                    {
+                        result = new { success = false, error = "Missing name" };
+                    }
+                    break;
+
+                case "GET_EVENTS":
+                    // Events are managed by ChatBox
+                    result = new { success = true, message = "Events are managed by VRCOSC ChatBox system. Check ChatBox UI." };
+                    break;
+
                 default:
                     result = new { success = false, error = $"Unknown command: {command}" };
                     break;
