@@ -897,6 +897,27 @@ public class VRCXBridgeModule : VRCOSCModule
     {
         return await SendCommandToVRCX("SHOW_TOAST", new { message, type });
     }
+
+    private void EnsureStateExists(string name, string? displayName = null)
+    {
+        var stateKey = $"vrcx_{name}";
+        if (GetState(stateKey) == null)
+        {
+            CreateState(stateKey, displayName ?? name);
+            Log($"Auto-created state: {stateKey}");
+        }
+    }
+
+    private void EnsureEventExists(string name, string? displayName = null)
+    {
+        var eventKey = $"vrcx_{name}";
+        if (GetEvent(eventKey) == null)
+        {
+            CreateEvent(eventKey, displayName ?? name);
+            Log($"Auto-created event: {eventKey}");
+        }
+    }
+
     private async Task<object?> HandleVRCXCommand(string command, JsonNode? args, string? requestId)
     {
         object? result = null;
@@ -1047,6 +1068,27 @@ public class VRCXBridgeModule : VRCOSCModule
                     result = new { success = true, variables };
                     break;
 
+                case "CREATE_STATE":
+                    var createStateName = args?["name"]?.ToString();
+                    var createStateDisplay = args?["displayName"]?.ToString();
+                    if (!string.IsNullOrEmpty(createStateName))
+                    {
+                        try
+                        {
+                            EnsureStateExists(createStateName, createStateDisplay);
+                            result = new { success = true };
+                        }
+                        catch (Exception stateEx)
+                        {
+                            result = new { success = false, error = stateEx.Message };
+                        }
+                    }
+                    else
+                    {
+                        result = new { success = false, error = "Missing name" };
+                    }
+                    break;
+
                 case "SET_STATE":
                 case "CHANGE_STATE":
                     var changeStateName = args?["name"]?.ToString();
@@ -1055,13 +1097,8 @@ public class VRCXBridgeModule : VRCOSCModule
                     {
                         try
                         {
+                            EnsureStateExists(changeStateName, changeStateDisplay);
                             var stateKey = $"vrcx_{changeStateName}";
-                            // Auto-create state if it doesn't exist
-                            if (GetState(stateKey) == null)
-                            {
-                                CreateState(stateKey, changeStateDisplay ?? changeStateName);
-                                Log($"Auto-created state: {stateKey}");
-                            }
                             ChangeState(stateKey);
                             result = new { success = true };
                         }
@@ -1076,21 +1113,36 @@ public class VRCXBridgeModule : VRCOSCModule
                     }
                     break;
 
+                case "CREATE_EVENT":
+                    var createEventName = args?["name"]?.ToString();
+                    var createEventDisplay = args?["displayName"]?.ToString();
+                    if (!string.IsNullOrEmpty(createEventName))
+                    {
+                        try
+                        {
+                            EnsureEventExists(createEventName, createEventDisplay);
+                            result = new { success = true };
+                        }
+                        catch (Exception eventEx)
+                        {
+                            result = new { success = false, error = eventEx.Message };
+                        }
+                    }
+                    else
+                    {
+                        result = new { success = false, error = "Missing name" };
+                    }
+                    break;
+
                 case "TRIGGER_EVENT":
-                case "SET_EVENT":
                     var triggerEventName = args?["name"]?.ToString();
                     var triggerEventDisplay = args?["displayName"]?.ToString();
                     if (!string.IsNullOrEmpty(triggerEventName))
                     {
                         try
                         {
+                            EnsureEventExists(triggerEventName, triggerEventDisplay);
                             var eventKey = $"vrcx_{triggerEventName}";
-                            // Auto-create event if it doesn't exist
-                            if (GetEvent(eventKey) == null)
-                            {
-                                CreateEvent(eventKey, triggerEventDisplay ?? triggerEventName);
-                                Log($"Auto-created event: {eventKey}");
-                            }
                             TriggerEvent(eventKey);
                             result = new { success = true };
                         }
