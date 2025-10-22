@@ -30,6 +30,7 @@ public class VRCXBridgeModule : VRCOSCModule
     private System.Timers.Timer? _flushTimer;
     private readonly Dictionary<string, object> _chatVariables = new();
     private readonly Dictionary<string, Type> _variableTypes = new();
+    private readonly Dictionary<string, object> _lastParameterValues = new();
     [ModulePersistent("vrcx_variables")]
     public Dictionary<string, VariableInfo> PersistedVariables { get; set; } = new();
     protected override void OnPreLoad()
@@ -40,13 +41,14 @@ public class VRCXBridgeModule : VRCOSCModule
         CreateTextBox(VRCXBridgeSetting.ReconnectDelay, "Reconnect Delay (ms)", "Delay before reconnect attempt", 5000);
         CreateTextBox(VRCXBridgeSetting.BatchInterval, "Batch Interval (ms)", "Collect events and send in bulk every X ms", 2000);
         CreateToggle(VRCXBridgeSetting.DeduplicateEvents, "Deduplicate Events", "Only send latest value per parameter (discard intermediate values)", true);
+        CreateToggle(VRCXBridgeSetting.OnlyChangedValues, "Only Changed Values", "Only send parameters when their value actually changes", true);
         CreateTextBox(VRCXBridgeSetting.IpcMessageType, "IPC Message Type", "Type wrapper for OSC bulk events (Event7List=silent, VrcxMessage=verbose)", "Event7List");
         CreateToggle(VRCXBridgeSetting.LogOscParams, "Log OSC Parameters", "Log OSC parameter changes to console", false);
         CreateToggle(VRCXBridgeSetting.LogCommands, "Log VRCX Commands", "Log commands to/from VRCX", false);
         CreateToggle(VRCXBridgeSetting.LogRawIpc, "Log Raw IPC", "Log raw IPC message traffic (very verbose)", false);
         RegisterParameter<bool>(VRCXBridgeParameter.Connected, "VRCOSC/VRCXBridge/Connected", ParameterMode.Write, "Connected", "True when connected to VRCX");
         CreateGroup("Connection", "Connection settings", VRCXBridgeSetting.Enabled, VRCXBridgeSetting.AutoReconnect, VRCXBridgeSetting.ReconnectDelay);
-        CreateGroup("Performance", "Performance settings", VRCXBridgeSetting.BatchInterval, VRCXBridgeSetting.DeduplicateEvents, VRCXBridgeSetting.IpcMessageType);
+        CreateGroup("Performance", "Performance settings", VRCXBridgeSetting.BatchInterval, VRCXBridgeSetting.DeduplicateEvents, VRCXBridgeSetting.OnlyChangedValues, VRCXBridgeSetting.IpcMessageType);
         CreateGroup("Debug", "Debug logging options", VRCXBridgeSetting.LogOscParams, VRCXBridgeSetting.LogCommands, VRCXBridgeSetting.LogRawIpc);
     }
     protected override async Task<bool> OnModuleStart()
@@ -761,12 +763,30 @@ public class VRCXBridgeModule : VRCOSCModule
         try
         {
             var paramValue = parameter.GetValue<object>();
+            
+            // Check if value has actually changed (if enabled)
+            if (GetSettingValue<bool>(VRCXBridgeSetting.OnlyChangedValues))
+            {
+                lock (_bufferLock)
+                {
+                    if (_lastParameterValues.TryGetValue(parameter.Name, out var lastValue))
+                    {
+                        if (Equals(lastValue, paramValue))
+                        {
+                            // Value unchanged, skip
+                            return;
+                        }
+                    }
+                    _lastParameterValues[parameter.Name] = paramValue;
+                }
+            }
+            
             string oscType = paramValue switch
             {
                 bool _ => "bool",
                 int _ => "int",
                 float _ => "float",
-                double _ => "float",
+                double _ => "double",
                 _ => "string"
             };
             var oscEvent = new OscEvent
@@ -782,7 +802,7 @@ public class VRCXBridgeModule : VRCOSCModule
             }
             if (GetSettingValue<bool>(VRCXBridgeSetting.LogOscParams))
             {
-                Log($"OSC ← VRChat: {parameter.Name} = {paramValue} ({oscType}) [buffered]");
+                Log($"OSC ← VRChat: {parameter.Name} = {paramValue} ({oscType}) [changed, buffered]");
             }
         }
         catch (Exception ex)
@@ -1254,6 +1274,7 @@ public class VRCXBridgeModule : VRCOSCModule
         ReconnectDelay,
         BatchInterval,
         DeduplicateEvents,
+        OnlyChangedValues,
         IpcMessageType,
         LogOscParams,
         LogCommands,
