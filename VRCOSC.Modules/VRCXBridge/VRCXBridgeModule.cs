@@ -1,7 +1,5 @@
 // Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 // See the LICENSE file in the repository root for full license text.
-
-using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Reflection;
@@ -14,9 +12,7 @@ using VRCOSC.App.SDK.Parameters;
 using VRCOSCModule = VRCOSC.App.SDK.Modules.Module;
 using JsonException = System.Text.Json.JsonException;
 using JsonSerializer = System.Text.Json.JsonSerializer;
-
 namespace Bluscream.Modules.VRCXBridge;
-
 [ModuleTitle("VRCX Bridge")]
 [ModuleDescription("Bidirectional bridge between VRCOSC and VRCX for OSC + VRChat API integration")]
 [ModuleType(ModuleType.Integrations)]
@@ -31,22 +27,15 @@ public class VRCXBridgeModule : VRCOSCModule
     private bool _hasLoggedDisconnection;
     private readonly Dictionary<string, TaskCompletionSource<JsonNode>> _pendingRequests = new();
     private readonly List<OscEvent> _eventBuffer = new();
-    private readonly object _bufferLock = new object();
+    private readonly object _bufferLock = new();
     private System.Timers.Timer? _flushTimer;
     private readonly Dictionary<string, object> _chatVariables = new();
     private readonly Dictionary<string, Type> _variableTypes = new();
-
     [ModulePersistent("vrcx_variables")]
     public Dictionary<string, VariableInfo> PersistedVariables { get; set; } = new();
-
-    protected override void OnPostLoad()
-    {
-    }
-
     protected override void OnPreLoad()
     {
         CreateState(VRCXBridgeState.Default, "Default");
-        
         CreateToggle(VRCXBridgeSetting.Enabled, "Enabled", "Enable VRCX bridge", true);
         CreateToggle(VRCXBridgeSetting.AutoReconnect, "Auto Reconnect", "Automatically reconnect if connection lost", true);
         CreateTextBox(VRCXBridgeSetting.ReconnectDelay, "Reconnect Delay (ms)", "Delay before reconnect attempt", 5000);
@@ -56,14 +45,11 @@ public class VRCXBridgeModule : VRCOSCModule
         CreateToggle(VRCXBridgeSetting.LogOscParams, "Log OSC Parameters", "Log OSC parameter changes to console", false);
         CreateToggle(VRCXBridgeSetting.LogCommands, "Log VRCX Commands", "Log commands to/from VRCX", false);
         CreateToggle(VRCXBridgeSetting.LogRawIpc, "Log Raw IPC", "Log raw IPC message traffic (very verbose)", false);
-
         RegisterParameter<bool>(VRCXBridgeParameter.Connected, "VRCOSC/VRCXBridge/Connected", ParameterMode.Write, "Connected", "True when connected to VRCX");
-
         CreateGroup("Connection", "Connection settings", VRCXBridgeSetting.Enabled, VRCXBridgeSetting.AutoReconnect, VRCXBridgeSetting.ReconnectDelay);
         CreateGroup("Performance", "Performance settings", VRCXBridgeSetting.BatchInterval, VRCXBridgeSetting.DeduplicateEvents, VRCXBridgeSetting.IpcMessageType);
         CreateGroup("Debug", "Debug logging options", VRCXBridgeSetting.LogOscParams, VRCXBridgeSetting.LogCommands, VRCXBridgeSetting.LogRawIpc);
     }
-
     protected override async Task<bool> OnModuleStart()
     {
         if (!GetSettingValue<bool>(VRCXBridgeSetting.Enabled))
@@ -71,29 +57,23 @@ public class VRCXBridgeModule : VRCOSCModule
             Log("VRCX Bridge disabled in settings");
             return true;
         }
-
         ChangeState(VRCXBridgeState.Default);
-        
         // Restore variables from persistent storage (like Counter's auditCounts)
         RestorePersistedVariables();
-        
         StartFlushTimer();
         await ConnectToVRCX();
         return true;
     }
-    
     private void RestorePersistedVariables()
     {
         if (PersistedVariables == null || PersistedVariables.Count == 0) 
         {
             return;
         }
-        
         foreach (var kvp in PersistedVariables)
         {
             var varKey = $"vrcx_{kvp.Key}";
             var varInfo = kvp.Value;
-            
             try
             {
                 // Create variable with correct type, initialize as empty
@@ -120,10 +100,8 @@ public class VRCXBridgeModule : VRCOSCModule
                         _chatVariables[kvp.Key] = string.Empty;
                         break;
                 }
-                
                 // Set display name and initial value after creation (like Counter module does)
                 GetVariable(varKey)!.DisplayName.Value = varInfo.DisplayName;
-                
                 // Set initial value to ensure variable is properly initialized
                 switch (varInfo.TypeName)
                 {
@@ -140,17 +118,14 @@ public class VRCXBridgeModule : VRCOSCModule
                         SetVariableValue(varKey, string.Empty);
                         break;
                 }
-                
             }
             catch (Exception ex)
             {
                 Log($"Failed to restore variable {varKey}: {ex.Message}");
             }
         }
-        
         Log($"Restored {PersistedVariables.Count} variables from persistent storage");
     }
-
     protected override Task OnModuleStop()
     {
         StopFlushTimer();
@@ -158,7 +133,6 @@ public class VRCXBridgeModule : VRCOSCModule
         DisconnectFromVRCX();
         return Task.CompletedTask;
     }
-
     private static string GetVRCXPipeName()
     {
         // VRCX uses username hash for pipe name: vrcx-ipc-{hash}
@@ -169,7 +143,6 @@ public class VRCXBridgeModule : VRCOSCModule
         }
         return $"vrcx-ipc-{hash}";
     }
-
     private async Task ConnectToVRCX()
     {
         // Cleanup any existing connection first
@@ -185,12 +158,10 @@ public class VRCXBridgeModule : VRCOSCModule
         {
             Log($"Error during cleanup: {cleanupEx.Message}");
         }
-
         try
         {
             var pipeName = GetVRCXPipeName();
             _cancellationSource = new CancellationTokenSource();
-            
             // Create pipe with error protection
             try
             {
@@ -200,13 +171,11 @@ public class VRCXBridgeModule : VRCOSCModule
             {
                 throw new Exception($"Failed to create pipe client: {pipeEx.Message}", pipeEx);
             }
-
             // Only log initial connection attempts, not retries
             if (!_hasLoggedDisconnection)
             {
                 Log($"Connecting to VRCX IPC ({pipeName})...");
             }
-            
             // Connect with timeout
             try
             {
@@ -220,7 +189,6 @@ public class VRCXBridgeModule : VRCOSCModule
             {
                 throw new Exception("Connection cancelled");
             }
-
             // Setup streams with error protection (UTF8 without BOM)
             try
             {
@@ -232,10 +200,8 @@ public class VRCXBridgeModule : VRCOSCModule
             {
                 throw new Exception($"Failed to create streams: {streamEx.Message}", streamEx);
             }
-
             _isConnected = true;
             SendParameter(VRCXBridgeParameter.Connected, true);
-            
             // Log successful connection (especially important if we were reconnecting)
             if (_hasLoggedDisconnection)
             {
@@ -246,7 +212,6 @@ public class VRCXBridgeModule : VRCOSCModule
             {
                 Log("✓ Connected to VRCX");
             }
-
             // Start read task with error protection
             _readTask = Task.Run(async () =>
             {
@@ -264,7 +229,6 @@ public class VRCXBridgeModule : VRCOSCModule
                     }
                 }
             }, _cancellationSource.Token);
-
             // Send INIT message to VRCX
             try
             {
@@ -283,10 +247,8 @@ public class VRCXBridgeModule : VRCOSCModule
                 Log($"Failed to connect to VRCX: {ex.Message}");
                 _hasLoggedDisconnection = true;
             }
-            
             SendParameter(VRCXBridgeParameter.Connected, false);
             _isConnected = false;
-
             // Cleanup on failure
             try
             {
@@ -296,25 +258,21 @@ public class VRCXBridgeModule : VRCOSCModule
                 _cancellationSource?.Dispose();
             }
             catch { /* Ignore cleanup errors */ }
-
             TryReconnect();
         }
     }
-
     private void TryReconnect()
     {
         // Auto-reconnect
         if (GetSettingValue<bool>(VRCXBridgeSetting.AutoReconnect))
         {
             var delay = GetSettingValue<int>(VRCXBridgeSetting.ReconnectDelay);
-            
             // Only log reconnect delay on first failure
             if (!_hasLoggedDisconnection)
             {
                 Log($"Trying to reconnect every {delay}ms...");
                 _hasLoggedDisconnection = true;
             }
-            
             _ = Task.Delay(delay).ContinueWith(async _ =>
             {
                 try
@@ -328,7 +286,6 @@ public class VRCXBridgeModule : VRCOSCModule
             });
         }
     }
-
     private void DisconnectFromVRCX()
     {
         try
@@ -336,7 +293,6 @@ public class VRCXBridgeModule : VRCOSCModule
             var wasConnected = _isConnected;
             _isConnected = false;
             SendParameter(VRCXBridgeParameter.Connected, false);
-
             // Cancel operations
             try
             {
@@ -346,37 +302,31 @@ public class VRCXBridgeModule : VRCOSCModule
             {
                 Log($"Error cancelling operations: {cancelEx.Message}");
             }
-
             // Dispose resources in reverse order
             try
             {
                 _pipeWriter?.Dispose();
             }
             catch { /* Ignore */ }
-
             try
             {
                 _pipeReader?.Dispose();
             }
             catch { /* Ignore */ }
-
             try
             {
                 _pipeClient?.Dispose();
             }
             catch { /* Ignore */ }
-
             try
             {
                 _cancellationSource?.Dispose();
             }
             catch { /* Ignore */ }
-
             _pipeWriter = null;
             _pipeReader = null;
             _pipeClient = null;
             _cancellationSource = null;
-
             // Only log intentional disconnections, not during cleanup/errors
             if (wasConnected)
             {
@@ -388,18 +338,15 @@ public class VRCXBridgeModule : VRCOSCModule
             Log($"Error during disconnect: {ex.Message}");
         }
     }
-
     private async Task ReadMessages()
     {
         try
         {
             var buffer = new StringBuilder();
             var charBuffer = new char[1024];
-            
             while (_isConnected && _pipeReader != null && !_cancellationSource!.Token.IsCancellationRequested)
             {
                 int charsRead = 0;
-                
                 try
                 {
                     charsRead = await _pipeReader.ReadAsync(charBuffer.AsMemory(0, charBuffer.Length), _cancellationSource.Token);
@@ -418,7 +365,6 @@ public class VRCXBridgeModule : VRCOSCModule
                     Log($"Unexpected read error: {readEx.Message}");
                     continue;
                 }
-
                 if (charsRead == 0)
                 {
                     if (_isConnected)
@@ -428,12 +374,10 @@ public class VRCXBridgeModule : VRCOSCModule
                     }
                     continue;
                 }
-
                 // Process characters and split on null terminators
                 for (int i = 0; i < charsRead; i++)
                 {
                     char c = charBuffer[i];
-                    
                     if (c == '\0')
                     {
                         // End of message
@@ -441,7 +385,6 @@ public class VRCXBridgeModule : VRCOSCModule
                         {
                             var message = buffer.ToString();
                             buffer.Clear();
-                            
                             try
                             {
                                 await HandleVRCXMessage(message);
@@ -476,7 +419,6 @@ public class VRCXBridgeModule : VRCOSCModule
             }
         }
     }
-
     private async Task HandleVRCXMessage(string message)
     {
         if (string.IsNullOrWhiteSpace(message))
@@ -484,13 +426,11 @@ public class VRCXBridgeModule : VRCOSCModule
             Log("Received empty message");
             return;
         }
-
         if (GetSettingValue<bool>(VRCXBridgeSetting.LogRawIpc))
         {
             var preview = message.Length > 100 ? message.Substring(0, 100) + "..." : message;
             Log($"IPC ← VRCX: {preview}");
         }
-
         JsonNode? json = null;
         try
         {
@@ -501,16 +441,13 @@ public class VRCXBridgeModule : VRCOSCModule
             Log($"Invalid JSON received: {jsonEx.Message}");
             return;
         }
-
         if (json == null)
         {
             Log("Null JSON after parse");
             return;
         }
-
         string? msgType = null;
         string? dataStr = null;
-
         try
         {
             // Try MsgType first (VrcxMessage format), fall back to Type (direct IPC)
@@ -525,7 +462,6 @@ public class VRCXBridgeModule : VRCOSCModule
             }
             return;
         }
-
         if (string.IsNullOrEmpty(msgType))
         {
             if (GetSettingValue<bool>(VRCXBridgeSetting.LogRawIpc))
@@ -534,13 +470,11 @@ public class VRCXBridgeModule : VRCOSCModule
             }
             return;
         }
-        
         // Silently ignore non-OSC related messages
         if (!msgType.StartsWith("OSC_") && msgType != "PluginEvent" && msgType != "VRCXLaunch")
         {
             return;
         }
-
         JsonNode? data = null;
         if (!string.IsNullOrEmpty(dataStr))
         {
@@ -557,7 +491,6 @@ public class VRCXBridgeModule : VRCOSCModule
                 return; // Skip messages with invalid data
             }
         }
-
         try
         {
             switch (msgType)
@@ -567,12 +500,10 @@ public class VRCXBridgeModule : VRCOSCModule
                     Log("Received OSC_INIT from VRCX");
                     await SendToVRCX("OSC_READY", new { timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds() });
                     break;
-
                 case "OSC_SEND":
                     // Send OSC to VRChat from VRCX
                     var address = data?["address"]?.ToString();
                     var valueNode = data?["value"];
-
                     if (!string.IsNullOrEmpty(address) && valueNode != null)
                     {
                         try
@@ -585,13 +516,11 @@ public class VRCXBridgeModule : VRCOSCModule
                         }
                     }
                     break;
-
                 case "OSC_COMMAND":
                     // Command FROM VRCX to control VRCOSC
                     var command = data?["command"]?.ToString();
                     var cmdArgs = data?["args"];
                     var cmdRequestId = data?["requestId"]?.ToString();
-
                     if (!string.IsNullOrEmpty(command))
                     {
                         try
@@ -604,12 +533,10 @@ public class VRCXBridgeModule : VRCOSCModule
                         }
                     }
                     break;
-
                 case "OSC_RESPONSE":
                     // Response to our command sent to VRCX
                     var requestId = data?["requestId"]?.ToString();
                     var result = data?["result"];
-
                     if (!string.IsNullOrEmpty(requestId))
                     {
                         if (_pendingRequests.TryGetValue(requestId, out var tcs))
@@ -626,13 +553,11 @@ public class VRCXBridgeModule : VRCOSCModule
                         }
                     }
                     break;
-
                 case "OSC_SHUTDOWN":
                     // VRCX shutting down
                     Log("VRCX shutting down");
                     DisconnectFromVRCX();
                     break;
-
                 case "PluginEvent":
                     // Plugin event broadcast from VRCX
                     if (GetSettingValue<bool>(VRCXBridgeSetting.LogCommands))
@@ -642,12 +567,10 @@ public class VRCXBridgeModule : VRCOSCModule
                         Log($"Plugin Event: {pluginName} -> {eventName}");
                     }
                     break;
-
                 case "VRCXLaunch":
                     // VRCX startup notification
                     Log("VRCX launched");
                     break;
-
                 default:
                     Log($"Unknown message type: {msgType}");
                     break;
@@ -658,7 +581,6 @@ public class VRCXBridgeModule : VRCOSCModule
             Log($"Error processing {msgType}: {ex.Message}");
         }
     }
-
     private Task SendOSCToVRChat(string address, JsonNode value)
     {
         try
@@ -670,9 +592,7 @@ public class VRCXBridgeModule : VRCOSCModule
                 {
                     var text = chatboxArray[0]?.ToString() ?? "";
                     var minimalBg = chatboxArray.Count > 1 && chatboxArray[1]?.GetValue<bool>() == false;
-                    
                     SendChatBox(text, minimalBg);
-                    
                     if (GetSettingValue<bool>(VRCXBridgeSetting.LogCommands))
                     {
                         Log($"ChatBox: {text} (minimal: {minimalBg})");
@@ -680,13 +600,11 @@ public class VRCXBridgeModule : VRCOSCModule
                 }
                 return Task.CompletedTask;
             }
-
             // Handle different message types
             if (value is JsonArray array)
             {
                 // Array of values - convert to object array
                 var args = array.Select(ParseJsonValue).ToArray();
-                
                 // For avatar parameters, strip prefix and use single value
                 if (address.StartsWith("/avatar/parameters/"))
                 {
@@ -698,7 +616,6 @@ public class VRCXBridgeModule : VRCOSCModule
                     // For other multi-param messages, use raw OSC client
                     SendRawOSC(address, args);
                 }
-
                 if (GetSettingValue<bool>(VRCXBridgeSetting.LogCommands))
                 {
                     Log($"OSC → VRChat: {address} = {JsonSerializer.Serialize(args)}");
@@ -708,7 +625,6 @@ public class VRCXBridgeModule : VRCOSCModule
             {
                 // Single value
                 var oscValue = ParseJsonValue(value);
-                
                 // For avatar parameters, strip prefix
                 if (address.StartsWith("/avatar/parameters/"))
                 {
@@ -719,7 +635,6 @@ public class VRCXBridgeModule : VRCOSCModule
                 {
                     SendRawOSC(address, oscValue);
                 }
-
                 if (GetSettingValue<bool>(VRCXBridgeSetting.LogCommands))
                 {
                     Log($"OSC → VRChat: {address} = {JsonSerializer.Serialize(oscValue)}");
@@ -730,10 +645,8 @@ public class VRCXBridgeModule : VRCOSCModule
         {
             Log($"Error sending OSC: {ex.Message}");
         }
-        
         return Task.CompletedTask;
     }
-
     private void SendChatBox(string text, bool minimalBackground)
     {
         try
@@ -746,7 +659,6 @@ public class VRCXBridgeModule : VRCOSCModule
                 SendRawOSC("/chatbox/input", text, true, false);
                 return;
             }
-
             var getInstanceMethod = chatBoxManagerType.GetMethod("GetInstance", BindingFlags.NonPublic | BindingFlags.Static);
             if (getInstanceMethod == null)
             {
@@ -754,7 +666,6 @@ public class VRCXBridgeModule : VRCOSCModule
                 SendRawOSC("/chatbox/input", text, true, false);
                 return;
             }
-
             var chatBoxManager = getInstanceMethod.Invoke(null, null);
             if (chatBoxManager == null)
             {
@@ -762,14 +673,12 @@ public class VRCXBridgeModule : VRCOSCModule
                 SendRawOSC("/chatbox/input", text, true, false);
                 return;
             }
-
             // Set PulseText property
             var pulseTextProp = chatBoxManagerType.GetProperty("PulseText");
             if (pulseTextProp != null)
             {
                 pulseTextProp.SetValue(chatBoxManager, text);
             }
-
             // Set PulseMinimalBackground property
             var pulseMinimalBgProp = chatBoxManagerType.GetProperty("PulseMinimalBackground");
             if (pulseMinimalBgProp != null)
@@ -783,7 +692,6 @@ public class VRCXBridgeModule : VRCOSCModule
             SendRawOSC("/chatbox/input", text, true, false);
         }
     }
-
     private void SendRawOSC(string address, params object[] args)
     {
         try
@@ -795,35 +703,30 @@ public class VRCXBridgeModule : VRCOSCModule
                 Log("Failed to get AppManager type");
                 return;
             }
-
             var getInstanceMethod = appManagerType.GetMethod("GetInstance", BindingFlags.Public | BindingFlags.Static);
             if (getInstanceMethod == null)
             {
                 Log("Failed to get GetInstance method");
                 return;
             }
-
             var appManager = getInstanceMethod.Invoke(null, null);
             if (appManager == null)
             {
                 Log("AppManager instance is null");
                 return;
             }
-
             var oscClientProp = appManagerType.GetProperty("VRChatOscClient");
             if (oscClientProp == null)
             {
                 Log("Failed to get VRChatOscClient property");
                 return;
             }
-
             var oscClient = oscClientProp.GetValue(appManager);
             if (oscClient == null)
             {
                 Log("OSC client is null");
                 return;
             }
-
             // Call Send method
             var sendMethod = oscClient.GetType().GetMethod("Send", BindingFlags.Public | BindingFlags.Instance);
             if (sendMethod == null)
@@ -831,12 +734,10 @@ public class VRCXBridgeModule : VRCOSCModule
                 Log("Failed to get Send method");
                 return;
             }
-
             // Combine address with args
             var allArgs = new object[args.Length + 1];
             allArgs[0] = address;
             Array.Copy(args, 0, allArgs, 1, args.Length);
-
             sendMethod.Invoke(oscClient, allArgs);
         }
         catch (Exception ex)
@@ -844,11 +745,9 @@ public class VRCXBridgeModule : VRCOSCModule
             Log($"Failed to send raw OSC: {ex.Message}");
         }
     }
-
     private static object ParseJsonValue(JsonNode? node)
     {
         if (node == null) return string.Empty;
-        
         return node.GetValueKind() switch
         {
             JsonValueKind.String => node.ToString(),
@@ -858,13 +757,11 @@ public class VRCXBridgeModule : VRCOSCModule
             _ => node.ToString()
         };
     }
-
     protected override void OnAnyParameterReceived(VRChatParameter parameter)
     {
         try
         {
             var paramValue = parameter.GetValue<object>();
-            
             string oscType = paramValue switch
             {
                 bool _ => "bool",
@@ -873,7 +770,6 @@ public class VRCXBridgeModule : VRCOSCModule
                 double _ => "float",
                 _ => "string"
             };
-            
             var oscEvent = new OscEvent
             {
                 Address = parameter.Name,
@@ -881,12 +777,10 @@ public class VRCXBridgeModule : VRCOSCModule
                 Value = paramValue,
                 Timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds()
             };
-
             lock (_bufferLock)
             {
                 _eventBuffer.Add(oscEvent);
             }
-
             if (GetSettingValue<bool>(VRCXBridgeSetting.LogOscParams))
             {
                 Log($"OSC ← VRChat: {parameter.Name} = {paramValue} ({oscType}) [buffered]");
@@ -897,7 +791,6 @@ public class VRCXBridgeModule : VRCOSCModule
             Log($"Error buffering OSC event: {ex.Message}");
         }
     }
-
     private async Task SendToVRCX(string msgType, object data)
     {
         if (!_isConnected || _pipeWriter == null)
@@ -905,29 +798,24 @@ public class VRCXBridgeModule : VRCOSCModule
             Log($"Cannot send {msgType}: Not connected");
             return;
         }
-
         try
         {
             // Use configurable message type for OSC events (Event7List=silent, VrcxMessage=verbose)
             var messageType = msgType == "OSC_RECEIVED_BULK" 
                 ? (GetSettingValue<string>(VRCXBridgeSetting.IpcMessageType) ?? "Event7List")
                 : "VrcxMessage";
-            
             // Fallback to Event7List if empty
             if (string.IsNullOrWhiteSpace(messageType))
             {
                 messageType = "Event7List";
             }
-            
             var ipcMessage = new
             {
                 Type = messageType,
                 MsgType = msgType,
                 Data = JsonSerializer.Serialize(data)
             };
-
             var json = JsonSerializer.Serialize(ipcMessage);
-            
             // Write with null terminator (VRCX IPC format)
             var writeTask = Task.Run(async () =>
             {
@@ -935,15 +823,12 @@ public class VRCXBridgeModule : VRCOSCModule
                 await _pipeWriter.WriteAsync('\0'); // Null terminator
                 await _pipeWriter.FlushAsync();
             });
-            
             var timeoutTask = Task.Delay(5000);
             var completedTask = await Task.WhenAny(writeTask, timeoutTask);
-
             if (completedTask == timeoutTask)
             {
                 throw new TimeoutException($"Send timeout for {msgType}");
             }
-
             await writeTask;
         }
         catch (TimeoutException timeoutEx)
@@ -970,64 +855,52 @@ public class VRCXBridgeModule : VRCOSCModule
             TryReconnect();
         }
     }
-
     // Public API for other modules to use
     public async Task<JsonNode?> SendCommandToVRCX(string command, object args, int timeoutMs = 5000)
     {
         var requestId = Guid.NewGuid().ToString();
         var tcs = new TaskCompletionSource<JsonNode>();
         _pendingRequests[requestId] = tcs;
-
         await SendToVRCX("OSC_COMMAND", new
         {
             command,
             args,
             requestId
         });
-
         // Wait for response with timeout
         var timeoutTask = Task.Delay(timeoutMs);
         var completedTask = await Task.WhenAny(tcs.Task, timeoutTask);
-
         if (completedTask == timeoutTask)
         {
             _pendingRequests.Remove(requestId);
             throw new TimeoutException($"Command {command} timed out after {timeoutMs}ms");
         }
-
         return await tcs.Task;
     }
-
     // Helper methods for common VRCX operations
     public async Task<JsonNode?> GetOnlineFriends()
     {
         return await SendCommandToVRCX("GET_ONLINE_FRIENDS", new { });
     }
-
     public async Task<JsonNode?> SendInvite(string userId, string instanceId, string worldId, string worldName, string? message = null)
     {
         return await SendCommandToVRCX("SEND_INVITE", new { userId, instanceId, worldId, worldName, message });
     }
-
     public async Task<JsonNode?> GetUserInfo(string userId)
     {
         return await SendCommandToVRCX("GET_USER_INFO", new { userId });
     }
-
     public async Task<JsonNode?> GetCurrentLocation()
     {
         return await SendCommandToVRCX("GET_CURRENT_LOCATION", new { });
     }
-
     public async Task<JsonNode?> ShowVRCXToast(string message, string type = "info")
     {
         return await SendCommandToVRCX("SHOW_TOAST", new { message, type });
     }
-
     private async Task<object?> HandleVRCXCommand(string command, JsonNode? args, string? requestId)
     {
         object? result = null;
-
         try
         {
             switch (command)
@@ -1043,16 +916,13 @@ public class VRCXBridgeModule : VRCOSCModule
                         result = new { success = false, error = "Variable not found" };
                     }
                     break;
-
                 case "SET_VARIABLE":
                     var setVarName = args?["name"]?.ToString();
                     var setValue = args?["value"];
-                    
                     if (!string.IsNullOrEmpty(setVarName) && setValue != null)
                     {
                         var valueKind = setValue.GetValueKind();
                         var varKey = $"vrcx_{setVarName}";
-                        
                         // Create variable if it doesn't exist yet
                         if (!_chatVariables.ContainsKey(setVarName))
                         {
@@ -1060,7 +930,6 @@ public class VRCXBridgeModule : VRCOSCModule
                             {
                                 Type varType;
                                 string typeName;
-                                
                                 // Determine type from JsonValueKind
                                 switch (valueKind)
                                 {
@@ -1090,19 +959,15 @@ public class VRCXBridgeModule : VRCOSCModule
                                         typeName = "String";
                                         break;
                                 }
-                                
                                 // Set display name after creation (like Counter module does)
                                 GetVariable(varKey)!.DisplayName.Value = setVarName;
-                                
                                 _variableTypes[setVarName] = varType;
-                                
                                 // Persist variable info for recreation on next load
                                 PersistedVariables[setVarName] = new VariableInfo
                                 {
                                     DisplayName = setVarName,
                                     TypeName = typeName
                                 };
-                                
                         Log($"Created new ChatBox variable: {varKey} ({typeName})");
                             }
                             catch (Exception createEx)
@@ -1112,10 +977,8 @@ public class VRCXBridgeModule : VRCOSCModule
                                 break;
                             }
                         }
-                        
                         // Parse value with correct type based on JsonValueKind (not parsed type)
                         object varValue;
-                        
                         switch (valueKind)
                         {
                             case JsonValueKind.True:
@@ -1136,9 +999,7 @@ public class VRCXBridgeModule : VRCOSCModule
                                 varValue = setValue.GetValue<string>();
                                 break;
                         }
-                        
                         _chatVariables[setVarName] = varValue;
-                        
                         try
                         {
                             // Set variable with proper type casting
@@ -1175,7 +1036,6 @@ public class VRCXBridgeModule : VRCOSCModule
                         result = new { success = false, error = "Missing name or value" };
                     }
                     break;
-
                 default:
                     result = new { success = false, error = $"Unknown command: {command}" };
                     break;
@@ -1186,28 +1046,22 @@ public class VRCXBridgeModule : VRCOSCModule
             Log($"Error processing command {command}: {ex.Message}");
             result = new { success = false, error = ex.Message };
         }
-
         if (!string.IsNullOrEmpty(requestId))
         {
             await SendToVRCX("OSC_RESPONSE", new { requestId, result });
         }
-
         return result;
     }
-
     private void StartFlushTimer()
     {
         var interval = GetSettingValue<int>(VRCXBridgeSetting.BatchInterval);
         if (interval <= 0) interval = 2000;
-
         _flushTimer = new System.Timers.Timer(interval);
         _flushTimer.Elapsed += (sender, e) => FlushEventBuffer();
         _flushTimer.AutoReset = true;
         _flushTimer.Start();
-        
         Log($"Started event batching (interval: {interval}ms)");
     }
-
     private void StopFlushTimer()
     {
         if (_flushTimer != null)
@@ -1217,21 +1071,17 @@ public class VRCXBridgeModule : VRCOSCModule
             _flushTimer = null;
         }
     }
-
     private void FlushEventBuffer()
     {
         List<OscEvent> eventsToSend;
         int originalCount;
-        
         lock (_bufferLock)
         {
             if (_eventBuffer.Count == 0) return;
-            
             originalCount = _eventBuffer.Count;
-            
             if (GetSettingValue<bool>(VRCXBridgeSetting.DeduplicateEvents))
             {
-                var deduplicated = new Dictionary<string, OscEvent>();
+                Dictionary<string, OscEvent> deduplicated = new();
                 foreach (var evt in _eventBuffer)
                 {
                     deduplicated[evt.Address] = evt;
@@ -1240,14 +1090,11 @@ public class VRCXBridgeModule : VRCOSCModule
             }
             else
             {
-                eventsToSend = new List<OscEvent>(_eventBuffer);
+                eventsToSend = new(_eventBuffer);
             }
-            
             _eventBuffer.Clear();
         }
-
         if (!_isConnected || eventsToSend.Count == 0) return;
-
         _ = Task.Run(async () =>
         {
             try
@@ -1264,7 +1111,6 @@ public class VRCXBridgeModule : VRCOSCModule
                         Log($"Flushing {eventsToSend.Count} OSC events to VRCX");
                     }
                 }
-
                 await SendToVRCX("OSC_RECEIVED_BULK", new { events = eventsToSend });
             }
             catch (Exception ex)
@@ -1273,7 +1119,6 @@ public class VRCXBridgeModule : VRCOSCModule
             }
         });
     }
-
     private class OscEvent
     {
         public string Address { get; set; } = string.Empty;
@@ -1281,7 +1126,6 @@ public class VRCXBridgeModule : VRCOSCModule
         public object? Value { get; set; }
         public long Timestamp { get; set; }
     }
-
     public enum VRCXBridgeSetting
     {
         Enabled,
@@ -1294,27 +1138,22 @@ public class VRCXBridgeModule : VRCOSCModule
         LogCommands,
         LogRawIpc
     }
-
     public enum VRCXBridgeParameter
     {
         Connected
     }
-
     public enum VRCXBridgeState
     {
         Default
     }
 }
-
 [JsonObject(MemberSerialization.OptIn)]
 public class VariableInfo
 {
     [JsonProperty("DisplayName")]
     public string DisplayName { get; set; } = string.Empty;
-    
     [JsonProperty("TypeName")]
     public string TypeName { get; set; } = "String";
-
     [JsonConstructor]
     public VariableInfo()
     {
