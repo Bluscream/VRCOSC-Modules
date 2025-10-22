@@ -41,13 +41,10 @@ public class VRCXBridgeModule : VRCOSCModule
 
     protected override void OnPostLoad()
     {
-        Log(">>>>> OnPostLoad <<<<<");
     }
 
     protected override void OnPreLoad()
     {
-        Log(">>>>> OnPreLoad <<<<<");
-        
         CreateState(VRCXBridgeState.Default, "Default");
         
         CreateToggle(VRCXBridgeSetting.Enabled, "Enabled", "Enable VRCX bridge", true);
@@ -69,7 +66,6 @@ public class VRCXBridgeModule : VRCOSCModule
 
     protected override async Task<bool> OnModuleStart()
     {
-        Log(">>>>> OnModuleStart <<<<<");
         if (!GetSettingValue<bool>(VRCXBridgeSetting.Enabled))
         {
             Log("VRCX Bridge disabled in settings");
@@ -88,17 +84,9 @@ public class VRCXBridgeModule : VRCOSCModule
     
     private void RestorePersistedVariables()
     {
-        Log($"RestorePersistedVariables: PersistedVariables is {(PersistedVariables == null ? "NULL" : "not null")}, Count = {PersistedVariables?.Count ?? -1}");
-        
         if (PersistedVariables == null || PersistedVariables.Count == 0) 
         {
-            Log("No persisted variables to restore");
             return;
-        }
-        
-        foreach (var key in PersistedVariables.Keys)
-        {
-            Log($"  Found persisted variable key: {key}");
         }
         
         foreach (var kvp in PersistedVariables)
@@ -165,13 +153,9 @@ public class VRCXBridgeModule : VRCOSCModule
 
     protected override Task OnModuleStop()
     {
-        Log(">>>>> OnModuleStop <<<<<");
-        Log(
-            $"OnModuleStop: PersistedVariables is {(PersistedVariables == null ? "NULL" : "not null")}, Count = {PersistedVariables?.Count ?? -1}");
         StopFlushTimer();
         FlushEventBuffer();
         DisconnectFromVRCX();
-        Log("OnModuleStop: Completed");
         return Task.CompletedTask;
     }
 
@@ -188,7 +172,6 @@ public class VRCXBridgeModule : VRCOSCModule
 
     private async Task ConnectToVRCX()
     {
-        Log(">>>>> ConnectToVRCX <<<<<");
         // Cleanup any existing connection first
         try
         {
@@ -320,7 +303,6 @@ public class VRCXBridgeModule : VRCOSCModule
 
     private void TryReconnect()
     {
-        Log(">>>>> TryReconnect <<<<<");
         // Auto-reconnect
         if (GetSettingValue<bool>(VRCXBridgeSetting.AutoReconnect))
         {
@@ -349,7 +331,6 @@ public class VRCXBridgeModule : VRCOSCModule
 
     private void DisconnectFromVRCX()
     {
-        Log(">>>>> DisconnectFromVRCX <<<<<");
         try
         {
             var wasConnected = _isConnected;
@@ -755,7 +736,6 @@ public class VRCXBridgeModule : VRCOSCModule
 
     private void SendChatBox(string text, bool minimalBackground)
     {
-        Log(">>>>> SendChatBox <<<<<");
         try
         {
             // Use reflection to access ChatBoxManager.GetInstance()
@@ -1123,8 +1103,7 @@ public class VRCXBridgeModule : VRCOSCModule
                                     TypeName = typeName
                                 };
                                 
-                                Log($"Created new ChatBox variable: {varKey} ({typeName})");
-                                Log($"PersistedVariables now has {PersistedVariables.Count} items");
+                        Log($"Created new ChatBox variable: {varKey} ({typeName})");
                             }
                             catch (Exception createEx)
                             {
