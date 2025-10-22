@@ -1105,7 +1105,27 @@ public class VRCXBridgeModule : VRCOSCModule
                         
                         try
                         {
-                            SetVariableValue(varKey, varValue);
+                            // Set variable with proper type casting
+                            switch (valueKind)
+                            {
+                                case JsonValueKind.True:
+                                case JsonValueKind.False:
+                                    SetVariableValue(varKey, (bool)varValue);
+                                    break;
+                                case JsonValueKind.Number:
+                                    if (setValue.ToString().Contains('.'))
+                                    {
+                                        SetVariableValue(varKey, (float)varValue);
+                                    }
+                                    else
+                                    {
+                                        SetVariableValue(varKey, (int)varValue);
+                                    }
+                                    break;
+                                default:
+                                    SetVariableValue(varKey, (string)varValue);
+                                    break;
+                            }
                             result = new { success = true };
                         }
                         catch (Exception setEx)
