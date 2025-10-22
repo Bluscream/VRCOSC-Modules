@@ -33,21 +33,57 @@ public class VRCXBridgeModule : VRCOSCModule
     private readonly Dictionary<string, object> _chatVariables = new();
     private readonly Dictionary<string, Type> _variableTypes = new();
 
+    [ModulePersistent("vrcx_variables")]
+    public Dictionary<string, VariableInfo> PersistedVariables { get; set; } = new();
+
     protected override void OnPostLoad()
     {
-        // Pre-create 4 string variables for reliable storage
-        CreateVariable<string>("vrcx_variable1", "Variable 1");
-        CreateVariable<string>("vrcx_variable2", "Variable 2");
-        CreateVariable<string>("vrcx_variable3", "Variable 3");
-        CreateVariable<string>("vrcx_variable4", "Variable 4");
+        // Recreate all previously created variables from persistent storage
+        // This ensures ChatBox won't fail if VRCX isn't started yet
+        foreach (var kvp in PersistedVariables)
+        {
+            var varKey = $"vrcx_{kvp.Key}";
+            var varInfo = kvp.Value;
+            
+            try
+            {
+                // Create variable with correct type, initialize as empty
+                switch (varInfo.TypeName)
+                {
+                    case "Boolean":
+                        CreateVariable<bool>(varKey, varInfo.DisplayName);
+                        _variableTypes[kvp.Key] = typeof(bool);
+                        _chatVariables[kvp.Key] = false;
+                        break;
+                    case "Int32":
+                        CreateVariable<int>(varKey, varInfo.DisplayName);
+                        _variableTypes[kvp.Key] = typeof(int);
+                        _chatVariables[kvp.Key] = 0;
+                        break;
+                    case "Single":
+                        CreateVariable<float>(varKey, varInfo.DisplayName);
+                        _variableTypes[kvp.Key] = typeof(float);
+                        _chatVariables[kvp.Key] = 0f;
+                        break;
+                    default: // String
+                        CreateVariable<string>(varKey, varInfo.DisplayName);
+                        _variableTypes[kvp.Key] = typeof(string);
+                        _chatVariables[kvp.Key] = string.Empty;
+                        break;
+                }
+                
+                Log($"Restored variable: {varKey} ({varInfo.TypeName})");
+            }
+            catch (Exception ex)
+            {
+                Log($"Failed to restore variable {varKey}: {ex.Message}");
+            }
+        }
         
-        // Track pre-created variable types
-        _variableTypes["variable1"] = typeof(string);
-        _variableTypes["variable2"] = typeof(string);
-        _variableTypes["variable3"] = typeof(string);
-        _variableTypes["variable4"] = typeof(string);
-        
-        // Other variables will be created dynamically when first set
+        if (PersistedVariables.Count > 0)
+        {
+            Log($"Restored {PersistedVariables.Count} VRCX ChatBox variables from storage");
+        }
     }
 
     protected override void OnPreLoad()
@@ -990,6 +1026,8 @@ public class VRCXBridgeModule : VRCOSCModule
                             try
                             {
                                 Type varType;
+                                string typeName;
+                                
                                 // Determine type from JsonValueKind
                                 switch (valueKind)
                                 {
@@ -997,25 +1035,39 @@ public class VRCXBridgeModule : VRCOSCModule
                                     case JsonValueKind.False:
                                         CreateVariable<bool>(varKey, setVarName);
                                         varType = typeof(bool);
+                                        typeName = "Boolean";
                                         break;
                                     case JsonValueKind.Number:
                                         if (setValue.ToString().Contains('.'))
                                         {
                                             CreateVariable<float>(varKey, setVarName);
                                             varType = typeof(float);
+                                            typeName = "Single";
                                         }
                                         else
                                         {
                                             CreateVariable<int>(varKey, setVarName);
                                             varType = typeof(int);
+                                            typeName = "Int32";
                                         }
                                         break;
                                     default:
                                         CreateVariable<string>(varKey, setVarName);
                                         varType = typeof(string);
+                                        typeName = "String";
                                         break;
                                 }
+                                
                                 _variableTypes[setVarName] = varType;
+                                
+                                // Persist variable info for recreation on next load
+                                PersistedVariables[setVarName] = new VariableInfo
+                                {
+                                    DisplayName = setVarName,
+                                    TypeName = typeName
+                                };
+                                
+                                Log($"Created new ChatBox variable: {varKey} ({typeName})");
                             }
                             catch (Exception createEx)
                             {
@@ -1190,5 +1242,11 @@ public class VRCXBridgeModule : VRCOSCModule
     public enum VRCXBridgeParameter
     {
         Connected
+    }
+
+    public class VariableInfo
+    {
+        public string DisplayName { get; set; } = string.Empty;
+        public string TypeName { get; set; } = "String";
     }
 }
