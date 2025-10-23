@@ -11,7 +11,8 @@ using VRCOSC.App.SDK.Parameters;
 using VRCOSCModule = VRCOSC.App.SDK.Modules.Module;
 using JsonException = System.Text.Json.JsonException;
 using JsonSerializer = System.Text.Json.JsonSerializer;
-namespace Bluscream.Modules.VRCXBridge;
+
+namespace Bluscream.Modules;
 [ModuleTitle("VRCX Bridge")]
 [ModuleDescription("Bidirectional bridge between VRCOSC and VRCX for OSC + VRChat API integration")]
 [ModuleType(ModuleType.Integrations)]
@@ -650,100 +651,17 @@ public class VRCXBridgeModule : VRCOSCModule
     }
     private void SendChatBox(string text, bool minimalBackground)
     {
-        try
+        if (!Utils.SendChatBox(text, minimalBackground))
         {
-            // Use reflection to access ChatBoxManager.GetInstance()
-            var chatBoxManagerType = System.Type.GetType("VRCOSC.App.ChatBox.ChatBoxManager, VRCOSC.App");
-            if (chatBoxManagerType == null)
-            {
-                Log("Failed to get ChatBoxManager type - falling back to raw OSC");
-                SendRawOSC("/chatbox/input", text, true, false);
-                return;
-            }
-            var getInstanceMethod = chatBoxManagerType.GetMethod("GetInstance", BindingFlags.NonPublic | BindingFlags.Static);
-            if (getInstanceMethod == null)
-            {
-                Log("Failed to get ChatBoxManager.GetInstance - falling back to raw OSC");
-                SendRawOSC("/chatbox/input", text, true, false);
-                return;
-            }
-            var chatBoxManager = getInstanceMethod.Invoke(null, null);
-            if (chatBoxManager == null)
-            {
-                Log("ChatBoxManager instance is null - falling back to raw OSC");
-                SendRawOSC("/chatbox/input", text, true, false);
-                return;
-            }
-            // Set PulseText property
-            var pulseTextProp = chatBoxManagerType.GetProperty("PulseText");
-            if (pulseTextProp != null)
-            {
-                pulseTextProp.SetValue(chatBoxManager, text);
-            }
-            // Set PulseMinimalBackground property
-            var pulseMinimalBgProp = chatBoxManagerType.GetProperty("PulseMinimalBackground");
-            if (pulseMinimalBgProp != null)
-            {
-                pulseMinimalBgProp.SetValue(chatBoxManager, minimalBackground);
-            }
-        }
-        catch (Exception ex)
-        {
-            Log($"Failed to send chatbox via ChatBoxManager: {ex.Message}");
-            SendRawOSC("/chatbox/input", text, true, false);
+            Log("Failed to send chatbox message");
         }
     }
+    
     private void SendRawOSC(string address, params object[] args)
     {
-        try
+        if (!Utils.SendRawOSC(address, args))
         {
-            // Use reflection to access AppManager.GetInstance().VRChatOscClient.Send
-            var appManagerType = System.Type.GetType("VRCOSC.App.Modules.AppManager, VRCOSC.App");
-            if (appManagerType == null)
-            {
-                Log("Failed to get AppManager type");
-                return;
-            }
-            var getInstanceMethod = appManagerType.GetMethod("GetInstance", BindingFlags.Public | BindingFlags.Static);
-            if (getInstanceMethod == null)
-            {
-                Log("Failed to get GetInstance method");
-                return;
-            }
-            var appManager = getInstanceMethod.Invoke(null, null);
-            if (appManager == null)
-            {
-                Log("AppManager instance is null");
-                return;
-            }
-            var oscClientProp = appManagerType.GetProperty("VRChatOscClient");
-            if (oscClientProp == null)
-            {
-                Log("Failed to get VRChatOscClient property");
-                return;
-            }
-            var oscClient = oscClientProp.GetValue(appManager);
-            if (oscClient == null)
-            {
-                Log("OSC client is null");
-                return;
-            }
-            // Call Send method
-            var sendMethod = oscClient.GetType().GetMethod("Send", BindingFlags.Public | BindingFlags.Instance);
-            if (sendMethod == null)
-            {
-                Log("Failed to get Send method");
-                return;
-            }
-            // Combine address with args
-            var allArgs = new object[args.Length + 1];
-            allArgs[0] = address;
-            Array.Copy(args, 0, allArgs, 1, args.Length);
-            sendMethod.Invoke(oscClient, allArgs);
-        }
-        catch (Exception ex)
-        {
-            Log($"Failed to send raw OSC: {ex.Message}");
+            Log("Failed to send raw OSC message");
         }
     }
     private static object ParseJsonValue(JsonNode? node)
@@ -1088,6 +1006,16 @@ public class VRCXBridgeModule : VRCOSCModule
                     result = new { success = true, variables };
                     break;
 
+                case "GET_STATES":
+                    var statesResult = Utils.GetVRCXStates();
+                    result = new { success = statesResult != null, states = statesResult ?? new List<object>() };
+                    break;
+
+                case "GET_EVENTS":
+                    var eventsResult = Utils.GetVRCXEvents();
+                    result = new { success = eventsResult != null, events = eventsResult ?? new List<object>() };
+                    break;
+
                 case "CREATE_STATE":
                     var createStateName = args?["name"]?.ToString();
                     var createStateDisplay = args?["displayName"]?.ToString();
@@ -1174,6 +1102,42 @@ public class VRCXBridgeModule : VRCOSCModule
                     else
                     {
                         result = new { success = false, error = "Missing name" };
+                    }
+                    break;
+
+                case "FLUSH_TO_DISK":
+                    var flushSuccess = Utils.FlushToDisk();
+                    result = new { success = flushSuccess };
+                    if (flushSuccess)
+                    {
+                        Log("Forced flush of all module data to disk");
+                    }
+                    break;
+
+                case "LOAD_FROM_DISK":
+                    var loadSuccess = Utils.LoadFromDisk();
+                    result = new { success = loadSuccess };
+                    if (loadSuccess)
+                    {
+                        Log("Forced reload of all module data from disk");
+                    }
+                    break;
+
+                case "STOP_MODULES":
+                    var stopSuccess = Utils.StopModules();
+                    result = new { success = stopSuccess };
+                    if (stopSuccess)
+                    {
+                        Log("Stopped all VRCOSC modules");
+                    }
+                    break;
+
+                case "START_MODULES":
+                    var startSuccess = Utils.StartModules();
+                    result = new { success = startSuccess };
+                    if (startSuccess)
+                    {
+                        Log("Started all VRCOSC modules");
                     }
                     break;
 

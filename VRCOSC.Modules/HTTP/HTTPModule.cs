@@ -6,7 +6,7 @@ using System.Text.Json;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Parameters;
 
-namespace Bluscream.Modules.HTTP;
+namespace Bluscream.Modules;
 
 [ModuleTitle("HTTP")]
 [ModuleDescription("Send HTTP requests and receive responses for automation")]

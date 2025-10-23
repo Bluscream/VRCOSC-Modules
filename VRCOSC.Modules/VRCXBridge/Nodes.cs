@@ -5,7 +5,7 @@ using VRCOSC.App.Nodes;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Nodes;
 
-namespace Bluscream.Modules.VRCXBridge;
+namespace Bluscream.Modules;
 
 // ============================
 // VRCX Command Nodes

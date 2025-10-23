@@ -5,7 +5,7 @@ using VRCOSC.App.Nodes;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Nodes;
 
-namespace Bluscream.Modules.HTTP;
+namespace Bluscream.Modules;
 
 [Node("HTTP GET Request")]
 public sealed class HTTPGetRequestNode : ModuleNode<HTTPModule>{
