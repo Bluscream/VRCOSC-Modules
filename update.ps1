@@ -118,8 +118,12 @@ if ($Publish) {
         $releaseAssets += $archivePath
     }
     
-    # Create release notes with file information
-    $releaseNotes = "VRCOSC Modules v$ReleaseTag`n`nChanges:`n- Update VRCOSC modules v$ReleaseTag`n`nFiles included:`n$($releaseAssets | ForEach-Object { "- $(Split-Path $_ -Leaf)" } | Out-String)"
+    # Create release notes with file information and download links
+    $fileList = $releaseAssets | ForEach-Object { 
+        $fileName = Split-Path $_ -Leaf
+        "- [$fileName](https://github.com/Bluscream/VRCOSC-Modules/releases/latest/download/$fileName)"
+    } | Out-String
+    $releaseNotes = "VRCOSC Modules v$ReleaseTag`n`nChanges:`n- Update VRCOSC modules v$ReleaseTag`n`nFiles included:`n$fileList"
     
     $releaseResult = GitHub-CreateRelease -Repository $repoUrl -Tag $ReleaseTag -Title "VRCOSC Modules v$ReleaseTag" -Notes $releaseNotes -Prerelease -Assets $releaseAssets
     if (-not $releaseResult) {
