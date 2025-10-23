@@ -121,7 +121,7 @@ if ($Publish) {
     # Create release notes with file information
     $releaseNotes = "VRCOSC Modules v$ReleaseTag`n`nChanges:`n- Update VRCOSC modules v$ReleaseTag`n`nFiles included:`n$($releaseAssets | ForEach-Object { "- $(Split-Path $_ -Leaf)" } | Out-String)"
     
-    $releaseResult = GitHub-CreateRelease -Repository $repoUrl -Tag $ReleaseTag -Title "VRCOSC Modules v$ReleaseTag" -Body $releaseNotes -Prerelease -AssetPath $releaseAssets
+    $releaseResult = GitHub-CreateRelease -Repository $repoUrl -Tag $ReleaseTag -Title "VRCOSC Modules v$ReleaseTag" -Notes $releaseNotes -Prerelease -Assets $releaseAssets
     if (-not $releaseResult -or -not $releaseResult.Success) {
         throw "Release creation failed: $($releaseResult.ErrorMessage)"
     }
