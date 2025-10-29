@@ -7,93 +7,6 @@ using VRCOSC.App.SDK.Nodes;
 
 namespace Bluscream.Modules;
 
-// Registry Get Node
-[Node("Get VRChat Registry Setting")]
-public sealed class GetRegistrySettingNode : ModuleNode<VRChatSettingsModule>, IFlowInput
-{
-    public FlowContinuation Next = new("Next");
-    public FlowContinuation OnError = new("On Error");
-    
-    public ValueInput<string> Key = new("Setting Key");
-    public ValueInput<string> UserId = new("User ID (Optional)");
-    
-    public ValueOutput<string> StringValue = new("String Value");
-    public ValueOutput<int> IntValue = new("Int Value");
-    public ValueOutput<float> FloatValue = new("Float Value");
-    public ValueOutput<bool> BoolValue = new("Bool Value");
-    public ValueOutput<string> Error = new();
-
-    protected override async Task Process(PulseContext c)
-    {
-        try
-        {
-            var key = Key.Read(c);
-            var userId = UserId.Read(c);
-            
-            if (string.IsNullOrEmpty(key))
-            {
-                Error.Write("Key is required", c);
-                await OnError.Execute(c);
-                return;
-            }
-
-            // Try to get as object first, then convert to specific types
-            if (Module.Settings.GetRegistrySetting<object>(key, out var value, out var error, userId))
-            {
-                if (value != null)
-                {
-                    StringValue.Write(value.ToString() ?? string.Empty, c);
-                    
-                    // Try to convert to other types
-                    try
-                    {
-                        if (value is int intVal)
-                            IntValue.Write(intVal, c);
-                        else if (int.TryParse(value.ToString(), out var parsedInt))
-                            IntValue.Write(parsedInt, c);
-                    }
-                    catch { }
-
-                    try
-                    {
-                        if (value is float floatVal)
-                            FloatValue.Write(floatVal, c);
-                        else if (value is double doubleVal)
-                            FloatValue.Write((float)doubleVal, c);
-                        else if (float.TryParse(value.ToString(), out var parsedFloat))
-                            FloatValue.Write(parsedFloat, c);
-                    }
-                    catch { }
-
-                    try
-                    {
-                        if (value is bool boolVal)
-                            BoolValue.Write(boolVal, c);
-                        else if (bool.TryParse(value.ToString(), out var parsedBool))
-                            BoolValue.Write(parsedBool, c);
-                    }
-                    catch { }
-                }
-
-                await Module.SendSuccessParameter();
-                await Next.Execute(c);
-            }
-            else
-            {
-                Error.Write(error, c);
-                await Module.SendFailedParameter(error);
-                await OnError.Execute(c);
-            }
-        }
-        catch (Exception ex)
-        {
-            Error.Write(ex.Message, c);
-            await Module.SendFailedParameter(ex.Message);
-            await OnError.Execute(c);
-        }
-    }
-}
-
 // Registry Get Generic Node
 [Node("Get VRChat Registry Value")]
 [NodeGenericTypeFilter([typeof(string), typeof(int), typeof(float), typeof(bool)])]
@@ -125,90 +38,6 @@ public sealed class GetRegistryValueNode<T> : ModuleNode<VRChatSettingsModule>, 
             if (Module.Settings.GetRegistrySetting<T>(key, out var value, out var error, userId))
             {
                 Value.Write(value!, c);
-                await Module.SendSuccessParameter();
-                await Next.Execute(c);
-            }
-            else
-            {
-                Error.Write(error, c);
-                await Module.SendFailedParameter(error);
-                await OnError.Execute(c);
-            }
-        }
-        catch (Exception ex)
-        {
-            Error.Write(ex.Message, c);
-            await Module.SendFailedParameter(ex.Message);
-            await OnError.Execute(c);
-        }
-    }
-}
-
-// Config File Get Node
-[Node("Get VRChat Config Setting")]
-public sealed class GetConfigSettingNode : ModuleNode<VRChatSettingsModule>, IFlowInput
-{
-    public FlowContinuation Next = new("Next");
-    public FlowContinuation OnError = new("On Error");
-    
-    public ValueInput<string> Key = new("Setting Key");
-    
-    public ValueOutput<string> StringValue = new("String Value");
-    public ValueOutput<int> IntValue = new("Int Value");
-    public ValueOutput<float> FloatValue = new("Float Value");
-    public ValueOutput<bool> BoolValue = new("Bool Value");
-    public ValueOutput<string> Error = new();
-
-    protected override async Task Process(PulseContext c)
-    {
-        try
-        {
-            var key = Key.Read(c);
-            
-            if (string.IsNullOrEmpty(key))
-            {
-                Error.Write("Key is required", c);
-                await OnError.Execute(c);
-                return;
-            }
-
-            if (Module.Settings.GetConfigSetting<object>(key, out var value, out var error))
-            {
-                if (value != null)
-                {
-                    StringValue.Write(value.ToString() ?? string.Empty, c);
-                    
-                    // Try to convert to other types
-                    try
-                    {
-                        if (value is int intVal)
-                            IntValue.Write(intVal, c);
-                        else if (int.TryParse(value.ToString(), out var parsedInt))
-                            IntValue.Write(parsedInt, c);
-                    }
-                    catch { }
-
-                    try
-                    {
-                        if (value is float floatVal)
-                            FloatValue.Write(floatVal, c);
-                        else if (value is double doubleVal)
-                            FloatValue.Write((float)doubleVal, c);
-                        else if (float.TryParse(value.ToString(), out var parsedFloat))
-                            FloatValue.Write(parsedFloat, c);
-                    }
-                    catch { }
-
-                    try
-                    {
-                        if (value is bool boolVal)
-                            BoolValue.Write(boolVal, c);
-                        else if (bool.TryParse(value.ToString(), out var parsedBool))
-                            BoolValue.Write(parsedBool, c);
-                    }
-                    catch { }
-                }
-
                 await Module.SendSuccessParameter();
                 await Next.Execute(c);
             }
@@ -357,11 +186,11 @@ public sealed class ListAllConfigSettingsNode : ModuleNode<VRChatSettingsModule>
 
 // Utility Nodes
 [Node("Object To JSON String")] // TODO: Remove once officially implemented in VRCOSC
-[NodeGenericTypeFilter([typeof(string), typeof(int), typeof(float), typeof(bool), typeof(Dictionary<string, object>), typeof(object)])]
+[NodeGenericTypeFilter([typeof(object)])]
 public sealed class ObjectToJsonNode<T> : ModuleNode<VRChatSettingsModule>
 {
     public ValueInput<T> Object = new("Input Object");
-    public ValueInput<bool> Indented = new("Indented");
+    public ValueInput<bool> Indented = new("Formatted");
     
     public ValueOutput<string> Json = new("JSON String");
     public ValueOutput<int> Length = new("Length");
