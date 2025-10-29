@@ -17,9 +17,10 @@ public class VRChatSettingsModule : Module
 
     protected override void OnPreLoad()
     {
+        CreateTextBox(VRChatSettingsSetting.VRChatUserId, "VRChat User ID", "Your VRChat user ID (usr_xxx...) - Required for user-specific settings. Find it at vrchat.com/home/user/{userId}", string.Empty);
         CreateToggle(VRChatSettingsSetting.AllowUnknownSettings, "Allow Unknown Settings", "Allow reading/writing settings not in the known list", false);
         CreateToggle(VRChatSettingsSetting.AllowOutsideLimits, "Allow Outside Known Limits", "Allow setting values outside known safe limits", false);
-        CreateToggle(VRChatSettingsSetting.AllowRemoteDefinitions, "Allow Remote Definitions", "Try to load definitions from GitHub Gist (fallback to embedded)", false);
+        CreateToggle(VRChatSettingsSetting.AllowRemoteDefinitions, "Allow Remote Definitions", "Try to load definitions from GitHub Gist (fallback to embedded)", true);
         CreateToggle(VRChatSettingsSetting.LogOperations, "Log Operations", "Log all get/set operations to console", false);
         CreateToggle(VRChatSettingsSetting.AutoBackup, "Auto Backup", "Automatically backup settings before writing", true);
         CreateTextBox(VRChatSettingsSetting.BackupDirectory, "Backup Directory", "Directory to store backups (leave empty for default)", string.Empty);
@@ -28,6 +29,7 @@ public class VRChatSettingsModule : Module
         RegisterParameter<bool>(VRChatSettingsParameter.OperationFailed, "VRCOSC/VRChatSettings/Failed", ParameterMode.Write, "Failed", "True for 1 second when operation fails");
         RegisterParameter<int>(VRChatSettingsParameter.OperationsCount, "VRCOSC/VRChatSettings/OperationsCount", ParameterMode.Write, "Operations Count", "Total number of successful operations");
 
+        CreateGroup("User", "User identification", VRChatSettingsSetting.VRChatUserId);
         CreateGroup("Safety", "Safety settings", VRChatSettingsSetting.AllowUnknownSettings, VRChatSettingsSetting.AllowOutsideLimits);
         CreateGroup("Definitions", "Definition loading", VRChatSettingsSetting.AllowRemoteDefinitions);
         CreateGroup("Backup", "Backup settings", VRChatSettingsSetting.AutoBackup, VRChatSettingsSetting.BackupDirectory);
