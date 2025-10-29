@@ -69,10 +69,10 @@ public class NotificationsModule : Module
     protected override void OnPreLoad()
     {
         // Default settings
-        CreateTextBox(NotificationsSetting.DefaultTitle, "Default Title", "Default notification title (used if input is empty)", "VRCOSC");
-        CreateTextBox(NotificationsSetting.DefaultMessage, "Default Message", "Default notification message (used if input is empty)", "");
-        CreateSlider(NotificationsSetting.DefaultTimeout, "Default Timeout (ms)", "Default notification display duration in milliseconds", 5000, 1000, 30000, 1000);
-        CreateSlider(NotificationsSetting.DefaultOpacity, "Default Opacity (%)", "Default notification opacity percentage (0-100)", 100, 0, 95, 5);
+        CreateTextBox(NotificationsSetting.DefaultTitle, "Title", "Default notification title (used if input is empty)", "VRCOSC");
+        CreateTextBox(NotificationsSetting.DefaultMessage, "Message", "Default notification message (used if input is empty)", "");
+        CreateSlider(NotificationsSetting.DefaultTimeout, "Timeout (ms)", "Default notification display duration in milliseconds", 5000, 1000, 30000, 1000);
+        CreateSlider(NotificationsSetting.DefaultOpacity, "Opacity (%)", "Default notification opacity percentage (0-100)", 100, 0, 95, 5);
         
         // Enable/disable specific notification types
         CreateToggle(NotificationsSetting.EnableDesktop, "Enable Desktop Notifications", "Show Windows desktop notifications", true);
