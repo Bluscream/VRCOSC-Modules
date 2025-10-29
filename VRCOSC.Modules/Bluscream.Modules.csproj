@@ -11,6 +11,10 @@
   <ItemGroup>
     <PackageReference Include="VolcanicArts.VRCOSC.SDK" Version="2025.1015.0" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="VRChatSettings\Definitions\registry.csv" LogicalName="Bluscream.Modules.Definitions.Registry.csv" />
+    <EmbeddedResource Include="VRChatSettings\Definitions\config.schema.json" LogicalName="Bluscream.Modules.Definitions.config.schema.json" />
+  </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /Q /S /R /F /Y /-I &quot;$(TargetDir)$(TargetName).dll&quot; &quot;%25appdata%25\VRCOSC\packages\local\$(TargetName).dll&quot;" />
   </Target>

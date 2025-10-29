@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "https://gist.github.com/Bluscream/393a8a88b37486f67e9d12b4c615183a/raw/config.schema.json",
+  "title": "VRChat Configuration",
+  "description": "VRChat client configuration file (config.json) schema",
+  "type": "object",
+  "properties": {
+    "cache_size": {
+      "type": "integer",
+      "description": "Maximum cache size in GB",
+      "default": 30,
+      "minimum": 30
+    },
+    "cache_expiry_delay": {
+      "type": "integer",
+      "description": "Number of days before cache expires",
+      "default": 30,
+      "minimum": 30
+    },
+    "cache_directory": {
+      "type": "string",
+      "description": "Path to the VRChat cache directory. Supports environment variables like %AppData%",
+      "default": "%AppData%\\..\\LocalLow\\VRChat\\VRChat",
+      "examples": [
+        "%AppData%\\..\\LocalLow\\VRChat\\VRChat",
+        "D:\\_TEMP\\VRChat",
+        "C:\\VRChat\\Cache"
+      ]
+    },
+    "picture_output_folder": {
+      "type": "string",
+      "description": "Directory where screenshots and photos are saved. Supports environment variables like %UserProfile%",
+      "default": "%UserProfile%\\Pictures\\VRChat",
+      "examples": [
+        "%UserProfile%\\Pictures\\VRChat",
+        "D:\\Pictures\\VRChat",
+        "C:\\Users\\Username\\Pictures\\VRChat"
+      ]
+    },
+    "picture_output_split_by_date": {
+      "type": "boolean",
+      "description": "Whether to organize pictures into subdirectories by date",
+      "default": true
+    },
+    "screenshot_res_width": {
+      "type": "integer",
+      "description": "Screenshot resolution width in pixels",
+      "default": 1920,
+      "minimum": 640,
+      "examples": [1920, 2560, 3840, 7680]
+    },
+    "screenshot_res_height": {
+      "type": "integer",
+      "description": "Screenshot resolution height in pixels",
+      "default": 1080,
+      "minimum": 480,
+      "examples": [1080, 1440, 2160, 4320]
+    },
+    "camera_res_width": {
+      "type": "integer",
+      "description": "Camera resolution width in pixels",
+      "default": 1920,
+      "minimum": 640,
+      "examples": [1920, 2560, 3840, 7680]
+    },
+    "camera_res_height": {
+      "type": "integer",
+      "description": "Camera resolution height in pixels",
+      "default": 1080,
+      "minimum": 480,
+      "examples": [1080, 1440, 2160, 4320]
+    },
+    "camera_spout_res_width": {
+      "type": "integer",
+      "description": "Spout camera output resolution width in pixels",
+      "default": 1920,
+      "minimum": 640,
+      "examples": [1920, 2560, 3840, 7680]
+    },
+    "camera_spout_res_height": {
+      "type": "integer",
+      "description": "Spout camera output resolution height in pixels",
+      "default": 1080,
+      "minimum": 480,
+      "examples": [1080, 1440, 2160, 4320]
+    },
+    "fpv_steadycam_fov": {
+      "type": "integer",
+      "description": "Field of view for first-person steadycam in degrees",
+      "default": 50,
+      "minimum": 30,
+      "maximum": 110
+    },
+    "dynamic_bone_max_affected_transform_count": {
+      "type": "integer",
+      "description": "Dynamic Bones limit for max affected transforms. Set to 0 to disable all transforms. (Deprecated: replaced by PhysBones)",
+      "default": 32,
+      "minimum": 0
+    },
+    "dynamic_bone_max_collider_check_count": {
+      "type": "integer",
+      "description": "Dynamic Bones limit for max collider collisions. Set to 0 to disable all colliders. (Deprecated: replaced by PhysBones)",
+      "default": 8,
+      "minimum": 0
+    },
+    "disableRichPresence": {
+      "type": "boolean",
+      "description": "Disable Discord Rich Presence integration",
+      "default": false
+    },
+    "betas": {
+      "type": "array",
+      "description": "Array of beta features to enable",
+      "items": {
+        "type": "string",
+        "enum": ["particle_system_limiter"]
+      },
+      "examples": [["particle_system_limiter"]]
+    },
+    "ps_max_particles": {
+      "type": "integer",
+      "description": "Maximum number of particles allowed per avatar (Particle System Limiter)",
+      "default": 50000,
+      "minimum": 0
+    },
+    "ps_max_systems": {
+      "type": "integer",
+      "description": "Maximum number of particle systems allowed per avatar (Particle System Limiter)",
+      "default": 200,
+      "minimum": 0
+    },
+    "ps_max_emission": {
+      "type": "integer",
+      "description": "Maximum emission rate per particle system (Particle System Limiter)",
+      "default": 5000,
+      "minimum": 0
+    },
+    "ps_max_total_emission": {
+      "type": "integer",
+      "description": "Maximum total emission rate across all systems (Particle System Limiter)",
+      "default": 40000,
+      "minimum": 0
+    },
+    "ps_mesh_particle_divider": {
+      "type": "integer",
+      "description": "Divider for mesh particle counts (Particle System Limiter)",
+      "default": 60,
+      "minimum": 1
+    },
+    "ps_mesh_particle_poly_limit": {
+      "type": "integer",
+      "description": "Maximum polygon count for mesh particles (Particle System Limiter)",
+      "default": 50000,
+      "minimum": 0
+    },
+    "ps_collision_penalty_high": {
+      "type": "integer",
+      "description": "Penalty value for high-cost collision particles (Particle System Limiter)",
+      "default": 50,
+      "minimum": 0
+    },
+    "ps_collision_penalty_med": {
+      "type": "integer",
+      "description": "Penalty value for medium-cost collision particles (Particle System Limiter)",
+      "default": 30,
+      "minimum": 0
+    },
+    "ps_collision_penalty_low": {
+      "type": "integer",
+      "description": "Penalty value for low-cost collision particles (Particle System Limiter)",
+      "default": 10,
+      "minimum": 0
+    },
+    "ps_trails_penalty": {
+      "type": "integer",
+      "description": "Penalty value for particle trails (Particle System Limiter)",
+      "default": 10,
+      "minimum": 0
+    }
+  },
+  "additionalProperties": true
+}

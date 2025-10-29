@@ -16,6 +16,7 @@ namespace Bluscream.Modules;
 [ModuleTitle("VRCX Bridge")]
 [ModuleDescription("Bidirectional bridge between VRCOSC and VRCX for OSC + VRChat API integration")]
 [ModuleType(ModuleType.Integrations)]
+[ModuleInfo("https://github.com/Bluscream/VRCOSC-Modules")]
 public class VRCXBridgeModule : VRCOSCModule
 {
     private NamedPipeClientStream? _pipeClient;
