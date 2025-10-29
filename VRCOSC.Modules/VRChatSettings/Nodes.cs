@@ -96,6 +96,7 @@ public sealed class GetRegistrySettingNode : ModuleNode<VRChatSettingsModule>, I
 
 // Registry Get Generic Node
 [Node("Get VRChat Registry Value")]
+[NodeGenericTypeFilter([typeof(string), typeof(int), typeof(float), typeof(bool)])]
 public sealed class GetRegistryValueNode<T> : ModuleNode<VRChatSettingsModule>, IFlowInput
 {
     public FlowContinuation Next = new("Next");
@@ -229,6 +230,7 @@ public sealed class GetConfigSettingNode : ModuleNode<VRChatSettingsModule>, IFl
 
 // Config Get Generic Node
 [Node("Get VRChat Config Value")]
+[NodeGenericTypeFilter([typeof(string), typeof(int), typeof(float), typeof(bool)])]
 public sealed class GetConfigValueNode<T> : ModuleNode<VRChatSettingsModule>, IFlowInput
 {
     public FlowContinuation Next = new("Next");
@@ -355,6 +357,7 @@ public sealed class ListAllConfigSettingsNode : ModuleNode<VRChatSettingsModule>
 
 // Utility Nodes
 [Node("Object To JSON String")] // TODO: Remove once officially implemented in VRCOSC
+[NodeGenericTypeFilter([typeof(string), typeof(int), typeof(float), typeof(bool), typeof(Dictionary<string, object>), typeof(object)])]
 public sealed class ObjectToJsonNode<T> : ModuleNode<VRChatSettingsModule>
 {
     public ValueInput<T> Object = new("Input Object");
@@ -398,6 +401,7 @@ public sealed class ObjectToJsonNode<T> : ModuleNode<VRChatSettingsModule>
 
 // Generic/Multi-type nodes (leveraging <T> pattern)
 [Node("Set VRChat Registry Value")]
+[NodeGenericTypeFilter([typeof(string), typeof(int), typeof(float), typeof(bool), typeof(double)])]
 public sealed class SetRegistryValueNode<T> : ModuleNode<VRChatSettingsModule>, IFlowInput
 {
     public FlowContinuation Next = new("Next");
@@ -446,6 +450,7 @@ public sealed class SetRegistryValueNode<T> : ModuleNode<VRChatSettingsModule>, 
 }
 
 [Node("Set VRChat Config Value")]
+[NodeGenericTypeFilter([typeof(string), typeof(int), typeof(float), typeof(bool), typeof(double)])]
 public sealed class SetConfigValueNode<T> : ModuleNode<VRChatSettingsModule>, IFlowInput
 {
     public FlowContinuation Next = new("Next");
