@@ -94,6 +94,55 @@ public sealed class GetRegistrySettingNode : ModuleNode<VRChatSettingsModule>, I
     }
 }
 
+// Registry Get Generic Node
+[Node("Get VRChat Registry Value")]
+public sealed class GetRegistryValueNode<T> : ModuleNode<VRChatSettingsModule>, IFlowInput
+{
+    public FlowContinuation Next = new("Next");
+    public FlowContinuation OnError = new("On Error");
+    
+    public ValueInput<string> Key = new("Setting Key");
+    public ValueInput<string> UserId = new("User ID (Optional)");
+    
+    public ValueOutput<T> Value = new();
+    public ValueOutput<string> Error = new();
+
+    protected override async Task Process(PulseContext c)
+    {
+        try
+        {
+            var key = Key.Read(c);
+            var userId = UserId.Read(c);
+            
+            if (string.IsNullOrEmpty(key))
+            {
+                Error.Write("Key is required", c);
+                await OnError.Execute(c);
+                return;
+            }
+
+            if (Module.Settings.GetRegistrySetting<T>(key, out var value, out var error, userId))
+            {
+                Value.Write(value!, c);
+                await Module.SendSuccessParameter();
+                await Next.Execute(c);
+            }
+            else
+            {
+                Error.Write(error, c);
+                await Module.SendFailedParameter(error);
+                await OnError.Execute(c);
+            }
+        }
+        catch (Exception ex)
+        {
+            Error.Write(ex.Message, c);
+            await Module.SendFailedParameter(ex.Message);
+            await OnError.Execute(c);
+        }
+    }
+}
+
 // Config File Get Node
 [Node("Get VRChat Config Setting")]
 public sealed class GetConfigSettingNode : ModuleNode<VRChatSettingsModule>, IFlowInput
@@ -159,6 +208,53 @@ public sealed class GetConfigSettingNode : ModuleNode<VRChatSettingsModule>, IFl
                     catch { }
                 }
 
+                await Module.SendSuccessParameter();
+                await Next.Execute(c);
+            }
+            else
+            {
+                Error.Write(error, c);
+                await Module.SendFailedParameter(error);
+                await OnError.Execute(c);
+            }
+        }
+        catch (Exception ex)
+        {
+            Error.Write(ex.Message, c);
+            await Module.SendFailedParameter(ex.Message);
+            await OnError.Execute(c);
+        }
+    }
+}
+
+// Config Get Generic Node
+[Node("Get VRChat Config Value")]
+public sealed class GetConfigValueNode<T> : ModuleNode<VRChatSettingsModule>, IFlowInput
+{
+    public FlowContinuation Next = new("Next");
+    public FlowContinuation OnError = new("On Error");
+    
+    public ValueInput<string> Key = new("Setting Key");
+    
+    public ValueOutput<T> Value = new();
+    public ValueOutput<string> Error = new();
+
+    protected override async Task Process(PulseContext c)
+    {
+        try
+        {
+            var key = Key.Read(c);
+            
+            if (string.IsNullOrEmpty(key))
+            {
+                Error.Write("Key is required", c);
+                await OnError.Execute(c);
+                return;
+            }
+
+            if (Module.Settings.GetConfigSetting<T>(key, out var value, out var error))
+            {
+                Value.Write(value!, c);
                 await Module.SendSuccessParameter();
                 await Next.Execute(c);
             }
