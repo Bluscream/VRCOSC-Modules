@@ -57,13 +57,22 @@ public class NotificationsModule : Module
         OnNotificationFailed
     }
 
+    private enum WebhookMethod
+    {
+        GET,
+        POST,
+        PUT,
+        PATCH,
+        DELETE
+    }
+
     protected override void OnPreLoad()
     {
         // Default settings
-        CreateTextBox(NotificationsSetting.DefaultTitle, "Default Title", "Default notification title (used if input is empty)", "VRCOSC Notification");
-        CreateTextBox(NotificationsSetting.DefaultMessage, "Default Message", "Default notification message (used if input is empty)", "Notification from VRCOSC");
+        CreateTextBox(NotificationsSetting.DefaultTitle, "Default Title", "Default notification title (used if input is empty)", "VRCOSC");
+        CreateTextBox(NotificationsSetting.DefaultMessage, "Default Message", "Default notification message (used if input is empty)", "");
         CreateSlider(NotificationsSetting.DefaultTimeout, "Default Timeout (ms)", "Default notification display duration in milliseconds", 5000, 1000, 30000, 1000);
-        CreateSlider(NotificationsSetting.DefaultOpacity, "Default Opacity", "Default notification opacity (0.0 to 1.0)", 1.0f, 0.0f, 1.0f, 0.05f);
+        CreateSlider(NotificationsSetting.DefaultOpacity, "Default Opacity (%)", "Default notification opacity percentage (0-100)", 100, 0, 95, 5);
         
         // Enable/disable specific notification types
         CreateToggle(NotificationsSetting.EnableDesktop, "Enable Desktop Notifications", "Show Windows desktop notifications", true);
@@ -73,7 +82,7 @@ public class NotificationsModule : Module
         
         // Webhook settings
         CreateTextBox(NotificationsSetting.WebhookUrl, "Webhook URL", "HTTP(S) URL to send notifications to", string.Empty);
-        CreateToggle(NotificationsSetting.WebhookMethod, "Webhook Method (POST/GET)", "True = POST with JSON body, False = GET with query params", true);
+        CreateDropdown(NotificationsSetting.WebhookMethod, "Webhook Method", "HTTP method for webhook requests", WebhookMethod.POST);
         
         // Debug
         CreateToggle(NotificationsSetting.LogNotifications, "Log Notifications", "Log all notification sends to console", false);
@@ -158,7 +167,7 @@ public class NotificationsModule : Module
     public string GetDefaultTitle() => GetSettingValue<string>(NotificationsSetting.DefaultTitle);
     public string GetDefaultMessage() => GetSettingValue<string>(NotificationsSetting.DefaultMessage);
     public int GetDefaultTimeout() => GetSettingValue<int>(NotificationsSetting.DefaultTimeout);
-    public float GetDefaultOpacity() => GetSettingValue<float>(NotificationsSetting.DefaultOpacity);
+    public int GetDefaultOpacity() => GetSettingValue<int>(NotificationsSetting.DefaultOpacity);
     public string GetWebhookUrl() => GetSettingValue<string>(NotificationsSetting.WebhookUrl);
-    public string GetWebhookMethod() => GetSettingValue<bool>(NotificationsSetting.WebhookMethod) ? "POST" : "GET";
+    public string GetWebhookMethod() => GetSettingValue<WebhookMethod>(NotificationsSetting.WebhookMethod).ToString();
 }

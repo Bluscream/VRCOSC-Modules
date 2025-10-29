@@ -65,7 +65,7 @@ public sealed class SendXSOverlayNotificationNode : ModuleNode<NotificationsModu
     public ValueInput<string> Title = new("Title");
     public ValueInput<string> Message = new("Message");
     public ValueInput<int> Timeout = new("Timeout (ms)");
-    public ValueInput<float> Opacity = new("Opacity (%)");
+    public ValueInput<int> Opacity = new("Opacity (%)");
 
     public ValueOutput<bool> Success = new();
 
@@ -92,7 +92,7 @@ public sealed class SendXSOverlayNotificationNode : ModuleNode<NotificationsModu
                 Module.Log($"Sending XSOverlay notification: {title}");
 
             Module.SetSending();
-            var success = XSOverlayNotificationSender.SendNotification(title, message, timeout, opacity);
+            var success = XSOverlayNotificationSender.SendNotification(title, message, timeout, opacity / 100.0);
             Success.Write(success, c);
 
             Module.UpdateNotificationStatus(title, message, "XSOverlay", success);
@@ -179,7 +179,7 @@ public sealed class SendNotificationAllNode : ModuleNode<NotificationsModule>, I
     public ValueInput<string> Title = new("Title");
     public ValueInput<string> Message = new("Message");
     public ValueInput<int> Timeout = new("Timeout (ms)");
-    public ValueInput<float> Opacity = new("Opacity (%)");
+    public ValueInput<int> Opacity = new("Opacity (%)");
 
     public ValueOutput<bool> DesktopSuccess = new("Desktop");
     public ValueOutput<bool> XSOverlaySuccess = new("XSOverlay");
@@ -229,7 +229,7 @@ public sealed class SendNotificationAllNode : ModuleNode<NotificationsModule>, I
             // Send to XSOverlay
             if (Module.IsXSOverlayEnabled())
             {
-                xsoSuccess = XSOverlayNotificationSender.SendNotification(title, message, timeout, opacity);
+                xsoSuccess = XSOverlayNotificationSender.SendNotification(title, message, timeout, opacity / 100.0);
                 if (xsoSuccess)
                 {
                     targets.Add("XSOverlay");

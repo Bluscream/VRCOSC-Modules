@@ -35,10 +35,16 @@ public static class WebhookNotificationSender
             var fullUrl = url.Contains("?") ? $"{url}&{queryString}" : $"{url}?{queryString}";
 
             HttpResponseMessage response;
+            var httpMethod = new HttpMethod(method.ToUpperInvariant());
 
-            if (method.Equals("POST", StringComparison.OrdinalIgnoreCase))
+            if (method.Equals("GET", StringComparison.OrdinalIgnoreCase))
             {
-                // POST with JSON body AND query params
+                // GET request - only query params
+                response = await _httpClient.GetAsync(fullUrl);
+            }
+            else
+            {
+                // POST, PUT, PATCH, DELETE, etc. - JSON body AND query params
                 var payload = new Dictionary<string, object>
                 {
                     ["title"] = title,
@@ -50,16 +56,8 @@ public static class WebhookNotificationSender
 
                 var json = JsonSerializer.Serialize(payload);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                response = await _httpClient.PostAsync(fullUrl, content);
-            }
-            else if (method.Equals("GET", StringComparison.OrdinalIgnoreCase))
-            {
-                response = await _httpClient.GetAsync(fullUrl);
-            }
-            else
-            {
-                Console.WriteLine($"[Webhook Notification] Unsupported method: {method}");
-                return false;
+                var request = new HttpRequestMessage(httpMethod, fullUrl) { Content = content };
+                response = await _httpClient.SendAsync(request);
             }
             
             if (!response.IsSuccessStatusCode)
