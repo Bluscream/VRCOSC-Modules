@@ -8,7 +8,7 @@ using VRCOSC.App.SDK.Nodes;
 namespace Bluscream.Modules;
 
 // Registry Get Generic Node
-[Node("Get VRChat Registry Value")]
+[Node("Get VRChat Registry Setting")]
 [NodeGenericTypeFilter([typeof(string), typeof(int), typeof(float), typeof(bool)])]
 public sealed class GetRegistryValueNode<T> : ModuleNode<VRChatSettingsModule>, IFlowInput
 {
@@ -58,7 +58,7 @@ public sealed class GetRegistryValueNode<T> : ModuleNode<VRChatSettingsModule>, 
 }
 
 // Config Get Generic Node
-[Node("Get VRChat Config Value")]
+[Node("Get VRChat Config Setting")]
 [NodeGenericTypeFilter([typeof(string), typeof(int), typeof(float), typeof(bool)])]
 public sealed class GetConfigValueNode<T> : ModuleNode<VRChatSettingsModule>, IFlowInput
 {
@@ -229,7 +229,7 @@ public sealed class ObjectToJsonNode<T> : ModuleNode<VRChatSettingsModule>
 }
 
 // Generic/Multi-type nodes (leveraging <T> pattern)
-[Node("Set VRChat Registry Value")]
+[Node("Set VRChat Registry Setting")]
 [NodeGenericTypeFilter([typeof(string), typeof(int), typeof(float), typeof(bool), typeof(double)])]
 public sealed class SetRegistryValueNode<T> : ModuleNode<VRChatSettingsModule>, IFlowInput
 {
@@ -278,7 +278,7 @@ public sealed class SetRegistryValueNode<T> : ModuleNode<VRChatSettingsModule>, 
     }
 }
 
-[Node("Set VRChat Config Value")]
+[Node("Set VRChat Config Setting")]
 [NodeGenericTypeFilter([typeof(string), typeof(int), typeof(float), typeof(bool), typeof(double)])]
 public sealed class SetConfigValueNode<T> : ModuleNode<VRChatSettingsModule>, IFlowInput
 {
