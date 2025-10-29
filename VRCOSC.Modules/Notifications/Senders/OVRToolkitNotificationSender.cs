@@ -67,33 +67,25 @@ public class OVRToolkitNotificationSender
         }
     }
 
-    public static async Task<bool> SendNotificationAsync(bool hudNotification, bool wristNotification, string title, string message, string? iconPath = null)
+    public static async Task<bool> SendNotificationAsync(bool hudNotification, bool wristNotification, string title, string message)
     {
         try
         {
             if (!await EnsureConnectedAsync())
                 return false;
 
-            // Load icon
-            byte[] iconBytes;
-            if (!string.IsNullOrWhiteSpace(iconPath) && File.Exists(iconPath))
-            {
-                iconBytes = await File.ReadAllBytesAsync(iconPath);
-            }
-            else
-            {
-                iconBytes = Convert.FromBase64String(NotificationsModule.LOGO_BASE64);
-            }
-
             // Send wrist notification
             if (wristNotification)
             {
+                var body = message;
+                if (!string.IsNullOrWhiteSpace(title))
+                    body = $"{title} - {message}";
                 var wristMsg = new OvrtMessage
                 {
                     MessageType = "SendWristNotification",
                     Json = JsonSerializer.Serialize(new OvrtWristNotificationMessage
                     {
-                        Body = $"{title} - {message}"
+                        Body = body
                     })
                 };
 
@@ -112,7 +104,7 @@ public class OVRToolkitNotificationSender
                     {
                         Title = title,
                         Body = message,
-                        Icon = iconBytes
+                        Icon = NotificationsModule.LOGO_BYTES
                     })
                 };
 

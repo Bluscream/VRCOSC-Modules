@@ -6,7 +6,7 @@ namespace Bluscream.Modules;
 
 public static class DesktopNotificationSender
 {
-    public static bool SendNotification(string title, string message, string? iconPath = null, int timeout = 5000)
+    public static bool SendNotification(string title, string message, int timeout = 5000)
     {
         try
         {

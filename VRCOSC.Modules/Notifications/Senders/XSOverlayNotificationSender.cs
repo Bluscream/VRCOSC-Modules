@@ -23,15 +23,15 @@ public static class XSOverlayNotificationSender
         public float opacity { get; set; }
     }
 
-    public static bool SendNotification(string title, string message, int timeout = 5000, double opacity = 1.0, string? iconPath = null)
+    public static bool SendNotification(string title, string message, int timeout = 5000, double opacity = 1.0)
     {
         try
         {
             using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             var endPoint = new IPEndPoint(IPAddress.Loopback, XSO_PORT);
 
-            var useBase64Icon = string.IsNullOrEmpty(iconPath);
-            var icon = useBase64Icon ? NotificationsModule.LOGO_BASE64 : iconPath!;
+            var useBase64Icon = true;
+            var icon = NotificationsModule.LOGO_BASE64;
 
             // Calculate height based on message length
             float height = 110f;
