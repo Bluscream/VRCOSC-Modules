@@ -196,7 +196,6 @@ public sealed class SendNotificationAllNode : ModuleNode<NotificationsModule>, I
     public ValueOutput<bool> DesktopSuccess = new("Desktop");
     public ValueOutput<bool> XSOverlaySuccess = new("XSOverlay");
     public ValueOutput<bool> OVRToolkitSuccess = new("OVRToolkit");
-    public ValueOutput<int> SuccessCount = new("Count");
 
     protected override async Task Process(PulseContext c)
     {
@@ -213,7 +212,6 @@ public sealed class SendNotificationAllNode : ModuleNode<NotificationsModule>, I
                 DesktopSuccess.Write(false, c);
                 XSOverlaySuccess.Write(false, c);
                 OVRToolkitSuccess.Write(false, c);
-                SuccessCount.Write(0, c);
                 await OnError.Execute(c);
                 return;
             }
@@ -234,7 +232,6 @@ public sealed class SendNotificationAllNode : ModuleNode<NotificationsModule>, I
             var desktopSuccess = false;
             var xsoSuccess = false;
             var ovrtSuccess = false;
-            var successCount = 0;
             var targets = new List<string>();
 
             // Send to Desktop
@@ -243,7 +240,6 @@ public sealed class SendNotificationAllNode : ModuleNode<NotificationsModule>, I
                 desktopSuccess = DesktopNotificationSender.SendNotification(title, message, iconPath, timeout);
                 if (desktopSuccess)
                 {
-                    successCount++;
                     targets.Add("Desktop");
                 }
             }
@@ -254,7 +250,6 @@ public sealed class SendNotificationAllNode : ModuleNode<NotificationsModule>, I
                 xsoSuccess = XSOverlayNotificationSender.SendNotification(title, message, timeout, opacity, iconPath);
                 if (xsoSuccess)
                 {
-                    successCount++;
                     targets.Add("XSOverlay");
                 }
             }
@@ -265,7 +260,6 @@ public sealed class SendNotificationAllNode : ModuleNode<NotificationsModule>, I
                 ovrtSuccess = await OVRToolkitNotificationSender.SendNotificationAsync(true, false, title, message, iconPath);
                 if (ovrtSuccess)
                 {
-                    successCount++;
                     targets.Add("OVRToolkit");
                 }
             }
@@ -273,12 +267,12 @@ public sealed class SendNotificationAllNode : ModuleNode<NotificationsModule>, I
             DesktopSuccess.Write(desktopSuccess, c);
             XSOverlaySuccess.Write(xsoSuccess, c);
             OVRToolkitSuccess.Write(ovrtSuccess, c);
-            SuccessCount.Write(successCount, c);
+            bool success = desktopSuccess && xsoSuccess && ovrtSuccess;
 
             var targetString = targets.Count > 0 ? string.Join(", ", targets) : "None";
-            Module.UpdateNotificationStatus(title, message, targetString, successCount > 0);
+            Module.UpdateNotificationStatus(title, message, targetString, success);
 
-            if (successCount > 0)
+            if (success)
                 await Next.Execute(c);
             else
                 await OnError.Execute(c);
