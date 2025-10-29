@@ -27,52 +27,7 @@ Bidirectional bridge between VRCOSC and VRCX for OSC + VRChat API integration.
 
 ### HTTP Module
 
-Send HTTP requests and receive responses for automation.
-
-**Features:**
-
-- HTTP GET, POST, PUT, DELETE requests
-- Custom headers and request body support
-- Configurable timeout settings
-- Request logging and status monitoring
-- OSC parameters for success/failure status
-
-**Parameters:**
-
-- `VRCOSC/HTTP/Success` - True for 1 second when request succeeds
-- `VRCOSC/HTTP/Failed` - True for 1 second when request fails
-- `VRCOSC/HTTP/StatusCode` - Last HTTP status code
-- `VRCOSC/HTTP/RequestsCount` - Total number of successful requests
-
-### VRChat Settings
-
-Read and write VRChat registry settings and config file values through pulse nodes.
-
-**Features:**
-
-- **Registry Settings Access**: Read and write VRChat registry settings (audio volumes, etc.)
-- **Config File Access**: Read and write VRChat config.json settings (cache, resolution, etc.)
-- **Safety Features**:
-  - Only allows known settings by default (configurable)
-  - Validates values against known limits (configurable)
-  - Automatic backup before writing (optional)
-- **Type Support**: String, Int, Float, and Bool values
-- **Comprehensive Nodes**: Multiple node types for different use cases
-
-**Nodes:**
-
-- `Get Registry Setting` - Read VRChat registry values
-- `Set Registry Setting` - Write VRChat registry values
-- `Get Config Setting` - Read VRChat config.json values
-- `Set Config Setting` - Write VRChat config.json values
-- `List All Registry Settings` - List all available registry settings
-- `List All Config Settings` - List all available config settings
-
-**Parameters:**
-
-- `VRCOSC/VRChatSettings/Success` - True for 1 second when operation succeeds
-- `VRCOSC/VRChatSettings/Failed` - True for 1 second when operation fails
-- `VRCOSC/VRChatSettings/LastError` - Last error message (string)
+Simple HTTP request utilities.
 
 ## Building
 
@@ -107,7 +62,10 @@ The `update.ps1` script will:
 **Script Options:**
 
 ```powershell
-.\update.ps1 -Publish
+.\update.ps1 -CommitMessage "Your message"  # Custom commit message
+.\update.ps1 -SkipCommit                    # Don't commit/push
+.\update.ps1 -SkipRelease                   # Don't create release
+.\update.ps1 -NoPush                        # Commit but don't push
 ```
 
 ## Installation

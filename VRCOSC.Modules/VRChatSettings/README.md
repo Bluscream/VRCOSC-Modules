@@ -25,10 +25,6 @@ A VRCOSC module that allows reading and writing VRChat Registry Settings and con
 - **Auto Backup**: Automatically backup settings before writing (default: enabled)
 - **Backup Directory**: Custom directory for backups (leave empty for default)
 
-### Definition Settings
-
-- **Allow Remote Definitions**: Try to load definitions from GitHub Gist (fallback to embedded) (default: disabled)
-
 ### Debug Settings
 
 - **Log Operations**: Log all get/set operations to console (default: disabled)
@@ -192,31 +188,7 @@ The module exposes the following OSC parameters:
 
 - `VRCOSC/VRChatSettings/Success` - True for 1 second when operation succeeds
 - `VRCOSC/VRChatSettings/Failed` - True for 1 second when operation fails
-- `VRCOSC/VRChatSettings/OperationsCount` - Total number of successful operations
-
-## Variables
-
-The module provides the following variables:
-
-- `Last Key` - Last setting key accessed
-- `Last Value` - Last value read/written
-- `Settings Loaded` - Number of settings definitions loaded
-- `Operations Count` - Total number of operations performed
-
-## States
-
-The module has the following states:
-
-- `Idle` - Module ready
-- `Reading` - Currently reading a setting
-- `Writing` - Currently writing a setting
-
-## Events
-
-The module triggers the following events:
-
-- `On Setting Read` - Triggered when a setting is read
-- `On Setting Write` - Triggered when a setting is written
+- `VRCOSC/VRChatSettings/LastError` - Last error message (string)
 
 ## Technical Details
 

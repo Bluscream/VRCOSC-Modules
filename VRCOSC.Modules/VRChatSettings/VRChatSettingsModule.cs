@@ -89,6 +89,7 @@ public class VRChatSettingsModule : Module
         return Task.CompletedTask;
     }
 
+    public string VRChatUserId => GetSettingValue<string>(VRChatSettingsSetting.VRChatUserId) ?? string.Empty;
     public bool AllowUnknownSettings => GetSettingValue<bool>(VRChatSettingsSetting.AllowUnknownSettings);
     public bool AllowOutsideLimits => GetSettingValue<bool>(VRChatSettingsSetting.AllowOutsideLimits);
     public bool AllowRemoteDefinitions => GetSettingValue<bool>(VRChatSettingsSetting.AllowRemoteDefinitions);
@@ -144,6 +145,7 @@ public class VRChatSettingsModule : Module
 
     public enum VRChatSettingsSetting
     {
+        VRChatUserId,
         AllowUnknownSettings,
         AllowOutsideLimits,
         AllowRemoteDefinitions,

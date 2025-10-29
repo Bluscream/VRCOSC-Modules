@@ -72,13 +72,34 @@ public class VRChatSettings
 
     #region Registry Operations
 
-    public bool GetRegistrySetting<T>(string key, out T? value, out string error)
+    public bool GetRegistrySetting<T>(string key, out T? value, out string error, string? userId = null)
     {
         value = default;
         error = string.Empty;
 
         try
         {
+            // Expand {userId} template if present
+            if (VRChatUserIdHelper.IsUserTemplate(key))
+            {
+                // Use provided userId or fall back to module setting
+                var userIdToUse = !string.IsNullOrEmpty(userId) ? userId : _module.VRChatUserId;
+                
+                if (string.IsNullOrEmpty(userIdToUse))
+                {
+                    error = $"User ID required for template key '{key}'. Configure in module settings or provide via input.";
+                    return false;
+                }
+                
+                var expandedKey = VRChatUserIdHelper.ExpandKeyTemplate(key, userIdToUse);
+                if (expandedKey == null)
+                {
+                    error = $"Failed to expand template key: {key}";
+                    return false;
+                }
+                key = expandedKey;
+            }
+
             var setting = _registryProvider.GetSetting(key);
             if (setting == null && !_module.AllowUnknownSettings)
             {
@@ -120,12 +141,35 @@ public class VRChatSettings
         }
     }
 
-    public bool SetRegistrySetting<T>(string key, T value, out string error)
+    public bool SetRegistrySetting<T>(string key, T value, out string error, string? userId = null)
     {
         error = string.Empty;
 
         try
         {
+            var originalKey = key; // Keep original for logging
+            
+            // Expand {userId} template if present
+            if (VRChatUserIdHelper.IsUserTemplate(key))
+            {
+                // Use provided userId or fall back to module setting
+                var userIdToUse = !string.IsNullOrEmpty(userId) ? userId : _module.VRChatUserId;
+                
+                if (string.IsNullOrEmpty(userIdToUse))
+                {
+                    error = $"User ID required for template key '{key}'. Configure in module settings or provide via input.";
+                    return false;
+                }
+                
+                var expandedKey = VRChatUserIdHelper.ExpandKeyTemplate(key, userIdToUse);
+                if (expandedKey == null)
+                {
+                    error = $"Failed to expand template key: {key}";
+                    return false;
+                }
+                key = expandedKey;
+            }
+
             var setting = _registryProvider.GetSetting(key);
             
             if (setting == null && !_module.AllowUnknownSettings)
@@ -162,10 +206,10 @@ public class VRChatSettings
 
             if (_module.LogOperations)
             {
-                _module.Log($"Registry SET: {key} = {value}");
+                _module.Log($"Registry SET: {originalKey} -> {key} = {value}");
             }
 
-            _module.UpdateVariables(key, value?.ToString() ?? string.Empty, true);
+            _module.UpdateVariables(originalKey, value?.ToString() ?? string.Empty, true);
             return true;
         }
         catch (Exception ex)

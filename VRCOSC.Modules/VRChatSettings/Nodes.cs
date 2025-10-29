@@ -15,6 +15,7 @@ public sealed class GetRegistrySettingNode : ModuleNode<VRChatSettingsModule>, I
     public FlowContinuation OnError = new("On Error");
     
     public ValueInput<string> Key = new("Setting Key");
+    public ValueInput<string> UserId = new("User ID (Optional)");
     
     public ValueOutput<string> StringValue = new("String Value");
     public ValueOutput<int> IntValue = new("Int Value");
@@ -27,6 +28,7 @@ public sealed class GetRegistrySettingNode : ModuleNode<VRChatSettingsModule>, I
         try
         {
             var key = Key.Read(c);
+            var userId = UserId.Read(c);
             
             if (string.IsNullOrEmpty(key))
             {
@@ -36,7 +38,7 @@ public sealed class GetRegistrySettingNode : ModuleNode<VRChatSettingsModule>, I
             }
 
             // Try to get as object first, then convert to specific types
-            if (Module.Settings.GetRegistrySetting<object>(key, out var value, out var error))
+            if (Module.Settings.GetRegistrySetting<object>(key, out var value, out var error, userId))
             {
                 if (value != null)
                 {
@@ -256,6 +258,83 @@ public sealed class ListAllConfigSettingsNode : ModuleNode<VRChatSettingsModule>
 }
 
 // Utility Nodes
+[Node("Get Configured VRChat User ID")]
+public sealed class GetVRChatUserIdNode : ModuleNode<VRChatSettingsModule>
+{
+    public ValueOutput<string> UserId = new("User ID");
+    public ValueOutput<bool> IsConfigured = new("Is Configured");
+    public ValueOutput<bool> IsValid = new("Is Valid");
+
+    protected override Task Process(PulseContext c)
+    {
+        var userId = Module.VRChatUserId;
+        
+        UserId.Write(userId ?? string.Empty, c);
+        IsConfigured.Write(!string.IsNullOrEmpty(userId), c);
+        IsValid.Write(VRChatUserIdHelper.IsValidUserId(userId), c);
+
+        return Task.CompletedTask;
+    }
+}
+
+[Node("Expand VRChat Key Template")]
+public sealed class ExpandKeyTemplateNode : ModuleNode<VRChatSettingsModule>
+{
+    public ValueInput<string> KeyTemplate = new("Key Template");
+    
+    public ValueOutput<string> ExpandedKey = new("Expanded Key");
+    public ValueOutput<bool> Success = new();
+    public ValueOutput<string> Error = new();
+
+    protected override Task Process(PulseContext c)
+    {
+        var template = KeyTemplate.Read(c);
+        
+        if (string.IsNullOrEmpty(template))
+        {
+            ExpandedKey.Write(string.Empty, c);
+            Success.Write(false, c);
+            Error.Write("Template is empty", c);
+            return Task.CompletedTask;
+        }
+
+        if (!VRChatUserIdHelper.IsUserTemplate(template))
+        {
+            // Not a template, return as-is
+            ExpandedKey.Write(template, c);
+            Success.Write(true, c);
+            Error.Write(string.Empty, c);
+            return Task.CompletedTask;
+        }
+
+        // Need user ID for template
+        if (string.IsNullOrEmpty(Module.VRChatUserId))
+        {
+            ExpandedKey.Write(string.Empty, c);
+            Success.Write(false, c);
+            Error.Write("User ID not configured in module settings", c);
+            return Task.CompletedTask;
+        }
+
+        var expanded = VRChatUserIdHelper.ExpandKeyTemplate(template, Module.VRChatUserId);
+        
+        if (expanded != null)
+        {
+            ExpandedKey.Write(expanded, c);
+            Success.Write(true, c);
+            Error.Write(string.Empty, c);
+        }
+        else
+        {
+            ExpandedKey.Write(string.Empty, c);
+            Success.Write(false, c);
+            Error.Write("Failed to expand template", c);
+        }
+
+        return Task.CompletedTask;
+    }
+}
+
 [Node("Object To JSON String")] // TODO: Remove once officially implemented in VRCOSC
 public sealed class ObjectToJsonNode<T> : ModuleNode<VRChatSettingsModule>
 {
@@ -307,6 +386,7 @@ public sealed class SetRegistryValueNode<T> : ModuleNode<VRChatSettingsModule>, 
     
     public ValueInput<string> Key = new("Setting Key");
     public ValueInput<T> Value = new();
+    public ValueInput<string> UserId = new("User ID (Optional)");
     
     public ValueOutput<string> Error = new();
 
@@ -316,6 +396,7 @@ public sealed class SetRegistryValueNode<T> : ModuleNode<VRChatSettingsModule>, 
         {
             var key = Key.Read(c);
             var value = Value.Read(c);
+            var userId = UserId.Read(c);
             
             if (string.IsNullOrEmpty(key))
             {
@@ -324,7 +405,7 @@ public sealed class SetRegistryValueNode<T> : ModuleNode<VRChatSettingsModule>, 
                 return;
             }
 
-            if (Module.Settings.SetRegistrySetting(key, value, out var error))
+            if (Module.Settings.SetRegistrySetting(key, value, out var error, userId))
             {
                 await Module.SendSuccessParameter();
                 await Next.Execute(c);
