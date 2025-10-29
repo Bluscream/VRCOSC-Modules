@@ -191,12 +191,12 @@ public sealed class SendNotificationAllNode : ModuleNode<NotificationsModule>, I
     public ValueInput<string> Message = new("Message");
     public ValueInput<int> Timeout = new("Timeout (ms)");
     public ValueInput<float> Opacity = new("Opacity");
-    public ValueInput<string> IconPath = new("Icon Path (Optional)");
+    public ValueInput<string> IconPath = new("Icon (Optional)");
 
-    public ValueOutput<bool> DesktopSuccess = new("Desktop Success");
-    public ValueOutput<bool> XSOverlaySuccess = new("XSOverlay Success");
-    public ValueOutput<bool> OVRToolkitSuccess = new("OVRToolkit Success");
-    public ValueOutput<int> SuccessCount = new("Success Count");
+    public ValueOutput<bool> DesktopSuccess = new("Desktop");
+    public ValueOutput<bool> XSOverlaySuccess = new("XSOverlay");
+    public ValueOutput<bool> OVRToolkitSuccess = new("OVRToolkit");
+    public ValueOutput<int> SuccessCount = new("Count");
 
     protected override async Task Process(PulseContext c)
     {
