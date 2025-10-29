@@ -190,7 +190,7 @@ public sealed class SendNotificationAllNode : ModuleNode<NotificationsModule>, I
     public ValueInput<string> Title = new("Title");
     public ValueInput<string> Message = new("Message");
     public ValueInput<int> Timeout = new("Timeout (ms)");
-    public ValueInput<float> Opacity = new("Opacity");
+    public ValueInput<float> Opacity = new("Opacity (%)");
     public ValueInput<string> IconPath = new("Icon (Optional)");
 
     public ValueOutput<bool> DesktopSuccess = new("Desktop");
