@@ -262,10 +262,10 @@ public sealed class ListAllConfigSettingsNode : ModuleNode<VRChatSettingsModule>
 public sealed class ObjectToJsonNode<T> : ModuleNode<VRChatSettingsModule>
 {
     public ValueInput<T> Object = new("Input Object");
-    public ValueInput<bool> Indented = new("Indented (Pretty Print)");
+    public ValueInput<bool> Indented = new("Indented");
     
     public ValueOutput<string> Json = new("JSON String");
-    public ValueOutput<int> Length = new("String Length");
+    public ValueOutput<int> Length = new("Length");
 
     protected override Task Process(PulseContext c)
     {
