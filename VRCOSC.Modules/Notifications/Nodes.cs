@@ -9,7 +9,7 @@ namespace Bluscream.Modules;
 
 // Send Desktop Notification Node
 [Node("Send Desktop Notification")]
-public sealed class SendDesktopNotificationNode : ModuleNode<NotificationsModule>
+public sealed class SendDesktopNotificationNode : ModuleNode<NotificationsModule>, IFlowInput
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
@@ -60,7 +60,7 @@ public sealed class SendDesktopNotificationNode : ModuleNode<NotificationsModule
 
 // Send XSOverlay Notification Node
 [Node("Send XSOverlay Notification")]
-public sealed class SendXSOverlayNotificationNode : ModuleNode<NotificationsModule>
+public sealed class SendXSOverlayNotificationNode : ModuleNode<NotificationsModule>, IFlowInput
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
@@ -121,7 +121,7 @@ public sealed class SendXSOverlayNotificationNode : ModuleNode<NotificationsModu
 
 // Send OVRToolkit Notification Node
 [Node("Send OVRToolkit Notification")]
-public sealed class SendOVRToolkitNotificationNode : ModuleNode<NotificationsModule>
+public sealed class SendOVRToolkitNotificationNode : ModuleNode<NotificationsModule>, IFlowInput
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
@@ -182,7 +182,7 @@ public sealed class SendOVRToolkitNotificationNode : ModuleNode<NotificationsMod
 
 // Send Notification to All Enabled Targets Node
 [Node("Send Notification")]
-public sealed class SendNotificationAllNode : ModuleNode<NotificationsModule>
+public sealed class SendNotificationAllNode : ModuleNode<NotificationsModule>, IFlowInput
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
