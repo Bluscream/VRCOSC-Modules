@@ -3,12 +3,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Bluscream.Modules.Debug;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Modules.Attributes;
 using VRCOSC.App.SDK.Parameters;
-using VRCOSC.App.SDK.VRChat;
 
 namespace Bluscream.Modules;
 
@@ -18,14 +19,11 @@ namespace Bluscream.Modules;
 [ModuleInfo("https://github.com/Bluscream/VRCOSC-Modules")]
 public class DebugModule : VRCOSC.App.SDK.Modules.Module
 {
-    private readonly object _parametersLock = new();
-    private readonly Dictionary<string, ParameterData> _incomingParameters = new();
-    private readonly Dictionary<string, ParameterData> _outgoingParameters = new();
-    
-    private int _totalIncoming;
-    private int _totalOutgoing;
+    private IncomingParameterTracker? _incomingTracker;
+    private OutgoingParameterTracker? _outgoingTracker;
     
     private MethodInfo? _baseSendParameterMethod;
+    private bool _useVrcoscTracking;
 
     protected override void OnPreLoad()
     {
@@ -34,9 +32,9 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         CreateToggle(DebugSetting.TrackAvatarOnly, "Avatar Parameters Only", "Only track avatar parameters (ignore system OSC messages)", true);
         
         // Tracking settings
-        CreateToggle(DebugSetting.AutoTrackIncoming, "Auto-Track Incoming", "Automatically track incoming parameters when module starts", true);
-        CreateToggle(DebugSetting.AutoTrackOutgoing, "Auto-Track Outgoing", "Automatically track outgoing parameters when module starts", true);
-        CreateSlider(DebugSetting.MaxParameters, "Max Parameters", "Maximum parameters to track (0 = unlimited)", 0, 0, 10000, 100);
+        CreateToggle(DebugSetting.AutoTrackIncoming, "Auto-Track Incoming", "Automatically track incoming parameters when module starts", false);
+        CreateToggle(DebugSetting.AutoTrackOutgoing, "Auto-Track Outgoing", "Automatically track outgoing parameters when module starts", false);
+        CreateSlider(DebugSetting.MaxParameters, "Max Parameters", "Maximum parameters to track (0 = unlimited)", 0, 0, 10000, 0);
         
         // Debug settings
         CreateToggle(DebugSetting.LogParameterUpdates, "Log Parameter Updates", "Log all parameter updates to console", false);
@@ -52,17 +50,17 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
     protected override void OnPostLoad()
     {
         // ChatBox variables
-        var incomingCountRef = CreateVariable<int>(DebugVariable.IncomingCount, "Incoming Count");
-        var outgoingCountRef = CreateVariable<int>(DebugVariable.OutgoingCount, "Outgoing Count");
-        var totalCountRef = CreateVariable<int>(DebugVariable.TotalCount, "Total Count");
-        var lastDumpPathRef = CreateVariable<string>(DebugVariable.LastDumpPath, "Last Dump Path");
+        var incomingCountRef = CreateVariable<int>(DebugVariable.IncomingCount, "Incoming Count")!;
+        var outgoingCountRef = CreateVariable<int>(DebugVariable.OutgoingCount, "Outgoing Count")!;
+        var totalCountRef = CreateVariable<int>(DebugVariable.TotalCount, "Total Count")!;
+        var lastDumpPathRef = CreateVariable<string>(DebugVariable.LastDumpPath, "Last Dump Path")!;
 
-        // ChatBox states
-        CreateState(DebugState.Idle, "Idle", "Debug\nTracking: {0} params", new[] { totalCountRef });
-        CreateState(DebugState.Dumping, "Dumping", "Dumping {0} params...", new[] { totalCountRef });
+        // ChatBox states (cast to non-nullable IEnumerable to satisfy nullability)
+        CreateState(DebugState.Idle, "Idle", "Debug\nTracking: {0} params", new[] { totalCountRef }.Where(x => x != null));
+        CreateState(DebugState.Dumping, "Dumping", "Dumping {0} params...", new[] { totalCountRef }.Where(x => x != null));
 
         // ChatBox events
-        CreateEvent(DebugEvent.OnDumpComplete, "Dump Complete", "Dumped to: {0}", new[] { lastDumpPathRef });
+        CreateEvent(DebugEvent.OnDumpComplete, "Dump Complete", "Dumped to: {0}", new[] { lastDumpPathRef }.Where(x => x != null));
         CreateEvent(DebugEvent.OnTrackingCleared, "Tracking Cleared", "Cleared all tracked parameters");
 
         ChangeState(DebugState.Idle);
@@ -70,8 +68,51 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
 
     protected override Task<bool> OnModuleStart()
     {
-        // Cache the base SendParameter method for reflection-based interception
-        _baseSendParameterMethod = typeof(VRCOSC.App.SDK.Modules.Module).GetMethod("SendParameter", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null, new[] { typeof(string), typeof(object) }, null);
+        _useVrcoscTracking = UseVrcoscTracking();
+        
+        if (_useVrcoscTracking)
+        {
+            // Try to initialize VRCOSC tracking reflection
+            if (DebugReflection.Initialize())
+            {
+                Log("Using VRCOSC's built-in parameter tracking");
+            }
+            else
+            {
+                Log("Warning: Failed to initialize VRCOSC tracking reflection, falling back to custom tracking");
+                _useVrcoscTracking = false;
+            }
+        }
+
+        if (!_useVrcoscTracking)
+        {
+            // Initialize custom trackers
+            _incomingTracker = new IncomingParameterTracker(
+                GetMaxParameters(),
+                IsLoggingEnabled(),
+                IsTrackAvatarOnly()
+            );
+            
+            _outgoingTracker = new OutgoingParameterTracker(
+                GetMaxParameters(),
+                IsLoggingEnabled()
+            );
+
+            // Subscribe to tracker events
+            _incomingTracker.OnParameterTracked += OnIncomingTracked;
+            _incomingTracker.OnParameterReceived += OnIncomingReceived;
+            _incomingTracker.OnMaxLimitReached += OnMaxLimitReached;
+            _incomingTracker.OnCleared += OnTrackingCleared;
+
+            _outgoingTracker.OnParameterTracked += OnOutgoingTracked;
+            _outgoingTracker.OnParameterSent += OnOutgoingSent;
+            _outgoingTracker.OnMaxLimitReached += OnMaxLimitReached;
+
+            // Cache the base SendParameter method for reflection-based interception
+            _baseSendParameterMethod = typeof(VRCOSC.App.SDK.Modules.Module).GetMethod("SendParameter", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null, new[] { typeof(string), typeof(object) }, null);
+            
+            Log("Using custom parameter tracking");
+        }
         
         Log("Debug module started");
         UpdateCounts();
@@ -80,45 +121,63 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
 
     protected override Task OnModuleStop()
     {
-        Log($"Stopped tracking. Final counts: {_incomingParameters.Count} incoming, {_outgoingParameters.Count} outgoing");
+        Log($"Stopped tracking. Final counts: {_incomingTracker?.UniqueParameters ?? 0} incoming, {_outgoingTracker?.UniqueParameters ?? 0} outgoing");
         return Task.CompletedTask;
+    }
+
+    // Event handlers
+    private void OnIncomingTracked(ParameterData data)
+    {
+        UpdateCounts();
+    }
+
+    private void OnOutgoingTracked(ParameterData data)
+    {
+        UpdateCounts();
+    }
+
+    private void OnIncomingReceived(string path, string type, object? value)
+    {
+        if (IsLoggingEnabled())
+        {
+            Log($"INCOMING: {path} ({type}) = {value}");
+        }
+    }
+
+    private void OnOutgoingSent(string path, string type, object? value)
+    {
+        if (IsLoggingEnabled())
+        {
+            Log($"OUTGOING: {path} ({type}) = {value}");
+        }
+    }
+
+    private void OnMaxLimitReached(string path)
+    {
+        Log($"Warning: Max parameter limit ({GetMaxParameters()}) reached, skipping: {path}");
+    }
+
+    private void OnTrackingCleared()
+    {
+        UpdateCounts();
     }
 
     protected override void OnAnyParameterReceived(VRChatParameter parameter)
     {
-        if (!IsAutoTrackIncoming()) return;
+        // Skip if using VRCOSC tracking (it handles everything)
+        if (_useVrcoscTracking) return;
         
-        var paramPath = parameter.Name;
-        var paramValue = parameter.Value;
-        var paramType = paramValue?.GetType().Name ?? "null";
-
-        TrackParameter(_incomingParameters, paramPath, paramType, paramValue);
-        _totalIncoming++;
-
-        if (IsLoggingEnabled())
-        {
-            Log($"INCOMING: {paramPath} ({paramType}) = {paramValue}");
-        }
-        
-        UpdateCounts();
+        if (!IsAutoTrackIncoming() || _incomingTracker == null) return;
+        _incomingTracker.ProcessParameter(parameter);
     }
     
     // Override SendParameter to track outgoing parameters
     protected new void SendParameter(string name, object value)
     {
-        // Track outgoing if enabled
-        if (IsAutoTrackOutgoing())
+        // Track outgoing if enabled (skip if using VRCOSC tracking)
+        if (!_useVrcoscTracking && IsAutoTrackOutgoing() && _outgoingTracker != null)
         {
-            var paramType = value?.GetType().Name ?? "null";
-            TrackParameter(_outgoingParameters, name, paramType, value);
-            _totalOutgoing++;
-
-            if (IsLoggingEnabled())
-            {
-                Log($"OUTGOING: {name} ({paramType}) = {value}");
-            }
-            
-            UpdateCounts();
+            _outgoingTracker.ProcessParameter(name, value);
         }
         
         // Call base implementation using reflection
@@ -132,10 +191,20 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         if (parametersField != null)
         {
             var parametersDict = (Dictionary<Enum, ModuleParameter>?)parametersField.GetValue(this);
-            if (parametersDict != null && parametersDict.TryGetValue(lookup, out var moduleParameter))
+            if (parametersDict != null)
             {
-                SendParameter(moduleParameter.Name.Value, value);
-                return;
+                // Track using the dictionary
+                if (IsAutoTrackOutgoing() && _outgoingTracker != null)
+                {
+                    _outgoingTracker.ProcessParameter(lookup, value, new Dictionary<Enum, object>(parametersDict.ToDictionary(kvp => kvp.Key, kvp => (object)kvp.Value)));
+                }
+                
+                // Get parameter name and send
+                if (parametersDict.TryGetValue(lookup, out var moduleParameter))
+                {
+                    SendParameter(moduleParameter.Name.Value, value);
+                    return;
+                }
             }
         }
         
@@ -157,32 +226,6 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         }
     }
 
-    private void TrackParameter(Dictionary<string, ParameterData> dictionary, string path, string type, object? value)
-    {
-        lock (_parametersLock)
-        {
-            var maxParams = GetMaxParameters();
-            if (maxParams > 0 && dictionary.Count >= maxParams && !dictionary.ContainsKey(path))
-            {
-                Log($"Warning: Max parameter limit ({maxParams}) reached, skipping: {path}");
-                return;
-            }
-
-            if (dictionary.ContainsKey(path))
-            {
-                dictionary[path] = dictionary[path] with 
-                { 
-                    Value = value, 
-                    LastUpdate = DateTime.Now,
-                    UpdateCount = dictionary[path].UpdateCount + 1
-                };
-            }
-            else
-            {
-                dictionary[path] = new ParameterData(path, type, value, DateTime.Now, 1);
-            }
-        }
-    }
 
     public async Task<string> DumpParametersAsync(bool includeIncoming = true, bool includeOutgoing = true)
     {
@@ -205,28 +248,19 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
             // CSV Header (always include timestamps)
             lines.Add("Direction;Parameter Path;Type;Value;First Seen;Last Update;Update Count");
 
-            lock (_parametersLock)
+            if (includeIncoming && _incomingTracker != null)
             {
-                if (includeIncoming)
-                {
-                    foreach (var param in _incomingParameters.Values)
-                    {
-                        lines.Add(FormatParameterCsv("Incoming", param));
-                    }
-                }
+                lines.AddRange(_incomingTracker.ExportToCsvLines("Incoming"));
+            }
 
-                if (includeOutgoing)
-                {
-                    foreach (var param in _outgoingParameters.Values)
-                    {
-                        lines.Add(FormatParameterCsv("Outgoing", param));
-                    }
-                }
+            if (includeOutgoing && _outgoingTracker != null)
+            {
+                lines.AddRange(_outgoingTracker.ExportToCsvLines("Outgoing"));
             }
 
             await System.IO.File.WriteAllLinesAsync(filepath, lines);
             
-            var totalParams = (includeIncoming ? _incomingParameters.Count : 0) + (includeOutgoing ? _outgoingParameters.Count : 0);
+            var totalParams = (includeIncoming ? _incomingTracker?.UniqueParameters ?? 0 : 0) + (includeOutgoing ? _outgoingTracker?.UniqueParameters ?? 0 : 0);
             Log($"Dumped {totalParams} parameters to: {filepath}");
 
             SetVariableValue(DebugVariable.LastDumpPath, filepath);
@@ -243,62 +277,88 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         }
     }
 
-    private string FormatParameterCsv(string direction, ParameterData param)
-    {
-        var valueStr = param.Value?.ToString()?.Replace(";", ",") ?? "null";
-        return $"{direction};{param.Path};{param.Type};{valueStr};{param.FirstSeen:yyyy-MM-dd HH:mm:ss};{param.LastUpdate:yyyy-MM-dd HH:mm:ss};{param.UpdateCount}";
-    }
-
     public void ClearTracking()
     {
-        lock (_parametersLock)
+        if (_useVrcoscTracking)
         {
-            var inCount = _incomingParameters.Count;
-            var outCount = _outgoingParameters.Count;
-            
-            _incomingParameters.Clear();
-            _outgoingParameters.Clear();
-            _totalIncoming = 0;
-            _totalOutgoing = 0;
-            
-            Log($"Cleared tracking: {inCount} incoming, {outCount} outgoing");
-            UpdateCounts();
-            TriggerEvent(DebugEvent.OnTrackingCleared);
+            Log("Warning: Cannot clear VRCOSC's built-in tracking. Disable 'Use VRCOSC Tracking' to use custom tracking.");
+            return;
         }
+        
+        var inCount = _incomingTracker?.UniqueParameters ?? 0;
+        var outCount = _outgoingTracker?.UniqueParameters ?? 0;
+        
+        _incomingTracker?.Clear();
+        _outgoingTracker?.Clear();
+        
+        Log($"Cleared tracking: {inCount} incoming, {outCount} outgoing");
+        UpdateCounts();
+        TriggerEvent(DebugEvent.OnTrackingCleared);
     }
 
     private void UpdateCounts()
     {
-        lock (_parametersLock)
+        int inCount, outCount;
+        
+        if (_useVrcoscTracking)
         {
-            var inCount = _incomingParameters.Count;
-            var outCount = _outgoingParameters.Count;
-            var total = inCount + outCount;
-
-            SetVariableValue(DebugVariable.IncomingCount, inCount);
-            SetVariableValue(DebugVariable.OutgoingCount, outCount);
-            SetVariableValue(DebugVariable.TotalCount, total);
-
-            SendParameter(DebugParameter.IncomingCount, inCount);
-            SendParameter(DebugParameter.OutgoingCount, outCount);
-            SendParameter(DebugParameter.TotalCount, total);
+            var counts = DebugReflection.GetParameterCounts();
+            inCount = counts.incoming;
+            outCount = counts.outgoing;
         }
+        else
+        {
+            inCount = _incomingTracker?.UniqueParameters ?? 0;
+            outCount = _outgoingTracker?.UniqueParameters ?? 0;
+        }
+        
+        var total = inCount + outCount;
+
+        SetVariableValue(DebugVariable.IncomingCount, inCount);
+        SetVariableValue(DebugVariable.OutgoingCount, outCount);
+        SetVariableValue(DebugVariable.TotalCount, total);
+
+        SendParameter(DebugParameter.IncomingCount, inCount);
+        SendParameter(DebugParameter.OutgoingCount, outCount);
+        SendParameter(DebugParameter.TotalCount, total);
     }
 
     public Dictionary<string, ParameterData> GetIncomingParameters()
     {
-        lock (_parametersLock)
+        if (_useVrcoscTracking)
         {
-            return new Dictionary<string, ParameterData>(_incomingParameters);
+            var vrcoscParams = DebugReflection.GetIncomingMessages();
+            if (vrcoscParams != null)
+            {
+                // Convert to ParameterData format
+                var now = DateTime.Now;
+                return vrcoscParams.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => new ParameterData(kvp.Key, kvp.Value?.GetType().Name ?? "null", kvp.Value, now, 1)
+                );
+            }
         }
+        
+        return _incomingTracker?.GetAllParameters() ?? new Dictionary<string, ParameterData>();
     }
 
     public Dictionary<string, ParameterData> GetOutgoingParameters()
     {
-        lock (_parametersLock)
+        if (_useVrcoscTracking)
         {
-            return new Dictionary<string, ParameterData>(_outgoingParameters);
+            var vrcoscParams = DebugReflection.GetOutgoingMessages();
+            if (vrcoscParams != null)
+            {
+                // Convert to ParameterData format
+                var now = DateTime.Now;
+                return vrcoscParams.ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => new ParameterData(kvp.Key, kvp.Value?.GetType().Name ?? "null", kvp.Value, now, 1)
+                );
+            }
         }
+        
+        return _outgoingTracker?.GetAllParameters() ?? new Dictionary<string, ParameterData>();
     }
 
     // Settings accessors
@@ -313,6 +373,7 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         return dir;
     }
 
+    private bool UseVrcoscTracking() => GetSettingValue<bool>(DebugSetting.UseVrcoscTracking);
     private bool IsTrackAvatarOnly() => GetSettingValue<bool>(DebugSetting.TrackAvatarOnly);
     private bool IsAutoTrackIncoming() => GetSettingValue<bool>(DebugSetting.AutoTrackIncoming);
     private bool IsAutoTrackOutgoing() => GetSettingValue<bool>(DebugSetting.AutoTrackOutgoing);
@@ -322,6 +383,7 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
     private enum DebugSetting
     {
         DumpDirectory,
+        UseVrcoscTracking,
         TrackAvatarOnly,
         AutoTrackIncoming,
         AutoTrackOutgoing,
@@ -356,20 +418,5 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
     {
         OnDumpComplete,
         OnTrackingCleared
-    }
-
-    public record ParameterData(
-        string Path,
-        string Type,
-        object? Value,
-        DateTime FirstSeen,
-        int UpdateCount,
-        DateTime LastUpdate
-    )
-    {
-        public ParameterData(string path, string type, object? value, DateTime timestamp, int updateCount)
-            : this(path, type, value, timestamp, updateCount, timestamp)
-        {
-        }
     }
 }
