@@ -55,46 +55,43 @@ Comprehensive VRChat settings management module with pulse nodes for reading and
 
 ---
 
-## Nodes (9 Total)
+## Nodes
 
-### Get Nodes (2)
+### Get Nodes (Generic)
 
-#### `Get VRChat Registry Setting`
+#### `Get VRChat Registry Value<T>`
 
-Reads a value from VRChat registry settings.
+Reads a value from VRChat registry settings. Generic node with type variants (int, float, bool, string).
 
 **Inputs:**
 
-- `Setting Key` (string) - Registry key name or `{userId}` template
-- `User ID` (string, optional) - Override module setting for this operation
+- `Setting Key` (string) - Registry key or `{userId}` template
+- `User ID` (string, optional) - Override module setting per operation
 
 **Outputs:**
 
-- `String Value` - Value as string
-- `Int Value` - Value as integer (if numeric)
-- `Float Value` - Value as float (if numeric)
-- `Bool Value` - Value as boolean (if boolean)
-- `Error` - Error message if failed
+- `Value` (T) - Typed value
+- `Error` (string)
 
 **Flow:** Next, On Error
 
-#### `Get VRChat Config Setting`
+#### `Get VRChat Config Value<T>`
 
-Reads a value from VRChat config.json file.
+Reads a value from VRChat `config.json`. Generic node with type variants.
 
 **Inputs:**
 
-- `Setting Key` (string) - Config key, supports nested keys with dots (e.g., "vrcx.customjs.loader.loadTimeout")
+- `Setting Key` (string) - Supports dot notation (e.g., `vrcx.customjs.loader.loadTimeout`)
 
 **Outputs:**
 
-- Same as Registry Get node
+- `Value` (T), `Error` (string)
 
 **Flow:** Next, On Error
 
 ---
 
-### Set Nodes (2 - Generic)
+### Set Nodes (Generic)
 
 #### `Set VRChat Registry Value<T>`
 
@@ -112,7 +109,7 @@ Writes a value to VRChat registry settings. Generic node creates type-specific v
 
 **Flow:** Next, On Error
 
-**Available Types:** int, float, bool, string, double, etc.
+**Available Types:** int, float, bool, string (filtered via `NodeGenericTypeFilter`)
 
 #### `Set VRChat Config Value<T>`
 
@@ -131,7 +128,7 @@ Writes a value to VRChat config.json file. Generic node creates type-specific va
 
 ---
 
-### List Nodes (2)
+### List Nodes
 
 #### `Get All VRChat Registry Settings`
 
@@ -159,31 +156,7 @@ Lists all config file settings as a Dictionary.
 
 ---
 
-### Utility Nodes (3)
-
-#### `Get Configured VRChat User ID`
-
-Outputs the configured user ID from module settings.
-
-**Outputs:**
-
-- `User ID` (string) - Configured user ID
-- `Is Configured` (bool) - Whether user ID is set
-- `Is Valid` (bool) - Whether format is valid (usr_xxx)
-
-#### `Expand VRChat Key Template`
-
-Manually expands `{userId}` templates in strings.
-
-**Inputs:**
-
-- `Key Template` (string) - Key with `{userId}` placeholder
-
-**Outputs:**
-
-- `Expanded Key` (string) - Expanded key
-- `Success` (bool) - Whether expansion succeeded
-- `Error` (string) - Error message if failed
+### Utility Nodes
 
 #### `Object To JSON String<T>`
 
@@ -192,7 +165,7 @@ Serializes any object to JSON string. Generic node for all types.
 **Inputs:**
 
 - `Input Object` (T) - Object to serialize
-- `Indented` (bool) - Pretty print with indentation
+- `Formatted` (bool) - Pretty print with indentation
 
 **Outputs:**
 

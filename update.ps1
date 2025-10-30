@@ -146,6 +146,20 @@ if (-not $debugWorkflow -or -not $debugWorkflow.Success) {
 }
 
 Write-Host "✓ Debug build succeeded using Bluscream-BuildTools" -ForegroundColor Green
+
+# Copy Debug DLL to VRCOSC local packages directory
+Write-Host "📋 Copying Debug DLL to VRCOSC..." -ForegroundColor Green
+$debugDllSource = Join-Path $debugWorkflow.OutputDirectory "Bluscream.Modules.dll"
+$vrcoscLocalDir = Join-Path $env:APPDATA "VRCOSC\packages\local"
+if (-not (Test-Path $vrcoscLocalDir)) {
+    New-Item -ItemType Directory -Path $vrcoscLocalDir -Force | Out-Null
+}
+if (Test-Path $debugDllSource) {
+    Copy-Item -Path $debugDllSource -Destination (Join-Path $vrcoscLocalDir "Bluscream.Modules.dll") -Force
+    Write-Host "✓ Debug DLL copied to VRCOSC local packages" -ForegroundColor Green
+} else {
+    Write-Host "⚠️  Debug DLL not found at $debugDllSource" -ForegroundColor Yellow
+}
 Write-Host ""
 
 # Step 6: Create release package if publishing

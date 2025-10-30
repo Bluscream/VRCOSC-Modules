@@ -15,23 +15,23 @@ Comprehensive VRChat settings management with pulse nodes for registry and confi
 - 746+ registry settings (audio, safety, avatar, network, etc.)
 - Config file settings (cache, resolution, performance, etc.)
 - Provider-based architecture (remote + embedded definitions)
-- User ID template support (`{userId}_settingName`)
+- User ID template support (`{userId}_settingName`) with module setting or optional node input
 - Type-safe operations with validation
 - Automatic backups before writes
 - ChatBox integration (variables, states, events)
-- Generic `<T>` nodes for flexible type handling
+- Generic `<T>` nodes for flexible type handling (with `NodeGenericTypeFilter`)
 
-**Nodes (9):**
+**Core Nodes:**
 
-- `Get VRChat Registry Setting` - Read registry values
-- `Get VRChat Config Setting` - Read config values
-- `Set VRChat Registry Value<T>` - Write registry (generic, all types)
-- `Set VRChat Config Value<T>` - Write config (generic, all types)
-- `Get All VRChat Registry Settings` - List all registry → Dictionary
-- `Get All VRChat Config Settings` - List all config → Dictionary
-- `Get Configured VRChat User ID` - Check user ID status
-- `Expand VRChat Key Template` - Manual template expansion
-- `Object To JSON String<T>` - Serialize any object to JSON
+- `Get VRChat Registry Value<T>` - Read registry value (supports optional `User ID` input)
+- `Get VRChat Config Value<T>` - Read config value
+- `Set VRChat Registry Value<T>` - Write registry value (supports optional `User ID` input)
+- `Set VRChat Config Value<T>` - Write config value
+- `Get All VRChat Registry Settings` - Outputs `Dictionary<string, object>`
+- `Get All VRChat Config Settings` - Outputs `Dictionary<string, object>`
+- `Object To JSON String<T>` - Serialize any object/collection to JSON (Formatted option)
+
+Obsolete multi-output "Setting" getter nodes were removed in favor of generic getters.
 
 **See**: [VRChatSettings/README.md](VRCOSC.Modules/VRChatSettings/README.md) for full documentation.
 
@@ -87,6 +87,81 @@ HTTP request automation with response handling.
 - Variables: Last URL, Status Code, Response, Request Count
 - States: Idle, Requesting, Success, Failed
 - Events: OnSuccess, OnFailed
+
+---
+
+### Notifications
+
+Send notifications to Desktop, XSOverlay, OVRToolkit, and Webhooks.
+
+**Features:**
+
+- Desktop (Windows toast), XSOverlay (UDP), OVRToolkit (WebSocket)
+- Webhook support with configurable URL and HTTP method (GET, POST, PUT, PATCH, DELETE)
+- Parameters are sent as query params for all methods; POST also includes JSON body
+- Defaults group: Title, Message, Timeout (ms), Opacity (%) used when inputs are empty
+- ChatBox variables, states (Idle/Sending), events (OnNotificationSent/OnNotificationFailed)
+- Hardcoded base64 icon from VRCOSC logo (no user-configurable icon path)
+
+**Settings:**
+
+- Enable Desktop / XSOverlay / OVRToolkit / Webhook
+- Webhook URL
+- Webhook Method (dropdown)
+- Defaults: Title, Message, Timeout (ms), Opacity (%)
+- Debug logging toggle
+
+**Nodes:**
+
+- `Send Desktop Notification`
+- `Send XSOverlay Notification`
+- `Send OVRToolkit Notification`
+- `Send Notification (All Enabled)` with `WebhookSuccess` output
+
+All nodes have flow input (trigger) and use defaults when inputs are null/empty.
+
+---
+
+### Debug
+
+Debug tools for tracking and exporting OSC parameters.
+
+**Features:**
+
+- Real-time tracking of all incoming and outgoing OSC parameters
+- CSV export with customizable format (basic or with timestamps)
+- Avatar-only filter to ignore system OSC messages
+- Flexible dumps: all, incoming-only, or outgoing-only
+- Memory management with configurable max parameter limit
+- OSC parameter triggers for dump and clear operations
+- ChatBox variables, states (Idle/Dumping), events (OnDumpComplete/OnTrackingCleared)
+- Dictionary output nodes for programmatic access to tracked parameters
+
+**Settings:**
+
+- Dump Directory (custom export location)
+- Include Timestamps (add First Seen, Last Update, Update Count to CSV)
+- Avatar Parameters Only (filter out system messages)
+- Auto-Track Incoming / Outgoing
+- Max Parameters (0 = unlimited)
+- Debug logging toggle
+
+**Nodes:**
+
+- `Dump All Parameters` - Export all to CSV
+- `Dump Incoming Parameters` - Export incoming only
+- `Dump Outgoing Parameters` - Export outgoing only
+- `Clear Parameter Tracking` - Clear all tracked data
+- `Get Parameter Counts` - Get current counts
+- `Get Incoming Parameters` - Dictionary of incoming params
+- `Get Outgoing Parameters` - Dictionary of outgoing params
+- `Get All Parameters` - Dictionary of all params (with IN:/OUT: prefixes)
+
+**CSV Format:** `Direction;Parameter Path;Type;Value[;First Seen;Last Update;Update Count]`
+
+**File Naming:** `params_DDMMYYYY-HH-mm-ss.csv`
+
+**See**: [Debug/README.md](VRCOSC.Modules/Debug/README.md) for full documentation.
 
 ---
 
