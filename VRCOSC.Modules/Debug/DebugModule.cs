@@ -29,6 +29,8 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
     {
         // Dump settings
         CreateTextBox(DebugSetting.DumpDirectory, "Dump Directory", "Directory for parameter dumps (leave empty for 'dumps' folder in module directory)", string.Empty);
+        CreateDropdown(DebugSetting.SortBy, "Sort By", "Which column to sort the CSV by before saving", CsvSortBy.ParameterPath);
+        CreateDropdown(DebugSetting.SortDirection, "Sort Direction", "Sort order for CSV export", CsvSortDirection.Ascending);
         
         // Tracking mode - DISABLED (always using VRCOSC tracking)
         // CreateToggle(DebugSetting.UseVrcoscTracking, "Use VRCOSC Tracking", "Use VRCOSC's built-in parameter tracking", true);
@@ -250,17 +252,16 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
             // CSV Header (always include timestamps, direction last)
             lines.Add("Parameter Path;Type;Value;First Seen;Last Update;Update Count;Direction");
 
-            var totalParams = 0;
-
+            // Collect all parameters
+            var allParams = new List<(ParameterData param, string direction)>();
+            
             if (includeIncoming)
             {
                 var incoming = GetIncomingParameters();
                 foreach (var param in incoming.Values)
                 {
-                    var valueStr = param.Value?.ToString()?.Replace(";", ",") ?? "null";
-                    lines.Add($"{param.Path};{param.Type};{valueStr};{param.FirstSeen:yyyy-MM-dd HH:mm:ss};{param.LastUpdate:yyyy-MM-dd HH:mm:ss};{param.UpdateCount};IN");
+                    allParams.Add((param, "IN"));
                 }
-                totalParams += incoming.Count;
             }
 
             if (includeOutgoing)
@@ -268,12 +269,21 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
                 var outgoing = GetOutgoingParameters();
                 foreach (var param in outgoing.Values)
                 {
-                    var valueStr = param.Value?.ToString()?.Replace(";", ",") ?? "null";
-                    lines.Add($"{param.Path};{param.Type};{valueStr};{param.FirstSeen:yyyy-MM-dd HH:mm:ss};{param.LastUpdate:yyyy-MM-dd HH:mm:ss};{param.UpdateCount};OUT");
+                    allParams.Add((param, "OUT"));
                 }
-                totalParams += outgoing.Count;
             }
 
+            // Sort parameters based on settings
+            var sortedParams = SortParameters(allParams);
+
+            // Write sorted parameters to CSV
+            foreach (var (param, direction) in sortedParams)
+            {
+                var valueStr = param.Value?.ToString()?.Replace(";", ",") ?? "null";
+                lines.Add($"{param.Path};{param.Type};{valueStr};{param.FirstSeen:yyyy-MM-dd HH:mm:ss};{param.LastUpdate:yyyy-MM-dd HH:mm:ss};{param.UpdateCount};{direction}");
+            }
+
+            var totalParams = sortedParams.Count();
             await System.IO.File.WriteAllLinesAsync(filepath, lines);
             
             Log($"Dumped {totalParams} parameters to: {filepath}");
@@ -290,6 +300,29 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
             ChangeState(DebugState.Idle);
             throw;
         }
+    }
+
+    private IEnumerable<(ParameterData param, string direction)> SortParameters(List<(ParameterData param, string direction)> parameters)
+    {
+        var sortColumn = GetSortColumn();
+        var sortDirection = GetSortDirection();
+
+        IOrderedEnumerable<(ParameterData param, string direction)> sorted = sortColumn switch
+        {
+            CsvSortBy.ParameterPath => parameters.OrderBy(p => p.param.Path),
+            CsvSortBy.ParameterName => parameters.OrderBy(p => p.param.Path.Split('/').LastOrDefault() ?? p.param.Path),
+            CsvSortBy.Type => parameters.OrderBy(p => p.param.Type),
+            CsvSortBy.Value => parameters.OrderBy(p => p.param.Value?.ToString() ?? string.Empty),
+            CsvSortBy.FirstSeen => parameters.OrderBy(p => p.param.FirstSeen),
+            CsvSortBy.LastUpdate => parameters.OrderBy(p => p.param.LastUpdate),
+            CsvSortBy.UpdateCount => parameters.OrderBy(p => p.param.UpdateCount),
+            CsvSortBy.Direction => parameters.OrderBy(p => p.direction),
+            _ => parameters.OrderBy(p => p.param.Path)
+        };
+
+        return sortDirection == CsvSortDirection.Descending 
+            ? sorted.Reverse() 
+            : sorted;
     }
 
     public void ClearTracking()
@@ -377,6 +410,9 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         return dir;
     }
 
+    private CsvSortBy GetSortColumn() => GetSettingValue<CsvSortBy>(DebugSetting.SortBy);
+    private CsvSortDirection GetSortDirection() => GetSettingValue<CsvSortDirection>(DebugSetting.SortDirection);
+    
     // CUSTOM TRACKING ACCESSORS - DISABLED
     // private bool UseVrcoscTracking() => GetSettingValue<bool>(DebugSetting.UseVrcoscTracking);
     // private bool IsTrackAvatarOnly() => GetSettingValue<bool>(DebugSetting.TrackAvatarOnly);
@@ -388,12 +424,32 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
     private enum DebugSetting
     {
         DumpDirectory,
+        SortBy,
+        SortDirection,
         // UseVrcoscTracking,     // Disabled - always using VRCOSC tracking
         // TrackAvatarOnly,       // Disabled - custom tracking not active
         // AutoTrackIncoming,     // Disabled - custom tracking not active
         // AutoTrackOutgoing,     // Disabled - custom tracking not active
         // MaxParameters,         // Disabled - custom tracking not active
         LogParameterUpdates
+    }
+
+    private enum CsvSortBy
+    {
+        ParameterPath,
+        ParameterName,
+        Type,
+        Value,
+        FirstSeen,
+        LastUpdate,
+        UpdateCount,
+        Direction
+    }
+
+    private enum CsvSortDirection
+    {
+        Ascending,
+        Descending
     }
 
     private enum DebugParameter
