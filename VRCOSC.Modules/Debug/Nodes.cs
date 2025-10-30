@@ -12,6 +12,7 @@ namespace Bluscream.Modules;
 [Node("Dump All Parameters")]
 public sealed class DumpAllParametersNode : ModuleNode<DebugModule>, IFlowInput
 {
+    public ValueInput<string?> File = new("File", "Optional custom file path (leave empty for auto-generated)");
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
     public ValueOutput<string> FilePath = new("File Path");
@@ -22,7 +23,8 @@ public sealed class DumpAllParametersNode : ModuleNode<DebugModule>, IFlowInput
     {
         try
         {
-            var filepath = await Module.DumpParametersAsync();
+            var customPath = File.Read(c);
+            var filepath = await Module.DumpParametersAsync(customFilePath: customPath);
             var incoming = Module.GetIncomingParameters();
             var outgoing = Module.GetOutgoingParameters();
             var total = incoming.Count + outgoing.Count;
@@ -40,75 +42,18 @@ public sealed class DumpAllParametersNode : ModuleNode<DebugModule>, IFlowInput
     }
 }
 
-[Node("Dump Incoming Parameters")]
-public sealed class DumpIncomingParametersNode : ModuleNode<DebugModule>, IFlowInput
-{
-    public FlowContinuation Next = new("Next");
-    public FlowContinuation OnError = new("On Error");
-    public ValueOutput<string> FilePath = new("File Path");
-    public ValueOutput<int> ParameterCount = new("Parameter Count");
-    public ValueOutput<string> Error = new();
-
-    protected override async Task Process(PulseContext c)
-    {
-        try
-        {
-            var filepath = await Module.DumpParametersAsync(includeIncoming: true, includeOutgoing: false);
-            var count = Module.GetIncomingParameters().Count;
-
-            FilePath.Write(filepath, c);
-            ParameterCount.Write(count, c);
-            await Next.Execute(c);
-        }
-        catch (System.Exception ex)
-        {
-            var errorMsg = $"Failed to dump incoming parameters: {ex.Message}";
-            Error.Write(errorMsg, c);
-            await OnError.Execute(c);
-        }
-    }
-}
-
-[Node("Dump Outgoing Parameters")]
-public sealed class DumpOutgoingParametersNode : ModuleNode<DebugModule>, IFlowInput
-{
-    public FlowContinuation Next = new("Next");
-    public FlowContinuation OnError = new("On Error");
-    public ValueOutput<string> FilePath = new("File Path");
-    public ValueOutput<int> ParameterCount = new("Parameter Count");
-    public ValueOutput<string> Error = new();
-
-    protected override async Task Process(PulseContext c)
-    {
-        try
-        {
-            var filepath = await Module.DumpParametersAsync(includeIncoming: false, includeOutgoing: true);
-            var count = Module.GetOutgoingParameters().Count;
-
-            FilePath.Write(filepath, c);
-            ParameterCount.Write(count, c);
-            await Next.Execute(c);
-        }
-        catch (System.Exception ex)
-        {
-            var errorMsg = $"Failed to dump outgoing parameters: {ex.Message}";
-            Error.Write(errorMsg, c);
-            await OnError.Execute(c);
-        }
-    }
-}
-
-[Node("Clear Parameter Tracking")]
-public sealed class ClearParameterTrackingNode : ModuleNode<DebugModule>, IFlowInput
-{
-    public FlowContinuation Next = new("Next");
-
-    protected override async Task Process(PulseContext c)
-    {
-        Module.ClearTracking();
-        await Next.Execute(c);
-    }
-}
+// Commented out - Clear does not work with VRCOSC's built-in tracking
+// [Node("Clear Parameter Tracking")]
+// public sealed class ClearParameterTrackingNode : ModuleNode<DebugModule>, IFlowInput
+// {
+//     public FlowContinuation Next = new("Next");
+// 
+//     protected override async Task Process(PulseContext c)
+//     {
+//         Module.ClearTracking();
+//         await Next.Execute(c);
+//     }
+// }
 
 [Node("Get Parameter Counts")]
 public sealed class GetParameterCountsNode : ModuleNode<DebugModule>, IFlowInput
@@ -127,52 +72,6 @@ public sealed class GetParameterCountsNode : ModuleNode<DebugModule>, IFlowInput
         IncomingCount.Write(incoming, c);
         OutgoingCount.Write(outgoing, c);
         TotalCount.Write(total, c);
-        await Next.Execute(c);
-    }
-}
-
-[Node("Get Incoming Parameters")]
-public sealed class GetIncomingParametersNode : ModuleNode<DebugModule>, IFlowInput
-{
-    public FlowContinuation Next = new("Next");
-    public ValueOutput<Dictionary<string, object>> Parameters = new("Parameters");
-    public ValueOutput<int> Count = new("Count");
-
-    protected override async Task Process(PulseContext c)
-    {
-        var incoming = Module.GetIncomingParameters();
-        var dict = new Dictionary<string, object>();
-        
-        foreach (var param in incoming.Values)
-        {
-            dict[param.Path] = param.Value ?? "null";
-        }
-
-        Parameters.Write(dict, c);
-        Count.Write(dict.Count, c);
-        await Next.Execute(c);
-    }
-}
-
-[Node("Get Outgoing Parameters")]
-public sealed class GetOutgoingParametersNode : ModuleNode<DebugModule>, IFlowInput
-{
-    public FlowContinuation Next = new("Next");
-    public ValueOutput<Dictionary<string, object>> Parameters = new("Parameters");
-    public ValueOutput<int> Count = new("Count");
-
-    protected override async Task Process(PulseContext c)
-    {
-        var outgoing = Module.GetOutgoingParameters();
-        var dict = new Dictionary<string, object>();
-        
-        foreach (var param in outgoing.Values)
-        {
-            dict[param.Path] = param.Value ?? "null";
-        }
-
-        Parameters.Write(dict, c);
-        Count.Write(dict.Count, c);
         await Next.Execute(c);
     }
 }

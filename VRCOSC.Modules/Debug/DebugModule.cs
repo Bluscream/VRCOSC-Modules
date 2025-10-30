@@ -231,21 +231,37 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
     }
 
 
-    public async Task<string> DumpParametersAsync(bool includeIncoming = true, bool includeOutgoing = true)
+    public async Task<string> DumpParametersAsync(bool includeIncoming = true, bool includeOutgoing = true, string? customFilePath = null)
     {
         ChangeState(DebugState.Dumping);
         
         try
         {
-            var dumpDir = GetDumpDirectory();
-            if (!System.IO.Directory.Exists(dumpDir))
+            string filepath;
+            
+            if (!string.IsNullOrWhiteSpace(customFilePath))
             {
-                System.IO.Directory.CreateDirectory(dumpDir);
+                // Use custom file path
+                filepath = customFilePath;
+                var directory = System.IO.Path.GetDirectoryName(filepath);
+                if (!string.IsNullOrEmpty(directory) && !System.IO.Directory.Exists(directory))
+                {
+                    System.IO.Directory.CreateDirectory(directory);
+                }
             }
+            else
+            {
+                // Use auto-generated path
+                var dumpDir = GetDumpDirectory();
+                if (!System.IO.Directory.Exists(dumpDir))
+                {
+                    System.IO.Directory.CreateDirectory(dumpDir);
+                }
 
-            var timestamp = DateTime.Now.ToString("ddMMyyyy-HH-mm-ss");
-            var filename = $"params_{timestamp}.csv";
-            var filepath = System.IO.Path.Combine(dumpDir, filename);
+                var timestamp = DateTime.Now.ToString("ddMMyyyy-HH-mm-ss");
+                var filename = $"params_{timestamp}.csv";
+                filepath = System.IO.Path.Combine(dumpDir, filename);
+            }
 
             var lines = new List<string>();
             
