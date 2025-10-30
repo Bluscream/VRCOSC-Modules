@@ -87,15 +87,18 @@ public abstract class ParameterTracker
         
         if (includeHeader)
         {
-            lines.Add("Direction;Parameter Path;Type;Value;First Seen;Last Update;Update Count");
+            lines.Add("Parameter Path;Type;Value;First Seen;Last Update;Update Count;Direction");
         }
+
+        // Shorten direction: Incoming -> IN, Outgoing -> OUT
+        var directionShort = direction.StartsWith("In", StringComparison.OrdinalIgnoreCase) ? "IN" : "OUT";
 
         lock (_lock)
         {
             foreach (var param in _parameters.Values)
             {
                 var valueStr = param.Value?.ToString()?.Replace(";", ",") ?? "null";
-                lines.Add($"{direction};{param.Path};{param.Type};{valueStr};{param.FirstSeen:yyyy-MM-dd HH:mm:ss};{param.LastUpdate:yyyy-MM-dd HH:mm:ss};{param.UpdateCount}");
+                lines.Add($"{param.Path};{param.Type};{valueStr};{param.FirstSeen:yyyy-MM-dd HH:mm:ss};{param.LastUpdate:yyyy-MM-dd HH:mm:ss};{param.UpdateCount};{directionShort}");
             }
         }
 
