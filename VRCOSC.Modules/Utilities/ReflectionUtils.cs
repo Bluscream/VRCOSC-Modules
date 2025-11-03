@@ -20,23 +20,24 @@ public static class ReflectionUtils
     
     // Type caches
     private static Type? _appManagerType;
+    private static Type? _moduleManagerType;
     private static Type? _chatBoxManagerType;
-    
+
     // Method caches
     private static MethodInfo? _appManagerGetInstanceMethod;
+    private static MethodInfo? _moduleManagerGetInstanceMethod;
     private static MethodInfo? _chatBoxManagerGetInstanceMethod;
     private static MethodInfo? _moduleManagerStopAsyncMethod;
     private static MethodInfo? _moduleManagerStartAsyncMethod;
     private static MethodInfo? _oscClientSendMethod;
     private static MethodInfo? _moduleSendParameterMethod;
-    
+
     // Property caches
-    private static PropertyInfo? _appManagerModuleManagerProp;
-    private static PropertyInfo? _appManagerModulesProp;
+    private static PropertyInfo? _moduleManagerModulesProp;
     private static PropertyInfo? _appManagerOscClientProp;
     private static PropertyInfo? _chatBoxPulseTextProp;
     private static PropertyInfo? _chatBoxPulseMinimalBgProp;
-    
+
     // Field caches
     private static FieldInfo? _moduleParametersField;
     
@@ -79,23 +80,23 @@ public static class ReflectionUtils
     }
 
     /// <summary>
-    /// Get the ModuleManager instance from AppManager (cached)
+    /// Get the ModuleManager singleton instance (cached)
     /// Returns (instance, error message)
     /// </summary>
     private static (object? instance, string? error) GetModuleManagerWithError()
     {
         try
         {
-            var (appManager, appError) = GetAppManagerWithError();
-            if (appManager == null) return (null, appError);
+            _moduleManagerType ??= Type.GetType("VRCOSC.App.Modules.ModuleManager, VRCOSC.App");
+            if (_moduleManagerType == null) return (null, "ModuleManager type not found");
 
-            _appManagerModuleManagerProp ??= appManager.GetType().GetProperty("ModuleManager", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            if (_appManagerModuleManagerProp == null) return (null, "ModuleManager property not found");
+            _moduleManagerGetInstanceMethod ??= _moduleManagerType.GetMethod("GetInstance", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+            if (_moduleManagerGetInstanceMethod == null) return (null, "ModuleManager.GetInstance method not found");
 
-            var moduleManager = _appManagerModuleManagerProp.GetValue(appManager);
-            if (moduleManager == null) return (null, "ModuleManager property returned null");
+            var instance = _moduleManagerGetInstanceMethod.Invoke(null, null);
+            if (instance == null) return (null, "ModuleManager.GetInstance() returned null");
 
-            return (moduleManager, null);
+            return (instance, null);
         }
         catch (Exception ex)
         {
@@ -104,7 +105,7 @@ public static class ReflectionUtils
     }
 
     /// <summary>
-    /// Get the ModuleManager instance from AppManager (cached)
+    /// Get the ModuleManager singleton instance (cached)
     /// </summary>
     public static object? GetModuleManager()
     {
@@ -378,12 +379,12 @@ public static class ReflectionUtils
     {
         try
         {
-            var appManager = GetAppManager();
-            if (appManager == null) return null;
+            var moduleManager = GetModuleManager();
+            if (moduleManager == null) return null;
 
-            // Cache property
-            _appManagerModulesProp ??= appManager.GetType().GetProperty("Modules", BindingFlags.Public | BindingFlags.Instance);
-            return _appManagerModulesProp?.GetValue(appManager) as IEnumerable;
+            // Cache property - Modules is an ObservableDictionary<ModulePackage, List<Module>>
+            _moduleManagerModulesProp ??= moduleManager.GetType().GetProperty("Modules", BindingFlags.Public | BindingFlags.Instance);
+            return _moduleManagerModulesProp?.GetValue(moduleManager) as IEnumerable;
         }
         catch
         {
