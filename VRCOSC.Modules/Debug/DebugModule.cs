@@ -77,15 +77,15 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
                 await Task.Delay(5000);
                 
                 Log("Auto-starting all VRCOSC modules...");
-                var success = ReflectionUtils.StartModules();
+                var error = ReflectionUtils.StartModules();
                 
-                if (success)
+                if (error == null)
                 {
                     Log("✓ All modules started successfully");
                 }
                 else
                 {
-                    Log("⚠ Failed to auto-start modules");
+                    Log($"⚠ Failed to auto-start modules: {error}");
                 }
             });
         }

@@ -31,7 +31,20 @@ Write-Host "║        VRCOSC Modules - Complete Build & Release          ║" -
 Write-Host "╚════════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
 Write-Host ""
 
-# Step 1: Version Management using Bluscream-BuildTools
+# Step 1: Kill VRCOSC if running
+Write-Host "🛑 Stopping VRCOSC..." -ForegroundColor Yellow
+$vrcoscProcess = Get-Process -Name "VRCOSC" -ErrorAction SilentlyContinue
+if ($vrcoscProcess) {
+    Stop-Process -Name "VRCOSC" -Force
+    Start-Sleep -Seconds 1
+    Write-Host "✓ VRCOSC stopped" -ForegroundColor Green
+}
+else {
+    Write-Host "✓ VRCOSC is not running" -ForegroundColor Green
+}
+Write-Host ""
+
+# Step 2: Version Management using Bluscream-BuildTools
 Write-Host "🔢 Managing version..." -ForegroundColor Green
 
 if (-not (Get-Command Bump-Version -ErrorAction SilentlyContinue)) {
@@ -76,7 +89,7 @@ if (-not $buildWorkflow -or -not $buildWorkflow.Success) {
 Write-Host "✓ Complete build workflow succeeded" -ForegroundColor Green
 Write-Host ""
 
-# Step 3: Git operations using Bluscream-BuildTools
+# Step 4: Git operations using Bluscream-BuildTools
 Write-Host "📝 Committing changes..." -ForegroundColor Green
 
 if (-not (Get-Command Git-CommitRepository -ErrorAction SilentlyContinue)) {
@@ -96,7 +109,7 @@ if (-not $pushResult) {
 Write-Host "✓ Committed and pushed using Bluscream-BuildTools" -ForegroundColor Green
 Write-Host ""
 
-# Step 4: Create GitHub release (only if -Publish flag is used)
+# Step 5: Create GitHub release (only if -Publish flag is used)
 if ($Publish) {
     Write-Host "🚀 Creating GitHub release..." -ForegroundColor Green
     
@@ -136,7 +149,7 @@ else {
     Write-Host "⏭️  Skipping release (use -Publish to create release)" -ForegroundColor Yellow
 }
 
-# Step 5: Clean VRCOSC local packages directory
+# Step 6: Clean VRCOSC local packages directory and logs
 Write-Host "🧹 Cleaning VRCOSC local packages directory..." -ForegroundColor Green
 $vrcoscLocalDir = Join-Path $env:APPDATA "VRCOSC\packages\local"
 if (Test-Path $vrcoscLocalDir) {
@@ -147,12 +160,27 @@ if (Test-Path $vrcoscLocalDir) {
         Write-Host "  Removed: $($_.Name)" -ForegroundColor Gray
     }
     Write-Host "✓ Removed $filesRemoved DLL file(s) from local packages" -ForegroundColor Green
-} else {
+}
+else {
     Write-Host "⚠️  Local packages directory doesn't exist yet" -ForegroundColor Yellow
+}
+
+Write-Host "🧹 Cleaning VRCOSC logs..." -ForegroundColor Green
+$logsDir = Join-Path $PSScriptRoot "AppdataRoaming\logs"
+if (Test-Path $logsDir) {
+    $logsRemoved = 0
+    Get-ChildItem -Path $logsDir -Filter "*.log" | ForEach-Object {
+        Remove-Item $_.FullName -Force
+        $logsRemoved++
+    }
+    Write-Host "✓ Removed $logsRemoved log file(s)" -ForegroundColor Green
+}
+else {
+    Write-Host "⚠️  Logs directory doesn't exist yet" -ForegroundColor Yellow
 }
 Write-Host ""
 
-# Step 6: Build in Debug mode using Bluscream-BuildTools
+# Step 7: Build in Debug mode using Bluscream-BuildTools
 Write-Host "🔧 Building in Debug mode..." -ForegroundColor Green
 
 $debugWorkflow = Start-BuildWorkflow -ProjectPath $ProjectFile -Configuration "Debug" -Architecture "win-x64" -Framework "net8.0-windows10.0.26100.0" -AssemblyName "Bluscream.Modules" -OutputDirectory "./debug-dist/" -CleanOutput
@@ -173,12 +201,13 @@ if (-not (Test-Path $vrcoscLocalDir)) {
 if (Test-Path $debugDllSource) {
     Copy-Item -Path $debugDllSource -Destination (Join-Path $vrcoscLocalDir "Bluscream.Modules.dll") -Force
     Write-Host "✓ Debug DLL copied to VRCOSC local packages" -ForegroundColor Green
-} else {
+}
+else {
     Write-Host "⚠️  Debug DLL not found at $debugDllSource" -ForegroundColor Yellow
 }
 Write-Host ""
 
-# Step 7: Create release package if publishing
+# Step 8: Create release package if publishing
 if ($Publish) {
     Write-Host "📦 Creating release package..." -ForegroundColor Green
     
@@ -219,3 +248,17 @@ if ($Publish) {
 Write-Host "📍 Release Files: $($buildWorkflow.OutputDirectory)" -ForegroundColor Cyan
 Write-Host "📍 Debug Files: $($debugWorkflow.OutputDirectory)" -ForegroundColor Cyan
 Write-Host "📍 Local VRCOSC: %APPDATA%\VRCOSC\packages\local\Bluscream.Modules.dll (Debug)" -ForegroundColor Cyan
+Write-Host ""
+
+# Final Step: Start VRCOSC
+Write-Host "🚀 Starting VRCOSC..." -ForegroundColor Green
+$vrcoscPath = "$env:LOCALAPPDATA\VRCOSC\VRCOSC.bat"
+if (Test-Path $vrcoscPath) {
+    Start-Process -FilePath $vrcoscPath -WorkingDirectory (Split-Path $vrcoscPath)
+    Write-Host "✓ VRCOSC started" -ForegroundColor Green
+}
+else {
+    Write-Host "⚠️  VRCOSC.bat not found at $vrcoscPath" -ForegroundColor Yellow
+    Write-Host "   Please start VRCOSC manually to test the modules" -ForegroundColor Yellow
+}
+Write-Host ""

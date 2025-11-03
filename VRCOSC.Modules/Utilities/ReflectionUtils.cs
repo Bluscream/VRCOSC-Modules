@@ -46,22 +46,60 @@ public static class ReflectionUtils
 
     /// <summary>
     /// Get the AppManager singleton instance (cached)
+    /// Returns (instance, error message)
     /// </summary>
-    public static object? GetAppManager()
+    private static (object? instance, string? error) GetAppManagerWithError()
     {
         try
         {
             _appManagerType ??= Type.GetType("VRCOSC.App.Modules.AppManager, VRCOSC.App");
-            if (_appManagerType == null) return null;
+            if (_appManagerType == null) return (null, "AppManager type not found");
 
             _appManagerGetInstanceMethod ??= _appManagerType.GetMethod("GetInstance", BindingFlags.Public | BindingFlags.Static);
-            if (_appManagerGetInstanceMethod == null) return null;
+            if (_appManagerGetInstanceMethod == null) return (null, "AppManager.GetInstance method not found");
 
-            return _appManagerGetInstanceMethod.Invoke(null, null);
+            var instance = _appManagerGetInstanceMethod.Invoke(null, null);
+            if (instance == null) return (null, "AppManager.GetInstance() returned null");
+
+            return (instance, null);
         }
-        catch
+        catch (Exception ex)
         {
-            return null;
+            return (null, $"Exception getting AppManager: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Get the AppManager singleton instance (cached)
+    /// </summary>
+    public static object? GetAppManager()
+    {
+        var (instance, _) = GetAppManagerWithError();
+        return instance;
+    }
+
+    /// <summary>
+    /// Get the ModuleManager instance from AppManager (cached)
+    /// Returns (instance, error message)
+    /// </summary>
+    private static (object? instance, string? error) GetModuleManagerWithError()
+    {
+        try
+        {
+            var (appManager, appError) = GetAppManagerWithError();
+            if (appManager == null) return (null, appError);
+
+            _appManagerModuleManagerProp ??= appManager.GetType().GetProperty("ModuleManager", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (_appManagerModuleManagerProp == null) return (null, "ModuleManager property not found");
+
+            var moduleManager = _appManagerModuleManagerProp.GetValue(appManager);
+            if (moduleManager == null) return (null, "ModuleManager property returned null");
+
+            return (moduleManager, null);
+        }
+        catch (Exception ex)
+        {
+            return (null, $"Exception getting ModuleManager: {ex.Message}");
         }
     }
 
@@ -70,18 +108,8 @@ public static class ReflectionUtils
     /// </summary>
     public static object? GetModuleManager()
     {
-        try
-        {
-            var appManager = GetAppManager();
-            if (appManager == null) return null;
-
-            _appManagerModuleManagerProp ??= appManager.GetType().GetProperty("ModuleManager", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            return _appManagerModuleManagerProp?.GetValue(appManager);
-        }
-        catch
-        {
-            return null;
-        }
+        var (instance, _) = GetModuleManagerWithError();
+        return instance;
     }
 
     /// <summary>
@@ -301,30 +329,47 @@ public static class ReflectionUtils
 
     /// <summary>
     /// Start all VRCOSC modules (same as clicking play button) (cached)
+    /// Returns error message if failed, null if successful
     /// </summary>
-    public static bool StartModules()
+    public static string? StartModules()
     {
         try
         {
-            var moduleManager = GetModuleManager();
-            if (moduleManager == null) return false;
+            var (moduleManager, mmError) = GetModuleManagerWithError();
+            if (moduleManager == null) return mmError ?? "Failed to get ModuleManager instance";
 
             // Cache method
             _moduleManagerStartAsyncMethod ??= moduleManager.GetType().GetMethod("StartAsync", BindingFlags.Public | BindingFlags.Instance);
-            if (_moduleManagerStartAsyncMethod != null)
+            if (_moduleManagerStartAsyncMethod == null) return "StartAsync method not found on ModuleManager";
+
+            var task = _moduleManagerStartAsyncMethod.Invoke(moduleManager, null) as Task;
+            if (task == null) return "StartAsync invocation returned null (not a Task)";
+
+            // Wait for completion with timeout
+            if (!task.Wait(10000)) return "StartAsync timed out after 10 seconds";
+
+            // Check if task completed successfully
+            if (task.IsFaulted)
             {
-                var task = _moduleManagerStartAsyncMethod.Invoke(moduleManager, null) as Task;
-                task?.Wait(5000);
-                return task?.IsCompletedSuccessfully == true;
+                var exception = task.Exception?.GetBaseException();
+                return $"StartAsync faulted: {exception?.GetType().Name} - {exception?.Message ?? "Unknown error"}";
             }
 
-            return false;
+            if (task.IsCanceled) return "StartAsync was cancelled";
+
+            return task.IsCompletedSuccessfully ? null : "StartAsync completed but not successfully";
         }
-        catch
+        catch (Exception ex)
         {
-            return false;
+            return $"Exception in StartModules: {ex.GetType().Name} - {ex.Message}";
         }
     }
+
+    /// <summary>
+    /// Start all VRCOSC modules - returns true if successful, false otherwise
+    /// Use StartModules() for detailed error message
+    /// </summary>
+    public static bool TryStartModules() => StartModules() == null;
 
     /// <summary>
     /// Get all loaded modules (cached)

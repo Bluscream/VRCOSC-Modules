@@ -1135,11 +1135,16 @@ public class VRCXBridgeModule : VRCOSCModule
                     break;
 
                 case "START_MODULES":
-                    var startSuccess = ReflectionUtils.StartModules();
-                    result = new { success = startSuccess };
+                    var startError = ReflectionUtils.StartModules();
+                    var startSuccess = startError == null;
+                    result = new { success = startSuccess, error = startError };
                     if (startSuccess)
                     {
                         Log("Started all VRCOSC modules");
+                    }
+                    else
+                    {
+                        Log($"Failed to start modules: {startError}");
                     }
                     break;
 
