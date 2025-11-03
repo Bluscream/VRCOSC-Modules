@@ -234,11 +234,18 @@ public static class ReflectionUtils
             var chatBoxManager = GetChatBoxManager();
             if (chatBoxManager == null) return null;
 
-            // Get CurrentText property
-            var currentTextProp = chatBoxManager.GetType().GetProperty("CurrentText", BindingFlags.Public | BindingFlags.Instance);
-            if (currentTextProp == null) return null;
+            // Try PulseText first (text set by modules via SendChatBox)
+            var pulseTextProp = chatBoxManager.GetType().GetProperty("PulseText", BindingFlags.Public | BindingFlags.Instance);
+            var pulseText = pulseTextProp?.GetValue(chatBoxManager) as string;
+            
+            if (!string.IsNullOrEmpty(pulseText))
+                return pulseText;
 
-            return currentTextProp.GetValue(chatBoxManager) as string;
+            // Fall back to LiveText (text from clips/timeline)
+            var liveTextProp = chatBoxManager.GetType().GetProperty("LiveText", BindingFlags.Public | BindingFlags.Instance);
+            var liveText = liveTextProp?.GetValue(chatBoxManager) as string;
+
+            return liveText ?? string.Empty;
         }
         catch
         {

@@ -78,7 +78,7 @@
         }
       }
     },
-    "/api/osc/parameters/{name}": {
+    "/api/osc/parameter/{name}": {
       "get": {
         "tags": ["OSC"],
         "summary": "Get OSC parameter value",
@@ -188,7 +188,7 @@
         }
       }
     },
-    "/api/chatbox/send": {
+    "/api/chatbox": {
       "post": {
         "tags": ["ChatBox"],
         "summary": "Send chatbox message",

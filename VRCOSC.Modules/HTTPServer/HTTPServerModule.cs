@@ -431,7 +431,7 @@ public class HTTPServerModule : VRCOSCModule
                     SendJsonResponse(response, 405, new { error = "Method not allowed" });
                 break;
 
-            case "/api/chatbox/send":
+            case "/api/chatbox":
                 if (method == "GET")
                     await ChatBoxEndpoint.HandleGet(context, this);
                 else if (method == "POST")
@@ -442,7 +442,7 @@ public class HTTPServerModule : VRCOSCModule
 
             default:
                 // Check if it's a parameter-specific endpoint
-                if (path.StartsWith("/api/osc/parameters/"))
+                if (path.StartsWith("/api/osc/parameter/"))
                 {
                     var paramName = path.Substring("/api/osc/parameters/".Length);
                     if (method == "GET")
@@ -496,9 +496,10 @@ public class HTTPServerModule : VRCOSCModule
             {
                 "GET / - Server information",
                 "GET /api - Comprehensive API data (server, player, avatar, OSC parameters, endpoints)",
-                "GET /api/osc/parameters/{name} - Get specific OSC parameter value",
-                "POST /api/osc/parameters/{name} - Set OSC parameter value",
-                "POST /api/chatbox/send - Send chatbox message",
+                "GET /api/osc/parameter/{name} - Get OSC parameter value (plain text)",
+                "POST /api/osc/parameter/{name} - Set OSC parameter value",
+                "GET /api/chatbox - Get current chatbox text (plain text)",
+                "POST /api/chatbox - Send chatbox message",
                 "GET /docs - Swagger UI documentation",
                 "GET /openapi.json - OpenAPI specification"
             };
