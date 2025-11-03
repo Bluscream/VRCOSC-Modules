@@ -336,6 +336,60 @@ public static class ReflectionUtils
         return await TaskUtils.PollUntil(() => GetAppManagerState() == "Started", timeoutMs, pollIntervalMs: 500);
     }
 
+    /// <summary>
+    /// Request AppManager to start (equivalent to clicking Play button)
+    /// </summary>
+    /// <returns>Error message if failed, null if successful</returns>
+    public static string? RequestAppManagerStart()
+    {
+        try
+        {
+            var (appManager, error) = GetAppManagerWithError();
+            if (appManager == null) return error ?? "Failed to get AppManager instance";
+
+            // Check current state - don't start if already starting/started
+            var currentState = GetAppManagerState();
+            if (currentState == "Starting" || currentState == "Started" || currentState == "Waiting")
+            {
+                return $"AppManager is already {currentState}";
+            }
+
+            // Get RequestStart method
+            var requestStartMethod = appManager.GetType().GetMethod("RequestStart", BindingFlags.Public | BindingFlags.Instance);
+            if (requestStartMethod == null) return "RequestStart method not found on AppManager";
+
+            // Invoke RequestStart (returns Task)
+            var task = requestStartMethod.Invoke(appManager, null) as Task;
+            if (task == null) return "RequestStart invocation returned null";
+
+            // Don't wait for completion - let it run async
+            return null;
+        }
+        catch (Exception ex)
+        {
+            return $"Exception in RequestAppManagerStart: {ex.GetType().Name} - {ex.Message}";
+        }
+    }
+
+    /// <summary>
+    /// Request AppManager to start and wait for it to complete
+    /// </summary>
+    /// <param name="timeoutMs">Maximum time to wait</param>
+    /// <returns>True if started successfully, false otherwise</returns>
+    public static async System.Threading.Tasks.Task<bool> RequestAppManagerStartAndWait(int timeoutMs = 30000)
+    {
+        var error = RequestAppManagerStart();
+        if (error != null)
+        {
+            // If already started/starting, that's okay
+            if (error.Contains("already")) return true;
+            return false;
+        }
+
+        // Wait for "Started" state
+        return await WaitForAppManagerStarted(timeoutMs);
+    }
+
     #endregion
 
     #region Module Control

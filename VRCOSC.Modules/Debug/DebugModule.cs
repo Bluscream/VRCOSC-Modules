@@ -68,33 +68,44 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
 
         ChangeState(DebugState.Idle);
         
-        // Auto-start modules if enabled (read from disk since settings aren't loaded yet in OnPostLoad)
+        // Auto-start VRCOSC if enabled (read from disk since settings aren't loaded yet in OnPostLoad)
         if (this.GetSetting("AutoStartModules", false))
         {
             _ = Task.Run(async () =>
             {
-                Log("Auto-start enabled, waiting for VRCOSC to be ready...");
+                // Small delay to ensure VRCOSC is fully initialized
+                await Task.Delay(1000);
                 
-                // Wait for AppManager to reach "Started" state (OSC client will be connected)
-                var isReady = await ReflectionUtils.WaitForAppManagerStarted(30000);
+                Log("Auto-start enabled, checking VRCOSC state...");
                 
-                if (!isReady)
+                var currentState = ReflectionUtils.GetAppManagerState();
+                Log($"Current AppManager state: {currentState ?? "Unknown"}");
+                
+                if (currentState == "Started" || currentState == "Starting" || currentState == "Waiting")
                 {
-                    Log("⚠ Failed to auto-start: VRCOSC didn't reach 'Started' state within 30 seconds");
+                    Log($"⏭ VRCOSC is already {currentState}, skipping auto-start");
                     return;
                 }
                 
-                Log("VRCOSC is ready, auto-starting all modules...");
-                var error = ReflectionUtils.StartModules();
+                Log("🚀 Requesting VRCOSC to start (auto-clicking Play button)...");
+                var error = ReflectionUtils.RequestAppManagerStart();
                 
-                if (error == null)
+                if (error != null)
                 {
-                    Log("✓ All modules auto-started successfully");
+                    Log($"❌ Auto-start request failed: {error}");
+                    return;
                 }
-                else
+                
+                Log("⏳ Waiting for VRCOSC to start...");
+                var isStarted = await ReflectionUtils.WaitForAppManagerStarted(30000);
+                
+                if (!isStarted)
                 {
-                    Log($"⚠ Failed to auto-start modules: {error}");
+                    Log("⚠ VRCOSC didn't reach 'Started' state within 30 seconds");
+                    return;
                 }
+                
+                Log("✅ VRCOSC auto-started successfully - all enabled modules are now running");
             });
         }
     }
