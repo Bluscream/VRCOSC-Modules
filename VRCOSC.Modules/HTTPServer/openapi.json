@@ -58,7 +58,7 @@
         }
       }
     },
-    "/server/status": {
+    "/api/server/status": {
       "get": {
         "tags": ["Server"],
         "summary": "Get server status",
@@ -78,7 +78,7 @@
         }
       }
     },
-    "/osc/parameters": {
+    "/api/osc/parameters": {
       "get": {
         "tags": ["OSC"],
         "summary": "List all OSC parameters",
@@ -98,7 +98,7 @@
         }
       }
     },
-    "/osc/parameters/{name}": {
+    "/api/osc/parameters/{name}": {
       "get": {
         "tags": ["OSC"],
         "summary": "Get OSC parameter value",
@@ -208,7 +208,7 @@
         }
       }
     },
-    "/avatars/current": {
+    "/api/avatars/current": {
       "get": {
         "tags": ["Avatar"],
         "summary": "Get current avatar info",
@@ -228,7 +228,7 @@
         }
       }
     },
-    "/chatbox/send": {
+    "/api/chatbox/send": {
       "post": {
         "tags": ["ChatBox"],
         "summary": "Send chatbox message",

@@ -511,6 +511,199 @@ public static class ReflectionUtils
 
     #endregion
 
+    #region OSC Parameter Access
+
+    /// <summary>
+    /// Get the parameter cache from AppManager (Dictionary of parameter name to VRChatParameter)
+    /// </summary>
+    public static object? GetParameterCache()
+    {
+        try
+        {
+            var (appManager, _) = GetAppManagerWithError();
+            if (appManager == null) return null;
+
+            var parameterCacheField = appManager.GetType().GetField("parameterCache", 
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            return parameterCacheField?.GetValue(appManager);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Get all OSC parameters from the parameter cache
+    /// Returns List of (name, value, type) tuples
+    /// </summary>
+    public static List<(string Name, object? Value, string Type)>? GetAllOscParameters()
+    {
+        try
+        {
+            var cache = GetParameterCache();
+            if (cache == null) return null;
+
+            // parameterCache is Dictionary<string, VRChatParameter>
+            var results = new List<(string, object?, string)>();
+            var dictType = cache.GetType();
+            
+            // Get Values property to iterate
+            var valuesProperty = dictType.GetProperty("Values");
+            if (valuesProperty == null) return null;
+
+            var values = valuesProperty.GetValue(cache) as System.Collections.IEnumerable;
+            if (values == null) return null;
+
+            foreach (var param in values)
+            {
+                if (param == null) continue;
+
+                var paramType = param.GetType();
+                var nameProperty = paramType.GetProperty("Name");
+                var valueProperty = paramType.GetProperty("Value");
+
+                var name = nameProperty?.GetValue(param) as string;
+                var value = valueProperty?.GetValue(param);
+
+                if (name == null) continue;
+
+                // Determine type from value
+                var type = value switch
+                {
+                    bool => "bool",
+                    int => "int",
+                    float => "float",
+                    string => "string",
+                    _ => "unknown"
+                };
+
+                results.Add((name, value, type));
+            }
+
+            return results;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Get a specific OSC parameter value by name
+    /// Returns (value, type) or null if not found
+    /// </summary>
+    public static (object? Value, string Type)? GetOscParameter(string parameterName)
+    {
+        try
+        {
+            var cache = GetParameterCache();
+            if (cache == null) return null;
+
+            // Try to get the parameter from the dictionary
+            var dictType = cache.GetType();
+            var tryGetValueMethod = dictType.GetMethod("TryGetValue");
+            if (tryGetValueMethod == null) return null;
+
+            var parameters = new object[] { parameterName, null! };
+            var found = (bool)tryGetValueMethod.Invoke(cache, parameters)!;
+            
+            if (!found) return null;
+
+            var param = parameters[1];
+            if (param == null) return null;
+
+            var valueProperty = param.GetType().GetProperty("Value");
+            var value = valueProperty?.GetValue(param);
+
+            var type = value switch
+            {
+                bool => "bool",
+                int => "int",
+                float => "float",
+                string => "string",
+                _ => "unknown"
+            };
+
+            return (value, type);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Send an OSC parameter via AppManager's VRChatOscClient
+    /// </summary>
+    public static bool SendOscParameter(string parameterName, object value)
+    {
+        try
+        {
+            var (appManager, _) = GetAppManagerWithError();
+            if (appManager == null) return false;
+
+            // Get VRChatOscClient property
+            _appManagerOscClientProp ??= appManager.GetType().GetProperty("VRChatOscClient");
+            if (_appManagerOscClientProp == null) return false;
+
+            var oscClient = _appManagerOscClientProp.GetValue(appManager);
+            if (oscClient == null) return false;
+
+            // Get Send method
+            var sendMethod = oscClient.GetType().GetMethod("Send", BindingFlags.Public | BindingFlags.Instance);
+            if (sendMethod == null) return false;
+
+            // Build full address
+            var address = parameterName.StartsWith("/avatar/parameters/") 
+                ? parameterName 
+                : $"/avatar/parameters/{parameterName}";
+
+            sendMethod.Invoke(oscClient, new object[] { address, value });
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Get current avatar config from AppManager
+    /// Returns (avatarId, avatarName) or null if no avatar loaded
+    /// </summary>
+    public static (string? Id, string? Name)? GetCurrentAvatarInfo()
+    {
+        try
+        {
+            var (appManager, _) = GetAppManagerWithError();
+            if (appManager == null) return null;
+
+            // Get currentAvatarConfig field
+            var avatarConfigField = appManager.GetType().GetField("currentAvatarConfig", 
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            if (avatarConfigField == null) return null;
+
+            var avatarConfig = avatarConfigField.GetValue(appManager);
+            if (avatarConfig == null) return (null, null); // No avatar loaded
+
+            // Get Id and Name properties
+            var idProperty = avatarConfig.GetType().GetProperty("Id");
+            var nameProperty = avatarConfig.GetType().GetProperty("Name");
+
+            var id = idProperty?.GetValue(avatarConfig) as string;
+            var name = nameProperty?.GetValue(avatarConfig) as string;
+
+            return (id, name);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    #endregion
+
     #region Module Control
 
     /// <summary>

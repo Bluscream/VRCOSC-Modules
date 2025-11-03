@@ -216,17 +216,21 @@ public class HTTPServerModule : VRCOSCModule
             _httpListener = new HttpListener();
             
             // Add prefixes
-            // Note: Using + instead of localhost/127.0.0.1 because it works with the netsh URL reservation
-            // http://+:PORT/ covers localhost, 127.0.0.1, and machine name
+            // Note: + is a wildcard that covers localhost, 127.0.0.1, and machine name
+            // For security, only use + when external connections are explicitly allowed
             if (allowExternal)
             {
                 _httpListener.Prefixes.Add($"http://+:{port}/");
-                _serverUrl = $"http://localhost:{port}"; // Display localhost for user friendliness
+                _serverUrl = $"http://+:{port}"; // Show that it's accessible externally
+                Log($"External connections enabled - server accessible from network");
             }
             else
             {
-                _httpListener.Prefixes.Add($"http://+:{port}/");
-                _serverUrl = $"http://localhost:{port}"; // Display localhost for user friendliness
+                // Use localhost to bind ONLY to loopback interface (127.0.0.1)
+                // This prevents external network access for security
+                _httpListener.Prefixes.Add($"http://localhost:{port}/");
+                _serverUrl = $"http://localhost:{port}";
+                Log($"Localhost only - server NOT accessible from network");
             }
 
             _httpListener.Start();
@@ -251,8 +255,19 @@ public class HTTPServerModule : VRCOSCModule
         }
         catch (HttpListenerException ex) when (ex.ErrorCode == 5) // Access Denied
         {
+            var port = GetSettingValue<string>(HTTPServerSetting.Port);
+            var allowExternal = GetSettingValue<bool>(HTTPServerSetting.AllowExternalConnections);
+            
             Log($"Access denied: HttpListener requires administrator privileges or URL reservation.");
-            Log($"Run this as admin or run: netsh http add urlacl url=http://+:{GetSettingValue<string>(HTTPServerSetting.Port)}/ user=Everyone");
+            if (allowExternal)
+            {
+                Log($"Run this as admin or run: netsh http add urlacl url=http://+:{port}/ user=Everyone");
+            }
+            else
+            {
+                Log($"Run this as admin or run: netsh http add urlacl url=http://localhost:{port}/ user=Everyone");
+                Log($"Or use: netsh http add urlacl url=http://+:{port}/ user=Everyone (works for both localhost and external)");
+            }
             SetVariableValue(HTTPServerVariable.ServerStatus, "Error: Access Denied");
             ChangeState(HTTPServerState.Error);
             TriggerEvent(HTTPServerEvent.OnError);
@@ -408,6 +423,7 @@ public class HTTPServerModule : VRCOSCModule
                     SendJsonResponse(response, 405, new { error = "Method not allowed" });
                 break;
 
+            case "/api/server/status":
             case "/server/status":
             case "/status":
                 if (method == "GET")
@@ -416,6 +432,7 @@ public class HTTPServerModule : VRCOSCModule
                     SendJsonResponse(response, 405, new { error = "Method not allowed" });
                 break;
 
+            case "/api/osc/parameters":
             case "/osc/parameters":
                 if (method == "GET")
                     await HandleGetAllParameters(context);
@@ -423,6 +440,7 @@ public class HTTPServerModule : VRCOSCModule
                     SendJsonResponse(response, 405, new { error = "Method not allowed" });
                 break;
 
+            case "/api/chatbox/send":
             case "/chatbox/send":
             case "/chatbox":
                 if (method == "POST")
@@ -431,6 +449,7 @@ public class HTTPServerModule : VRCOSCModule
                     SendJsonResponse(response, 405, new { error = "Method not allowed" });
                 break;
 
+            case "/api/avatars/current":
             case "/avatars/current":
             case "/avatar":
                 if (method == "GET")
@@ -441,7 +460,17 @@ public class HTTPServerModule : VRCOSCModule
 
             default:
                 // Check if it's a parameter-specific endpoint
-                if (path.StartsWith("/osc/parameters/"))
+                if (path.StartsWith("/api/osc/parameters/"))
+                {
+                    var paramName = path.Substring("/api/osc/parameters/".Length);
+                    if (method == "GET")
+                        await HandleGetParameter(context, paramName);
+                    else if (method == "POST" || method == "PUT")
+                        await HandleSetParameter(context, paramName);
+                    else
+                        SendJsonResponse(response, 405, new { error = "Method not allowed" });
+                }
+                else if (path.StartsWith("/osc/parameters/"))
                 {
                     var paramName = path.Substring("/osc/parameters/".Length);
                     if (method == "GET")
@@ -545,33 +574,77 @@ public class HTTPServerModule : VRCOSCModule
 
     private async Task HandleGetAllParameters(HttpListenerContext context)
     {
-        var responseObj = new
+        try
         {
-            success = true,
-            message = "OSC parameter listing not yet implemented",
-            parameters = new object[]
+            var parameters = ReflectionUtils.GetAllOscParameters();
+            
+            if (parameters == null)
             {
-                new { name = "VRCOSC/HTTPServer/Running", type = "bool", value = true },
-                new { name = "VRCOSC/HTTPServer/RequestCount", type = "int", value = _requestCount }
+                SendJsonResponse(context.Response, 503, new 
+                { 
+                    success = false, 
+                    error = "Unable to access parameter cache - is VRCOSC started?",
+                    parameters = Array.Empty<object>()
+                });
+                return;
             }
-        };
 
-        SendJsonResponse(context.Response, 200, responseObj);
+            var parameterList = parameters.Select(p => new
+            {
+                name = p.Name,
+                type = p.Type,
+                value = p.Value
+            }).ToList();
+
+            var responseObj = new
+            {
+                success = true,
+                count = parameterList.Count,
+                parameters = parameterList
+            };
+
+            SendJsonResponse(context.Response, 200, responseObj);
+        }
+        catch (Exception ex)
+        {
+            SendJsonResponse(context.Response, 500, new { success = false, error = $"Error listing parameters: {ex.Message}" });
+        }
+        
         await Task.CompletedTask;
     }
 
     private async Task HandleGetParameter(HttpListenerContext context, string name)
     {
-        var responseObj = new
+        try
         {
-            success = true,
-            parameter = name,
-            value = (object?)null,
-            type = "unknown",
-            message = "OSC parameter reading not yet implemented"
-        };
+            var parameter = ReflectionUtils.GetOscParameter(name);
+            
+            if (parameter == null)
+            {
+                SendJsonResponse(context.Response, 404, new
+                {
+                    success = false,
+                    error = $"Parameter '{name}' not found",
+                    hint = "Make sure the parameter has been received at least once, or check /api/osc/parameters for available parameters"
+                });
+                return;
+            }
 
-        SendJsonResponse(context.Response, 200, responseObj);
+            var responseObj = new
+            {
+                success = true,
+                name = name,
+                value = parameter.Value.Value,
+                type = parameter.Value.Type
+            };
+
+            SendJsonResponse(context.Response, 200, responseObj);
+        }
+        catch (Exception ex)
+        {
+            SendJsonResponse(context.Response, 500, new { success = false, error = $"Error getting parameter: {ex.Message}" });
+        }
+
         await Task.CompletedTask;
     }
 
@@ -585,7 +658,36 @@ public class HTTPServerModule : VRCOSCModule
 
             if (!data.RootElement.TryGetProperty("value", out var valueElement))
             {
-                SendJsonResponse(context.Response, 400, new { error = "Missing 'value' field in request body" });
+                SendJsonResponse(context.Response, 400, new { success = false, error = "Missing 'value' field in request body" });
+                return;
+            }
+
+            // Parse value based on JSON type
+            object? value = valueElement.ValueKind switch
+            {
+                JsonValueKind.True => true,
+                JsonValueKind.False => false,
+                JsonValueKind.Number => valueElement.TryGetInt32(out var intVal) ? intVal : valueElement.GetSingle(),
+                JsonValueKind.String => valueElement.GetString(),
+                _ => null
+            };
+
+            if (value == null)
+            {
+                SendJsonResponse(context.Response, 400, new { success = false, error = "Invalid or unsupported value type" });
+                return;
+            }
+
+            // Send the parameter
+            var sent = ReflectionUtils.SendOscParameter(name, value);
+
+            if (!sent)
+            {
+                SendJsonResponse(context.Response, 503, new 
+                { 
+                    success = false, 
+                    error = "Failed to send parameter - is VRCOSC started and OSC connected?" 
+                });
                 return;
             }
 
@@ -593,33 +695,60 @@ public class HTTPServerModule : VRCOSCModule
             {
                 success = true,
                 parameter = name,
-                value = valueElement.ToString(),
-                message = "OSC parameter writing not yet implemented"
+                value = value,
+                type = value.GetType().Name.ToLowerInvariant()
+            };
+
+            SendJsonResponse(context.Response, 200, responseObj);
+        }
+        catch (JsonException ex)
+        {
+            SendJsonResponse(context.Response, 400, new { success = false, error = "Invalid JSON", message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            SendJsonResponse(context.Response, 500, new { success = false, error = $"Error setting parameter: {ex.Message}" });
+        }
+    }
+
+    private async Task HandleGetCurrentAvatar(HttpListenerContext context)
+    {
+        try
+        {
+            var avatarInfo = ReflectionUtils.GetCurrentAvatarInfo();
+            
+            if (avatarInfo == null)
+            {
+                SendJsonResponse(context.Response, 503, new
+                {
+                    success = false,
+                    error = "Unable to get avatar info - is VRCOSC started?",
+                    avatar = new { id = (string?)null, name = (string?)null, loaded = false }
+                });
+                return;
+            }
+
+            var (id, avatarName) = avatarInfo.Value;
+            var isLoaded = !string.IsNullOrEmpty(id);
+
+            var responseObj = new
+            {
+                success = true,
+                avatar = new
+                {
+                    id = id,
+                    name = avatarName ?? "Unknown",
+                    loaded = isLoaded
+                }
             };
 
             SendJsonResponse(context.Response, 200, responseObj);
         }
         catch (Exception ex)
         {
-            SendJsonResponse(context.Response, 400, new { error = "Invalid request body", message = ex.Message });
+            SendJsonResponse(context.Response, 500, new { success = false, error = $"Error getting avatar info: {ex.Message}" });
         }
-    }
 
-    private async Task HandleGetCurrentAvatar(HttpListenerContext context)
-    {
-        var responseObj = new
-        {
-            success = true,
-            message = "Avatar info not yet implemented",
-            avatar = new
-            {
-                id = "avtr_00000000-0000-0000-0000-000000000000",
-                name = "Unknown",
-                loaded = false
-            }
-        };
-
-        SendJsonResponse(context.Response, 200, responseObj);
         await Task.CompletedTask;
     }
 
@@ -688,13 +817,15 @@ public class HTTPServerModule : VRCOSCModule
             // Fallback to hardcoded list
             endpoints = new List<string>
             {
-                "GET /osc/parameters - List all OSC parameters",
-                "GET /osc/parameters/{name} - Get specific parameter value",
-                "POST /osc/parameters/{name} - Set parameter value",
-                "GET /avatars/current - Get current avatar info",
-                "POST /chatbox/send - Send chatbox message",
-                "GET /server/status - Server status",
-                "GET /docs - API documentation"
+                "GET / - Server information",
+                "GET /api/server/status - Server status",
+                "GET /api/osc/parameters - List all OSC parameters",
+                "GET /api/osc/parameters/{name} - Get specific parameter value",
+                "POST /api/osc/parameters/{name} - Set parameter value",
+                "GET /api/avatars/current - Get current avatar info",
+                "POST /api/chatbox/send - Send chatbox message",
+                "GET /docs - API documentation",
+                "GET /openapi.json - OpenAPI specification"
             };
         }
 
