@@ -31,7 +31,7 @@ Write-Host "║        VRCOSC Modules - Complete Build & Release          ║" -
 Write-Host "╚════════════════════════════════════════════════════════════╝" -ForegroundColor Cyan
 Write-Host ""
 
-# Step 1: Kill VRCOSC if running
+# Kill VRCOSC if running
 Write-Host "🛑 Stopping VRCOSC..." -ForegroundColor Yellow
 $vrcoscProcess = Get-Process -Name "VRCOSC" -ErrorAction SilentlyContinue
 if ($vrcoscProcess) {
@@ -44,7 +44,7 @@ else {
 }
 Write-Host ""
 
-# Step 2: Version Management using Bluscream-BuildTools
+# Version Management using Bluscream-BuildTools
 Write-Host "🔢 Managing version..." -ForegroundColor Green
 
 if (-not (Get-Command Bump-Version -ErrorAction SilentlyContinue)) {
@@ -64,15 +64,32 @@ if (-not $versionResult -or -not $versionResult.Success) {
 
 $ReleaseTag = $versionResult.NewVersion
 
-# Also bump AssemblyFileVersion to match
-$fileVersionResult = Bump-Version -Files @($assemblyInfoPath) -Pattern 'AssemblyFileVersion\("([^"]+)"\)'
-if (-not $fileVersionResult -or -not $fileVersionResult.Success) {
-    throw "Failed to bump AssemblyFileVersion: $($fileVersionResult.Error)"
+# Enforce 3-segment semver (YYYY.MDD.Build) - strip 4th segment if present
+$versionParts = $ReleaseTag.Split('.')
+if ($versionParts.Count -gt 3) {
+    Write-Host "⚠️  Version has $($versionParts.Count) segments, enforcing 3-segment semver..." -ForegroundColor Yellow
+    $ReleaseTag = $versionParts[0..2] -join '.'
+    
+    # Update AssemblyInfo.cs to use 3-segment version
+    $assemblyInfoContent = Get-Content $assemblyInfoPath -Raw
+    $assemblyInfoContent = $assemblyInfoContent -replace 'AssemblyVersion\("[^"]+"\)', "AssemblyVersion(`"$ReleaseTag`")"
+    $assemblyInfoContent = $assemblyInfoContent -replace 'AssemblyFileVersion\("[^"]+"\)', "AssemblyFileVersion(`"$ReleaseTag`")"
+    Set-Content -Path $assemblyInfoPath -Value $assemblyInfoContent -NoNewline
+    
+    Write-Host "✓ Enforced 3-segment version: $ReleaseTag" -ForegroundColor Green
+}
+
+# Also bump AssemblyFileVersion to match (if not already done)
+if ($versionParts.Count -le 3) {
+    $fileVersionResult = Bump-Version -Files @($assemblyInfoPath) -Pattern 'AssemblyFileVersion\("([^"]+)"\)'
+    if (-not $fileVersionResult -or -not $fileVersionResult.Success) {
+        throw "Failed to bump AssemblyFileVersion: $($fileVersionResult.Error)"
+    }
 }
 Write-Host "✓ Version bumped to $ReleaseTag" -ForegroundColor Green
 Write-Host ""
 
-# Step 2: Complete Build Workflow using Bluscream-BuildTools
+# Complete Build Workflow using Bluscream-BuildTools
 Write-Host "📦 Starting complete build workflow..." -ForegroundColor Green
 
 if (-not (Get-Command Start-BuildWorkflow -ErrorAction SilentlyContinue)) {
@@ -89,7 +106,7 @@ if (-not $buildWorkflow -or -not $buildWorkflow.Success) {
 Write-Host "✓ Complete build workflow succeeded" -ForegroundColor Green
 Write-Host ""
 
-# Step 4: Git operations using Bluscream-BuildTools
+# Git operations using Bluscream-BuildTools
 Write-Host "📝 Committing changes..." -ForegroundColor Green
 
 if (-not (Get-Command Git-CommitRepository -ErrorAction SilentlyContinue)) {
@@ -109,7 +126,7 @@ if (-not $pushResult) {
 Write-Host "✓ Committed and pushed using Bluscream-BuildTools" -ForegroundColor Green
 Write-Host ""
 
-# Step 5: Create GitHub release (only if -Publish flag is used)
+# Create GitHub release (only if -Publish flag is used)
 if ($Publish) {
     Write-Host "🚀 Creating GitHub release..." -ForegroundColor Green
     
@@ -149,7 +166,7 @@ else {
     Write-Host "⏭️  Skipping release (use -Publish to create release)" -ForegroundColor Yellow
 }
 
-# Step 6: Clean VRCOSC local packages directory and logs
+# Clean VRCOSC local packages directory and logs
 Write-Host "🧹 Cleaning VRCOSC local packages directory..." -ForegroundColor Green
 $vrcoscLocalDir = Join-Path $env:APPDATA "VRCOSC\packages\local"
 if (Test-Path $vrcoscLocalDir) {
@@ -180,7 +197,7 @@ else {
 }
 Write-Host ""
 
-# Step 7: Build in Debug mode using Bluscream-BuildTools
+# Build in Debug mode using Bluscream-BuildTools
 Write-Host "🔧 Building in Debug mode..." -ForegroundColor Green
 
 $debugWorkflow = Start-BuildWorkflow -ProjectPath $ProjectFile -Configuration "Debug" -Architecture "win-x64" -Framework "net8.0-windows10.0.26100.0" -AssemblyName "Bluscream.Modules" -OutputDirectory "./debug-dist/" -CleanOutput
@@ -207,7 +224,7 @@ else {
 }
 Write-Host ""
 
-# Step 8: Create release package if publishing
+# Create release package if publishing
 if ($Publish) {
     Write-Host "📦 Creating release package..." -ForegroundColor Green
     
@@ -250,7 +267,7 @@ Write-Host "📍 Debug Files: $($debugWorkflow.OutputDirectory)" -ForegroundColo
 Write-Host "📍 Local VRCOSC: %APPDATA%\VRCOSC\packages\local\Bluscream.Modules.dll (Debug)" -ForegroundColor Cyan
 Write-Host ""
 
-# Final Step: Start VRCOSC
+# Start VRCOSC
 Write-Host "🚀 Starting VRCOSC..." -ForegroundColor Green
 $vrcoscPath = "$env:LOCALAPPDATA\VRCOSC\VRCOSC.bat"
 if (Test-Path $vrcoscPath) {

@@ -52,10 +52,10 @@ public static class ReflectionUtils
     {
         try
         {
-            _appManagerType ??= Type.GetType("VRCOSC.App.Modules.AppManager, VRCOSC.App");
+            _appManagerType ??= Type.GetType("VRCOSC.App.AppManager, VRCOSC.App");
             if (_appManagerType == null) return (null, "AppManager type not found");
 
-            _appManagerGetInstanceMethod ??= _appManagerType.GetMethod("GetInstance", BindingFlags.Public | BindingFlags.Static);
+            _appManagerGetInstanceMethod ??= _appManagerType.GetMethod("GetInstance", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
             if (_appManagerGetInstanceMethod == null) return (null, "AppManager.GetInstance method not found");
 
             var instance = _appManagerGetInstanceMethod.Invoke(null, null);
