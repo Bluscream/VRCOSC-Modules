@@ -40,7 +40,7 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         
         // Debug settings
         CreateToggle(DebugSetting.LogParameterUpdates, "Log Parameter Updates", "Log all parameter updates to console", false);
-        CreateToggle(DebugSetting.AutoStartModules, "Auto Start Modules on Load", "Automatically start all VRCOSC modules 5 seconds after this module loads", false);
+        CreateToggle(DebugSetting.AutoStartModules, "Auto Start VRCOSC on Load", "Automatically starts VRCOSC when it loads (equivalent to clicking Play button). Bypasses VRChat detection.", false);
 
         // OSC Parameters
         RegisterParameter<bool>(DebugParameter.DumpNow, "VRCOSC/Debug/DumpNow", ParameterMode.Read, "Dump Now", "Set to true to trigger a parameter dump");
@@ -96,7 +96,7 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
                         return;
                     }
                     
-                    Log("🚀 Force-starting VRCOSC (skipping VRChat detection)...");
+                    Log("🚀 Force-starting VRCOSC (initializing CancellationTokenSource and skipping VRChat detection)...");
                     var error = ReflectionUtils.ForceAppManagerStart();
                     
                     if (error != null)

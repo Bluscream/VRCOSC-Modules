@@ -391,6 +391,21 @@ public static class ReflectionUtils
                 return $"AppManager is already {currentState}";
             }
 
+            // FIX: Initialize the CancellationTokenSource that ForceStart needs
+            // ForceStart() calls CancelStartRequest() which tries to cancel this token
+            var tokenSourceField = appManager.GetType().GetField("requestStartCancellationSource", 
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            if (tokenSourceField != null)
+            {
+                var currentTokenSource = tokenSourceField.GetValue(appManager);
+                if (currentTokenSource == null)
+                {
+                    // Initialize with a new CancellationTokenSource
+                    var newTokenSource = new CancellationTokenSource();
+                    tokenSourceField.SetValue(appManager, newTokenSource);
+                }
+            }
+
             // Get ForceStart method
             var forceStartMethod = appManager.GetType().GetMethod("ForceStart", BindingFlags.Public | BindingFlags.Instance);
             if (forceStartMethod == null) return "ForceStart method not found on AppManager";
