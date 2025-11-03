@@ -514,7 +514,7 @@ public static class ReflectionUtils
     #region OSC Parameter Access
 
     /// <summary>
-    /// Get the parameter cache from AppManager (Dictionary of parameter name to VRChatParameter)
+    /// Get the parameter cache from AppManager (ConcurrentDictionary of ParameterDefinition to VRChatParameter)
     /// </summary>
     public static object? GetParameterCache()
     {
@@ -523,9 +523,115 @@ public static class ReflectionUtils
             var (appManager, _) = GetAppManagerWithError();
             if (appManager == null) return null;
 
-            var parameterCacheField = appManager.GetType().GetField("parameterCache", 
+            // parameterCache is a property, not a field
+            var parameterCacheProp = appManager.GetType().GetProperty("parameterCache", 
                 BindingFlags.NonPublic | BindingFlags.Instance);
-            return parameterCacheField?.GetValue(appManager);
+            return parameterCacheProp?.GetValue(appManager);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Get Debug module instance if it's loaded and running
+    /// </summary>
+    public static object? GetDebugModule()
+    {
+        try
+        {
+            var modules = GetModules();
+            if (modules == null) return null;
+
+            foreach (var module in modules)
+            {
+                if (module == null) continue;
+                
+                var moduleType = module.GetType();
+                if (moduleType.Name == "DebugModule" || moduleType.FullName?.Contains("Debug.DebugModule") == true)
+                {
+                    return module;
+                }
+            }
+
+            return null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Get all OSC parameters from Debug module's trackers (if available)
+    /// Returns (incoming, outgoing) dictionaries or nulls
+    /// </summary>
+    public static (Dictionary<string, object>? Incoming, Dictionary<string, object>? Outgoing)? GetDebugModuleParameters()
+    {
+        try
+        {
+            var debugModule = GetDebugModule();
+            if (debugModule == null) return null;
+
+            var debugType = debugModule.GetType();
+            
+            // Get GetAllIncomingParameters method
+            var getIncomingMethod = debugType.GetMethod("GetAllIncomingParameters", BindingFlags.Public | BindingFlags.Instance);
+            var getOutgoingMethod = debugType.GetMethod("GetAllOutgoingParameters", BindingFlags.Public | BindingFlags.Instance);
+
+            if (getIncomingMethod == null || getOutgoingMethod == null) return null;
+
+            var incomingDict = getIncomingMethod.Invoke(debugModule, null);
+            var outgoingDict = getOutgoingMethod.Invoke(debugModule, null);
+
+            if (incomingDict == null && outgoingDict == null) return null;
+
+            // Convert ParameterData dictionaries to simple dictionaries
+            var incoming = ConvertParameterDataDict(incomingDict);
+            var outgoing = ConvertParameterDataDict(outgoingDict);
+
+            return (incoming, outgoing);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static Dictionary<string, object>? ConvertParameterDataDict(object? paramDataDict)
+    {
+        if (paramDataDict == null) return null;
+
+        try
+        {
+            var result = new Dictionary<string, object>();
+            var dictType = paramDataDict.GetType();
+            
+            foreach (var kvp in (System.Collections.IDictionary)paramDataDict)
+            {
+                var key = kvp.GetType().GetProperty("Key")?.GetValue(kvp) as string;
+                var value = kvp.GetType().GetProperty("Value")?.GetValue(kvp);
+
+                if (key == null || value == null) continue;
+
+                // Extract ParameterData properties
+                var paramType = value.GetType();
+                var pathProp = paramType.GetProperty("Path");
+                var typeProp = paramType.GetProperty("Type");
+                var valueProp = paramType.GetProperty("Value");
+
+                var paramData = new
+                {
+                    path = pathProp?.GetValue(value) as string,
+                    type = typeProp?.GetValue(value) as string,
+                    value = valueProp?.GetValue(value)
+                };
+
+                result[key] = paramData;
+            }
+
+            return result;
         }
         catch
         {
@@ -544,11 +650,11 @@ public static class ReflectionUtils
             var cache = GetParameterCache();
             if (cache == null) return null;
 
-            // parameterCache is Dictionary<string, VRChatParameter>
+            // parameterCache is ConcurrentDictionary<ParameterDefinition, VRChatParameter>
             var results = new List<(string, object?, string)>();
             var dictType = cache.GetType();
             
-            // Get Values property to iterate
+            // Get Values property to iterate VRChatParameter values
             var valuesProperty = dictType.GetProperty("Values");
             if (valuesProperty == null) return null;
 
@@ -562,23 +668,34 @@ public static class ReflectionUtils
                 var paramType = param.GetType();
                 var nameProperty = paramType.GetProperty("Name");
                 var valueProperty = paramType.GetProperty("Value");
+                var typeProperty = paramType.GetProperty("Type");
 
                 var name = nameProperty?.GetValue(param) as string;
                 var value = valueProperty?.GetValue(param);
+                var paramTypeValue = typeProperty?.GetValue(param);
 
                 if (name == null) continue;
 
-                // Determine type from value
-                var type = value switch
+                // Get type from VRChatParameter.Type property, or fallback to value type
+                string typeStr;
+                if (paramTypeValue != null)
                 {
-                    bool => "bool",
-                    int => "int",
-                    float => "float",
-                    string => "string",
-                    _ => "unknown"
-                };
+                    // VRChatParameter.Type is an enum (ParameterType)
+                    typeStr = paramTypeValue.ToString()?.ToLowerInvariant() ?? "unknown";
+                }
+                else
+                {
+                    typeStr = value switch
+                    {
+                        bool => "bool",
+                        int => "int",
+                        float => "float",
+                        string => "string",
+                        _ => "unknown"
+                    };
+                }
 
-                results.Add((name, value, type));
+                results.Add((name, value, typeStr));
             }
 
             return results;
@@ -600,32 +717,53 @@ public static class ReflectionUtils
             var cache = GetParameterCache();
             if (cache == null) return null;
 
-            // Try to get the parameter from the dictionary
+            // Iterate through all values since the dictionary is keyed by ParameterDefinition, not string
             var dictType = cache.GetType();
-            var tryGetValueMethod = dictType.GetMethod("TryGetValue");
-            if (tryGetValueMethod == null) return null;
+            var valuesProperty = dictType.GetProperty("Values");
+            if (valuesProperty == null) return null;
 
-            var parameters = new object[] { parameterName, null! };
-            var found = (bool)tryGetValueMethod.Invoke(cache, parameters)!;
-            
-            if (!found) return null;
+            var values = valuesProperty.GetValue(cache) as System.Collections.IEnumerable;
+            if (values == null) return null;
 
-            var param = parameters[1];
-            if (param == null) return null;
-
-            var valueProperty = param.GetType().GetProperty("Value");
-            var value = valueProperty?.GetValue(param);
-
-            var type = value switch
+            foreach (var param in values)
             {
-                bool => "bool",
-                int => "int",
-                float => "float",
-                string => "string",
-                _ => "unknown"
-            };
+                if (param == null) continue;
 
-            return (value, type);
+                var paramType = param.GetType();
+                var nameProperty = paramType.GetProperty("Name");
+                var name = nameProperty?.GetValue(param) as string;
+
+                if (name == parameterName)
+                {
+                    var valueProperty = paramType.GetProperty("Value");
+                    var typeProperty = paramType.GetProperty("Type");
+
+                    var value = valueProperty?.GetValue(param);
+                    var paramTypeValue = typeProperty?.GetValue(param);
+
+                    // Get type from VRChatParameter.Type property, or fallback to value type
+                    string typeStr;
+                    if (paramTypeValue != null)
+                    {
+                        typeStr = paramTypeValue.ToString()?.ToLowerInvariant() ?? "unknown";
+                    }
+                    else
+                    {
+                        typeStr = value switch
+                        {
+                            bool => "bool",
+                            int => "int",
+                            float => "float",
+                            string => "string",
+                            _ => "unknown"
+                        };
+                    }
+
+                    return (value, typeStr);
+                }
+            }
+
+            return null; // Parameter not found
         }
         catch
         {
@@ -679,12 +817,12 @@ public static class ReflectionUtils
             var (appManager, _) = GetAppManagerWithError();
             if (appManager == null) return null;
 
-            // Get currentAvatarConfig field
-            var avatarConfigField = appManager.GetType().GetField("currentAvatarConfig", 
+            // Get currentAvatarConfig property (not field)
+            var avatarConfigProp = appManager.GetType().GetProperty("currentAvatarConfig", 
                 BindingFlags.NonPublic | BindingFlags.Instance);
-            if (avatarConfigField == null) return null;
+            if (avatarConfigProp == null) return null;
 
-            var avatarConfig = avatarConfigField.GetValue(appManager);
+            var avatarConfig = avatarConfigProp.GetValue(appManager);
             if (avatarConfig == null) return (null, null); // No avatar loaded
 
             // Get Id and Name properties

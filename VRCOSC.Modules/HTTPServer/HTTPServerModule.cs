@@ -408,6 +408,13 @@ public class HTTPServerModule : VRCOSCModule
                     SendJsonResponse(response, 405, new { error = "Method not allowed" });
                 break;
 
+            case "/api":
+                if (method == "GET")
+                    await HandleApiData(context);
+                else
+                    SendJsonResponse(response, 405, new { error = "Method not allowed" });
+                break;
+
             case "/openapi.json":
                 if (method == "GET")
                     await HandleOpenApiSpec(context);
@@ -491,6 +498,99 @@ public class HTTPServerModule : VRCOSCModule
     }
 
     #region Request Handlers
+
+    private async Task HandleApiData(HttpListenerContext context)
+    {
+        try
+        {
+            // Get avatar info
+            var avatarInfo = ReflectionUtils.GetCurrentAvatarInfo();
+            var (avatarId, avatarName) = avatarInfo ?? (null, null);
+            
+            // Try to get parameters from Debug module first (better tracking)
+            var debugParams = ReflectionUtils.GetDebugModuleParameters();
+            List<object> incomingParams = new();
+            List<object> outgoingParams = new();
+            
+            if (debugParams != null)
+            {
+                // Use Debug module's tracked parameters
+                var (incoming, outgoing) = debugParams.Value;
+                
+                if (incoming != null)
+                {
+                    incomingParams = incoming.Values
+                        .Cast<object>()
+                        .ToList();
+                }
+                
+                if (outgoing != null)
+                {
+                    outgoingParams = outgoing.Values
+                        .Cast<object>()
+                        .ToList();
+                }
+            }
+            else
+            {
+                // Fallback to AppManager parameter cache
+                var allParams = ReflectionUtils.GetAllOscParameters();
+                if (allParams != null)
+                {
+                    incomingParams = allParams.Select(p => (object)new { 
+                        name = p.Name, 
+                        value = p.Value, 
+                        type = p.Type 
+                    }).ToList();
+                }
+            }
+
+            var responseObj = new
+            {
+                success = true,
+                server = new
+                {
+                    version = "2025.1103.2",
+                    uptime = GetUptime(),
+                    requestCount = _requestCount,
+                    url = _serverUrl,
+                    status = "running"
+                },
+                player = new
+                {
+                    avatar = new
+                    {
+                        id = avatarId,
+                        name = avatarName ?? "Unknown",
+                        loaded = !string.IsNullOrEmpty(avatarId)
+                    }
+                },
+                osc = new
+                {
+                    incoming = new
+                    {
+                        count = incomingParams.Count,
+                        parameters = incomingParams
+                    },
+                    outgoing = new
+                    {
+                        count = outgoingParams.Count,
+                        parameters = outgoingParams
+                    }
+                },
+                endpoints = GetEndpointsFromOpenApi(),
+                timestamp = DateTime.UtcNow.ToString("o")
+            };
+
+            SendJsonResponse(context.Response, 200, responseObj);
+        }
+        catch (Exception ex)
+        {
+            SendJsonResponse(context.Response, 500, new { success = false, error = $"Error getting API data: {ex.Message}" });
+        }
+
+        await Task.CompletedTask;
+    }
 
     private async Task HandleRoot(HttpListenerContext context)
     {

@@ -58,6 +58,26 @@
         }
       }
     },
+    "/api": {
+      "get": {
+        "tags": ["Server"],
+        "summary": "Get comprehensive API data",
+        "description": "Returns all data in one response: server status, health, player info (including avatar), all OSC parameters, and available endpoints",
+        "operationId": "getApiData",
+        "responses": {
+          "200": {
+            "description": "Successful response with comprehensive data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiData"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/server/status": {
       "get": {
         "tags": ["Server"],
@@ -478,6 +498,71 @@
           },
           "statusCode": {
             "type": "integer"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ApiData": {
+        "type": "object",
+        "description": "Comprehensive API data including server, player, and OSC information",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "server": {
+            "type": "object",
+            "properties": {
+              "version": { "type": "string" },
+              "uptime": { "type": "string" },
+              "requestCount": { "type": "integer" },
+              "url": { "type": "string" },
+              "status": { "type": "string", "enum": ["running", "stopped", "error"] }
+            }
+          },
+          "player": {
+            "type": "object",
+            "properties": {
+              "avatar": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "name": { "type": "string" },
+                  "loaded": { "type": "boolean" }
+                }
+              }
+            }
+          },
+          "osc": {
+            "type": "object",
+            "properties": {
+              "incoming": {
+                "type": "object",
+                "properties": {
+                  "count": { "type": "integer" },
+                  "parameters": {
+                    "type": "array",
+                    "items": { "$ref": "#/components/schemas/Parameter" }
+                  }
+                }
+              },
+              "outgoing": {
+                "type": "object",
+                "properties": {
+                  "count": { "type": "integer" },
+                  "parameters": {
+                    "type": "array",
+                    "items": { "$ref": "#/components/schemas/Parameter" }
+                  }
+                }
+              }
+            }
+          },
+          "endpoints": {
+            "type": "array",
+            "items": { "type": "string" }
           },
           "timestamp": {
             "type": "string",
