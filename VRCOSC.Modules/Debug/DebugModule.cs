@@ -73,39 +73,53 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         {
             _ = Task.Run(async () =>
             {
-                // Small delay to ensure VRCOSC is fully initialized
-                await Task.Delay(1000);
-                
-                Log("Auto-start enabled, checking VRCOSC state...");
-                
-                var currentState = ReflectionUtils.GetAppManagerState();
-                Log($"Current AppManager state: {currentState ?? "Unknown"}");
-                
-                if (currentState == "Started" || currentState == "Starting")
+                try
                 {
-                    Log($"⏭ VRCOSC is already {currentState}, skipping auto-start");
-                    return;
+                    // Wait longer to ensure VRCOSC is fully initialized
+                    await Task.Delay(3000);
+                    
+                    Log("Auto-start enabled, checking VRCOSC state...");
+                    
+                    var currentState = ReflectionUtils.GetAppManagerState();
+                    Log($"Current AppManager state: {currentState ?? "Unknown"}");
+                    
+                    if (currentState == "Started" || currentState == "Starting")
+                    {
+                        Log($"⏭ VRCOSC is already {currentState}, skipping auto-start");
+                        return;
+                    }
+                    
+                    // If in Waiting state, user manually clicked Play - let it proceed
+                    if (currentState == "Waiting")
+                    {
+                        Log("⏭ VRCOSC is waiting for VRChat, skipping auto-start");
+                        return;
+                    }
+                    
+                    Log("🚀 Force-starting VRCOSC (skipping VRChat detection)...");
+                    var error = ReflectionUtils.ForceAppManagerStart();
+                    
+                    if (error != null)
+                    {
+                        Log($"❌ Auto-start failed: {error}");
+                        return;
+                    }
+                    
+                    Log("⏳ Waiting for VRCOSC to complete startup...");
+                    var isStarted = await ReflectionUtils.WaitForAppManagerStarted(30000);
+                    
+                    if (!isStarted)
+                    {
+                        Log("⚠ VRCOSC didn't reach 'Started' state within 30 seconds");
+                        return;
+                    }
+                    
+                    Log("✅ VRCOSC auto-started successfully - all enabled modules are now running");
                 }
-                
-                Log("🚀 Force-starting VRCOSC (skipping VRChat detection)...");
-                var error = ReflectionUtils.ForceAppManagerStart();
-                
-                if (error != null)
+                catch (Exception ex)
                 {
-                    Log($"❌ Auto-start failed: {error}");
-                    return;
+                    Log($"❌ Auto-start exception: {ex.GetType().Name} - {ex.Message}");
                 }
-                
-                Log("⏳ Waiting for VRCOSC to complete startup...");
-                var isStarted = await ReflectionUtils.WaitForAppManagerStarted(30000);
-                
-                if (!isStarted)
-                {
-                    Log("⚠ VRCOSC didn't reach 'Started' state within 30 seconds");
-                    return;
-                }
-                
-                Log("✅ VRCOSC auto-started successfully - all enabled modules are now running");
             });
         }
     }

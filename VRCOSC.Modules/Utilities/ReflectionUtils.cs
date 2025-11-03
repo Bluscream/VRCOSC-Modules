@@ -395,11 +395,56 @@ public static class ReflectionUtils
             var forceStartMethod = appManager.GetType().GetMethod("ForceStart", BindingFlags.Public | BindingFlags.Instance);
             if (forceStartMethod == null) return "ForceStart method not found on AppManager";
 
-            // Invoke ForceStart (returns Task)
-            var task = forceStartMethod.Invoke(appManager, null) as Task;
-            if (task == null) return "ForceStart invocation returned null";
+            // Get Application.Current.Dispatcher to invoke on UI thread
+            var applicationType = Type.GetType("System.Windows.Application, PresentationFramework");
+            if (applicationType == null) return "Could not get Application type";
 
-            // Don't wait for completion - let it run async
+            var currentProperty = applicationType.GetProperty("Current", BindingFlags.Public | BindingFlags.Static);
+            if (currentProperty == null) return "Could not get Application.Current property";
+
+            var application = currentProperty.GetValue(null);
+            if (application == null) return "Application.Current is null";
+
+            var dispatcherProperty = applicationType.GetProperty("Dispatcher", BindingFlags.Public | BindingFlags.Instance);
+            if (dispatcherProperty == null) return "Could not get Dispatcher property";
+
+            var dispatcher = dispatcherProperty.GetValue(application);
+            if (dispatcher == null) return "Dispatcher is null";
+
+            // Invoke ForceStart on UI thread
+            var dispatcherType = dispatcher.GetType();
+            var invokeMethod = dispatcherType.GetMethod("Invoke", BindingFlags.Public | BindingFlags.Instance, null,
+                new[] { typeof(Action) }, null);
+            if (invokeMethod == null) return "Could not get Dispatcher.Invoke method";
+
+            // Wrap ForceStart call in Action and invoke on UI thread
+            Action forceStartAction = () =>
+            {
+                try
+                {
+                    var task = forceStartMethod.Invoke(appManager, null) as Task;
+                    if (task != null)
+                    {
+                        // Handle any exceptions from the task
+                        task.ContinueWith(t =>
+                        {
+                            if (t.IsFaulted && t.Exception != null)
+                            {
+                                var baseException = t.Exception.GetBaseException();
+                                System.Diagnostics.Debug.WriteLine($"ForceStart task failed: {baseException.Message}");
+                            }
+                        }, TaskContinuationOptions.OnlyOnFaulted);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"ForceStart invocation exception: {ex.Message}");
+                    throw;
+                }
+            };
+
+            invokeMethod.Invoke(dispatcher, new object[] { forceStartAction });
+
             return null;
         }
         catch (Exception ex)
