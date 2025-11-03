@@ -297,6 +297,45 @@ public static class ReflectionUtils
         }
     }
 
+    /// <summary>
+    /// Get AppManager state
+    /// Returns: "Waiting", "Starting", "Started", "Stopping", "Stopped", or null if failed
+    /// </summary>
+    public static string? GetAppManagerState()
+    {
+        try
+        {
+            var appManager = GetAppManager();
+            if (appManager == null) return null;
+
+            var stateProp = appManager.GetType().GetProperty("State", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (stateProp == null) return null;
+
+            var stateObservable = stateProp.GetValue(appManager);
+            if (stateObservable == null) return null;
+
+            var valueProp = stateObservable.GetType().GetProperty("Value", BindingFlags.Public | BindingFlags.Instance);
+            if (valueProp == null) return null;
+
+            var state = valueProp.GetValue(stateObservable);
+            return state?.ToString();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Wait for AppManager to reach "Started" state
+    /// </summary>
+    /// <param name="timeoutMs">Maximum time to wait in milliseconds</param>
+    /// <returns>True if Started state reached, false if timeout or error</returns>
+    public static async System.Threading.Tasks.Task<bool> WaitForAppManagerStarted(int timeoutMs = 30000)
+    {
+        return await TaskUtils.PollUntil(() => GetAppManagerState() == "Started", timeoutMs, pollIntervalMs: 500);
+    }
+
     #endregion
 
     #region Module Control

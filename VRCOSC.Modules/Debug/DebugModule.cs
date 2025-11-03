@@ -73,15 +73,23 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         {
             _ = Task.Run(async () =>
             {
-                Log("Auto-start enabled, waiting 5 seconds before starting modules...");
-                await Task.Delay(5000);
+                Log("Auto-start enabled, waiting for VRCOSC to be ready...");
                 
-                Log("Auto-starting all VRCOSC modules...");
+                // Wait for AppManager to reach "Started" state (OSC client will be connected)
+                var isReady = await ReflectionUtils.WaitForAppManagerStarted(30000);
+                
+                if (!isReady)
+                {
+                    Log("⚠ Failed to auto-start: VRCOSC didn't reach 'Started' state within 30 seconds");
+                    return;
+                }
+                
+                Log("VRCOSC is ready, auto-starting all modules...");
                 var error = ReflectionUtils.StartModules();
                 
                 if (error == null)
                 {
-                    Log("✓ All modules started successfully");
+                    Log("✓ All modules auto-started successfully");
                 }
                 else
                 {

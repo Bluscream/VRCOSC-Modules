@@ -70,4 +70,42 @@ public static class TaskUtils
             }
         }
     }
+
+    /// <summary>
+    /// Poll a condition until it returns true or timeout
+    /// </summary>
+    /// <param name="condition">Function that returns true when condition is met</param>
+    /// <param name="timeoutMs">Maximum time to wait in milliseconds</param>
+    /// <param name="pollIntervalMs">Time between polling attempts in milliseconds</param>
+    /// <returns>True if condition met, false if timeout</returns>
+    public static async Task<bool> PollUntil(Func<bool> condition, int timeoutMs = 30000, int pollIntervalMs = 500)
+    {
+        var startTime = DateTime.UtcNow;
+        while ((DateTime.UtcNow - startTime).TotalMilliseconds < timeoutMs)
+        {
+            if (condition()) return true;
+            await Task.Delay(pollIntervalMs);
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Poll a condition until it returns a non-null value or timeout
+    /// </summary>
+    /// <typeparam name="T">Type of value to return</typeparam>
+    /// <param name="provider">Function that returns the value or null if not ready</param>
+    /// <param name="timeoutMs">Maximum time to wait in milliseconds</param>
+    /// <param name="pollIntervalMs">Time between polling attempts in milliseconds</param>
+    /// <returns>The value if found, or null if timeout</returns>
+    public static async Task<T?> PollUntilValue<T>(Func<T?> provider, int timeoutMs = 30000, int pollIntervalMs = 500) where T : class
+    {
+        var startTime = DateTime.UtcNow;
+        while ((DateTime.UtcNow - startTime).TotalMilliseconds < timeoutMs)
+        {
+            var value = provider();
+            if (value != null) return value;
+            await Task.Delay(pollIntervalMs);
+        }
+        return null;
+    }
 }

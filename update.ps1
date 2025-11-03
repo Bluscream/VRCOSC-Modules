@@ -188,12 +188,13 @@ else {
 }
 
 Write-Host "🧹 Cleaning VRCOSC logs..." -ForegroundColor Green
-$logsDir = Join-Path $PSScriptRoot "AppdataRoaming\logs"
+$logsDir = Join-Path $env:APPDATA "VRCOSC\logs"
 if (Test-Path $logsDir) {
     $logsRemoved = 0
     Get-ChildItem -Path $logsDir -Filter "*.log" | ForEach-Object {
         Remove-Item $_.FullName -Force
         $logsRemoved++
+        Write-Host "  Removed: $($_.Name)" -ForegroundColor Gray
     }
     Write-Host "✓ Removed $logsRemoved log file(s)" -ForegroundColor Green
 }

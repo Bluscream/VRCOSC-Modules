@@ -126,6 +126,7 @@ Comprehensive set of extension methods for common operations.
 - `GetSettings()` - Read settings from disk as dictionary (works before module starts)
 - `GetSetting<T>(name, defaultValue)` - Get specific setting value from disk
 - `IsEnabled()` - Check if module is enabled in settings
+- `SendParameterSafe(lookup, value)` - Send OSC parameter safely (won't crash if OSC not connected)
 
 ### ReflectionUtils
 
@@ -135,6 +136,8 @@ Reflection-based utilities for accessing VRCOSC's internal APIs. All reflection 
 
 - `GetAppManager()` - Get AppManager singleton
 - `GetModuleManager()` - Get ModuleManager instance
+- `GetAppManagerState()` - Get current AppManager state ("Started", "Starting", "Stopped", etc.)
+- `WaitForAppManagerStarted(timeoutMs)` - Wait for AppManager to reach "Started" state
 - `GetCurrentProfileId()` - Get active profile GUID
 - `GetCurrentProfileModulesPath()` - Get path to current profile's modules directory
 
@@ -167,6 +170,15 @@ Reflection-based utilities for accessing VRCOSC's internal APIs. All reflection 
 - `GetModuleId(module)` - Get module ID as VRCOSC sees it (e.g., "notificationsmodule")
 - `GetModulePackageId(module)` - Get package ID ("local" for local modules)
 - `GetModuleFullId(module)` - Get full ID for file naming (e.g., "local.notificationsmodule")
+
+### ModuleUtils
+
+VRCOSC module-specific utility functions.
+
+**Parameter Sending:**
+
+- `SendParameterSafe(module, lookup, value)` - Send OSC parameter safely (ignores if OSC not connected)
+- `SendParameterSafe(module, name, value)` - Send OSC parameter by name safely
 
 ### VRCUtils
 
