@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Bluscream.Modules.Debug;
+using Bluscream;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Modules.Attributes;
 using VRCOSC.App.SDK.Parameters;
@@ -39,6 +40,7 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         
         // Debug settings
         CreateToggle(DebugSetting.LogParameterUpdates, "Log Parameter Updates", "Log all parameter updates to console", false);
+        CreateToggle(DebugSetting.AutoStartModules, "Auto Start Modules on Load", "Automatically start all VRCOSC modules 5 seconds after this module loads", false);
 
         // OSC Parameters
         RegisterParameter<bool>(DebugParameter.DumpNow, "VRCOSC/Debug/DumpNow", ParameterMode.Read, "Dump Now", "Set to true to trigger a parameter dump");
@@ -65,6 +67,28 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         CreateEvent(DebugEvent.OnTrackingCleared, "Tracking Cleared", "Cleared all tracked parameters");
 
         ChangeState(DebugState.Idle);
+        
+        // Auto-start modules if enabled (read from disk since settings aren't loaded yet in OnPostLoad)
+        if (this.GetSetting("AutoStartModules", false))
+        {
+            _ = Task.Run(async () =>
+            {
+                Log("Auto-start enabled, waiting 5 seconds before starting modules...");
+                await Task.Delay(5000);
+                
+                Log("Auto-starting all VRCOSC modules...");
+                var success = ReflectionUtils.StartModules();
+                
+                if (success)
+                {
+                    Log("✓ All modules started successfully");
+                }
+                else
+                {
+                    Log("⚠ Failed to auto-start modules");
+                }
+            });
+        }
     }
 
     protected override Task<bool> OnModuleStart()
@@ -92,12 +116,13 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         _outgoingTracker.OnMaxLimitReached += OnMaxLimitReached;
 
         // Cache the base SendParameter method for reflection-based interception
-        _baseSendParameterMethod = typeof(VRCOSC.App.SDK.Modules.Module).GetMethod("SendParameter", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null, new[] { typeof(string), typeof(object) }, null);
+        _baseSendParameterMethod = ReflectionUtils.GetModuleSendParameterMethod();
         
         Log("Using custom parameter tracking");
         
         Log("Debug module started");
         UpdateCounts();
+        
         return Task.FromResult(true);
     }
 
@@ -167,22 +192,22 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
     protected new void SendParameter(Enum lookup, object value)
     {
         // Get the parameter name from reflection to access internal Parameters dictionary
-        var parametersField = typeof(VRCOSC.App.SDK.Modules.Module).GetField("Parameters", BindingFlags.Instance | BindingFlags.NonPublic);
-        if (parametersField != null)
+        var parametersDict = ReflectionUtils.GetAllModuleParameters(this);
+        if (parametersDict != null)
         {
-            var parametersDict = (Dictionary<Enum, ModuleParameter>?)parametersField.GetValue(this);
-            if (parametersDict != null)
+            // Track using the dictionary
+            if (_outgoingTracker != null)
             {
-                // Track using the dictionary
-                if (_outgoingTracker != null)
+                _outgoingTracker.ProcessParameter(lookup, value, parametersDict);
+            }
+            
+            // Get parameter name and send
+            if (parametersDict.TryGetValue(lookup, out var moduleParameter))
+            {
+                var paramName = ReflectionUtils.GetParameterName(moduleParameter);
+                if (!string.IsNullOrEmpty(paramName))
                 {
-                    _outgoingTracker.ProcessParameter(lookup, value, new Dictionary<Enum, object>(parametersDict.ToDictionary(kvp => kvp.Key, kvp => (object)kvp.Value)));
-                }
-                
-                // Get parameter name and send
-                if (parametersDict.TryGetValue(lookup, out var moduleParameter))
-                {
-                    SendParameter(moduleParameter.Name.Value, value);
+                    SendParameter(paramName, value);
                     return;
                 }
             }
@@ -393,7 +418,8 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         // AutoTrackIncoming,     // Disabled - custom tracking not active
         // AutoTrackOutgoing,     // Disabled - custom tracking not active
         // MaxParameters,         // Disabled - custom tracking not active
-        LogParameterUpdates
+        LogParameterUpdates,
+        AutoStartModules
     }
 
     private enum CsvSortBy

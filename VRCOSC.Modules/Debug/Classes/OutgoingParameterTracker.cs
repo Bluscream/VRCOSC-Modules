@@ -28,21 +28,12 @@ public class OutgoingParameterTracker : ParameterTracker
         // Try to get the parameter name from the lookup
         if (parametersDict.TryGetValue(lookup, out var paramObj))
         {
-            // Extract the name using reflection
-            var nameProperty = paramObj.GetType().GetProperty("Name");
-            if (nameProperty != null)
+            // Extract the name using reflection utilities
+            var name = Bluscream.ReflectionUtils.GetParameterName(paramObj);
+            if (!string.IsNullOrEmpty(name))
             {
-                var nameObservable = nameProperty.GetValue(paramObj);
-                var valueProperty = nameObservable?.GetType().GetProperty("Value");
-                if (valueProperty != null)
-                {
-                    var name = valueProperty.GetValue(nameObservable)?.ToString();
-                    if (!string.IsNullOrEmpty(name))
-                    {
-                        ProcessParameter(name, value);
-                        return;
-                    }
-                }
+                ProcessParameter(name, value);
+                return;
             }
         }
         

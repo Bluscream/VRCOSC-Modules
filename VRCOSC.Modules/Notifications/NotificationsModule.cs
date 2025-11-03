@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Bluscream;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Parameters;
 

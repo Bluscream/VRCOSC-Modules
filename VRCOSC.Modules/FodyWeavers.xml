@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Weavers
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="FodyWeavers.xsd"
+>
+  <Costura>
+    <!-- Embed all dependencies except VRCOSC SDK (already present in host) -->
+    <ExcludeAssemblies>
+      VRCOSC.App
+      VRCOSC.App.SDK
+      VolcanicArts.VRCOSC.SDK
+    </ExcludeAssemblies>
+    <!-- Don't include debug symbols in release -->
+    <IncludeDebugSymbols>false</IncludeDebugSymbols>
+  </Costura>
+</Weavers>

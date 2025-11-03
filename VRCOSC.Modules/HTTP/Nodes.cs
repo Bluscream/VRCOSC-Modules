@@ -7,6 +7,17 @@ using VRCOSC.App.SDK.Nodes;
 
 namespace Bluscream.Modules;
 
+public enum HttpMethod
+{
+    GET,
+    POST,
+    PUT,
+    PATCH,
+    DELETE,
+    HEAD,
+    OPTIONS
+}
+
 [Node("HTTP GET Request")]
 public sealed class HTTPGetRequestNode : ModuleNode<HTTPModule>{
     public FlowContinuation Next = new("Next");
@@ -108,7 +119,7 @@ public sealed class HTTPRequestNode : ModuleNode<HTTPModule>{
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
     
-    public ValueInput<string> Method = new("Method (GET/POST/PUT/DELETE)");
+    public ValueInput<HttpMethod> Method = new("Method");
     public ValueInput<string> Url = new("URL");
     public ValueInput<string> Body = new("Body (Optional)");
     
@@ -125,14 +136,14 @@ public sealed class HTTPRequestNode : ModuleNode<HTTPModule>{
             var url = Url.Read(c);
             var body = Body.Read(c);
             
-            if (string.IsNullOrEmpty(method) || string.IsNullOrEmpty(url))
+            if (string.IsNullOrEmpty(url))
             {
-                Error.Write("Method and URL are required", c);
+                Error.Write("URL is required", c);
                 await OnError.Execute(c);
                 return;
             }
 
-            var response = await Module.SendRequest(method.ToUpper(), url, 
+            var response = await Module.SendRequest(method.ToString(), url, 
                 string.IsNullOrEmpty(body) ? null : body);
             
             ResponseBody.Write(response.Body, c);

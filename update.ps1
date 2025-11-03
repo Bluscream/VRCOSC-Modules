@@ -136,7 +136,23 @@ else {
     Write-Host "⏭️  Skipping release (use -Publish to create release)" -ForegroundColor Yellow
 }
 
-# Step 5: Build in Debug mode using Bluscream-BuildTools
+# Step 5: Clean VRCOSC local packages directory
+Write-Host "🧹 Cleaning VRCOSC local packages directory..." -ForegroundColor Green
+$vrcoscLocalDir = Join-Path $env:APPDATA "VRCOSC\packages\local"
+if (Test-Path $vrcoscLocalDir) {
+    $filesRemoved = 0
+    Get-ChildItem -Path $vrcoscLocalDir -Filter "*.dll" | ForEach-Object {
+        Remove-Item $_.FullName -Force
+        $filesRemoved++
+        Write-Host "  Removed: $($_.Name)" -ForegroundColor Gray
+    }
+    Write-Host "✓ Removed $filesRemoved DLL file(s) from local packages" -ForegroundColor Green
+} else {
+    Write-Host "⚠️  Local packages directory doesn't exist yet" -ForegroundColor Yellow
+}
+Write-Host ""
+
+# Step 6: Build in Debug mode using Bluscream-BuildTools
 Write-Host "🔧 Building in Debug mode..." -ForegroundColor Green
 
 $debugWorkflow = Start-BuildWorkflow -ProjectPath $ProjectFile -Configuration "Debug" -Architecture "win-x64" -Framework "net8.0-windows10.0.26100.0" -AssemblyName "Bluscream.Modules" -OutputDirectory "./debug-dist/" -CleanOutput
@@ -162,7 +178,7 @@ if (Test-Path $debugDllSource) {
 }
 Write-Host ""
 
-# Step 6: Create release package if publishing
+# Step 7: Create release package if publishing
 if ($Publish) {
     Write-Host "📦 Creating release package..." -ForegroundColor Green
     

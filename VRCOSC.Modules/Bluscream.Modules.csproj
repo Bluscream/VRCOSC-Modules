@@ -7,15 +7,43 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <LangVersion>latestmajor</LangVersion>
     <WindowsSdkPackageVersion>10.0.26100.1</WindowsSdkPackageVersion>
+    <!-- Force ASP.NET Core dependencies to be copied locally for Costura embedding -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="VolcanicArts.VRCOSC.SDK" Version="2025.1015.0" />
+    <PackageReference Include="Costura.Fody" Version="5.7.0">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Fody" Version="6.8.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="VRChatSettings\Definitions\registry.csv" LogicalName="Bluscream.Modules.Definitions.Registry.csv" />
-    <EmbeddedResource Include="VRChatSettings\Definitions\config.schema.json" LogicalName="Bluscream.Modules.Definitions.config.schema.json" />
+    <!-- Exclude deprecated HTTP module from compilation -->
+    <Compile Remove="HTTP\**\*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource
+      Include="VRChatSettings\Definitions\registry.csv"
+      LogicalName="Bluscream.Modules.Definitions.Registry.csv"
+    />
+    <EmbeddedResource
+      Include="VRChatSettings\Definitions\config.schema.json"
+      LogicalName="Bluscream.Modules.Definitions.config.schema.json"
+    />
+    <EmbeddedResource
+      Include="HTTPServer\openapi.json"
+      LogicalName="Bluscream.Modules.HTTPServer.openapi.json"
+    />
+    <EmbeddedResource
+      Include="HTTPServer\swagger-ui.html"
+      LogicalName="Bluscream.Modules.HTTPServer.swagger-ui.html"
+    />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /Q /S /R /F /Y /-I &quot;$(TargetDir)$(TargetName).dll&quot; &quot;%25appdata%25\VRCOSC\packages\local\$(TargetName).dll&quot;" />
+    <!-- Copy only YOUR module DLL (HttpListener is built into .NET) -->
+    <Exec Command="xcopy /Q /R /F /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;%25appdata%25\VRCOSC\packages\local\&quot;" />
   </Target>
 </Project>

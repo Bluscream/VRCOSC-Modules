@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 using Bluscream.Modules.Providers;
+using Bluscream;
 
 namespace Bluscream.Modules;
 
@@ -60,13 +61,7 @@ public class VRChatSettings
 
     #region Helper Methods
 
-    private string AddHashToKeyName(string key)
-    {
-        uint hash = 5381;
-        foreach (var c in key)
-            hash = (hash * 33) ^ c;
-        return key + "_h" + hash;
-    }
+    private string AddHashToKeyName(string key) => VRCUtils.AddHashToKeyName(key);
 
     #endregion
 
@@ -80,7 +75,7 @@ public class VRChatSettings
         try
         {
             // Expand {userId} template if present
-            if (VRChatUserIdHelper.IsUserTemplate(key))
+            if (VRCUtils.IsUserTemplate(key))
             {
                 // Use provided userId or fall back to module setting
                 var userIdToUse = !string.IsNullOrEmpty(userId) ? userId : _module.VRChatUserId;
@@ -91,7 +86,7 @@ public class VRChatSettings
                     return false;
                 }
                 
-                var expandedKey = VRChatUserIdHelper.ExpandKeyTemplate(key, userIdToUse);
+                var expandedKey = VRCUtils.ExpandKeyTemplate(key, userIdToUse);
                 if (expandedKey == null)
                 {
                     error = $"Failed to expand template key: {key}";
@@ -150,7 +145,7 @@ public class VRChatSettings
             var originalKey = key; // Keep original for logging
             
             // Expand {userId} template if present
-            if (VRChatUserIdHelper.IsUserTemplate(key))
+            if (VRCUtils.IsUserTemplate(key))
             {
                 // Use provided userId or fall back to module setting
                 var userIdToUse = !string.IsNullOrEmpty(userId) ? userId : _module.VRChatUserId;
@@ -161,7 +156,7 @@ public class VRChatSettings
                     return false;
                 }
                 
-                var expandedKey = VRChatUserIdHelper.ExpandKeyTemplate(key, userIdToUse);
+                var expandedKey = VRCUtils.ExpandKeyTemplate(key, userIdToUse);
                 if (expandedKey == null)
                 {
                     error = $"Failed to expand template key: {key}";

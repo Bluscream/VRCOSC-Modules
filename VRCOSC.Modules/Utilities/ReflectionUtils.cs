@@ -1,0 +1,955 @@
+// Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
+// See the LICENSE file in the repository root for full license text.
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
+
+namespace Bluscream;
+
+/// <summary>
+/// Reflection utilities for accessing VRCOSC internal APIs
+/// Uses caching for improved performance when calling methods multiple times
+/// </summary>
+public static class ReflectionUtils
+{
+    #region Reflection Caches
+    
+    // Type caches
+    private static Type? _appManagerType;
+    private static Type? _chatBoxManagerType;
+    
+    // Method caches
+    private static MethodInfo? _appManagerGetInstanceMethod;
+    private static MethodInfo? _chatBoxManagerGetInstanceMethod;
+    private static MethodInfo? _moduleManagerStopAsyncMethod;
+    private static MethodInfo? _moduleManagerStartAsyncMethod;
+    private static MethodInfo? _oscClientSendMethod;
+    private static MethodInfo? _moduleSendParameterMethod;
+    
+    // Property caches
+    private static PropertyInfo? _appManagerModuleManagerProp;
+    private static PropertyInfo? _appManagerModulesProp;
+    private static PropertyInfo? _appManagerOscClientProp;
+    private static PropertyInfo? _chatBoxPulseTextProp;
+    private static PropertyInfo? _chatBoxPulseMinimalBgProp;
+    
+    // Field caches
+    private static FieldInfo? _moduleParametersField;
+    
+    #endregion
+
+    #region AppManager Access
+
+    /// <summary>
+    /// Get the AppManager singleton instance (cached)
+    /// </summary>
+    public static object? GetAppManager()
+    {
+        try
+        {
+            _appManagerType ??= Type.GetType("VRCOSC.App.Modules.AppManager, VRCOSC.App");
+            if (_appManagerType == null) return null;
+
+            _appManagerGetInstanceMethod ??= _appManagerType.GetMethod("GetInstance", BindingFlags.Public | BindingFlags.Static);
+            if (_appManagerGetInstanceMethod == null) return null;
+
+            return _appManagerGetInstanceMethod.Invoke(null, null);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Get the ModuleManager instance from AppManager (cached)
+    /// </summary>
+    public static object? GetModuleManager()
+    {
+        try
+        {
+            var appManager = GetAppManager();
+            if (appManager == null) return null;
+
+            _appManagerModuleManagerProp ??= appManager.GetType().GetProperty("ModuleManager", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            return _appManagerModuleManagerProp?.GetValue(appManager);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Get ProfileManager instance using reflection (cached)
+    /// </summary>
+    private static object? GetProfileManager()
+    {
+        try
+        {
+            var profileManagerType = Type.GetType("VRCOSC.App.Profiles.ProfileManager, VRCOSC.App");
+            if (profileManagerType == null) return null;
+
+            var getInstanceMethod = profileManagerType.GetMethod("GetInstance", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+            if (getInstanceMethod == null) return null;
+
+            return getInstanceMethod.Invoke(null, null);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Get the current active profile ID (GUID) from ProfileManager (cached)
+    /// </summary>
+    public static string? GetCurrentProfileId()
+    {
+        try
+        {
+            var profileManager = GetProfileManager();
+            if (profileManager == null) return null;
+
+            // Get ActiveProfile property (Observable<Profile>)
+            var activeProfileProp = profileManager.GetType().GetProperty("ActiveProfile", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (activeProfileProp == null) return null;
+
+            var activeProfileObservable = activeProfileProp.GetValue(profileManager);
+            if (activeProfileObservable == null) return null;
+
+            // Get Value property from Observable<Profile>
+            var valueProp = activeProfileObservable.GetType().GetProperty("Value", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (valueProp == null) return null;
+
+            var profile = valueProp.GetValue(activeProfileObservable);
+            if (profile == null) return null;
+
+            // Get ID from profile
+            var idProp = profile.GetType().GetProperty("ID", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (idProp == null) return null;
+
+            var id = idProp.GetValue(profile);
+            return id?.ToString();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Get the current profile's modules directory path
+    /// Returns: %AppData%/VRCOSC/profiles/{profile-id}/modules
+    /// </summary>
+    public static string? GetCurrentProfileModulesPath()
+    {
+        try
+        {
+            var profileId = GetCurrentProfileId();
+            if (profileId == null) return null;
+
+            var appDataPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "VRCOSC",
+                "profiles",
+                profileId,
+                "modules"
+            );
+
+            return Directory.Exists(appDataPath) ? appDataPath : null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    #endregion
+
+    #region ChatBox Operations
+
+    /// <summary>
+    /// Get the ChatBoxManager singleton instance (cached)
+    /// </summary>
+    public static object? GetChatBoxManager()
+    {
+        try
+        {
+            _chatBoxManagerType ??= Type.GetType("VRCOSC.App.ChatBox.ChatBoxManager, VRCOSC.App");
+            if (_chatBoxManagerType == null) return null;
+
+            _chatBoxManagerGetInstanceMethod ??= _chatBoxManagerType.GetMethod("GetInstance", BindingFlags.NonPublic | BindingFlags.Static);
+            if (_chatBoxManagerGetInstanceMethod == null) return null;
+
+            return _chatBoxManagerGetInstanceMethod.Invoke(null, null);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Send text to VRChat chatbox via VRCOSC's ChatBoxManager (cached)
+    /// </summary>
+    /// <param name="text">Text to display in chatbox</param>
+    /// <param name="minimalBackground">Use minimal background style</param>
+    /// <returns>True if successful, false otherwise</returns>
+    public static bool SendChatBox(string text, bool minimalBackground = false)
+    {
+        try
+        {
+            var chatBoxManager = GetChatBoxManager();
+            if (chatBoxManager == null)
+            {
+                return SendRawOSC("/chatbox/input", text, true, false);
+            }
+
+            var chatBoxManagerType = chatBoxManager.GetType();
+
+            // Cache properties
+            _chatBoxPulseTextProp ??= chatBoxManagerType.GetProperty("PulseText");
+            _chatBoxPulseMinimalBgProp ??= chatBoxManagerType.GetProperty("PulseMinimalBackground");
+
+            // Set values
+            _chatBoxPulseTextProp?.SetValue(chatBoxManager, text);
+            _chatBoxPulseMinimalBgProp?.SetValue(chatBoxManager, minimalBackground);
+
+            return true;
+        }
+        catch
+        {
+            return SendRawOSC("/chatbox/input", text, true, false);
+        }
+    }
+
+    #endregion
+
+    #region OSC Operations
+
+    /// <summary>
+    /// Send raw OSC message to VRChat via VRCOSC's OSC client (cached)
+    /// </summary>
+    /// <param name="address">OSC address</param>
+    /// <param name="args">OSC arguments</param>
+    /// <returns>True if successful, false otherwise</returns>
+    public static bool SendRawOSC(string address, params object[] args)
+    {
+        try
+        {
+            var appManager = GetAppManager();
+            if (appManager == null) return false;
+
+            // Cache properties and methods
+            _appManagerOscClientProp ??= appManager.GetType().GetProperty("VRChatOscClient");
+            if (_appManagerOscClientProp == null) return false;
+
+            var oscClient = _appManagerOscClientProp.GetValue(appManager);
+            if (oscClient == null) return false;
+
+            _oscClientSendMethod ??= oscClient.GetType().GetMethod("Send", BindingFlags.Public | BindingFlags.Instance);
+            if (_oscClientSendMethod == null) return false;
+
+            var allArgs = new object[args.Length + 1];
+            allArgs[0] = address;
+            Array.Copy(args, 0, allArgs, 1, args.Length);
+
+            _oscClientSendMethod.Invoke(oscClient, allArgs);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region Module Control
+
+    /// <summary>
+    /// Stop all VRCOSC modules (same as clicking stop button) (cached)
+    /// </summary>
+    public static bool StopModules()
+    {
+        try
+        {
+            var moduleManager = GetModuleManager();
+            if (moduleManager == null) return false;
+
+            // Cache method
+            _moduleManagerStopAsyncMethod ??= moduleManager.GetType().GetMethod("StopAsync", BindingFlags.Public | BindingFlags.Instance);
+            if (_moduleManagerStopAsyncMethod != null)
+            {
+                var task = _moduleManagerStopAsyncMethod.Invoke(moduleManager, null) as Task;
+                task?.Wait(5000);
+                return task?.IsCompletedSuccessfully == true;
+            }
+
+            return false;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Start all VRCOSC modules (same as clicking play button) (cached)
+    /// </summary>
+    public static bool StartModules()
+    {
+        try
+        {
+            var moduleManager = GetModuleManager();
+            if (moduleManager == null) return false;
+
+            // Cache method
+            _moduleManagerStartAsyncMethod ??= moduleManager.GetType().GetMethod("StartAsync", BindingFlags.Public | BindingFlags.Instance);
+            if (_moduleManagerStartAsyncMethod != null)
+            {
+                var task = _moduleManagerStartAsyncMethod.Invoke(moduleManager, null) as Task;
+                task?.Wait(5000);
+                return task?.IsCompletedSuccessfully == true;
+            }
+
+            return false;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Get all loaded modules (cached)
+    /// </summary>
+    public static IEnumerable? GetModules()
+    {
+        try
+        {
+            var appManager = GetAppManager();
+            if (appManager == null) return null;
+
+            // Cache property
+            _appManagerModulesProp ??= appManager.GetType().GetProperty("Modules", BindingFlags.Public | BindingFlags.Instance);
+            return _appManagerModulesProp?.GetValue(appManager) as IEnumerable;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    #endregion
+
+    #region Persistence Operations
+
+    /// <summary>
+    /// Force VRCOSC to save all module data to disk
+    /// </summary>
+    public static bool FlushToDisk()
+    {
+        try
+        {
+            var modules = GetModules();
+            if (modules == null) return false;
+
+            foreach (var module in modules)
+            {
+                if (module == null) continue;
+
+                var serialiseMethod = module.GetType().GetMethod("Serialise", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                serialiseMethod?.Invoke(module, null);
+            }
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Force VRCOSC to reload all module data from disk
+    /// </summary>
+    public static bool LoadFromDisk()
+    {
+        try
+        {
+            var modules = GetModules();
+            if (modules == null) return false;
+
+            foreach (var module in modules)
+            {
+                if (module == null) continue;
+
+                var moduleType = module.GetType();
+                
+                var serialisationManagerField = moduleType.GetField("moduleSerialisationManager", BindingFlags.NonPublic | BindingFlags.Instance);
+                if (serialisationManagerField == null) continue;
+
+                var serialisationManager = serialisationManagerField.GetValue(module);
+                if (serialisationManager == null) continue;
+
+                var deserialiseMethod = serialisationManager.GetType().GetMethod("Deserialise", BindingFlags.Public | BindingFlags.Instance);
+                if (deserialiseMethod != null)
+                {
+                    deserialiseMethod.Invoke(serialisationManager, new object[] { true, null! });
+                }
+            }
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region ChatBox States & Events
+
+    /// <summary>
+    /// Get all ChatBox states with optional prefix filter
+    /// </summary>
+    public static List<object>? GetChatBoxStates(string? prefixFilter = null)
+    {
+        try
+        {
+            var chatBoxManager = GetChatBoxManager();
+            if (chatBoxManager == null) return null;
+
+            var statesProp = chatBoxManager.GetType().GetProperty("States", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            var statesField = chatBoxManager.GetType().GetField("States", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            
+            object? statesCollection = statesProp?.GetValue(chatBoxManager) ?? statesField?.GetValue(chatBoxManager);
+            if (statesCollection == null) return new List<object>();
+
+            var result = new List<object>();
+            if (statesCollection is IEnumerable enumerable)
+            {
+                foreach (var item in enumerable)
+                {
+                    if (item == null) continue;
+
+                    var lookupProp = item.GetType().GetProperty("Lookup");
+                    var titleProp = item.GetType().GetProperty("Title");
+
+                    if (lookupProp == null || titleProp == null) continue;
+
+                    var lookup = lookupProp.GetValue(item)?.ToString();
+                    if (lookup == null) continue;
+
+                    if (prefixFilter != null && !lookup.StartsWith(prefixFilter))
+                        continue;
+
+                    var titleObj = titleProp.GetValue(item);
+                    var titleValueProp = titleObj?.GetType().GetProperty("Value");
+                    var displayName = titleValueProp?.GetValue(titleObj)?.ToString() ?? lookup;
+
+                    result.Add(new
+                    {
+                        name = prefixFilter != null ? lookup.Replace(prefixFilter, "") : lookup,
+                        key = lookup,
+                        displayName
+                    });
+                }
+            }
+
+            return result;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Get all VRCX states (states starting with vrcx_)
+    /// </summary>
+    public static List<object>? GetVRCXStates() => GetChatBoxStates("vrcx_");
+
+    /// <summary>
+    /// Get all ChatBox events with optional prefix filter
+    /// </summary>
+    public static List<object>? GetChatBoxEvents(string? prefixFilter = null)
+    {
+        try
+        {
+            var chatBoxManager = GetChatBoxManager();
+            if (chatBoxManager == null) return null;
+
+            var eventsProp = chatBoxManager.GetType().GetProperty("Events", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            var eventsField = chatBoxManager.GetType().GetField("Events", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            
+            object? eventsCollection = eventsProp?.GetValue(chatBoxManager) ?? eventsField?.GetValue(chatBoxManager);
+            if (eventsCollection == null) return new List<object>();
+
+            var result = new List<object>();
+            if (eventsCollection is IEnumerable enumerable)
+            {
+                foreach (var item in enumerable)
+                {
+                    if (item == null) continue;
+
+                    var lookupProp = item.GetType().GetProperty("Lookup");
+                    var titleProp = item.GetType().GetProperty("Title");
+
+                    if (lookupProp == null || titleProp == null) continue;
+
+                    var lookup = lookupProp.GetValue(item)?.ToString();
+                    if (lookup == null) continue;
+
+                    if (prefixFilter != null && !lookup.StartsWith(prefixFilter))
+                        continue;
+
+                    var titleObj = titleProp.GetValue(item);
+                    var titleValueProp = titleObj?.GetType().GetProperty("Value");
+                    var displayName = titleValueProp?.GetValue(titleObj)?.ToString() ?? lookup;
+
+                    result.Add(new
+                    {
+                        name = prefixFilter != null ? lookup.Replace(prefixFilter, "") : lookup,
+                        key = lookup,
+                        displayName
+                    });
+                }
+            }
+
+            return result;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Get all VRCX events (events starting with vrcx_)
+    /// </summary>
+    public static List<object>? GetVRCXEvents() => GetChatBoxEvents("vrcx_");
+
+    #endregion
+
+    #region Module Settings Helpers
+
+    /// <summary>
+    /// Get the module's settings file path
+    /// </summary>
+    /// <param name="module">The module instance</param>
+    /// <returns>Full path to the module's settings JSON file, or null if not found</returns>
+    public static string? GetModuleSettingsFilePath(object module)
+    {
+        try
+        {
+            // Try to get current profile's modules directory directly
+            var modulesDir = GetCurrentProfileModulesPath();
+            
+            if (modulesDir != null && Directory.Exists(modulesDir))
+            {
+                // Use VRCOSC's actual module ID via reflection
+                var fullId = GetModuleFullId(module);
+                if (fullId != null)
+                {
+                    var exactPath = Path.Combine(modulesDir, $"{fullId}.json");
+                    if (File.Exists(exactPath))
+                        return exactPath;
+                }
+
+                // Fallback to naming pattern matching
+                var moduleTypeName = module.GetType().Name.ToLowerInvariant();
+                var possibleNames = new[]
+                {
+                    $"local.{moduleTypeName}.json",
+                    $"{moduleTypeName}.json"
+                };
+
+                foreach (var name in possibleNames)
+                {
+                    var filePath = Path.Combine(modulesDir, name);
+                    if (File.Exists(filePath))
+                        return filePath;
+                }
+            }
+
+            // Fallback: Search all profile directories if reflection failed
+            var appDataPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "VRCOSC"
+            );
+
+            if (!Directory.Exists(appDataPath))
+                return null;
+
+            var profilesPath = Path.Combine(appDataPath, "profiles");
+            if (!Directory.Exists(profilesPath))
+                return null;
+
+            var fullId2 = GetModuleFullId(module);
+            var moduleTypeName2 = module.GetType().Name.ToLowerInvariant();
+
+            foreach (var profileDir in Directory.GetDirectories(profilesPath))
+            {
+                var fallbackModulesDir = Path.Combine(profileDir, "modules");
+                if (!Directory.Exists(fallbackModulesDir))
+                    continue;
+
+                // Try exact match first
+                if (fullId2 != null)
+                {
+                    var exactPath = Path.Combine(fallbackModulesDir, $"{fullId2}.json");
+                    if (File.Exists(exactPath))
+                        return exactPath;
+                }
+
+                // Fallback to patterns
+                var possibleNames = new[]
+                {
+                    $"local.{moduleTypeName2}.json",
+                    $"{moduleTypeName2}.json"
+                };
+
+                foreach (var name in possibleNames)
+                {
+                    var filePath = Path.Combine(fallbackModulesDir, name);
+                    if (File.Exists(filePath))
+                        return filePath;
+                }
+            }
+
+            return null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Get the module's settings from disk as a dictionary with JsonElement values
+    /// Reads the JSON file directly without requiring the module to be started
+    /// JsonElement preserves the full JSON structure including nested objects and arrays
+    /// </summary>
+    /// <param name="module">The module instance</param>
+    /// <returns>Dictionary containing the settings as JsonElements, or null if file not found or error</returns>
+    public static Dictionary<string, System.Text.Json.JsonElement>? GetModuleSettings(object module)
+    {
+        try
+        {
+            var filePath = GetModuleSettingsFilePath(module);
+            if (filePath == null || !File.Exists(filePath))
+                return null;
+
+            var json = File.ReadAllText(filePath);
+            var doc = System.Text.Json.JsonDocument.Parse(json);
+
+            // The settings are nested under "settings" key
+            if (doc.RootElement.TryGetProperty("settings", out var settingsElement))
+            {
+                var settings = new Dictionary<string, System.Text.Json.JsonElement>();
+                
+                foreach (var property in settingsElement.EnumerateObject())
+                {
+                    // Clone the JsonElement so it survives after the JsonDocument is disposed
+                    settings[property.Name] = property.Value.Clone();
+                }
+
+                return settings;
+            }
+
+            return null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Get a specific setting value from disk
+    /// </summary>
+    /// <typeparam name="T">Type to cast the setting to</typeparam>
+    /// <param name="module">The module instance</param>
+    /// <param name="settingName">Name of the setting (case-insensitive)</param>
+    /// <param name="defaultValue">Default value if setting not found</param>
+    /// <returns>The setting value or default</returns>
+    public static T? GetModuleSetting<T>(object module, string settingName, T? defaultValue = default)
+    {
+        try
+        {
+            var settings = GetModuleSettings(module);
+            if (settings == null)
+                return defaultValue;
+
+            var key = settings.Keys.FirstOrDefault(k => k.Equals(settingName, StringComparison.OrdinalIgnoreCase));
+            if (key == null)
+                return defaultValue;
+
+            var jsonElement = settings[key];
+
+            // Handle different JSON value kinds
+            try
+            {
+                // Try to deserialize directly to T
+                return System.Text.Json.JsonSerializer.Deserialize<T>(jsonElement.GetRawText());
+            }
+            catch
+            {
+                // Fallback: try simple conversions for primitives
+                try
+                {
+                    var targetType = typeof(T);
+                    
+                    // Handle nullable types
+                    if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                    {
+                        targetType = Nullable.GetUnderlyingType(targetType)!;
+                    }
+
+                    return jsonElement.ValueKind switch
+                    {
+                        System.Text.Json.JsonValueKind.String => (T?)(object?)jsonElement.GetString(),
+                        System.Text.Json.JsonValueKind.Number when targetType == typeof(int) => (T?)(object?)jsonElement.GetInt32(),
+                        System.Text.Json.JsonValueKind.Number when targetType == typeof(long) => (T?)(object?)jsonElement.GetInt64(),
+                        System.Text.Json.JsonValueKind.Number when targetType == typeof(float) => (T?)(object?)(float)jsonElement.GetDouble(),
+                        System.Text.Json.JsonValueKind.Number when targetType == typeof(double) => (T?)(object?)jsonElement.GetDouble(),
+                        System.Text.Json.JsonValueKind.True => (T?)(object?)true,
+                        System.Text.Json.JsonValueKind.False => (T?)(object?)false,
+                        _ => defaultValue
+                    };
+                }
+                catch
+                {
+                    return defaultValue;
+                }
+            }
+        }
+        catch
+        {
+            return defaultValue;
+        }
+    }
+
+    /// <summary>
+    /// Check if module is enabled in settings
+    /// </summary>
+    public static bool IsModuleEnabled(object module)
+    {
+        try
+        {
+            var filePath = GetModuleSettingsFilePath(module);
+            if (filePath == null || !File.Exists(filePath))
+                return false;
+
+            var json = File.ReadAllText(filePath);
+            var doc = System.Text.Json.JsonDocument.Parse(json);
+
+            if (doc.RootElement.TryGetProperty("enabled", out var enabledElement))
+            {
+                return enabledElement.GetBoolean();
+            }
+
+            return false;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    #endregion
+
+    #region Module ID Helpers
+
+    /// <summary>
+    /// Get the module's ID as VRCOSC sees it
+    /// Returns: module type name in lowercase (e.g., "notificationsmodule")
+    /// </summary>
+    public static string? GetModuleId(object module)
+    {
+        try
+        {
+            var idProp = module.GetType().GetProperty("ID", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            return idProp?.GetValue(module)?.ToString();
+        }
+        catch
+        {
+            // Fallback to manual calculation
+            return module.GetType().Name.ToLowerInvariant();
+        }
+    }
+
+    /// <summary>
+    /// Get the module's package ID
+    /// Returns: "local" for local modules, or package name for remote modules
+    /// </summary>
+    public static string? GetModulePackageId(object module)
+    {
+        try
+        {
+            var packageIdProp = module.GetType().GetProperty("PackageID", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            return packageIdProp?.GetValue(module)?.ToString();
+        }
+        catch
+        {
+            return "local";
+        }
+    }
+
+    /// <summary>
+    /// Get the module's full ID as used for file naming
+    /// Returns: "{packageid}.{moduleid}" (e.g., "local.notificationsmodule")
+    /// </summary>
+    public static string? GetModuleFullId(object module)
+    {
+        try
+        {
+            var fullIdProp = module.GetType().GetProperty("FullID", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            return fullIdProp?.GetValue(module)?.ToString();
+        }
+        catch
+        {
+            // Fallback to manual calculation
+            var packageId = GetModulePackageId(module) ?? "local";
+            var moduleId = GetModuleId(module) ?? module.GetType().Name.ToLowerInvariant();
+            return $"{packageId}.{moduleId}";
+        }
+    }
+
+    #endregion
+
+    #region VRCOSC SDK Reflection Helpers
+
+    /// <summary>
+    /// Get the SendParameter method from Module base class via reflection (cached)
+    /// Useful for intercepting parameter sends
+    /// </summary>
+    public static MethodInfo? GetModuleSendParameterMethod()
+    {
+        try
+        {
+            _moduleSendParameterMethod ??= typeof(VRCOSC.App.SDK.Modules.Module).GetMethod(
+                "SendParameter", 
+                BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, 
+                null, 
+                new[] { typeof(string), typeof(object) }, 
+                null
+            );
+            return _moduleSendParameterMethod;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Get the Parameters field from a Module instance (cached FieldInfo)
+    /// Returns Dictionary&lt;Enum, ModuleParameter&gt;
+    /// </summary>
+    public static object? GetModuleParametersField(object module)
+    {
+        try
+        {
+            _moduleParametersField ??= typeof(VRCOSC.App.SDK.Modules.Module).GetField(
+                "Parameters", 
+                BindingFlags.Instance | BindingFlags.NonPublic
+            );
+            return _moduleParametersField?.GetValue(module);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Get parameter name from ModuleParameter object via reflection
+    /// Navigates through Name.Value property chain
+    /// </summary>
+    public static string? GetParameterName(object parameterObject)
+    {
+        try
+        {
+            var nameProperty = parameterObject.GetType().GetProperty("Name");
+            if (nameProperty == null) return null;
+
+            var nameObservable = nameProperty.GetValue(parameterObject);
+            if (nameObservable == null) return null;
+
+            var valueProperty = nameObservable.GetType().GetProperty("Value");
+            if (valueProperty == null) return null;
+
+            return valueProperty.GetValue(nameObservable)?.ToString();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Get parameter display name from ModuleParameter object
+    /// </summary>
+    public static string? GetParameterDisplayName(object parameterObject)
+    {
+        try
+        {
+            var displayNameProperty = parameterObject.GetType().GetProperty("DisplayName");
+            if (displayNameProperty == null) return null;
+
+            var displayNameObservable = displayNameProperty.GetValue(parameterObject);
+            if (displayNameObservable == null) return null;
+
+            var valueProperty = displayNameObservable.GetType().GetProperty("Value");
+            return valueProperty?.GetValue(displayNameObservable)?.ToString();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Get all parameters from a Module instance (cached FieldInfo)
+    /// Returns dictionary of Enum -&gt; ModuleParameter
+    /// </summary>
+    public static Dictionary<Enum, object>? GetAllModuleParameters(object module)
+    {
+        try
+        {
+            var parametersField = GetModuleParametersField(module);
+            if (parametersField == null) return null;
+
+            // Convert to dictionary we can work with
+            var result = new Dictionary<Enum, object>();
+            
+            if (parametersField is IDictionary dict)
+            {
+                foreach (DictionaryEntry entry in dict)
+                {
+                    if (entry.Key is Enum enumKey && entry.Value != null)
+                    {
+                        result[enumKey] = entry.Value;
+                    }
+                }
+            }
+
+            return result;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    #endregion
+}

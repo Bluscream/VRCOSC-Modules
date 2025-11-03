@@ -1,0 +1,498 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "VRCOSC HTTP Server API",
+    "version": "1.0.0",
+    "description": "Control VRChat OSC parameters via HTTP requests",
+    "contact": {
+      "name": "Bluscream",
+      "url": "https://github.com/Bluscream/VRCOSC-Modules"
+    },
+    "license": {
+      "name": "GPL-3.0",
+      "url": "https://www.gnu.org/licenses/gpl-3.0.html"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Local VRCOSC HTTP Server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Server",
+      "description": "Server information and control"
+    },
+    {
+      "name": "OSC",
+      "description": "OSC parameter operations"
+    },
+    {
+      "name": "Avatar",
+      "description": "Avatar information"
+    },
+    {
+      "name": "ChatBox",
+      "description": "ChatBox messaging"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": ["Server"],
+        "summary": "Get server information",
+        "description": "Returns basic server info and available endpoints",
+        "operationId": "getRoot",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/server/status": {
+      "get": {
+        "tags": ["Server"],
+        "summary": "Get server status",
+        "description": "Returns detailed server status including uptime and request count",
+        "operationId": "getServerStatus",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/osc/parameters": {
+      "get": {
+        "tags": ["OSC"],
+        "summary": "List all OSC parameters",
+        "description": "Returns a list of all available OSC parameters",
+        "operationId": "getAllParameters",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParameterList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/osc/parameters/{name}": {
+      "get": {
+        "tags": ["OSC"],
+        "summary": "Get OSC parameter value",
+        "description": "Returns the current value of a specific OSC parameter",
+        "operationId": "getParameter",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "description": "Parameter name (e.g. 'VRCEmote', 'AvatarVersion')",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Parameter"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Parameter not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["OSC"],
+        "summary": "Set OSC parameter value",
+        "description": "Sets the value of a specific OSC parameter",
+        "operationId": "setParameter",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "description": "Parameter name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetParameterRequest"
+              },
+              "examples": {
+                "setEmote": {
+                  "summary": "Set VRCEmote to 1",
+                  "value": {
+                    "value": 1
+                  }
+                },
+                "setBoolean": {
+                  "summary": "Set boolean parameter",
+                  "value": {
+                    "value": true
+                  }
+                },
+                "setString": {
+                  "summary": "Set string parameter",
+                  "value": {
+                    "value": "Hello World"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Parameter set successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ParameterResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/avatars/current": {
+      "get": {
+        "tags": ["Avatar"],
+        "summary": "Get current avatar info",
+        "description": "Returns information about the currently loaded avatar",
+        "operationId": "getCurrentAvatar",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvatarInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chatbox/send": {
+      "post": {
+        "tags": ["ChatBox"],
+        "summary": "Send chatbox message",
+        "description": "Sends a message to the VRChat chatbox",
+        "operationId": "sendChatBox",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatBoxRequest"
+              },
+              "examples": {
+                "simple": {
+                  "summary": "Send simple message",
+                  "value": {
+                    "message": "Hello VRChat!",
+                    "send": true
+                  }
+                },
+                "typing": {
+                  "summary": "Show typing indicator",
+                  "value": {
+                    "message": "Typing...",
+                    "send": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatBoxResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ServerInfo": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "VRCOSC HTTP Server is running"
+          },
+          "version": {
+            "type": "string",
+            "example": "2025.1103.1"
+          },
+          "documentation": {
+            "type": "string",
+            "example": "http://localhost:8080/docs"
+          },
+          "endpoints": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "requestCount": {
+            "type": "integer"
+          }
+        }
+      },
+      "ServerStatus": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["running", "stopped", "error"]
+          },
+          "version": {
+            "type": "string"
+          },
+          "uptime": {
+            "type": "string",
+            "example": "0d 1h 23m 45s"
+          },
+          "requestCount": {
+            "type": "integer"
+          },
+          "serverUrl": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ParameterList": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Parameter"
+            }
+          }
+        }
+      },
+      "Parameter": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "VRCEmote"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["bool", "int", "float", "string"]
+          },
+          "value": {
+            "oneOf": [
+              { "type": "boolean" },
+              { "type": "integer" },
+              { "type": "number" },
+              { "type": "string" }
+            ]
+          }
+        }
+      },
+      "SetParameterRequest": {
+        "type": "object",
+        "required": ["value"],
+        "properties": {
+          "value": {
+            "description": "The value to set (type depends on parameter)",
+            "oneOf": [
+              { "type": "boolean" },
+              { "type": "integer" },
+              { "type": "number" },
+              { "type": "string" }
+            ]
+          }
+        }
+      },
+      "ParameterResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "parameter": {
+            "type": "string"
+          },
+          "value": {
+            "description": "The value that was set"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "AvatarInfo": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "avtr_00000000-0000-0000-0000-000000000000"
+              },
+              "name": {
+                "type": "string",
+                "example": "My Avatar"
+              },
+              "loaded": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "ChatBoxRequest": {
+        "type": "object",
+        "required": ["message"],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "The message to send",
+            "example": "Hello VRChat!"
+          },
+          "send": {
+            "type": "boolean",
+            "description": "True to send immediately, false to show typing indicator",
+            "default": true
+          }
+        }
+      },
+      "ChatBoxResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "sent": {
+            "type": "boolean"
+          },
+          "info": {
+            "type": "string"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string"
+          },
+          "statusCode": {
+            "type": "integer"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Bearer token authentication (configure in module settings)"
+      }
+    }
+  },
+  "security": []
+}

@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Parameters;
+using Bluscream;
 using VRCOSCModule = VRCOSC.App.SDK.Modules.Module;
 using JsonException = System.Text.Json.JsonException;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -652,7 +653,7 @@ public class VRCXBridgeModule : VRCOSCModule
     }
     private void SendChatBox(string text, bool minimalBackground)
     {
-        if (!Utils.SendChatBox(text, minimalBackground))
+        if (!ReflectionUtils.SendChatBox(text, minimalBackground))
         {
             Log("Failed to send chatbox message");
         }
@@ -660,7 +661,7 @@ public class VRCXBridgeModule : VRCOSCModule
     
     private void SendRawOSC(string address, params object[] args)
     {
-        if (!Utils.SendRawOSC(address, args))
+        if (!ReflectionUtils.SendRawOSC(address, args))
         {
             Log("Failed to send raw OSC message");
         }
@@ -1008,12 +1009,12 @@ public class VRCXBridgeModule : VRCOSCModule
                     break;
 
                 case "GET_STATES":
-                    var statesResult = Utils.GetVRCXStates();
+                    var statesResult = ReflectionUtils.GetVRCXStates();
                     result = new { success = statesResult != null, states = statesResult ?? new List<object>() };
                     break;
 
                 case "GET_EVENTS":
-                    var eventsResult = Utils.GetVRCXEvents();
+                    var eventsResult = ReflectionUtils.GetVRCXEvents();
                     result = new { success = eventsResult != null, events = eventsResult ?? new List<object>() };
                     break;
 
@@ -1107,7 +1108,7 @@ public class VRCXBridgeModule : VRCOSCModule
                     break;
 
                 case "FLUSH_TO_DISK":
-                    var flushSuccess = Utils.FlushToDisk();
+                    var flushSuccess = ReflectionUtils.FlushToDisk();
                     result = new { success = flushSuccess };
                     if (flushSuccess)
                     {
@@ -1116,7 +1117,7 @@ public class VRCXBridgeModule : VRCOSCModule
                     break;
 
                 case "LOAD_FROM_DISK":
-                    var loadSuccess = Utils.LoadFromDisk();
+                    var loadSuccess = ReflectionUtils.LoadFromDisk();
                     result = new { success = loadSuccess };
                     if (loadSuccess)
                     {
@@ -1125,7 +1126,7 @@ public class VRCXBridgeModule : VRCOSCModule
                     break;
 
                 case "STOP_MODULES":
-                    var stopSuccess = Utils.StopModules();
+                    var stopSuccess = ReflectionUtils.StopModules();
                     result = new { success = stopSuccess };
                     if (stopSuccess)
                     {
@@ -1134,7 +1135,7 @@ public class VRCXBridgeModule : VRCOSCModule
                     break;
 
                 case "START_MODULES":
-                    var startSuccess = Utils.StartModules();
+                    var startSuccess = ReflectionUtils.StartModules();
                     result = new { success = startSuccess };
                     if (startSuccess)
                     {
