@@ -81,22 +81,22 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
                 var currentState = ReflectionUtils.GetAppManagerState();
                 Log($"Current AppManager state: {currentState ?? "Unknown"}");
                 
-                if (currentState == "Started" || currentState == "Starting" || currentState == "Waiting")
+                if (currentState == "Started" || currentState == "Starting")
                 {
                     Log($"⏭ VRCOSC is already {currentState}, skipping auto-start");
                     return;
                 }
                 
-                Log("🚀 Requesting VRCOSC to start (auto-clicking Play button)...");
-                var error = ReflectionUtils.RequestAppManagerStart();
+                Log("🚀 Force-starting VRCOSC (skipping VRChat detection)...");
+                var error = ReflectionUtils.ForceAppManagerStart();
                 
                 if (error != null)
                 {
-                    Log($"❌ Auto-start request failed: {error}");
+                    Log($"❌ Auto-start failed: {error}");
                     return;
                 }
                 
-                Log("⏳ Waiting for VRCOSC to start...");
+                Log("⏳ Waiting for VRCOSC to complete startup...");
                 var isStarted = await ReflectionUtils.WaitForAppManagerStarted(30000);
                 
                 if (!isStarted)

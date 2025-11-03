@@ -338,6 +338,7 @@ public static class ReflectionUtils
 
     /// <summary>
     /// Request AppManager to start (equivalent to clicking Play button)
+    /// Waits for VRChat to be detected before starting
     /// </summary>
     /// <returns>Error message if failed, null if successful</returns>
     public static string? RequestAppManagerStart()
@@ -372,13 +373,70 @@ public static class ReflectionUtils
     }
 
     /// <summary>
+    /// Force AppManager to start immediately (equivalent to clicking "Force Start" button)
+    /// Skips VRChat detection and starts with loopback
+    /// </summary>
+    /// <returns>Error message if failed, null if successful</returns>
+    public static string? ForceAppManagerStart()
+    {
+        try
+        {
+            var (appManager, error) = GetAppManagerWithError();
+            if (appManager == null) return error ?? "Failed to get AppManager instance";
+
+            // Check current state - don't start if already starting/started
+            var currentState = GetAppManagerState();
+            if (currentState == "Starting" || currentState == "Started")
+            {
+                return $"AppManager is already {currentState}";
+            }
+
+            // Get ForceStart method
+            var forceStartMethod = appManager.GetType().GetMethod("ForceStart", BindingFlags.Public | BindingFlags.Instance);
+            if (forceStartMethod == null) return "ForceStart method not found on AppManager";
+
+            // Invoke ForceStart (returns Task)
+            var task = forceStartMethod.Invoke(appManager, null) as Task;
+            if (task == null) return "ForceStart invocation returned null";
+
+            // Don't wait for completion - let it run async
+            return null;
+        }
+        catch (Exception ex)
+        {
+            return $"Exception in ForceAppManagerStart: {ex.GetType().Name} - {ex.Message}";
+        }
+    }
+
+    /// <summary>
     /// Request AppManager to start and wait for it to complete
+    /// Waits for VRChat detection before starting
     /// </summary>
     /// <param name="timeoutMs">Maximum time to wait</param>
     /// <returns>True if started successfully, false otherwise</returns>
     public static async System.Threading.Tasks.Task<bool> RequestAppManagerStartAndWait(int timeoutMs = 30000)
     {
         var error = RequestAppManagerStart();
+        if (error != null)
+        {
+            // If already started/starting, that's okay
+            if (error.Contains("already")) return true;
+            return false;
+        }
+
+        // Wait for "Started" state
+        return await WaitForAppManagerStarted(timeoutMs);
+    }
+
+    /// <summary>
+    /// Force AppManager to start immediately and wait for it to complete
+    /// Skips VRChat detection and starts with loopback
+    /// </summary>
+    /// <param name="timeoutMs">Maximum time to wait</param>
+    /// <returns>True if started successfully, false otherwise</returns>
+    public static async System.Threading.Tasks.Task<bool> ForceAppManagerStartAndWait(int timeoutMs = 30000)
+    {
+        var error = ForceAppManagerStart();
         if (error != null)
         {
             // If already started/starting, that's okay
