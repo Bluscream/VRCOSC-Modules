@@ -137,15 +137,20 @@ if ($Publish) {
     # Prepare release assets from build workflow
     $releaseAssets = @()
     
-    # Add all built files as individual assets
-    foreach ($file in $buildWorkflow.CopiedFiles) {
-        $releaseAssets += $file
+    # Add ONLY the main module DLL (not dependencies)
+    $mainDll = $buildWorkflow.CopiedFiles | Where-Object { $_ -like "*Bluscream.Modules.dll" } | Select-Object -First 1
+    if ($mainDll -and (Test-Path $mainDll)) {
+        $releaseAssets += $mainDll
+        Write-Host "  Adding release asset: Bluscream.Modules.dll" -ForegroundColor Gray
+    } else {
+        Write-Host "  ⚠️  Main DLL not found in build output" -ForegroundColor Yellow
     }
     
     # Add archive if it exists
     $archivePath = $buildWorkflow.ArchivePath
     if ($archivePath -and (Test-Path $archivePath)) {
         $releaseAssets += $archivePath
+        Write-Host "  Adding release asset: $(Split-Path $archivePath -Leaf)" -ForegroundColor Gray
     }
     
     # Create release notes with file information and download links

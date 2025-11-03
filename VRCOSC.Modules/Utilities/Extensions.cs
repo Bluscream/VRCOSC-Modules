@@ -159,13 +159,15 @@ public static class Extensions
 
     #endregion
 
-    #region VRCOSC Module Extensions => ReflectionUtils
+    #region VRCOSC Module Extensions => ReflectionUtils & ModuleUtils
 
     public static bool LoadSettings(this VRCOSC.App.SDK.Modules.Module module) => ReflectionUtils.LoadFromDisk();
     public static string? GetSettingsFilePath(this VRCOSC.App.SDK.Modules.Module module) => ReflectionUtils.GetModuleSettingsFilePath(module);
     public static Dictionary<string, System.Text.Json.JsonElement>? GetSettings(this VRCOSC.App.SDK.Modules.Module module) => ReflectionUtils.GetModuleSettings(module);
     public static T? GetSetting<T>(this VRCOSC.App.SDK.Modules.Module module, string settingName, T? defaultValue = default) => ReflectionUtils.GetModuleSetting(module, settingName, defaultValue);
     public static bool IsEnabled(this VRCOSC.App.SDK.Modules.Module module) => ReflectionUtils.IsModuleEnabled(module);
+    public static bool SendParameterSafe(this VRCOSC.App.SDK.Modules.Module module, Enum lookup, object value) => ModuleUtils.SendParameterSafe(module, lookup, value);
+    public static bool SendParameterSafe(this VRCOSC.App.SDK.Modules.Module module, string name, object value) => ModuleUtils.SendParameterSafe(module, name, value);
 
     #endregion
 }

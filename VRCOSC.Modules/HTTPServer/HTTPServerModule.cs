@@ -234,7 +234,7 @@ public class HTTPServerModule : VRCOSCModule
             SetVariableValue(HTTPServerVariable.ServerUrl, _serverUrl);
             SetVariableValue(HTTPServerVariable.ServerStatus, "Running");
             
-            SendParameter(HTTPServerParameter.ServerRunning, true);
+            this.SendParameterSafe(HTTPServerParameter.ServerRunning, true);
             ChangeState(HTTPServerState.Running);
             TriggerEvent(HTTPServerEvent.OnServerStarted);
             
@@ -741,7 +741,7 @@ public class HTTPServerModule : VRCOSCModule
             _isRunning = false;
             
             SetVariableValue(HTTPServerVariable.ServerStatus, "Stopped");
-            SendParameter(HTTPServerParameter.ServerRunning, false);
+            this.SendParameterSafe(HTTPServerParameter.ServerRunning, false);
             ChangeState(HTTPServerState.Stopped);
             TriggerEvent(HTTPServerEvent.OnServerStopped);
             

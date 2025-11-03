@@ -369,18 +369,10 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         SetVariableValue(DebugVariable.OutgoingCount, outCount);
         SetVariableValue(DebugVariable.TotalCount, total);
 
-        // Use base.SendParameter to avoid recursive tracking
-        // Wrap in try-catch to handle OSC not being connected yet (e.g., during auto-start)
-        try
-        {
-            base.SendParameter(DebugParameter.IncomingCount, inCount);
-            base.SendParameter(DebugParameter.OutgoingCount, outCount);
-            base.SendParameter(DebugParameter.TotalCount, total);
-        }
-        catch (InvalidOperationException)
-        {
-            // OSC client not connected yet, parameters will be sent on next update
-        }
+        // Use SendParameterSafe to avoid OSC connection issues during auto-start
+        this.SendParameterSafe(DebugParameter.IncomingCount, inCount);
+        this.SendParameterSafe(DebugParameter.OutgoingCount, outCount);
+        this.SendParameterSafe(DebugParameter.TotalCount, total);
     }
 
     public Dictionary<string, ParameterData> GetIncomingParameters()

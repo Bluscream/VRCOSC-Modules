@@ -205,15 +205,7 @@ public class VRCXBridgeModule : VRCOSCModule
                 throw new Exception($"Failed to create streams: {streamEx.Message}", streamEx);
             }
             _isConnected = true;
-            // Try to send parameter, but ignore if OSC not connected yet
-            try
-            {
-                SendParameter(VRCXBridgeParameter.Connected, true);
-            }
-            catch (InvalidOperationException)
-            {
-                // OSC client not connected yet during auto-start
-            }
+            this.SendParameterSafe(VRCXBridgeParameter.Connected, true);
             // Log successful connection (especially important if we were reconnecting)
             if (_hasLoggedDisconnection)
             {
@@ -259,15 +251,7 @@ public class VRCXBridgeModule : VRCOSCModule
                 Log($"Failed to connect to VRCX: {ex.Message}");
                 _hasLoggedDisconnection = true;
             }
-            // Try to send parameter, but ignore if OSC not connected yet
-            try
-            {
-                SendParameter(VRCXBridgeParameter.Connected, false);
-            }
-            catch (InvalidOperationException)
-            {
-                // OSC client not connected yet during auto-start
-            }
+            this.SendParameterSafe(VRCXBridgeParameter.Connected, false);
             _isConnected = false;
             // Cleanup on failure
             try
@@ -312,15 +296,7 @@ public class VRCXBridgeModule : VRCOSCModule
         {
             var wasConnected = _isConnected;
             _isConnected = false;
-            // Try to send parameter, but ignore if OSC not connected yet
-            try
-            {
-                SendParameter(VRCXBridgeParameter.Connected, false);
-            }
-            catch (InvalidOperationException)
-            {
-                // OSC client not connected yet
-            }
+            this.SendParameterSafe(VRCXBridgeParameter.Connected, false);
             // Cancel operations
             try
             {
