@@ -254,6 +254,52 @@ public static class ReflectionUtils
     }
 
     /// <summary>
+    /// Get comprehensive chatbox state from ChatBoxManager
+    /// Returns object with current text, pulse text, live text, typing state, minimal background, etc.
+    /// </summary>
+    public static object? GetChatBoxState()
+    {
+        try
+        {
+            var chatBoxManager = GetChatBoxManager();
+            if (chatBoxManager == null) return null;
+
+            var chatBoxType = chatBoxManager.GetType();
+
+            // Get all relevant properties
+            var liveTextProp = chatBoxType.GetProperty("LiveText", BindingFlags.Public | BindingFlags.Instance);
+            var pulseTextProp = chatBoxType.GetProperty("PulseText", BindingFlags.Public | BindingFlags.Instance);
+            var pulseMinimalBgProp = chatBoxType.GetProperty("PulseMinimalBackground", BindingFlags.Public | BindingFlags.Instance);
+            var sendEnabledProp = chatBoxType.GetProperty("SendEnabled", BindingFlags.Public | BindingFlags.Instance);
+
+            var liveText = liveTextProp?.GetValue(chatBoxManager) as string ?? string.Empty;
+            var pulseText = pulseTextProp?.GetValue(chatBoxManager) as string;
+            var pulseMinimalBg = pulseMinimalBgProp?.GetValue(chatBoxManager) as bool? ?? false;
+            var sendEnabled = sendEnabledProp?.GetValue(chatBoxManager) as bool? ?? false;
+
+            // Determine current text (what's actually displayed)
+            var currentText = !string.IsNullOrEmpty(pulseText) ? pulseText : liveText;
+
+            // Check if typing (PulseText is set but send is false)
+            var isTyping = !string.IsNullOrEmpty(pulseText) && !sendEnabled;
+
+            return new
+            {
+                currentText = currentText,
+                liveText = liveText,
+                pulseText = pulseText,
+                minimalBackground = pulseMinimalBg,
+                isTyping = isTyping,
+                sendEnabled = sendEnabled
+            };
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
     /// Send text to VRChat chatbox via VRCOSC's ChatBoxManager (cached)
     /// </summary>
     /// <param name="text">Text to display in chatbox</param>
@@ -845,29 +891,166 @@ public static class ReflectionUtils
         try
         {
             var (appManager, _) = GetAppManagerWithError();
-            if (appManager == null) return null;
+            if (appManager == null)
+            {
+                System.Diagnostics.Debug.WriteLine("GetCurrentAvatarInfo: AppManager is null");
+                return null;
+            }
 
             // Get currentAvatarConfig property (not field)
             var avatarConfigProp = appManager.GetType().GetProperty("currentAvatarConfig", 
                 BindingFlags.NonPublic | BindingFlags.Instance);
-            if (avatarConfigProp == null) return null;
+            
+            if (avatarConfigProp == null)
+            {
+                System.Diagnostics.Debug.WriteLine("GetCurrentAvatarInfo: currentAvatarConfig property not found");
+                return null;
+            }
 
             var avatarConfig = avatarConfigProp.GetValue(appManager);
-            if (avatarConfig == null) return (null, null); // No avatar loaded
+            if (avatarConfig == null)
+            {
+                System.Diagnostics.Debug.WriteLine("GetCurrentAvatarInfo: currentAvatarConfig is null (no avatar loaded)");
+                return (null, null); // No avatar loaded
+            }
+
+            System.Diagnostics.Debug.WriteLine($"GetCurrentAvatarInfo: Got avatarConfig type: {avatarConfig.GetType().FullName}");
 
             // Get Id and Name properties
-            var idProperty = avatarConfig.GetType().GetProperty("Id");
-            var nameProperty = avatarConfig.GetType().GetProperty("Name");
+            var idProperty = avatarConfig.GetType().GetProperty("Id", BindingFlags.Public | BindingFlags.Instance);
+            var nameProperty = avatarConfig.GetType().GetProperty("Name", BindingFlags.Public | BindingFlags.Instance);
 
             var id = idProperty?.GetValue(avatarConfig) as string;
             var name = nameProperty?.GetValue(avatarConfig) as string;
 
+            System.Diagnostics.Debug.WriteLine($"GetCurrentAvatarInfo: ID={id}, Name={name}");
+
             return (id, name);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"GetCurrentAvatarInfo exception: {ex.Message}");
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Get all modules with their information (name, id, enabled, running, etc.)
+    /// </summary>
+    public static List<object>? GetAllModulesInfo()
+    {
+        try
+        {
+            var moduleManager = GetModuleManager();
+            if (moduleManager == null)
+            {
+                System.Diagnostics.Debug.WriteLine("GetAllModulesInfo: ModuleManager is null");
+                return null;
+            }
+
+            // Get Modules dictionary - ObservableDictionary<ModulePackage, List<Module>>
+            var modulesDict = moduleManager.GetType().GetProperty("Modules", BindingFlags.Public | BindingFlags.Instance);
+            if (modulesDict == null)
+            {
+                System.Diagnostics.Debug.WriteLine("GetAllModulesInfo: Modules property not found");
+                return null;
+            }
+
+            var dict = modulesDict.GetValue(moduleManager);
+            if (dict == null)
+            {
+                System.Diagnostics.Debug.WriteLine("GetAllModulesInfo: Modules dictionary is null");
+                return null;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"GetAllModulesInfo: Got dict type: {dict.GetType().FullName}");
+
+            // Flatten the dictionary values
+            var valuesProperty = dict.GetType().GetProperty("Values");
+            var values = valuesProperty?.GetValue(dict) as System.Collections.IEnumerable;
+            
+            if (values == null)
+            {
+                System.Diagnostics.Debug.WriteLine("GetAllModulesInfo: Values is null");
+                return null;
+            }
+
+            var modulesList = new List<object>();
+            int totalModules = 0;
+
+            // Iterate through each List<Module>
+            foreach (var moduleList in values)
+            {
+                if (moduleList is not System.Collections.IEnumerable enumerable) continue;
+
+                foreach (var module in enumerable)
+                {
+                    if (module == null) continue;
+                    totalModules++;
+
+                    var moduleType = module.GetType();
+
+                // Get basic properties
+                var titleAttr = moduleType.GetCustomAttribute(typeof(System.ComponentModel.DisplayNameAttribute), true) 
+                    ?? moduleType.GetCustomAttribute(Type.GetType("VRCOSC.App.SDK.Modules.ModuleTitleAttribute, VRCOSC.App.SDK") ?? typeof(object), true);
+                var descAttr = moduleType.GetCustomAttribute(Type.GetType("VRCOSC.App.SDK.Modules.ModuleDescriptionAttribute, VRCOSC.App.SDK") ?? typeof(object), true);
+                var authorAttr = moduleType.GetCustomAttribute(Type.GetType("VRCOSC.App.SDK.Modules.ModuleAuthorAttribute, VRCOSC.App.SDK") ?? typeof(object), true);
+
+                var titleProp = titleAttr?.GetType().GetProperty("Title") ?? titleAttr?.GetType().GetProperty("DisplayName");
+                var descProp = descAttr?.GetType().GetProperty("Description");
+                var authorProp = authorAttr?.GetType().GetProperty("Author") ?? authorAttr?.GetType().GetProperty("AuthorName");
+
+                var title = titleProp?.GetValue(titleAttr) as string ?? moduleType.Name;
+                var description = descProp?.GetValue(descAttr) as string ?? "";
+                var author = authorProp?.GetValue(authorAttr) as string;
+
+                // Get state
+                var stateProp = moduleType.GetProperty("State", BindingFlags.Public | BindingFlags.Instance);
+                var stateObservable = stateProp?.GetValue(module);
+                var stateValue = stateObservable?.GetType().GetProperty("Value")?.GetValue(stateObservable);
+                var stateStr = stateValue?.ToString() ?? "Unknown";
+
+                // Get enabled
+                var enabledProp = moduleType.GetProperty("Enabled", BindingFlags.Public | BindingFlags.Instance);
+                var enabledObservable = enabledProp?.GetValue(module);
+                var enabled = enabledObservable?.GetType().GetProperty("Value")?.GetValue(enabledObservable) as bool? ?? false;
+
+                // Get IDs
+                var fullId = GetModuleFullId(module);
+                var (packageId, moduleId) = ParseFullId(fullId);
+
+                    modulesList.Add(new
+                    {
+                        name = title,
+                        id = moduleId,
+                        packageId = packageId,
+                        fullId = fullId,
+                        author = author,
+                        description = description,
+                        enabled = enabled,
+                        state = stateStr,
+                        running = stateStr.Equals("Started", StringComparison.OrdinalIgnoreCase)
+                    });
+                }
+            }
+
+            return modulesList;
         }
         catch
         {
             return null;
         }
+    }
+
+    private static (string packageId, string moduleId) ParseFullId(string? fullId)
+    {
+        if (string.IsNullOrEmpty(fullId)) return ("unknown", "unknown");
+        
+        var parts = fullId.Split('#');
+        if (parts.Length == 2)
+            return (parts[0], parts[1]);
+        
+        return ("unknown", fullId);
     }
 
     #endregion
@@ -946,7 +1129,7 @@ public static class ReflectionUtils
     public static bool TryStartModules() => StartModules() == null;
 
     /// <summary>
-    /// Get all loaded modules (cached)
+    /// Get all loaded modules (flattened list from ModuleManager)
     /// </summary>
     public static IEnumerable? GetModules()
     {
@@ -955,9 +1138,30 @@ public static class ReflectionUtils
             var moduleManager = GetModuleManager();
             if (moduleManager == null) return null;
 
-            // Cache property - Modules is an ObservableDictionary<ModulePackage, List<Module>>
+            // Get Modules property - ObservableDictionary<ModulePackage, List<Module>>
             _moduleManagerModulesProp ??= moduleManager.GetType().GetProperty("Modules", BindingFlags.Public | BindingFlags.Instance);
-            return _moduleManagerModulesProp?.GetValue(moduleManager) as IEnumerable;
+            var modulesDict = _moduleManagerModulesProp?.GetValue(moduleManager);
+            if (modulesDict == null) return null;
+
+            // Flatten the dictionary - get all List<Module> values and combine them
+            var valuesProperty = modulesDict.GetType().GetProperty("Values");
+            var values = valuesProperty?.GetValue(modulesDict) as System.Collections.IEnumerable;
+            
+            if (values == null) return null;
+
+            var allModules = new List<object>();
+            foreach (var moduleList in values)
+            {
+                if (moduleList is System.Collections.IEnumerable enumerable)
+                {
+                    foreach (var module in enumerable)
+                    {
+                        if (module != null) allModules.Add(module);
+                    }
+                }
+            }
+
+            return allModules;
         }
         catch
         {

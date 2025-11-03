@@ -390,6 +390,10 @@ public class HTTPServerModule : VRCOSCModule
     {
         var response = context.Response;
 
+        // Normalize path: remove trailing slash (except for root)
+        if (path.Length > 1 && path.EndsWith("/"))
+            path = path.TrimEnd('/');
+
         // Track request
         _requestCount++;
         SetVariableValue(HTTPServerVariable.RequestCount, _requestCount);
@@ -444,7 +448,7 @@ public class HTTPServerModule : VRCOSCModule
                 // Check if it's a parameter-specific endpoint
                 if (path.StartsWith("/api/osc/parameter/"))
                 {
-                    var paramName = path.Substring("/api/osc/parameters/".Length);
+                    var paramName = path.Substring("/api/osc/parameter/".Length);
                     if (method == "GET")
                         await OscParameterEndpoint.HandleGet(context, this, paramName);
                     else if (method == "POST" || method == "PUT")
