@@ -224,6 +224,29 @@ public static class ReflectionUtils
     }
 
     /// <summary>
+    /// Get current chatbox text from ChatBoxManager
+    /// Returns the text as it would appear in the "ChatBox Preview" window
+    /// </summary>
+    public static string? GetChatBoxText()
+    {
+        try
+        {
+            var chatBoxManager = GetChatBoxManager();
+            if (chatBoxManager == null) return null;
+
+            // Get CurrentText property
+            var currentTextProp = chatBoxManager.GetType().GetProperty("CurrentText", BindingFlags.Public | BindingFlags.Instance);
+            if (currentTextProp == null) return null;
+
+            return currentTextProp.GetValue(chatBoxManager) as string;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
     /// Send text to VRChat chatbox via VRCOSC's ChatBoxManager (cached)
     /// </summary>
     /// <param name="text">Text to display in chatbox</param>

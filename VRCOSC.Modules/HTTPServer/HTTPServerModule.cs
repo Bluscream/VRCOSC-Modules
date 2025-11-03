@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Parameters;
 using Bluscream;
+using Bluscream.Modules.HTTPServer.Endpoints;
 using VRCOSCModule = VRCOSC.App.SDK.Modules.Module;
 
 namespace Bluscream.Modules;
@@ -403,21 +404,21 @@ public class HTTPServerModule : VRCOSCModule
         {
             case "/":
                 if (method == "GET")
-                    await HandleRoot(context);
+                    await RootEndpoint.Handle(context, this);
                 else
                     SendJsonResponse(response, 405, new { error = "Method not allowed" });
                 break;
 
             case "/api":
                 if (method == "GET")
-                    await HandleApiData(context);
+                    await ApiEndpoint.Handle(context, this);
                 else
                     SendJsonResponse(response, 405, new { error = "Method not allowed" });
                 break;
 
             case "/openapi.json":
                 if (method == "GET")
-                    await HandleOpenApiSpec(context);
+                    await DocsEndpoint.HandleOpenApiSpec(context, this);
                 else
                     SendJsonResponse(response, 405, new { error = "Method not allowed" });
                 break;
@@ -425,42 +426,16 @@ public class HTTPServerModule : VRCOSCModule
             case "/docs":
             case "/swagger":
                 if (method == "GET")
-                    await HandleSwaggerUI(context);
-                else
-                    SendJsonResponse(response, 405, new { error = "Method not allowed" });
-                break;
-
-            case "/api/server/status":
-            case "/server/status":
-            case "/status":
-                if (method == "GET")
-                    await HandleServerStatus(context);
-                else
-                    SendJsonResponse(response, 405, new { error = "Method not allowed" });
-                break;
-
-            case "/api/osc/parameters":
-            case "/osc/parameters":
-                if (method == "GET")
-                    await HandleGetAllParameters(context);
+                    await DocsEndpoint.HandleSwaggerUI(context, this);
                 else
                     SendJsonResponse(response, 405, new { error = "Method not allowed" });
                 break;
 
             case "/api/chatbox/send":
-            case "/chatbox/send":
-            case "/chatbox":
-                if (method == "POST")
-                    await HandleSendChatBox(context);
-                else
-                    SendJsonResponse(response, 405, new { error = "Method not allowed" });
-                break;
-
-            case "/api/avatars/current":
-            case "/avatars/current":
-            case "/avatar":
                 if (method == "GET")
-                    await HandleGetCurrentAvatar(context);
+                    await ChatBoxEndpoint.HandleGet(context, this);
+                else if (method == "POST")
+                    await ChatBoxEndpoint.HandlePost(context, this);
                 else
                     SendJsonResponse(response, 405, new { error = "Method not allowed" });
                 break;
@@ -471,19 +446,9 @@ public class HTTPServerModule : VRCOSCModule
                 {
                     var paramName = path.Substring("/api/osc/parameters/".Length);
                     if (method == "GET")
-                        await HandleGetParameter(context, paramName);
+                        await OscParameterEndpoint.HandleGet(context, this, paramName);
                     else if (method == "POST" || method == "PUT")
-                        await HandleSetParameter(context, paramName);
-                    else
-                        SendJsonResponse(response, 405, new { error = "Method not allowed" });
-                }
-                else if (path.StartsWith("/osc/parameters/"))
-                {
-                    var paramName = path.Substring("/osc/parameters/".Length);
-                    if (method == "GET")
-                        await HandleGetParameter(context, paramName);
-                    else if (method == "POST" || method == "PUT")
-                        await HandleSetParameter(context, paramName);
+                        await OscParameterEndpoint.HandleSet(context, this, paramName);
                     else
                         SendJsonResponse(response, 405, new { error = "Method not allowed" });
                 }
@@ -496,394 +461,6 @@ public class HTTPServerModule : VRCOSCModule
 
         TriggerEvent(HTTPServerEvent.OnRequestProcessed);
     }
-
-    #region Request Handlers
-
-    private async Task HandleApiData(HttpListenerContext context)
-    {
-        try
-        {
-            // Get avatar info
-            var avatarInfo = ReflectionUtils.GetCurrentAvatarInfo();
-            var (avatarId, avatarName) = avatarInfo ?? (null, null);
-            
-            // Try to get parameters from Debug module first (better tracking)
-            var debugParams = ReflectionUtils.GetDebugModuleParameters();
-            List<object> incomingParams = new();
-            List<object> outgoingParams = new();
-            
-            if (debugParams != null)
-            {
-                // Use Debug module's tracked parameters
-                var (incoming, outgoing) = debugParams.Value;
-                
-                if (incoming != null)
-                {
-                    incomingParams = incoming.Values
-                        .Cast<object>()
-                        .ToList();
-                }
-                
-                if (outgoing != null)
-                {
-                    outgoingParams = outgoing.Values
-                        .Cast<object>()
-                        .ToList();
-                }
-            }
-            else
-            {
-                // Fallback to AppManager parameter cache
-                var allParams = ReflectionUtils.GetAllOscParameters();
-                if (allParams != null)
-                {
-                    incomingParams = allParams.Select(p => (object)new { 
-                        name = p.Name, 
-                        value = p.Value, 
-                        type = p.Type 
-                    }).ToList();
-                }
-            }
-
-            var responseObj = new
-            {
-                success = true,
-                server = new
-                {
-                    version = "2025.1103.2",
-                    uptime = GetUptime(),
-                    requestCount = _requestCount,
-                    url = _serverUrl,
-                    status = "running"
-                },
-                player = new
-                {
-                    avatar = new
-                    {
-                        id = avatarId,
-                        name = avatarName ?? "Unknown",
-                        loaded = !string.IsNullOrEmpty(avatarId)
-                    }
-                },
-                osc = new
-                {
-                    incoming = new
-                    {
-                        count = incomingParams.Count,
-                        parameters = incomingParams
-                    },
-                    outgoing = new
-                    {
-                        count = outgoingParams.Count,
-                        parameters = outgoingParams
-                    }
-                },
-                endpoints = GetEndpointsFromOpenApi(),
-                timestamp = DateTime.UtcNow.ToString("o")
-            };
-
-            SendJsonResponse(context.Response, 200, responseObj);
-        }
-        catch (Exception ex)
-        {
-            SendJsonResponse(context.Response, 500, new { success = false, error = $"Error getting API data: {ex.Message}" });
-        }
-
-        await Task.CompletedTask;
-    }
-
-    private async Task HandleRoot(HttpListenerContext context)
-    {
-        var responseObj = new
-        {
-            message = "VRCOSC HTTP Server is running",
-            version = "2025.1103.1",
-            documentation = $"{_serverUrl}/docs",
-            endpoints = GetEndpointsFromOpenApi(),
-            timestamp = DateTime.UtcNow.ToString("o"),
-            requestCount = _requestCount
-        };
-
-        SendJsonResponse(context.Response, 200, responseObj);
-        await Task.CompletedTask;
-    }
-
-    private async Task HandleOpenApiSpec(HttpListenerContext context)
-    {
-        var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = "Bluscream.Modules.HTTPServer.openapi.json";
-        
-        using var stream = assembly.GetManifestResourceStream(resourceName);
-        if (stream == null)
-        {
-            SendJsonResponse(context.Response, 404, new { error = "OpenAPI spec not found" });
-            return;
-        }
-
-        using var reader = new StreamReader(stream);
-        var content = await reader.ReadToEndAsync();
-        
-        // Update server URL dynamically
-        content = content.Replace("http://localhost:8080", _serverUrl);
-        
-        context.Response.ContentType = "application/json";
-        var buffer = Encoding.UTF8.GetBytes(content);
-        context.Response.ContentLength64 = buffer.Length;
-        await context.Response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
-        context.Response.Close();
-    }
-
-    private async Task HandleSwaggerUI(HttpListenerContext context)
-    {
-        var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = "Bluscream.Modules.HTTPServer.swagger-ui.html";
-        
-        using var stream = assembly.GetManifestResourceStream(resourceName);
-        if (stream == null)
-        {
-            SendJsonResponse(context.Response, 404, new { error = "Swagger UI not found" });
-            return;
-        }
-
-        using var reader = new StreamReader(stream);
-        var content = await reader.ReadToEndAsync();
-        
-        context.Response.ContentType = "text/html";
-        var buffer = Encoding.UTF8.GetBytes(content);
-        context.Response.ContentLength64 = buffer.Length;
-        await context.Response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
-        context.Response.Close();
-    }
-
-    private async Task HandleServerStatus(HttpListenerContext context)
-    {
-        var responseObj = new
-        {
-            success = true,
-            status = "running",
-            version = "2025.1103.1",
-            uptime = GetUptime(),
-            requestCount = _requestCount,
-            serverUrl = _serverUrl,
-            timestamp = DateTime.UtcNow.ToString("o")
-        };
-
-        SendJsonResponse(context.Response, 200, responseObj);
-        await Task.CompletedTask;
-    }
-
-    private async Task HandleGetAllParameters(HttpListenerContext context)
-    {
-        try
-        {
-            var parameters = ReflectionUtils.GetAllOscParameters();
-            
-            if (parameters == null)
-            {
-                SendJsonResponse(context.Response, 503, new 
-                { 
-                    success = false, 
-                    error = "Unable to access parameter cache - is VRCOSC started?",
-                    parameters = Array.Empty<object>()
-                });
-                return;
-            }
-
-            var parameterList = parameters.Select(p => new
-            {
-                name = p.Name,
-                type = p.Type,
-                value = p.Value
-            }).ToList();
-
-            var responseObj = new
-            {
-                success = true,
-                count = parameterList.Count,
-                parameters = parameterList
-            };
-
-            SendJsonResponse(context.Response, 200, responseObj);
-        }
-        catch (Exception ex)
-        {
-            SendJsonResponse(context.Response, 500, new { success = false, error = $"Error listing parameters: {ex.Message}" });
-        }
-        
-        await Task.CompletedTask;
-    }
-
-    private async Task HandleGetParameter(HttpListenerContext context, string name)
-    {
-        try
-        {
-            var parameter = ReflectionUtils.GetOscParameter(name);
-            
-            if (parameter == null)
-            {
-                SendJsonResponse(context.Response, 404, new
-                {
-                    success = false,
-                    error = $"Parameter '{name}' not found",
-                    hint = "Make sure the parameter has been received at least once, or check /api/osc/parameters for available parameters"
-                });
-                return;
-            }
-
-            var responseObj = new
-            {
-                success = true,
-                name = name,
-                value = parameter.Value.Value,
-                type = parameter.Value.Type
-            };
-
-            SendJsonResponse(context.Response, 200, responseObj);
-        }
-        catch (Exception ex)
-        {
-            SendJsonResponse(context.Response, 500, new { success = false, error = $"Error getting parameter: {ex.Message}" });
-        }
-
-        await Task.CompletedTask;
-    }
-
-    private async Task HandleSetParameter(HttpListenerContext context, string name)
-    {
-        try
-        {
-            using var reader = new StreamReader(context.Request.InputStream);
-            var body = await reader.ReadToEndAsync();
-            var data = JsonDocument.Parse(body);
-
-            if (!data.RootElement.TryGetProperty("value", out var valueElement))
-            {
-                SendJsonResponse(context.Response, 400, new { success = false, error = "Missing 'value' field in request body" });
-                return;
-            }
-
-            // Parse value based on JSON type
-            object? value = valueElement.ValueKind switch
-            {
-                JsonValueKind.True => true,
-                JsonValueKind.False => false,
-                JsonValueKind.Number => valueElement.TryGetInt32(out var intVal) ? intVal : valueElement.GetSingle(),
-                JsonValueKind.String => valueElement.GetString(),
-                _ => null
-            };
-
-            if (value == null)
-            {
-                SendJsonResponse(context.Response, 400, new { success = false, error = "Invalid or unsupported value type" });
-                return;
-            }
-
-            // Send the parameter
-            var sent = ReflectionUtils.SendOscParameter(name, value);
-
-            if (!sent)
-            {
-                SendJsonResponse(context.Response, 503, new 
-                { 
-                    success = false, 
-                    error = "Failed to send parameter - is VRCOSC started and OSC connected?" 
-                });
-                return;
-            }
-
-            var responseObj = new
-            {
-                success = true,
-                parameter = name,
-                value = value,
-                type = value.GetType().Name.ToLowerInvariant()
-            };
-
-            SendJsonResponse(context.Response, 200, responseObj);
-        }
-        catch (JsonException ex)
-        {
-            SendJsonResponse(context.Response, 400, new { success = false, error = "Invalid JSON", message = ex.Message });
-        }
-        catch (Exception ex)
-        {
-            SendJsonResponse(context.Response, 500, new { success = false, error = $"Error setting parameter: {ex.Message}" });
-        }
-    }
-
-    private async Task HandleGetCurrentAvatar(HttpListenerContext context)
-    {
-        try
-        {
-            var avatarInfo = ReflectionUtils.GetCurrentAvatarInfo();
-            
-            if (avatarInfo == null)
-            {
-                SendJsonResponse(context.Response, 503, new
-                {
-                    success = false,
-                    error = "Unable to get avatar info - is VRCOSC started?",
-                    avatar = new { id = (string?)null, name = (string?)null, loaded = false }
-                });
-                return;
-            }
-
-            var (id, avatarName) = avatarInfo.Value;
-            var isLoaded = !string.IsNullOrEmpty(id);
-
-            var responseObj = new
-            {
-                success = true,
-                avatar = new
-                {
-                    id = id,
-                    name = avatarName ?? "Unknown",
-                    loaded = isLoaded
-                }
-            };
-
-            SendJsonResponse(context.Response, 200, responseObj);
-        }
-        catch (Exception ex)
-        {
-            SendJsonResponse(context.Response, 500, new { success = false, error = $"Error getting avatar info: {ex.Message}" });
-        }
-
-        await Task.CompletedTask;
-    }
-
-    private async Task HandleSendChatBox(HttpListenerContext context)
-    {
-        try
-        {
-            using var reader = new StreamReader(context.Request.InputStream);
-            var body = await reader.ReadToEndAsync();
-            var data = JsonDocument.Parse(body);
-
-            var message = data.RootElement.TryGetProperty("message", out var msgElement) ? msgElement.GetString() : "";
-            var send = data.RootElement.TryGetProperty("send", out var sendElement) && sendElement.GetBoolean();
-            var minimalBackground = data.RootElement.TryGetProperty("minimalBackground", out var bgElement) && bgElement.GetBoolean();
-
-            // Use utilities to send chatbox message
-            var success = ReflectionUtils.SendChatBox(message ?? "", minimalBackground);
-
-            var responseObj = new
-            {
-                success = success,
-                message = message,
-                sent = send,
-                implemented = true
-            };
-
-            SendJsonResponse(context.Response, 200, responseObj);
-        }
-        catch (Exception ex)
-        {
-            SendJsonResponse(context.Response, 400, new { error = "Invalid request body", message = ex.Message });
-        }
-    }
-
-    #endregion
 
     #region Helper Methods
 
@@ -918,13 +495,11 @@ public class HTTPServerModule : VRCOSCModule
             endpoints = new List<string>
             {
                 "GET / - Server information",
-                "GET /api/server/status - Server status",
-                "GET /api/osc/parameters - List all OSC parameters",
-                "GET /api/osc/parameters/{name} - Get specific parameter value",
-                "POST /api/osc/parameters/{name} - Set parameter value",
-                "GET /api/avatars/current - Get current avatar info",
+                "GET /api - Comprehensive API data (server, player, avatar, OSC parameters, endpoints)",
+                "GET /api/osc/parameters/{name} - Get specific OSC parameter value",
+                "POST /api/osc/parameters/{name} - Set OSC parameter value",
                 "POST /api/chatbox/send - Send chatbox message",
-                "GET /docs - API documentation",
+                "GET /docs - Swagger UI documentation",
                 "GET /openapi.json - OpenAPI specification"
             };
         }
@@ -932,7 +507,7 @@ public class HTTPServerModule : VRCOSCModule
         return endpoints;
     }
 
-    private void SendJsonResponse(HttpListenerResponse response, int statusCode, object data)
+    public void SendJsonResponse(HttpListenerResponse response, int statusCode, object data)
     {
         try
         {
@@ -989,6 +564,7 @@ public class HTTPServerModule : VRCOSCModule
     public bool IsRunning => _isRunning;
     public string GetServerUrl() => _serverUrl;
     public int GetRequestCount() => _requestCount;
+    public List<string> GetEndpointsList() => GetEndpointsFromOpenApi();
     
     public string GetUptime()
     {

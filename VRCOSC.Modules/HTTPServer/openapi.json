@@ -78,46 +78,6 @@
         }
       }
     },
-    "/api/server/status": {
-      "get": {
-        "tags": ["Server"],
-        "summary": "Get server status",
-        "description": "Returns detailed server status including uptime and request count",
-        "operationId": "getServerStatus",
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ServerStatus"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/osc/parameters": {
-      "get": {
-        "tags": ["OSC"],
-        "summary": "List all OSC parameters",
-        "description": "Returns a list of all available OSC parameters",
-        "operationId": "getAllParameters",
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ParameterList"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/osc/parameters/{name}": {
       "get": {
         "tags": ["OSC"],
@@ -221,26 +181,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/avatars/current": {
-      "get": {
-        "tags": ["Avatar"],
-        "summary": "Get current avatar info",
-        "description": "Returns information about the currently loaded avatar",
-        "operationId": "getCurrentAvatar",
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AvatarInfo"
                 }
               }
             }
@@ -519,7 +459,10 @@
               "uptime": { "type": "string" },
               "requestCount": { "type": "integer" },
               "url": { "type": "string" },
-              "status": { "type": "string", "enum": ["running", "stopped", "error"] }
+              "status": {
+                "type": "string",
+                "enum": ["running", "stopped", "error"]
+              }
             }
           },
           "player": {
