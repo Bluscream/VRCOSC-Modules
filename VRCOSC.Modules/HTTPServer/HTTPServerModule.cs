@@ -216,15 +216,17 @@ public class HTTPServerModule : VRCOSCModule
             _httpListener = new HttpListener();
             
             // Add prefixes
+            // Note: Using + instead of localhost/127.0.0.1 because it works with the netsh URL reservation
+            // http://+:PORT/ covers localhost, 127.0.0.1, and machine name
             if (allowExternal)
             {
-                _httpListener.Prefixes.Add($"http://*:{port}/");
-                _serverUrl = $"http://*:{port}";
+                _httpListener.Prefixes.Add($"http://+:{port}/");
+                _serverUrl = $"http://localhost:{port}"; // Display localhost for user friendliness
             }
             else
             {
-                _httpListener.Prefixes.Add($"http://localhost:{port}/");
-                _serverUrl = $"http://localhost:{port}";
+                _httpListener.Prefixes.Add($"http://+:{port}/");
+                _serverUrl = $"http://localhost:{port}"; // Display localhost for user friendliness
             }
 
             _httpListener.Start();

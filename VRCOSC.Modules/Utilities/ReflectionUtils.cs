@@ -339,6 +339,7 @@ public static class ReflectionUtils
     /// <summary>
     /// Request AppManager to start (equivalent to clicking Play button)
     /// Waits for VRChat to be detected before starting
+    /// NOTE: For auto-start on load, use ForceAppManagerStart() instead to skip VRChat detection
     /// </summary>
     /// <returns>Error message if failed, null if successful</returns>
     public static string? RequestAppManagerStart()

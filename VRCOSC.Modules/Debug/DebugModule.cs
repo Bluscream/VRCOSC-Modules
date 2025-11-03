@@ -96,7 +96,7 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
                         return;
                     }
                     
-                    Log("🚀 Force-starting VRCOSC (initializing CancellationTokenSource and skipping VRChat detection)...");
+                    Log("🚀 Force-starting VRCOSC (skipping VRChat detection)...");
                     var error = ReflectionUtils.ForceAppManagerStart();
                     
                     if (error != null)
