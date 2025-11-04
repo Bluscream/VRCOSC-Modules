@@ -190,12 +190,12 @@ public class HTTPServerModule : VRCOSCModule
         }
     }
 
-    public async Task<bool> StartServer()
+    public Task<bool> StartServer()
     {
         if (_isRunning)
         {
             Log("Server is already running");
-            return false;
+            return Task.FromResult(false);
         }
 
         try
@@ -208,7 +208,7 @@ public class HTTPServerModule : VRCOSCModule
                 Log($"Invalid port number: {portStr}. Must be between 1024-65535.");
                 SetVariableValue(HTTPServerVariable.ServerStatus, "Error: Invalid port");
                 ChangeState(HTTPServerState.Error);
-                return false;
+                return Task.FromResult(false);
             }
             
             var allowExternal = GetSettingValue<bool>(HTTPServerSetting.AllowExternalConnections);
@@ -252,7 +252,7 @@ public class HTTPServerModule : VRCOSCModule
             _cancellationTokenSource = new CancellationTokenSource();
             _ = Task.Run(() => ListenForRequests(_cancellationTokenSource.Token));
 
-            return true;
+            return Task.FromResult(true);
         }
         catch (HttpListenerException ex) when (ex.ErrorCode == 5) // Access Denied
         {
@@ -273,7 +273,7 @@ public class HTTPServerModule : VRCOSCModule
             ChangeState(HTTPServerState.Error);
             TriggerEvent(HTTPServerEvent.OnError);
             _isRunning = false;
-            return false;
+            return Task.FromResult(false);
         }
         catch (Exception ex)
         {
@@ -282,7 +282,7 @@ public class HTTPServerModule : VRCOSCModule
             ChangeState(HTTPServerState.Error);
             TriggerEvent(HTTPServerEvent.OnError);
             _isRunning = false;
-            return false;
+            return Task.FromResult(false);
         }
     }
 

@@ -73,7 +73,8 @@ public static class ApiEndpoint
                     version = AssemblyUtils.GetVersion(),
                     uptime = module.GetUptime(),
                     requestCount = module.GetRequestCount(),
-                    url = module.GetDisplayUrl()
+                    url = module.GetDisplayUrl(),
+                    time = DateTime.UtcNow.ToString("o")
                 },
                 player = new
                 {
@@ -95,8 +96,7 @@ public static class ApiEndpoint
                 },
                 modules = modulesInfo ?? new List<object>(),
                 parameters = parametersDict,
-                endpoints = module.GetEndpointsList(),
-                timestamp = DateTime.UtcNow.ToString("o")
+                endpoints = module.GetEndpointsList()
             };
 
             module.SendJsonResponse(context.Response, 200, responseObj);
