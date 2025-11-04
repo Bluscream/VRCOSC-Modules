@@ -585,4 +585,12 @@ public class HTTPServerModule : VRCOSCModule
         var uptime = DateTime.UtcNow - _serverStartTime;
         return $"{uptime.Days}d {uptime.Hours}h {uptime.Minutes}m {uptime.Seconds}s";
     }
+
+    /// <summary>
+    /// Public wrapper for the protected SendParameter method from Module base class
+    /// </summary>
+    public void SendOscParameter(string name, object value)
+    {
+        SendParameter(name, value);
+    }
 }

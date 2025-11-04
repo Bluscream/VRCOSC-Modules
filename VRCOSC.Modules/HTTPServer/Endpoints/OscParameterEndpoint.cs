@@ -139,17 +139,28 @@ public static class OscParameterEndpoint
                 return;
             }
 
-            // Send the parameter
-            var (success, error) = ReflectionUtils.SendOscParameter(parameterName, value);
-
-            if (!success)
+            // Try reflection first for better error messages, fallback to Module SDK method
+            var (reflectionSuccess, reflectionError) = ReflectionUtils.SendOscParameter(parameterName, value);
+            
+            if (!reflectionSuccess)
             {
-                module.SendJsonResponse(context.Response, 503, new 
-                { 
-                    success = false, 
-                    error = error ?? "Failed to send parameter"
-                });
-                return;
+                // Reflection failed, try using Module's built-in method as fallback
+                System.Diagnostics.Debug.WriteLine($"Reflection failed ({reflectionError}), trying Module.SendParameter fallback");
+                try
+                {
+                    module.SendOscParameter(parameterName, value);
+                    System.Diagnostics.Debug.WriteLine($"Fallback SendParameter succeeded for {parameterName}");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Both methods failed. Reflection: {reflectionError}. Module: {ex.Message}");
+                    module.SendJsonResponse(context.Response, 503, new 
+                    { 
+                        success = false, 
+                        error = $"Both methods failed. Reflection: {reflectionError}. Module: {ex.Message}"
+                    });
+                    return;
+                }
             }
 
             var responseObj = new

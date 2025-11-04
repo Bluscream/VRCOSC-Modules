@@ -34,12 +34,12 @@ public static class ReflectionUtils
 
     // Property caches
     private static PropertyInfo? _moduleManagerModulesProp;
-    private static PropertyInfo? _appManagerOscClientProp;
     private static PropertyInfo? _chatBoxPulseTextProp;
     private static PropertyInfo? _chatBoxPulseMinimalBgProp;
 
     // Field caches
     private static FieldInfo? _moduleParametersField;
+    private static FieldInfo? _appManagerOscClientField;
     
     #endregion
 
@@ -350,11 +350,11 @@ public static class ReflectionUtils
             var appManager = GetAppManager();
             if (appManager == null) return false;
 
-            // Cache properties and methods
-            _appManagerOscClientProp ??= appManager.GetType().GetProperty("VRChatOscClient");
-            if (_appManagerOscClientProp == null) return false;
+            // Cache field and methods (VRChatOscClient is a field, not a property!)
+            _appManagerOscClientField ??= appManager.GetType().GetField("VRChatOscClient", BindingFlags.Public | BindingFlags.Instance);
+            if (_appManagerOscClientField == null) return false;
 
-            var oscClient = _appManagerOscClientProp.GetValue(appManager);
+            var oscClient = _appManagerOscClientField.GetValue(appManager);
             if (oscClient == null) return false;
 
             _oscClientSendMethod ??= oscClient.GetType().GetMethod("Send", BindingFlags.Public | BindingFlags.Instance);
@@ -861,27 +861,43 @@ public static class ReflectionUtils
                 return (false, error ?? "AppManager not available");
             }
 
-            // Get VRChatOscClient property
-            _appManagerOscClientProp ??= appManager.GetType().GetProperty("VRChatOscClient");
-            if (_appManagerOscClientProp == null)
+            // Get VRChatOscClient field (it's a field, not a property!)
+            var oscClientField = appManager.GetType().GetField("VRChatOscClient", BindingFlags.Public | BindingFlags.Instance);
+            if (oscClientField == null)
             {
-                System.Diagnostics.Debug.WriteLine("SendOscParameter: VRChatOscClient property not found");
-                return (false, "VRChatOscClient property not found");
+                System.Diagnostics.Debug.WriteLine("SendOscParameter: VRChatOscClient field not found");
+                return (false, "VRChatOscClient field not found");
             }
 
-            var oscClient = _appManagerOscClientProp.GetValue(appManager);
+            var oscClient = oscClientField.GetValue(appManager);
             if (oscClient == null)
             {
                 System.Diagnostics.Debug.WriteLine("SendOscParameter: VRChatOscClient is null - VRCOSC may not be started or OSC not connected");
                 return (false, "OSC client not initialized - is VRCOSC started?");
             }
 
-            // Get Send method
-            var sendMethod = oscClient.GetType().GetMethod("Send", BindingFlags.Public | BindingFlags.Instance);
+            // Get Send method - it has multiple overloads, find the one that takes (string, object)
+            var sendMethod = oscClient.GetType().GetMethod("Send", 
+                BindingFlags.Public | BindingFlags.Instance,
+                null,
+                new[] { typeof(string), typeof(object) },
+                null);
+            
             if (sendMethod == null)
             {
-                System.Diagnostics.Debug.WriteLine("SendOscParameter: Send method not found on VRChatOscClient");
-                return (false, "Send method not found on OSC client");
+                // Try finding any Send method
+                var allSendMethods = oscClient.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                    .Where(m => m.Name == "Send").ToArray();
+                System.Diagnostics.Debug.WriteLine($"SendOscParameter: Available Send methods: {string.Join(", ", allSendMethods.Select(m => m.ToString()))}");
+                
+                // Use the first Send method with at least 2 parameters
+                sendMethod = allSendMethods.FirstOrDefault(m => m.GetParameters().Length >= 2);
+                
+                if (sendMethod == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("SendOscParameter: No suitable Send method found on VRChatOscClient");
+                    return (false, "Send method not found on OSC client");
+                }
             }
 
             // Build full address
@@ -889,14 +905,14 @@ public static class ReflectionUtils
                 ? parameterName 
                 : $"/avatar/parameters/{parameterName}";
 
-            System.Diagnostics.Debug.WriteLine($"SendOscParameter: Sending {address} = {value}");
+            System.Diagnostics.Debug.WriteLine($"SendOscParameter: Sending {address} = {value} using {sendMethod}");
             sendMethod.Invoke(oscClient, new object[] { address, value });
             System.Diagnostics.Debug.WriteLine($"SendOscParameter: Successfully sent {address}");
             return (true, null);
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"SendOscParameter exception: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"SendOscParameter exception: {ex.GetType().Name} - {ex.Message}\n{ex.StackTrace}");
             return (false, $"Exception: {ex.Message}");
         }
     }
