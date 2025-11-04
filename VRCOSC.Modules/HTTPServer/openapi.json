@@ -78,6 +78,32 @@
         }
       }
     },
+    "/api/osc/parameter": {
+      "get": {
+        "tags": ["OSC"],
+        "summary": "Get all OSC parameters",
+        "description": "Returns all OSC parameters as a dictionary of path: value",
+        "operationId": "getAllParameters",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "example": {
+                    "VRCEmote": 5,
+                    "Sync/Blink": false,
+                    "Proxy/Blink/Multiplier": 0.5
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/osc/parameter/{name}": {
       "get": {
         "tags": ["OSC"],

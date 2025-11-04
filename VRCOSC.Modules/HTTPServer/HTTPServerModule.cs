@@ -444,6 +444,13 @@ public class HTTPServerModule : VRCOSCModule
                     SendJsonResponse(response, 405, new { error = "Method not allowed" });
                 break;
 
+            case "/api/osc/parameter":
+                if (method == "GET")
+                    await OscParameterEndpoint.HandleGetAll(context, this);
+                else
+                    SendJsonResponse(response, 405, new { error = "Method not allowed" });
+                break;
+
             default:
                 // Check if it's a parameter-specific endpoint
                 if (path.StartsWith("/api/osc/parameter/"))
@@ -568,6 +575,7 @@ public class HTTPServerModule : VRCOSCModule
 
     public bool IsRunning => _isRunning;
     public string GetServerUrl() => _serverUrl;
+    public string GetDisplayUrl() => _serverUrl.Replace("http://+:", "http://localhost:");
     public int GetRequestCount() => _requestCount;
     public List<string> GetEndpointsList() => GetEndpointsFromOpenApi();
     

@@ -73,7 +73,7 @@ public static class ApiEndpoint
                     version = AssemblyUtils.GetVersion(),
                     uptime = module.GetUptime(),
                     requestCount = module.GetRequestCount(),
-                    url = module.GetServerUrl()
+                    url = module.GetDisplayUrl()
                 },
                 player = new
                 {

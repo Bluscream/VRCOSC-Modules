@@ -16,7 +16,7 @@ public static class RootEndpoint
         {
             message = "VRCOSC HTTP Server is running",
             version = AssemblyUtils.GetVersion(),
-            documentation = $"{module.GetServerUrl()}/docs",
+            documentation = $"{module.GetDisplayUrl()}/docs",
             endpoints = module.GetEndpointsList(),
             timestamp = DateTime.UtcNow.ToString("o"),
             requestCount = module.GetRequestCount()

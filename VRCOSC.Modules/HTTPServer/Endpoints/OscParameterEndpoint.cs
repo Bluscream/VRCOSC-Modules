@@ -9,10 +9,72 @@ namespace Bluscream.Modules.HTTPServer.Endpoints;
 
 /// <summary>
 /// Handles OSC parameter operations
-/// GET/POST /api/osc/parameters/{name}
+/// GET /api/osc/parameter - Get all parameters as dict
+/// GET/POST /api/osc/parameter/{name} - Get/Set specific parameter
 /// </summary>
 public static class OscParameterEndpoint
 {
+    public static async Task HandleGetAll(HttpListenerContext context, HTTPServerModule module)
+    {
+        try
+        {
+            // Get all parameters and convert to simple dict[path] = value
+            var parametersDict = new Dictionary<string, object>();
+            
+            // Try Debug module first
+            var debugParams = ReflectionUtils.GetDebugModuleParameters();
+            if (debugParams != null)
+            {
+                var (incoming, outgoing) = debugParams.Value;
+                
+                // Merge incoming and outgoing
+                if (incoming != null)
+                {
+                    foreach (var kvp in incoming)
+                    {
+                        // Extract just the value from the ParameterData
+                        var paramData = kvp.Value;
+                        var valueProperty = paramData.GetType().GetProperty("Value");
+                        parametersDict[kvp.Key] = valueProperty?.GetValue(paramData) ?? null!;
+                    }
+                }
+                
+                if (outgoing != null)
+                {
+                    foreach (var kvp in outgoing)
+                    {
+                        if (!parametersDict.ContainsKey(kvp.Key))
+                        {
+                            var paramData = kvp.Value;
+                            var valueProperty = paramData.GetType().GetProperty("Value");
+                            parametersDict[kvp.Key] = valueProperty?.GetValue(paramData) ?? null!;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // Fallback to AppManager parameter cache
+                var allParams = ReflectionUtils.GetAllOscParameters();
+                if (allParams != null)
+                {
+                    foreach (var p in allParams)
+                    {
+                        parametersDict[p.Name] = p.Value ?? null!;
+                    }
+                }
+            }
+
+            module.SendJsonResponse(context.Response, 200, parametersDict);
+        }
+        catch (Exception ex)
+        {
+            module.SendJsonResponse(context.Response, 500, new { error = $"Error getting parameters: {ex.Message}" });
+        }
+
+        await Task.CompletedTask;
+    }
+
     public static async Task HandleGet(HttpListenerContext context, HTTPServerModule module, string parameterName)
     {
         try
@@ -78,14 +140,14 @@ public static class OscParameterEndpoint
             }
 
             // Send the parameter
-            var sent = ReflectionUtils.SendOscParameter(parameterName, value);
+            var (success, error) = ReflectionUtils.SendOscParameter(parameterName, value);
 
-            if (!sent)
+            if (!success)
             {
                 module.SendJsonResponse(context.Response, 503, new 
                 { 
                     success = false, 
-                    error = "Failed to send parameter - is VRCOSC started and OSC connected?" 
+                    error = error ?? "Failed to send parameter"
                 });
                 return;
             }

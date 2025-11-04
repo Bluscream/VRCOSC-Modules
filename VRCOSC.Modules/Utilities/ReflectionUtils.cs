@@ -850,35 +850,54 @@ public static class ReflectionUtils
     /// <summary>
     /// Send an OSC parameter via AppManager's VRChatOscClient
     /// </summary>
-    public static bool SendOscParameter(string parameterName, object value)
+    public static (bool Success, string? Error) SendOscParameter(string parameterName, object value)
     {
         try
         {
-            var (appManager, _) = GetAppManagerWithError();
-            if (appManager == null) return false;
+            var (appManager, error) = GetAppManagerWithError();
+            if (appManager == null)
+            {
+                System.Diagnostics.Debug.WriteLine($"SendOscParameter: AppManager is null - {error}");
+                return (false, error ?? "AppManager not available");
+            }
 
             // Get VRChatOscClient property
             _appManagerOscClientProp ??= appManager.GetType().GetProperty("VRChatOscClient");
-            if (_appManagerOscClientProp == null) return false;
+            if (_appManagerOscClientProp == null)
+            {
+                System.Diagnostics.Debug.WriteLine("SendOscParameter: VRChatOscClient property not found");
+                return (false, "VRChatOscClient property not found");
+            }
 
             var oscClient = _appManagerOscClientProp.GetValue(appManager);
-            if (oscClient == null) return false;
+            if (oscClient == null)
+            {
+                System.Diagnostics.Debug.WriteLine("SendOscParameter: VRChatOscClient is null - VRCOSC may not be started or OSC not connected");
+                return (false, "OSC client not initialized - is VRCOSC started?");
+            }
 
             // Get Send method
             var sendMethod = oscClient.GetType().GetMethod("Send", BindingFlags.Public | BindingFlags.Instance);
-            if (sendMethod == null) return false;
+            if (sendMethod == null)
+            {
+                System.Diagnostics.Debug.WriteLine("SendOscParameter: Send method not found on VRChatOscClient");
+                return (false, "Send method not found on OSC client");
+            }
 
             // Build full address
             var address = parameterName.StartsWith("/avatar/parameters/") 
                 ? parameterName 
                 : $"/avatar/parameters/{parameterName}";
 
+            System.Diagnostics.Debug.WriteLine($"SendOscParameter: Sending {address} = {value}");
             sendMethod.Invoke(oscClient, new object[] { address, value });
-            return true;
+            System.Diagnostics.Debug.WriteLine($"SendOscParameter: Successfully sent {address}");
+            return (true, null);
         }
-        catch
+        catch (Exception ex)
         {
-            return false;
+            System.Diagnostics.Debug.WriteLine($"SendOscParameter exception: {ex.Message}");
+            return (false, $"Exception: {ex.Message}");
         }
     }
 

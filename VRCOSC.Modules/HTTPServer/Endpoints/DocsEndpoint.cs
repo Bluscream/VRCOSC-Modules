@@ -49,8 +49,9 @@ public static class DocsEndpoint
         using var reader = new StreamReader(stream);
         var content = await reader.ReadToEndAsync();
         
-        // Update server URL dynamically
-        content = content.Replace("http://localhost:8080", module.GetServerUrl());
+        // Update server URL dynamically - convert + wildcard to localhost for browser compatibility
+        var serverUrl = module.GetServerUrl().Replace("http://+:", "http://localhost:");
+        content = content.Replace("http://localhost:8080", serverUrl);
         
         context.Response.ContentType = "application/json";
         var buffer = Encoding.UTF8.GetBytes(content);
