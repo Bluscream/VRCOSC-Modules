@@ -287,7 +287,7 @@ public class IRCBridgeModule : Module
                     // Fallback: hash hardware IDs (CPU, motherboard, GPU) if UserId is not available
                     try
                     {
-                        var hardwareId = HardwareIdGenerator.GenerateHardwareId();
+                        var hardwareId = HardwareIdGenerator.GenerateHardwareId((msg) => Log($"[HardwareIdGenerator] {msg}"));
                         if (!string.IsNullOrEmpty(hardwareId))
                         {
                             username = hardwareId;

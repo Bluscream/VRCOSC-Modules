@@ -10,7 +10,7 @@ namespace Bluscream.Modules;
 
 public static class HardwareIdGenerator
 {
-    public static string GenerateHardwareId()
+    public static string GenerateHardwareId(Action<string>? logAction = null)
     {
         try
         {
@@ -18,7 +18,7 @@ public static class HardwareIdGenerator
             
             // Get CPU serial number
             var cpuId = GetCpuId();
-            System.Diagnostics.Debug.WriteLine($"[HardwareIdGenerator] CPU ID: {(string.IsNullOrEmpty(cpuId) ? "(empty)" : cpuId)}");
+            logAction?.Invoke($"CPU ID: {(string.IsNullOrEmpty(cpuId) ? "(empty)" : cpuId)}");
             if (!string.IsNullOrEmpty(cpuId))
             {
                 components.Append(cpuId);
@@ -26,7 +26,7 @@ public static class HardwareIdGenerator
             
             // Get motherboard serial number
             var motherboardId = GetMotherboardId();
-            System.Diagnostics.Debug.WriteLine($"[HardwareIdGenerator] Motherboard ID: {(string.IsNullOrEmpty(motherboardId) ? "(empty)" : motherboardId)}");
+            logAction?.Invoke($"Motherboard ID: {(string.IsNullOrEmpty(motherboardId) ? "(empty)" : motherboardId)}");
             if (!string.IsNullOrEmpty(motherboardId))
             {
                 components.Append(motherboardId);
@@ -34,19 +34,19 @@ public static class HardwareIdGenerator
             
             // Get GPU serial number
             var gpuId = GetGpuId();
-            System.Diagnostics.Debug.WriteLine($"[HardwareIdGenerator] GPU ID: {(string.IsNullOrEmpty(gpuId) ? "(empty)" : gpuId)}");
+            logAction?.Invoke($"GPU ID: {(string.IsNullOrEmpty(gpuId) ? "(empty)" : gpuId)}");
             if (!string.IsNullOrEmpty(gpuId))
             {
                 components.Append(gpuId);
             }
             
             var componentsString = components.ToString();
-            System.Diagnostics.Debug.WriteLine($"[HardwareIdGenerator] Combined components string length: {componentsString.Length}");
-            System.Diagnostics.Debug.WriteLine($"[HardwareIdGenerator] Combined components (first 100 chars): {(componentsString.Length > 100 ? componentsString.Substring(0, 100) + "..." : componentsString)}");
+            logAction?.Invoke($"Combined components string length: {componentsString.Length}");
+            logAction?.Invoke($"Combined components (first 100 chars): {(componentsString.Length > 100 ? componentsString.Substring(0, 100) + "..." : componentsString)}");
             
             if (components.Length == 0)
             {
-                System.Diagnostics.Debug.WriteLine("[HardwareIdGenerator] No hardware components found, returning empty string");
+                logAction?.Invoke("No hardware components found, returning empty string");
                 return string.Empty;
             }
             
@@ -54,14 +54,14 @@ public static class HardwareIdGenerator
             using var sha256 = SHA256.Create();
             var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(componentsString));
             var hashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
-            System.Diagnostics.Debug.WriteLine($"[HardwareIdGenerator] Final SHA256 hash: {hashString}");
-            System.Diagnostics.Debug.WriteLine($"[HardwareIdGenerator] Hash length: {hashString.Length}");
+            logAction?.Invoke($"Final SHA256 hash: {hashString}");
+            logAction?.Invoke($"Hash length: {hashString.Length}");
             return hashString;
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"[HardwareIdGenerator] Exception during generation: {ex.Message}");
-            System.Diagnostics.Debug.WriteLine($"[HardwareIdGenerator] Stack trace: {ex.StackTrace}");
+            logAction?.Invoke($"Exception during generation: {ex.Message}");
+            logAction?.Invoke($"Stack trace: {ex.StackTrace}");
             return string.Empty;
         }
     }
