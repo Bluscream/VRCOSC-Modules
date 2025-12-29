@@ -11,6 +11,7 @@ riderModule.iml
 *.user
 .vs/
 debug-dist/
+dist/
 *.dll
 
 VRCOSC.Modules\VRChatSettings\Definitions\*.*
