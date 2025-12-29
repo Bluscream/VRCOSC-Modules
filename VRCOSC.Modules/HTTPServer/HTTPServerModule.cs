@@ -227,11 +227,13 @@ public class HTTPServerModule : VRCOSCModule
             }
             else
             {
-                // Use localhost to bind ONLY to loopback interface (127.0.0.1)
-                // This prevents external network access for security
+                // Add both localhost and 127.0.0.1 to handle different ways of accessing loopback
+                // HttpListener is strict about hostname matching, so we need both
+                // This still only binds to loopback interface (127.0.0.1) for security
                 _httpListener.Prefixes.Add($"http://localhost:{port}/");
+                _httpListener.Prefixes.Add($"http://127.0.0.1:{port}/");
                 _serverUrl = $"http://localhost:{port}";
-                Log($"Localhost only - server NOT accessible from network");
+                Log($"Localhost only - server NOT accessible from network (accepts localhost and 127.0.0.1)");
             }
 
             _httpListener.Start();

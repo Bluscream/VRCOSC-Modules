@@ -732,6 +732,58 @@ public class IRCBridgeModule : Module
         }
     }
 
+    public List<string> GetChannelUserList(string? channelName = null)
+    {
+        if (_ircClient?.Client == null || !_ircClient.IsConnected)
+        {
+            return new List<string>();
+        }
+
+        // Use provided channel name or default to current channel
+        if (string.IsNullOrEmpty(channelName))
+        {
+            channelName = GetChannelName();
+        }
+
+        if (string.IsNullOrEmpty(channelName))
+        {
+            return new List<string>();
+        }
+
+        // Ensure channel starts with #
+        if (!channelName.StartsWith("#"))
+        {
+            channelName = "#" + channelName;
+        }
+
+        var channel = _ircClient.Client.Channels.FirstOrDefault(c => c.Name.Equals(channelName, StringComparison.OrdinalIgnoreCase));
+        if (channel == null)
+        {
+            return new List<string>();
+        }
+
+        // Return list of user nicknames
+        return channel.Users.Select(cu => cu.User.NickName).OrderBy(n => n, StringComparer.OrdinalIgnoreCase).ToList();
+    }
+
+    public async Task ChangeNicknameAsync(string newNickname)
+    {
+        if (_ircClient?.Client == null || !_ircClient.IsConnected)
+        {
+            throw new InvalidOperationException("Not connected to IRC server");
+        }
+
+        if (string.IsNullOrWhiteSpace(newNickname))
+        {
+            throw new ArgumentException("Nickname cannot be empty", nameof(newNickname));
+        }
+
+        await Task.Run(() => _ircClient.Client.LocalUser.SetNickName(newNickname));
+        
+        // Update variable
+        SetVariableValue(IRCBridgeVariable.Nickname, newNickname);
+    }
+
     // Event handlers for IrcDotNet higher-level events (following IrcBot best practices)
     private void LocalUser_JoinedChannel(object sender, IrcChannelEventArgs e)
     {
