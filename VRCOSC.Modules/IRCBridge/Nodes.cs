@@ -88,186 +88,7 @@ public sealed class IRCSendMessageNode : ModuleNode<IRCBridgeModule>, IFlowInput
     public FlowContinuation OnError = new("On Error");
 
     public ValueInput<string> Message = new("Message");
-    public ValueInput<string> Target = new("Target (Channel or User)");
-
-    public ValueOutput<bool> Success = new();
-    public ValueOutput<string> Error = new();
-
-    protected override async Task Process(PulseContext c)
-    {
-        try
-        {
-            if (!Module.IsConnected)
-            {
-                Error.Write("Not connected to IRC server", c);
-                await OnError.Execute(c);
-                return;
-            }
-
-            var message = Message.Read(c);
-            var target = Target.Read(c);
-
-            if (string.IsNullOrEmpty(message))
-            {
-                Error.Write("Message is required", c);
-                await OnError.Execute(c);
-                return;
-            }
-
-            if (string.IsNullOrEmpty(target))
-            {
-                // Use current channel if target not specified
-                target = Module.GetChannelName();
-                if (string.IsNullOrEmpty(target))
-                {
-                    Error.Write("Target is required", c);
-                    await OnError.Execute(c);
-                    return;
-                }
-            }
-
-            // Send PRIVMSG
-            await Module.SendIRCMessage($"PRIVMSG {target} :{message}");
-            
-            Success.Write(true, c);
-            await Next.Execute(c);
-        }
-        catch (System.Exception ex)
-        {
-            Success.Write(false, c);
-            Error.Write(ex.Message, c);
-            await OnError.Execute(c);
-        }
-    }
-}
-
-[Node("IRC Send Channel Message")]
-public sealed class IRCSendChannelMessageNode : ModuleNode<IRCBridgeModule>, IFlowInput
-{
-    public FlowContinuation Next = new("Next");
-    public FlowContinuation OnError = new("On Error");
-
-    public ValueInput<string> Message = new("Message");
-    public ValueInput<string> Channel = new("Channel (Optional - uses current if empty)");
-
-    public ValueOutput<bool> Success = new();
-    public ValueOutput<string> Error = new();
-
-    protected override async Task Process(PulseContext c)
-    {
-        try
-        {
-            if (!Module.IsConnected)
-            {
-                Error.Write("Not connected to IRC server", c);
-                await OnError.Execute(c);
-                return;
-            }
-
-            var message = Message.Read(c);
-            if (string.IsNullOrEmpty(message))
-            {
-                Error.Write("Message is required", c);
-                await OnError.Execute(c);
-                return;
-            }
-
-            var channel = Channel.Read(c);
-            if (string.IsNullOrEmpty(channel))
-            {
-                channel = Module.GetChannelName();
-                if (string.IsNullOrEmpty(channel))
-                {
-                    Error.Write("Channel is required", c);
-                    await OnError.Execute(c);
-                    return;
-                }
-            }
-
-            // Ensure channel starts with #
-            if (!channel.StartsWith("#"))
-            {
-                channel = "#" + channel;
-            }
-
-            await Module.SendIRCMessage($"PRIVMSG {channel} :{message}");
-            
-            Success.Write(true, c);
-            await Next.Execute(c);
-        }
-        catch (System.Exception ex)
-        {
-            Success.Write(false, c);
-            Error.Write(ex.Message, c);
-            await OnError.Execute(c);
-        }
-    }
-}
-
-[Node("IRC Send Private Message")]
-public sealed class IRCSendPrivateMessageNode : ModuleNode<IRCBridgeModule>, IFlowInput
-{
-    public FlowContinuation Next = new("Next");
-    public FlowContinuation OnError = new("On Error");
-
-    public ValueInput<string> Message = new("Message");
-    public ValueInput<string> User = new("User (Nickname)");
-
-    public ValueOutput<bool> Success = new();
-    public ValueOutput<string> Error = new();
-
-    protected override async Task Process(PulseContext c)
-    {
-        try
-        {
-            if (!Module.IsConnected)
-            {
-                Error.Write("Not connected to IRC server", c);
-                await OnError.Execute(c);
-                return;
-            }
-
-            var message = Message.Read(c);
-            if (string.IsNullOrEmpty(message))
-            {
-                Error.Write("Message is required", c);
-                await OnError.Execute(c);
-                return;
-            }
-
-            var user = User.Read(c);
-            if (string.IsNullOrEmpty(user))
-            {
-                Error.Write("User is required", c);
-                await OnError.Execute(c);
-                return;
-            }
-
-            // Remove # if user accidentally included it
-            user = user.TrimStart('#');
-
-            await Module.SendIRCMessage($"PRIVMSG {user} :{message}");
-            
-            Success.Write(true, c);
-            await Next.Execute(c);
-        }
-        catch (System.Exception ex)
-        {
-            Success.Write(false, c);
-            Error.Write(ex.Message, c);
-            await OnError.Execute(c);
-        }
-    }
-}
-
-[Node("IRC Send Notice")]
-public sealed class IRCSendNoticeNode : ModuleNode<IRCBridgeModule>, IFlowInput
-{
-    public FlowContinuation Next = new("Next");
-    public FlowContinuation OnError = new("On Error");
-
-    public ValueInput<string> Message = new("Notice Message");
-    public ValueInput<string> Target = new("Target (Channel or User)");
+    public ValueInput<string> Target = new("Target (#channel, @user, notice:target, raw:COMMAND)");
 
     public ValueOutput<bool> Success = new();
     public ValueOutput<string> Error = new();
@@ -304,14 +125,40 @@ public sealed class IRCSendNoticeNode : ModuleNode<IRCBridgeModule>, IFlowInput
                 }
             }
 
-            // Ensure channel starts with # if it's a channel
-            if (!target.StartsWith("#") && !target.Contains("!"))
-            {
-                // Assume it's a channel if it looks like one, otherwise it's a user
-                // For now, treat as user if no # prefix
-            }
+            // Parse target format:
+            // #channel = channel message
+            // @user = private message
+            // notice:target = notice to target
+            // raw:COMMAND params = raw IRC command
 
-            await Module.SendIRCMessage($"NOTICE {target} :{message}");
+            if (target.StartsWith("raw:", StringComparison.OrdinalIgnoreCase))
+            {
+                // Raw IRC command: "raw:COMMAND param1 param2 :trailing param"
+                var rawCommand = target.Substring(4).TrimStart(); // Remove "raw:" prefix
+                await Module.SendIRCMessage($"{rawCommand} {message}");
+            }
+            else if (target.StartsWith("notice:", StringComparison.OrdinalIgnoreCase))
+            {
+                // Notice: "notice:#channel" or "notice:user"
+                var noticeTarget = target.Substring(7).TrimStart(); // Remove "notice:" prefix
+                await Module.SendNoticeAsync(noticeTarget, message);
+            }
+            else if (target.StartsWith("#"))
+            {
+                // Channel message
+                await Module.SendMessageToChannelAsync(target, message);
+            }
+            else if (target.StartsWith("@"))
+            {
+                // Private message to user
+                var user = target.Substring(1).TrimStart(); // Remove "@" prefix
+                await Module.SendMessageToUserAsync(user, message);
+            }
+            else
+            {
+                // Default: treat as user (backward compatibility)
+                await Module.SendMessageToUserAsync(target, message);
+            }
             
             Success.Write(true, c);
             await Next.Execute(c);
@@ -361,7 +208,7 @@ public sealed class IRCJoinChannelNode : ModuleNode<IRCBridgeModule>, IFlowInput
                 channel = "#" + channel;
             }
 
-            await Module.SendIRCMessage($"JOIN {channel}");
+            await Module.JoinChannelAsync(channel);
             
             Success.Write(true, c);
             await Next.Execute(c);
@@ -417,11 +264,7 @@ public sealed class IRCLeaveChannelNode : ModuleNode<IRCBridgeModule>, IFlowInpu
             }
 
             var reason = Reason.Read(c);
-            var partMessage = string.IsNullOrEmpty(reason) 
-                ? $"PART {channel}" 
-                : $"PART {channel} :{reason}";
-
-            await Module.SendIRCMessage(partMessage);
+            await Module.LeaveChannelAsync(channel, string.IsNullOrEmpty(reason) ? null : reason);
             
             Success.Write(true, c);
             await Next.Execute(c);

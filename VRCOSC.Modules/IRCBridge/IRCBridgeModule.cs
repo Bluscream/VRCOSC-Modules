@@ -2,6 +2,7 @@
 // See the LICENSE file in the repository root for full license text.
 
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -167,27 +168,97 @@ public class IRCBridgeModule : Module
             // Wire up raw message logging (for debugging)
             ircClient.RawMessageSent += (sender, e) =>
             {
-                if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages) && e?.Message != null)
+                if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages) && e != null)
                 {
-                    var logMsg = e.Message.Command ?? "";
-                    if (e.Message.Parameters != null && e.Message.Parameters.Count > 0 && e.Message.Parameters[0] != null)
+                    // Use RawContent if available, otherwise reconstruct from IrcMessage
+                    var rawMessage = e.RawContent;
+                    if (string.IsNullOrEmpty(rawMessage))
                     {
-                        logMsg += $" {e.Message.Parameters[0]}";
+                        // Reconstruct raw message from IrcMessage
+                        var message = e.Message;
+                        rawMessage = string.Empty;
+                        
+                        if (message.Prefix != null)
+                        {
+                            rawMessage += $":{message.Prefix} ";
+                        }
+                        
+                        if (message.Command != null)
+                        {
+                            rawMessage += message.Command;
+                        }
+                        
+                        if (message.Parameters != null && message.Parameters.Count > 0)
+                        {
+                            for (int i = 0; i < message.Parameters.Count; i++)
+                            {
+                                var param = message.Parameters[i];
+                                if (param == null) continue;
+                                
+                                if (i == message.Parameters.Count - 1 && param.Contains(' '))
+                                {
+                                    rawMessage += $" :{param}";
+                                }
+                                else
+                                {
+                                    rawMessage += $" {param}";
+                                }
+                            }
+                        }
                     }
-                    Log($"IRC → {logMsg}");
+                    
+                    if (!string.IsNullOrEmpty(rawMessage))
+                    {
+                        Log($"IRC → {rawMessage}");
+                    }
                 }
             };
 
             ircClient.RawMessageReceived += (sender, e) =>
             {
-                if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages) && e?.Message != null)
+                if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages) && e != null)
                 {
-                    var logMsg = e.Message.Command ?? "";
-                    if (e.Message.Parameters != null && e.Message.Parameters.Count > 0 && e.Message.Parameters[0] != null)
+                    // Use RawContent if available, otherwise reconstruct from IrcMessage
+                    var rawMessage = e.RawContent;
+                    if (string.IsNullOrEmpty(rawMessage))
                     {
-                        logMsg += $" {e.Message.Parameters[0]}";
+                        // Reconstruct raw message from IrcMessage
+                        var message = e.Message;
+                        rawMessage = string.Empty;
+                        
+                        if (message.Prefix != null)
+                        {
+                            rawMessage += $":{message.Prefix} ";
+                        }
+                        
+                        if (message.Command != null)
+                        {
+                            rawMessage += message.Command;
+                        }
+                        
+                        if (message.Parameters != null && message.Parameters.Count > 0)
+                        {
+                            for (int i = 0; i < message.Parameters.Count; i++)
+                            {
+                                var param = message.Parameters[i];
+                                if (param == null) continue;
+                                
+                                if (i == message.Parameters.Count - 1 && param.Contains(' '))
+                                {
+                                    rawMessage += $" :{param}";
+                                }
+                                else
+                                {
+                                    rawMessage += $" {param}";
+                                }
+                            }
+                        }
                     }
-                    Log($"IRC ← {logMsg}");
+                    
+                    if (!string.IsNullOrEmpty(rawMessage))
+                    {
+                        Log($"IRC ← {rawMessage}");
+                    }
                 }
             };
 
@@ -203,14 +274,18 @@ public class IRCBridgeModule : Module
             ircClient.Registered += (sender, e) =>
             {
                 var client = (IrcClient)sender;
-                SetVariableValue(IRCBridgeVariable.ServerStatus, $"Connected to {serverAddress}:{serverPort}");
+                var serverStatus = $"Connected to {serverAddress}:{serverPort}";
+                SetVariableValue(IRCBridgeVariable.ServerStatus, serverStatus);
                 ChangeState(IRCBridgeState.Connected);
                 this.SendParameterSafe(IRCBridgeParameter.Connected, true);
                 TriggerEvent(IRCBridgeEvent.OnConnected);
-                _ = TriggerModuleNodeAsync(typeof(OnIRCConnectedNode), new object[] { serverAddress, serverPort });
                 
                 // Update nickname from LocalUser
-                SetVariableValue(IRCBridgeVariable.Nickname, client.LocalUser.NickName);
+                var nickname = client.LocalUser.NickName;
+                SetVariableValue(IRCBridgeVariable.Nickname, nickname);
+                
+                // Trigger pulse graph node with server status and nickname
+                _ = TriggerModuleNodeAsync(typeof(OnIRCConnectedNode), new object[] { serverStatus, nickname });
                 
                 // Subscribe to LocalUser events (best practice from IrcBot)
                 client.LocalUser.JoinedChannel += LocalUser_JoinedChannel;
@@ -494,7 +569,7 @@ public class IRCBridgeModule : Module
         return default;
     }
 
-    // Public wrapper methods for IRCMessageHandler
+    // Public wrapper methods
     public void SetVariableValuePublic<T>(IRCBridgeVariable variable, T value) where T : notnull
     {
         SetVariableValue(variable, value);
@@ -544,6 +619,96 @@ public class IRCBridgeModule : Module
     }
 
     public T PublicGetSettingValue<T>(IRCBridgeSetting setting) => GetSettingValue<T>(setting);
+
+    // Higher-level methods using IrcDotNet's API (best practices)
+    public async Task SendMessageToChannelAsync(string channelName, string message)
+    {
+        if (_ircClient?.Client == null || !_ircClient.IsConnected)
+        {
+            throw new InvalidOperationException("Not connected to IRC server");
+        }
+
+        var channel = _ircClient.Client.Channels.FirstOrDefault(c => c.Name.Equals(channelName, StringComparison.OrdinalIgnoreCase));
+        if (channel != null)
+        {
+            await Task.Run(() => _ircClient.Client.LocalUser.SendMessage(channel, message));
+        }
+        else
+        {
+            // Channel not found, send as raw message (fallback)
+            await SendIRCMessage($"PRIVMSG {channelName} :{message}");
+        }
+    }
+
+    public async Task SendMessageToUserAsync(string userName, string message)
+    {
+        if (_ircClient?.Client == null || !_ircClient.IsConnected)
+        {
+            throw new InvalidOperationException("Not connected to IRC server");
+        }
+
+        var user = _ircClient.Client.Users.FirstOrDefault(u => u.NickName.Equals(userName, StringComparison.OrdinalIgnoreCase));
+        if (user != null)
+        {
+            await Task.Run(() => _ircClient.Client.LocalUser.SendMessage(user, message));
+        }
+        else
+        {
+            // User not found, send as raw message (fallback)
+            await SendIRCMessage($"PRIVMSG {userName} :{message}");
+        }
+    }
+
+    public async Task SendNoticeAsync(string target, string message)
+    {
+        if (_ircClient?.Client == null || !_ircClient.IsConnected)
+        {
+            throw new InvalidOperationException("Not connected to IRC server");
+        }
+
+        // Try to find as channel first
+        var channel = _ircClient.Client.Channels.FirstOrDefault(c => c.Name.Equals(target, StringComparison.OrdinalIgnoreCase));
+        if (channel != null)
+        {
+            await Task.Run(() => _ircClient.Client.LocalUser.SendNotice(channel, message));
+            return;
+        }
+
+        // Try to find as user
+        var user = _ircClient.Client.Users.FirstOrDefault(u => u.NickName.Equals(target, StringComparison.OrdinalIgnoreCase));
+        if (user != null)
+        {
+            await Task.Run(() => _ircClient.Client.LocalUser.SendNotice(user, message));
+            return;
+        }
+
+        // Fallback to raw message
+        await SendIRCMessage($"NOTICE {target} :{message}");
+    }
+
+    public async Task JoinChannelAsync(string channelName)
+    {
+        if (_ircClient?.Client == null || !_ircClient.IsConnected)
+        {
+            throw new InvalidOperationException("Not connected to IRC server");
+        }
+
+        await Task.Run(() => _ircClient.Client.Channels.Join(channelName));
+    }
+
+    public async Task LeaveChannelAsync(string channelName, string? reason = null)
+    {
+        if (_ircClient?.Client == null || !_ircClient.IsConnected)
+        {
+            throw new InvalidOperationException("Not connected to IRC server");
+        }
+
+        var channel = _ircClient.Client.Channels.FirstOrDefault(c => c.Name.Equals(channelName, StringComparison.OrdinalIgnoreCase));
+        if (channel != null)
+        {
+            await Task.Run(() => channel.Leave(reason));
+        }
+    }
 
     // Event handlers for IrcDotNet higher-level events (following IrcBot best practices)
     private void LocalUser_JoinedChannel(object sender, IrcChannelEventArgs e)
