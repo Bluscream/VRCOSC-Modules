@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using IrcDotNet;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Parameters;
 using VRCOSC.App.SDK.VRChat;
@@ -20,7 +21,6 @@ namespace Bluscream.Modules;
 public class IRCBridgeModule : Module
 {
     private IRCClient? _ircClient;
-    private IRCMessageHandler? _messageHandler;
     private bool _isStopping = false;
 
     protected override void OnPreLoad()
@@ -122,6 +122,20 @@ public class IRCBridgeModule : Module
             return;
         }
 
+        // Dispose old client if it exists (shouldn't happen, but safety check)
+        if (_ircClient != null)
+        {
+            try
+            {
+                _ircClient.Dispose();
+            }
+            catch
+            {
+                // Ignore errors during disposal
+            }
+            _ircClient = null;
+        }
+
         ChangeState(IRCBridgeState.Connecting);
 
         try
@@ -142,36 +156,116 @@ public class IRCBridgeModule : Module
 
             SetVariableValue(IRCBridgeVariable.ServerStatus, $"Connecting to {serverAddress}:{serverPort}...");
 
-            // Create IRC client and message handler
+            // Create IRC client
             _ircClient = new IRCClient(Log);
-            _messageHandler = new IRCMessageHandler(this);
-
-            // Wire up events
-            _ircClient.RawMessageSent += (message) =>
+            var ircClient = _ircClient.Client;
+            if (ircClient == null)
             {
-                if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages))
+                throw new Exception("Failed to create IRC client");
+            }
+
+            // Wire up raw message logging (for debugging)
+            ircClient.RawMessageSent += (sender, e) =>
+            {
+                if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages) && e?.Message != null)
                 {
-                    Log($"IRC → {message}");
+                    var logMsg = e.Message.Command ?? "";
+                    if (e.Message.Parameters != null && e.Message.Parameters.Count > 0 && e.Message.Parameters[0] != null)
+                    {
+                        logMsg += $" {e.Message.Parameters[0]}";
+                    }
+                    Log($"IRC → {logMsg}");
                 }
             };
 
-            _ircClient.MessageReceived += async (message) =>
+            ircClient.RawMessageReceived += (sender, e) =>
             {
-                if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages))
+                if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages) && e?.Message != null)
                 {
-                    Log($"IRC ← {message}");
+                    var logMsg = e.Message.Command ?? "";
+                    if (e.Message.Parameters != null && e.Message.Parameters.Count > 0 && e.Message.Parameters[0] != null)
+                    {
+                        logMsg += $" {e.Message.Parameters[0]}";
+                    }
+                    Log($"IRC ← {logMsg}");
                 }
-                await _messageHandler.ProcessMessageAsync(message, _ircClient);
             };
 
-            _ircClient.Connected += () =>
+            // Wire up connection events
+            ircClient.Connected += (sender, e) =>
             {
+                SetVariableValue(IRCBridgeVariable.ServerStatus, $"Connected to {serverAddress}:{serverPort}");
+                ChangeState(IRCBridgeState.Connected);
+                Log($"Connected to IRC server {serverAddress}:{serverPort}");
+            };
+
+            // Subscribe to Registered event (best practice: subscribe to LocalUser events here)
+            ircClient.Registered += (sender, e) =>
+            {
+                var client = (IrcClient)sender;
                 SetVariableValue(IRCBridgeVariable.ServerStatus, $"Connected to {serverAddress}:{serverPort}");
                 ChangeState(IRCBridgeState.Connected);
                 this.SendParameterSafe(IRCBridgeParameter.Connected, true);
                 TriggerEvent(IRCBridgeEvent.OnConnected);
+                _ = TriggerModuleNodeAsync(typeof(OnIRCConnectedNode), new object[] { serverAddress, serverPort });
+                
+                // Update nickname from LocalUser
+                SetVariableValue(IRCBridgeVariable.Nickname, client.LocalUser.NickName);
+                
+                // Subscribe to LocalUser events (best practice from IrcBot)
+                client.LocalUser.JoinedChannel += LocalUser_JoinedChannel;
+                client.LocalUser.LeftChannel += LocalUser_LeftChannel;
+                
+                // Authenticate with NickServ if configured
+                var nickServName = GetSettingValue<string>(IRCBridgeSetting.NickServName);
+                var nickServPassword = GetSettingValue<string>(IRCBridgeSetting.NickServPassword);
+                
+                if (!string.IsNullOrEmpty(nickServName) && !string.IsNullOrEmpty(nickServPassword))
+                {
+                    // Wait a bit before authenticating (best practice)
+                    _ = Task.Delay(2000).ContinueWith(_ =>
+                    {
+                        try
+                        {
+                            client.LocalUser.SendMessage("NickServ", $"IDENTIFY {nickServName} {nickServPassword}");
+                        }
+                        catch (Exception ex)
+                        {
+                            Log($"Error authenticating with NickServ: {ex.Message}");
+                        }
+                    });
+                }
+                
+                // Join channel if configured
                 var channel = GetSettingValue<string>(IRCBridgeSetting.Channel);
-                Log($"Connected to IRC server {serverAddress}:{serverPort}" + (!string.IsNullOrEmpty(channel) ? $", joining channel {channel}..." : ""));
+                if (!string.IsNullOrEmpty(channel))
+                {
+                    ChangeState(IRCBridgeState.Joining);
+                    SetVariableValue(IRCBridgeVariable.ChannelName, channel);
+                    Log($"Joining channel {channel}...");
+                    client.Channels.Join(channel);
+                }
+            };
+
+            // Handle nickname conflicts (433 error) using ProtocolError event
+            ircClient.ProtocolError += (sender, e) =>
+            {
+                if (e.Code == 433) // ERR_NICKNAMEINUSE
+                {
+                    var client = (IrcClient)sender;
+                    var currentNick = client.LocalUser.NickName;
+                    var newNick = $"{currentNick}_";
+                    
+                    // Ensure nickname doesn't exceed IRC limit (typically 9 characters)
+                    if (newNick.Length > 9)
+                    {
+                        newNick = newNick.Substring(0, 9);
+                    }
+                    
+                    Log($"Nickname already in use, trying alternative: {newNick}");
+                    client.LocalUser.SetNickName(newNick);
+                    SetVariableValue(IRCBridgeVariable.Nickname, newNick);
+                }
             };
 
             _ircClient.Disconnected += () =>
@@ -374,7 +468,6 @@ public class IRCBridgeModule : Module
         {
             _ircClient?.Dispose();
             _ircClient = null;
-            _messageHandler = null;
             Log("Stopped");
         }
     }
@@ -451,4 +544,166 @@ public class IRCBridgeModule : Module
     }
 
     public T PublicGetSettingValue<T>(IRCBridgeSetting setting) => GetSettingValue<T>(setting);
+
+    // Event handlers for IrcDotNet higher-level events (following IrcBot best practices)
+    private void LocalUser_JoinedChannel(object sender, IrcChannelEventArgs e)
+    {
+        var channel = e.Channel;
+        
+        // Subscribe to channel events when we join (best practice from IrcBot)
+        channel.UserJoined += Channel_UserJoined;
+        channel.UserLeft += Channel_UserLeft;
+        channel.MessageReceived += Channel_MessageReceived;
+        
+        ChangeState(IRCBridgeState.Joined);
+        SetVariableValue(IRCBridgeVariable.ChannelName, channel.Name);
+        TriggerEvent(IRCBridgeEvent.OnChannelJoined);
+        _ = TriggerModuleNodeAsync(typeof(OnIRCChannelJoinedNode), new object[] { channel.Name });
+        
+        // Update user count
+        var userCount = channel.Users.Count;
+        SetVariableValue(IRCBridgeVariable.UserCount, userCount);
+        SendParameterSafePublic(IRCBridgeParameter.UserCount, userCount);
+        
+        Log($"Joined channel: {channel.Name}");
+    }
+
+    private void LocalUser_LeftChannel(object sender, IrcChannelEventArgs e)
+    {
+        var channel = e.Channel;
+        
+        // Unsubscribe from channel events when we leave (best practice from IrcBot)
+        channel.UserJoined -= Channel_UserJoined;
+        channel.UserLeft -= Channel_UserLeft;
+        channel.MessageReceived -= Channel_MessageReceived;
+        
+        ChangeState(IRCBridgeState.Connected);
+        TriggerEvent(IRCBridgeEvent.OnChannelLeft);
+        Log($"Left channel: {channel.Name}");
+    }
+
+    private void Channel_UserJoined(object sender, IrcChannelUserEventArgs e)
+    {
+        var channel = (IrcChannel)sender;
+        var user = e.ChannelUser.User;
+        
+        // Skip if it's us
+        if (user is IrcLocalUser)
+        {
+            return;
+        }
+        
+        var eventTime = DateTime.Now.ToString("HH:mm:ss");
+        
+        SetVariableValue(IRCBridgeVariable.LastJoinedUser, user.NickName);
+        SetVariableValue(IRCBridgeVariable.LastEventTime, eventTime);
+        TriggerEvent(IRCBridgeEvent.OnUserJoined);
+        _ = TriggerModuleNodeAsync(typeof(OnIRCUserJoinedNode), new object[] { user.NickName, channel.Name, eventTime });
+        
+        try
+        {
+            SendParameterSafePublic(IRCBridgeParameter.UserJoined, true);
+            _ = Task.Delay(1000).ContinueWith(_ =>
+            {
+                try
+                {
+                    SendParameterSafePublic(IRCBridgeParameter.UserJoined, false);
+                }
+                catch { }
+            });
+        }
+        catch { }
+        
+        // Update user count
+        var userCount = channel.Users.Count;
+        SetVariableValue(IRCBridgeVariable.UserCount, userCount);
+        SendParameterSafePublic(IRCBridgeParameter.UserCount, userCount);
+        
+        if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages))
+        {
+            Log($"User joined: {user.NickName}");
+        }
+    }
+
+    private void Channel_UserLeft(object sender, IrcChannelUserEventArgs e)
+    {
+        var channel = (IrcChannel)sender;
+        var user = e.ChannelUser.User;
+        
+        // Skip if it's us
+        if (user is IrcLocalUser)
+        {
+            return;
+        }
+        
+        var eventTime = DateTime.Now.ToString("HH:mm:ss");
+        
+        SetVariableValue(IRCBridgeVariable.LastLeftUser, user.NickName);
+        SetVariableValue(IRCBridgeVariable.LastEventTime, eventTime);
+        TriggerEvent(IRCBridgeEvent.OnUserLeft);
+        _ = TriggerModuleNodeAsync(typeof(OnIRCUserLeftNode), new object[] { user.NickName, channel.Name, eventTime });
+        
+        try
+        {
+            SendParameterSafePublic(IRCBridgeParameter.UserLeft, true);
+            _ = Task.Delay(1000).ContinueWith(_ =>
+            {
+                try
+                {
+                    SendParameterSafePublic(IRCBridgeParameter.UserLeft, false);
+                }
+                catch { }
+            });
+        }
+        catch { }
+        
+        // Update user count
+        var userCount = channel.Users.Count;
+        SetVariableValue(IRCBridgeVariable.UserCount, userCount);
+        SendParameterSafePublic(IRCBridgeParameter.UserCount, userCount);
+        
+        if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages))
+        {
+            Log($"User left: {user.NickName}");
+        }
+    }
+
+    private void Channel_MessageReceived(object sender, IrcMessageEventArgs e)
+    {
+        var channel = (IrcChannel)sender;
+        var user = e.Source as IrcUser;
+        
+        if (user == null)
+        {
+            return;
+        }
+        
+        var message = e.Text;
+        var eventTime = DateTime.Now.ToString("HH:mm:ss");
+        
+        SetVariableValue(IRCBridgeVariable.LastMessage, message);
+        SetVariableValue(IRCBridgeVariable.LastMessageUser, user.NickName);
+        SetVariableValue(IRCBridgeVariable.LastEventTime, eventTime);
+        TriggerEvent(IRCBridgeEvent.OnMessageReceived);
+        _ = TriggerModuleNodeAsync(typeof(OnIRCMessageReceivedNode), new object[] { message, user.NickName, channel.Name, eventTime });
+        
+        try
+        {
+            SendParameterSafePublic(IRCBridgeParameter.MessageReceived, true);
+            _ = Task.Delay(1000).ContinueWith(_ =>
+            {
+                try
+                {
+                    SendParameterSafePublic(IRCBridgeParameter.MessageReceived, false);
+                }
+                catch { }
+            });
+        }
+        catch { }
+        
+        if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages))
+        {
+            Log($"<{user.NickName}> {message}");
+        }
+    }
 }

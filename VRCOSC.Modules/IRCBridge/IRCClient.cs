@@ -16,6 +16,9 @@ public class IRCClient : IDisposable
 
     public bool IsConnected => _isConnected && (_client?.IsConnected ?? false);
     public bool IsConnecting => _isConnecting;
+    
+    // Expose the underlying StandardIrcClient for direct event subscription
+    public StandardIrcClient? Client => _client;
 
     public event Action<string>? MessageReceived;
     public event Action<string>? RawMessageSent; // For logging outgoing messages
@@ -42,6 +45,9 @@ public class IRCClient : IDisposable
         try
         {
             _client = new StandardIrcClient();
+            
+            // Add flood preventer (best practice from IrcBot sample)
+            _client.FloodPreventer = new IrcStandardFloodPreventer(4, 2000);
             
             // Wire up events
             _client.Connected += (sender, e) =>
@@ -139,15 +145,16 @@ public class IRCClient : IDisposable
                 }
             };
 
-            // Create registration info
+            // Create registration info (IrcDotNet handles password automatically)
             var registrationInfo = new IrcUserRegistrationInfo
             {
                 UserName = username,
                 RealName = realName,
-                NickName = nickname
+                NickName = nickname,
+                Password = password // IrcDotNet will send PASS command automatically if password is set
             };
 
-            // Connect (IrcDotNet handles password in registration if needed, but we'll send it separately)
+            // Connect (IrcDotNet handles password in registration automatically)
             await Task.Run(() =>
             {
                 if (useSSL)
@@ -159,14 +166,6 @@ public class IRCClient : IDisposable
                     _client.Connect(serverAddress, serverPort, useSsl: false, registrationInfo);
                 }
             });
-
-            // Send password if provided (must be sent before NICK/USER, but IrcDotNet handles registration)
-            // We'll send it as raw message if needed
-            if (!string.IsNullOrEmpty(password))
-            {
-                await Task.Delay(100); // Small delay to ensure connection is ready
-                _client.SendRawMessage($"PASS {password}");
-            }
         }
         catch (Exception ex)
         {

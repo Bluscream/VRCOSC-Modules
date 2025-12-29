@@ -212,9 +212,10 @@ public class IRCMessageHandler
         else
         {
             // Another user joined
-            if (ShouldProcessEvent("UserJoined", user))
+            var joinedChannel = parameters[0];
+            // Include channel in identifier to make it unique per channel
+            if (ShouldProcessEvent("UserJoined", $"{user}:{joinedChannel}"))
             {
-                var joinedChannel = parameters[0];
                 var eventTime = DateTime.Now.ToString("HH:mm:ss");
                 
                 _module.SetVariableValuePublic(IRCBridgeVariable.LastJoinedUser, user);
@@ -529,15 +530,18 @@ public class IRCMessageHandler
             var key = $"{eventType}:{identifier}";
             var now = DateTime.Now;
             
+            // Check if we should process this event (cooldown check)
             if (_lastEventTimes.TryGetValue(key, out var lastTime))
             {
                 var cooldown = _module.GetSettingValue<int>(IRCBridgeSetting.MessageCooldown);
                 if ((now - lastTime).TotalMilliseconds < cooldown)
                 {
-                    return false;
+                    return false; // Still in cooldown, skip
                 }
             }
             
+            // Update timestamp immediately to prevent duplicate processing
+            // This must happen before any async operations to prevent race conditions
             _lastEventTimes[key] = now;
             
             // Clean up old entries periodically (keep only last 1000)
