@@ -160,9 +160,16 @@ public class IRCMessageHandler
             // Another user joined
             if (ShouldProcessEvent("UserJoined", user))
             {
+                var joinedChannel = parameters[0];
+                var eventTime = DateTime.Now.ToString("HH:mm:ss");
+                
                 _module.SetVariableValuePublic(IRCBridgeVariable.LastJoinedUser, user);
-                _module.SetVariableValuePublic(IRCBridgeVariable.LastEventTime, DateTime.Now.ToString("HH:mm:ss"));
+                _module.SetVariableValuePublic(IRCBridgeVariable.LastEventTime, eventTime);
                 _module.TriggerEventPublic(IRCBridgeEvent.OnUserJoined);
+                
+                // Trigger pulse graph node
+                _ = _module.TriggerModuleNodeAsync(typeof(OnIRCUserJoinedNode), new object[] { user, joinedChannel, eventTime });
+                
                 try
                 {
                     _module.SendParameterSafePublic(IRCBridgeParameter.UserJoined, true);
@@ -222,9 +229,16 @@ public class IRCMessageHandler
             // Another user left
             if (ShouldProcessEvent("UserLeft", user))
             {
+                var leftChannel = parameters[0];
+                var eventTime = DateTime.Now.ToString("HH:mm:ss");
+                
                 _module.SetVariableValuePublic(IRCBridgeVariable.LastLeftUser, user);
-                _module.SetVariableValuePublic(IRCBridgeVariable.LastEventTime, DateTime.Now.ToString("HH:mm:ss"));
+                _module.SetVariableValuePublic(IRCBridgeVariable.LastEventTime, eventTime);
                 _module.TriggerEventPublic(IRCBridgeEvent.OnUserLeft);
+                
+                // Trigger pulse graph node
+                _ = _module.TriggerModuleNodeAsync(typeof(OnIRCUserLeftNode), new object[] { user, leftChannel, eventTime });
+                
                 try
                 {
                     _module.SendParameterSafePublic(IRCBridgeParameter.UserLeft, true);
@@ -333,10 +347,17 @@ public class IRCMessageHandler
         {
             if (ShouldProcessEvent("MessageReceived", $"{user}:{message}"))
             {
+                var messageChannel = target;
+                var eventTime = DateTime.Now.ToString("HH:mm:ss");
+                
                 _module.SetVariableValuePublic(IRCBridgeVariable.LastMessage, message);
                 _module.SetVariableValuePublic(IRCBridgeVariable.LastMessageUser, user);
-                _module.SetVariableValuePublic(IRCBridgeVariable.LastEventTime, DateTime.Now.ToString("HH:mm:ss"));
+                _module.SetVariableValuePublic(IRCBridgeVariable.LastEventTime, eventTime);
                 _module.TriggerEventPublic(IRCBridgeEvent.OnMessageReceived);
+                
+                // Trigger pulse graph node
+                _ = _module.TriggerModuleNodeAsync(typeof(OnIRCMessageReceivedNode), new object[] { message, user, messageChannel, eventTime });
+                
                 try
                 {
                     _module.SendParameterSafePublic(IRCBridgeParameter.MessageReceived, true);

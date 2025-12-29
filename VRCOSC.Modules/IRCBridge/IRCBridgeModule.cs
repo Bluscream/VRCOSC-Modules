@@ -35,8 +35,8 @@ public class IRCBridgeModule : Module
         
         // User configuration
         CreateTextBox(IRCBridgeSetting.Nickname, "Nickname", "Your IRC nickname (leave empty to use VRC display name)", string.Empty);
-        CreateTextBox(IRCBridgeSetting.Username, "Username", "Your IRC username (ident)", "vrcosc");
-        CreateTextBox(IRCBridgeSetting.RealName, "Real Name", "Your real name for IRC", "VRCOSC IRC Bridge");
+        CreateTextBox(IRCBridgeSetting.Username, "Username", "Your IRC username (ident)", "");
+        CreateTextBox(IRCBridgeSetting.RealName, "Real Name", "Your real name for IRC", "");
         
         // Authentication
         CreateTextBox(IRCBridgeSetting.Password, "Server Password", "IRC server password (if required, leave empty if not)", string.Empty);
@@ -179,10 +179,15 @@ public class IRCBridgeModule : Module
                 // Prevent duplicate disconnect handling
                 if (!_isStopping)
                 {
-                    SetVariableValue(IRCBridgeVariable.ServerStatus, "Disconnected");
+                    var status = "Disconnected";
+                    SetVariableValue(IRCBridgeVariable.ServerStatus, status);
                     this.SendParameterSafe(IRCBridgeParameter.Connected, false);
                     ChangeState(IRCBridgeState.Disconnected);
                     TriggerEvent(IRCBridgeEvent.OnDisconnected);
+                    
+                    // Trigger pulse graph node
+                    _ = TriggerModuleNodeAsync(typeof(OnIRCDisconnectedNode), new object[] { status });
+                    
                     Log("Disconnected from IRC server");
 
                     // Auto-reconnect if enabled
@@ -202,10 +207,17 @@ public class IRCBridgeModule : Module
 
             _ircClient.Error += (ex) =>
             {
-                Log($"IRC error: {ex.Message}");
-                SetVariableValue(IRCBridgeVariable.ServerStatus, $"Error: {ex.Message}");
+                var errorMessage = ex.Message;
+                var status = $"Error: {errorMessage}";
+                
+                Log($"IRC error: {errorMessage}");
+                SetVariableValue(IRCBridgeVariable.ServerStatus, status);
                 ChangeState(IRCBridgeState.Error);
                 TriggerEvent(IRCBridgeEvent.OnError);
+                
+                // Trigger pulse graph node
+                _ = TriggerModuleNodeAsync(typeof(OnIRCErrorNode), new object[] { errorMessage, status });
+                
                 this.SendParameterSafe(IRCBridgeParameter.Connected, false);
 
                 // Auto-reconnect if enabled
@@ -403,6 +415,18 @@ public class IRCBridgeModule : Module
     public void TriggerEventPublic(IRCBridgeEvent evt)
     {
         TriggerEvent(evt);
+    }
+
+    public async Task TriggerModuleNodeAsync(Type nodeType, object[] data)
+    {
+        try
+        {
+            await TriggerModuleNode(nodeType, data);
+        }
+        catch
+        {
+            // Ignore errors if node doesn't exist or module is stopping
+        }
     }
 
     public void SendParameterPublic(IRCBridgeParameter parameter, object value)
