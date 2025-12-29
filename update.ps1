@@ -23,21 +23,13 @@ if (-not $Version) {
     $latestRelease = gh release list --limit 1 --repo Bluscream/VRCOSC-Modules --json tagName -q '.[0].tagName' 2>$null
     if ($latestRelease) {
         Write-Host "Latest release: $latestRelease" -ForegroundColor Yellow
-        # Parse version and increment patch
-        if ($latestRelease -match '^(\d{4})\.(\d{2})\.(\d{2})\.(\d+)$') {
+        # Parse version format: YYYY.MMDD.Patch (e.g., 2025.1229.7)
+        if ($latestRelease -match '^(\d{4})\.(\d{4})\.(\d+)$') {
             $year = $Matches[1]
-            $month = $Matches[2]
-            $day = $Matches[3]
-            $patch = [int]$Matches[4]
+            $monthDay = $Matches[2]
+            $patch = [int]$Matches[3]
             $patch++
-            $Version = "$year.$month.$day.$patch"
-        }
-        elseif ($latestRelease -match '^(\d{4})\.(\d{2})\.(\d{2})\.(\d+)$') {
-            # Handle format like 2025.1229.4
-            $parts = $latestRelease -split '\.'
-            $patch = [int]$parts[2]
-            $patch++
-            $Version = "$($parts[0]).$($parts[1]).$patch"
+            $Version = "$year.$monthDay.$patch"
         }
         else {
             # Default: use today's date

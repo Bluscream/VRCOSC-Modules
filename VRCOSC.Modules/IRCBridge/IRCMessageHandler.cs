@@ -15,6 +15,8 @@ public class IRCMessageHandler
     private readonly object _eventLock = new();
     private bool _hasJoinedChannel = false; // Track if we've already joined to avoid duplicate joins
     private readonly Dictionary<string, int> _rateLimits = new(); // Store server rate limits from ISUPPORT
+    private int _nicknameRetryCount = 0; // Track nickname retry attempts
+    private const int MaxNicknameRetries = 10; // Maximum number of nickname retry attempts
 
     public IRCMessageHandler(IRCBridgeModule module)
     {
@@ -73,6 +75,22 @@ public class IRCMessageHandler
                 if (!_hasJoinedChannel)
                 {
                     _hasJoinedChannel = true;
+                    _nicknameRetryCount = 0; // Reset retry count on successful connection
+                    
+                    // Extract and update nickname from welcome message if available
+                    if (parameters.Count > 0)
+                    {
+                        var welcomeMessage = string.Join(" ", parameters.Skip(1));
+                        // Welcome message format: "Welcome to the Internet Relay Network nickname!username@hostname"
+                        // Extract nickname if present
+                        var parts = welcomeMessage.Split('!');
+                        if (parts.Length > 0 && !string.IsNullOrEmpty(parts[0]))
+                        {
+                            var confirmedNick = parts[0].Trim();
+                            _module.SetVariableValuePublic(IRCBridgeVariable.Nickname, confirmedNick);
+                        }
+                    }
+                    
                     if (_module.GetSettingValue<bool>(IRCBridgeSetting.LogMessages))
                     {
                         _module.Log($"IRC: {string.Join(" ", parameters.Skip(1))}");
@@ -118,12 +136,48 @@ public class IRCMessageHandler
                 // Recalculate user count from all 353 responses received
                 break;
             case 433: // ERR_NICKNAMEINUSE
+                _nicknameRetryCount++;
+                if (_nicknameRetryCount > MaxNicknameRetries)
+                {
+                    _module.Log($"Failed to find available nickname after {MaxNicknameRetries} attempts. Disconnecting.");
+                    await client.SendMessageAsync("QUIT :Nickname conflict - too many retries");
+                    return;
+                }
+                
+                // Get current nickname from module variable (or fallback to setting)
+                var currentNick = _module.GetVariableValue<string>(IRCBridgeVariable.Nickname);
+                if (string.IsNullOrEmpty(currentNick))
+                {
+                    currentNick = _module.GetSettingValue<string>(IRCBridgeSetting.Nickname);
+                }
+                if (string.IsNullOrEmpty(currentNick))
+                {
+                    currentNick = "VRCOSCUser";
+                }
+                
+                // Remove any trailing underscores/numbers from previous attempts
+                currentNick = currentNick.TrimEnd('_', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+                
+                // Create new nickname with suffix
+                var newNick = _nicknameRetryCount == 1 
+                    ? $"{currentNick}_" 
+                    : $"{currentNick}{_nicknameRetryCount}";
+                
+                // Ensure nickname doesn't exceed IRC limit (typically 9 characters)
+                if (newNick.Length > 9)
+                {
+                    newNick = newNick.Substring(0, 9);
+                }
+                
+                // Update module variable with new nickname
+                _module.SetVariableValuePublic(IRCBridgeVariable.Nickname, newNick);
+                
                 if (_module.GetSettingValue<bool>(IRCBridgeSetting.LogMessages))
                 {
-                    _module.Log("Nickname already in use, trying alternative...");
+                    _module.Log($"Nickname already in use, trying alternative: {newNick}");
                 }
-                var currentNick = _module.GetSettingValue<string>(IRCBridgeSetting.Nickname);
-                await client.SendMessageAsync($"NICK {currentNick}_");
+                
+                await client.SendMessageAsync($"NICK {newNick}");
                 break;
         }
     }
