@@ -448,11 +448,8 @@ public sealed class IRCChangeNicknameNode : ModuleNode<IRCBridgeModule>, IFlowIn
 
 [Node("On IRC User Joined")]
 [NodeNoCancel]
-public sealed class OnIRCUserJoinedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler, IFlowInput
+public sealed class OnIRCUserJoinedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler
 {
-    private bool _wasWritten = false;
-
-    public FlowContinuation Next = new("Next");
     public FlowCall OnUserJoined = new("On User Joined");
 
     public ValueOutput<string> User = new("User");
@@ -465,33 +462,19 @@ public sealed class OnIRCUserJoinedNode : ModuleNode<IRCBridgeModule>, IModuleNo
         if (args.Length >= 1) User.Write(args[0] as string ?? string.Empty, c);
         if (args.Length >= 2) Channel.Write(args[1] as string ?? string.Empty, c);
         if (args.Length >= 3) EventTime.Write(args[2] as string ?? string.Empty, c);
-        _wasWritten = true;
         return Task.CompletedTask;
     }
 
     protected override async Task Process(PulseContext c)
     {
-        // Only write fallback values if Write wasn't called (manual trigger via flow input)
-        if (!_wasWritten)
-        {
-            User.Write(Module.GetVariableValue<string>(IRCBridgeVariable.LastJoinedUser) ?? string.Empty, c);
-            Channel.Write(Module.GetChannelName(), c);
-            EventTime.Write(Module.GetVariableValue<string>(IRCBridgeVariable.LastEventTime) ?? string.Empty, c);
-        }
-        _wasWritten = false; // Reset for next trigger
-        
         await OnUserJoined.Execute(c);
-        await Next.Execute(c);
     }
 }
 
 [Node("On IRC User Left")]
 [NodeNoCancel]
-public sealed class OnIRCUserLeftNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler, IFlowInput
+public sealed class OnIRCUserLeftNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler
 {
-    private bool _wasWritten = false;
-
-    public FlowContinuation Next = new("Next");
     public FlowCall OnUserLeft = new("On User Left");
 
     public ValueOutput<string> User = new("User");
@@ -504,33 +487,19 @@ public sealed class OnIRCUserLeftNode : ModuleNode<IRCBridgeModule>, IModuleNode
         if (args.Length >= 1) User.Write(args[0] as string ?? string.Empty, c);
         if (args.Length >= 2) Channel.Write(args[1] as string ?? string.Empty, c);
         if (args.Length >= 3) EventTime.Write(args[2] as string ?? string.Empty, c);
-        _wasWritten = true;
         return Task.CompletedTask;
     }
 
     protected override async Task Process(PulseContext c)
     {
-        // Only write fallback values if Write wasn't called (manual trigger via flow input)
-        if (!_wasWritten)
-        {
-            User.Write(Module.GetVariableValue<string>(IRCBridgeVariable.LastLeftUser) ?? string.Empty, c);
-            Channel.Write(Module.GetChannelName(), c);
-            EventTime.Write(Module.GetVariableValue<string>(IRCBridgeVariable.LastEventTime) ?? string.Empty, c);
-        }
-        _wasWritten = false; // Reset for next trigger
-        
         await OnUserLeft.Execute(c);
-        await Next.Execute(c);
     }
 }
 
 [Node("On IRC Message Received")]
 [NodeNoCancel]
-public sealed class OnIRCMessageReceivedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler, IFlowInput
+public sealed class OnIRCMessageReceivedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler
 {
-    private bool _wasWritten = false;
-
-    public FlowContinuation Next = new("Next");
     public FlowCall OnMessageReceived = new("On Message Received");
 
     public ValueOutput<string> Message = new("Message");
@@ -545,34 +514,19 @@ public sealed class OnIRCMessageReceivedNode : ModuleNode<IRCBridgeModule>, IMod
         if (args.Length >= 2) User.Write(args[1] as string ?? string.Empty, c);
         if (args.Length >= 3) Channel.Write(args[2] as string ?? string.Empty, c);
         if (args.Length >= 4) EventTime.Write(args[3] as string ?? string.Empty, c);
-        _wasWritten = true;
         return Task.CompletedTask;
     }
 
     protected override async Task Process(PulseContext c)
     {
-        // Only write fallback values if Write wasn't called (manual trigger via flow input)
-        if (!_wasWritten)
-        {
-            Message.Write(Module.GetVariableValue<string>(IRCBridgeVariable.LastMessage) ?? string.Empty, c);
-            User.Write(Module.GetVariableValue<string>(IRCBridgeVariable.LastMessageUser) ?? string.Empty, c);
-            Channel.Write(Module.GetChannelName(), c);
-            EventTime.Write(Module.GetVariableValue<string>(IRCBridgeVariable.LastEventTime) ?? string.Empty, c);
-        }
-        _wasWritten = false; // Reset for next trigger
-        
         await OnMessageReceived.Execute(c);
-        await Next.Execute(c);
     }
 }
 
 [Node("On IRC Connected")]
 [NodeNoCancel]
-public sealed class OnIRCConnectedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler, IFlowInput
+public sealed class OnIRCConnectedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler
 {
-    private bool _wasWritten = false;
-
-    public FlowContinuation Next = new("Next");
     public FlowCall OnConnected = new("On Connected");
 
     public ValueOutput<string> ServerStatus = new("Server Status");
@@ -583,32 +537,19 @@ public sealed class OnIRCConnectedNode : ModuleNode<IRCBridgeModule>, IModuleNod
         // Args: [0] = serverStatus, [1] = nickname
         if (args.Length >= 1) ServerStatus.Write(args[0] as string ?? string.Empty, c);
         if (args.Length >= 2) Nickname.Write(args[1] as string ?? string.Empty, c);
-        _wasWritten = true;
         return Task.CompletedTask;
     }
 
     protected override async Task Process(PulseContext c)
     {
-        // Only write fallback values if Write wasn't called (manual trigger via flow input)
-        if (!_wasWritten)
-        {
-            ServerStatus.Write(Module.GetVariableValue<string>(IRCBridgeVariable.ServerStatus) ?? string.Empty, c);
-            Nickname.Write(Module.GetNickname(), c);
-        }
-        _wasWritten = false; // Reset for next trigger
-        
         await OnConnected.Execute(c);
-        await Next.Execute(c);
     }
 }
 
 [Node("On IRC Disconnected")]
 [NodeNoCancel]
-public sealed class OnIRCDisconnectedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler, IFlowInput
+public sealed class OnIRCDisconnectedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler
 {
-    private bool _wasWritten = false;
-
-    public FlowContinuation Next = new("Next");
     public FlowCall OnDisconnected = new("On Disconnected");
 
     public ValueOutput<string> ServerStatus = new("Server Status");
@@ -617,31 +558,19 @@ public sealed class OnIRCDisconnectedNode : ModuleNode<IRCBridgeModule>, IModule
     {
         // Args: [0] = serverStatus
         if (args.Length >= 1) ServerStatus.Write(args[0] as string ?? string.Empty, c);
-        _wasWritten = true;
         return Task.CompletedTask;
     }
 
     protected override async Task Process(PulseContext c)
     {
-        // Only write fallback values if Write wasn't called (manual trigger via flow input)
-        if (!_wasWritten)
-        {
-            ServerStatus.Write(Module.GetVariableValue<string>(IRCBridgeVariable.ServerStatus) ?? string.Empty, c);
-        }
-        _wasWritten = false; // Reset for next trigger
-        
         await OnDisconnected.Execute(c);
-        await Next.Execute(c);
     }
 }
 
 [Node("On IRC Channel Joined")]
 [NodeNoCancel]
-public sealed class OnIRCChannelJoinedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler, IFlowInput
+public sealed class OnIRCChannelJoinedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler
 {
-    private bool _wasWritten = false;
-
-    public FlowContinuation Next = new("Next");
     public FlowCall OnChannelJoined = new("On Channel Joined");
 
     public ValueOutput<string> Channel = new("Channel");
@@ -652,32 +581,19 @@ public sealed class OnIRCChannelJoinedNode : ModuleNode<IRCBridgeModule>, IModul
         // Args: [0] = channel, [1] = userCount
         if (args.Length >= 1) Channel.Write(args[0] as string ?? string.Empty, c);
         if (args.Length >= 2 && args[1] is int count) UserCount.Write(count, c);
-        _wasWritten = true;
         return Task.CompletedTask;
     }
 
     protected override async Task Process(PulseContext c)
     {
-        // Only write fallback values if Write wasn't called (manual trigger via flow input)
-        if (!_wasWritten)
-        {
-            Channel.Write(Module.GetChannelName(), c);
-            UserCount.Write(Module.GetUserCount(), c);
-        }
-        _wasWritten = false; // Reset for next trigger
-        
         await OnChannelJoined.Execute(c);
-        await Next.Execute(c);
     }
 }
 
 [Node("On IRC Error")]
 [NodeNoCancel]
-public sealed class OnIRCErrorNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler, IFlowInput
+public sealed class OnIRCErrorNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler
 {
-    private bool _wasWritten = false;
-
-    public FlowContinuation Next = new("Next");
     public FlowCall OnError = new("On Error");
 
     public ValueOutput<string> ErrorMessage = new("Error Message");
@@ -688,22 +604,11 @@ public sealed class OnIRCErrorNode : ModuleNode<IRCBridgeModule>, IModuleNodeEve
         // Args: [0] = errorMessage, [1] = serverStatus
         if (args.Length >= 1) ErrorMessage.Write(args[0] as string ?? string.Empty, c);
         if (args.Length >= 2) ServerStatus.Write(args[1] as string ?? string.Empty, c);
-        _wasWritten = true;
         return Task.CompletedTask;
     }
 
     protected override async Task Process(PulseContext c)
     {
-        // Only write fallback values if Write wasn't called (manual trigger via flow input)
-        if (!_wasWritten)
-        {
-            var status = Module.GetVariableValue<string>(IRCBridgeVariable.ServerStatus) ?? string.Empty;
-            ErrorMessage.Write(status, c);
-            ServerStatus.Write(status, c);
-        }
-        _wasWritten = false; // Reset for next trigger
-        
         await OnError.Execute(c);
-        await Next.Execute(c);
     }
 }

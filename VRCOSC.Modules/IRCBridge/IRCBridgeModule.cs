@@ -797,12 +797,14 @@ public class IRCBridgeModule : Module
         ChangeState(IRCBridgeState.Joined);
         SetVariableValue(IRCBridgeVariable.ChannelName, channel.Name);
         TriggerEvent(IRCBridgeEvent.OnChannelJoined);
-        _ = TriggerModuleNodeAsync(typeof(OnIRCChannelJoinedNode), new object[] { channel.Name });
         
         // Update user count
         var userCount = channel.Users.Count;
         SetVariableValue(IRCBridgeVariable.UserCount, userCount);
         SendParameterSafePublic(IRCBridgeParameter.UserCount, userCount);
+        
+        // Trigger pulse graph node with channel name and user count
+        _ = TriggerModuleNodeAsync(typeof(OnIRCChannelJoinedNode), new object[] { channel.Name, userCount });
         
         Log($"Joined channel: {channel.Name}");
     }
