@@ -158,11 +158,24 @@ public class IRCBridgeModule : Module
             SetVariableValue(IRCBridgeVariable.ServerStatus, $"Connecting to {serverAddress}:{serverPort}...");
 
             // Create IRC client
-            _ircClient = new IRCClient(Log);
+            try
+            {
+                _ircClient = new IRCClient(Log);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to create IRC client: {ex.Message}", ex);
+            }
+            
+            if (_ircClient == null)
+            {
+                throw new Exception("Failed to create IRC client: IRCClient instance is null");
+            }
+            
             var ircClient = _ircClient.Client;
             if (ircClient == null)
             {
-                throw new Exception("Failed to create IRC client");
+                throw new Exception("Failed to create IRC client: StandardIrcClient is null");
             }
 
             // Wire up raw message logging (for debugging)
@@ -484,7 +497,16 @@ public class IRCBridgeModule : Module
         }
         catch (Exception ex)
         {
-            Log($"Failed to connect to IRC: {ex.Message}");
+            var errorMessage = ex.Message;
+            if (ex.InnerException != null)
+            {
+                errorMessage += $" (Inner: {ex.InnerException.Message})";
+            }
+            Log($"Failed to connect to IRC: {errorMessage}");
+            if (ex.StackTrace != null && GetSettingValue<bool>(IRCBridgeSetting.LogMessages))
+            {
+                Log($"Stack trace: {ex.StackTrace}");
+            }
             SetVariableValue(IRCBridgeVariable.ServerStatus, $"Error: {ex.Message}");
             ChangeState(IRCBridgeState.Error);
             TriggerEvent(IRCBridgeEvent.OnError);

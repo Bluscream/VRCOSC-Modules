@@ -30,11 +30,131 @@ public class IRCClient : IDisposable
 
     public IRCClient(Action<string> logAction)
     {
+        if (logAction == null)
+        {
+            throw new ArgumentNullException(nameof(logAction));
+        }
+        
         _logAction = logAction;
+        
+        try
+        {
+            // Initialize the StandardIrcClient immediately so it's available for event subscriptions
+            _client = new StandardIrcClient();
+            
+            // Add flood preventer (best practice from IrcBot sample)
+            _client.FloodPreventer = new IrcStandardFloodPreventer(4, 2000);
+        }
+        catch (Exception ex)
+        {
+            _logAction($"Failed to initialize StandardIrcClient: {ex.Message}");
+            throw;
+        }
+        
+        // Wire up basic events
+        _client.Connected += (sender, e) =>
+        {
+            _isConnected = true;
+            _isConnecting = false;
+            Connected?.Invoke();
+        };
+
+        _client.Disconnected += (sender, e) =>
+        {
+            _isConnected = false;
+            _isConnecting = false;
+            Disconnected?.Invoke();
+        };
+
+        _client.Error += (sender, e) =>
+        {
+            Error?.Invoke(e.Error);
+        };
+
+        _client.RawMessageReceived += (sender, e) =>
+        {
+            try
+            {
+                // Reconstruct raw IRC message from IrcMessage object
+                var message = e.Message;
+                var rawMessage = string.Empty;
+                
+                // Add prefix if present
+                if (message.Prefix != null)
+                {
+                    rawMessage += $":{message.Prefix} ";
+                }
+                
+                // Add command (can be null for some message types)
+                if (message.Command != null)
+                {
+                    rawMessage += message.Command;
+                }
+                
+                // Add parameters
+                if (message.Parameters != null && message.Parameters.Count > 0)
+                {
+                    for (int i = 0; i < message.Parameters.Count; i++)
+                    {
+                        var param = message.Parameters[i];
+                        if (param == null) continue;
+                        
+                        // Last parameter that contains spaces should be prefixed with :
+                        if (i == message.Parameters.Count - 1 && param.Contains(' '))
+                        {
+                            rawMessage += $" :{param}";
+                        }
+                        else
+                        {
+                            rawMessage += $" {param}";
+                        }
+                    }
+                }
+                
+                // Only invoke MessageReceived for incoming messages
+                MessageReceived?.Invoke(rawMessage);
+            }
+            catch (Exception ex)
+            {
+                _logAction($"Error processing received message: {ex.Message}");
+            }
+        };
+
+        _client.RawMessageSent += (sender, e) =>
+        {
+            try
+            {
+                if (e?.Message == null)
+                {
+                    return;
+                }
+
+                // Simplified: just log command and first parameter for sent messages
+                var message = e.Message;
+                if (message.Command != null)
+                {
+                    var logMsg = message.Command;
+                    if (message.Parameters != null && message.Parameters.Count > 0 && message.Parameters[0] != null)
+                    {
+                        logMsg += $" {message.Parameters[0]}";
+                    }
+                    RawMessageSent?.Invoke(logMsg);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logAction($"Error processing sent message: {ex.Message}");
+            }
+        };
     }
 
     public async Task ConnectAsync(string serverAddress, int serverPort, bool useSSL, string? password = null, string nickname = "VRCOSCUser", string username = "vrcosc", string realName = "VRCOSC IRC Bridge")
     {
+        if (_client == null)
+        {
+            throw new InvalidOperationException("IRC client not initialized");
+        }
+
         if (_isConnected || _isConnecting)
         {
             return;
@@ -44,107 +164,6 @@ public class IRCClient : IDisposable
 
         try
         {
-            _client = new StandardIrcClient();
-            
-            // Add flood preventer (best practice from IrcBot sample)
-            _client.FloodPreventer = new IrcStandardFloodPreventer(4, 2000);
-            
-            // Wire up events
-            _client.Connected += (sender, e) =>
-            {
-                _isConnected = true;
-                _isConnecting = false;
-                Connected?.Invoke();
-            };
-
-            _client.Disconnected += (sender, e) =>
-            {
-                _isConnected = false;
-                _isConnecting = false;
-                Disconnected?.Invoke();
-            };
-
-            _client.Error += (sender, e) =>
-            {
-                Error?.Invoke(e.Error);
-            };
-
-            _client.RawMessageReceived += (sender, e) =>
-            {
-                try
-                {
-                    // Reconstruct raw IRC message from IrcMessage object
-                    var message = e.Message;
-                    var rawMessage = string.Empty;
-                    
-                    // Add prefix if present
-                    if (message.Prefix != null)
-                    {
-                        rawMessage += $":{message.Prefix} ";
-                    }
-                    
-                    // Add command (can be null for some message types)
-                    if (message.Command != null)
-                    {
-                        rawMessage += message.Command;
-                    }
-                    
-                    // Add parameters
-                    if (message.Parameters != null && message.Parameters.Count > 0)
-                    {
-                        for (int i = 0; i < message.Parameters.Count; i++)
-                        {
-                            var param = message.Parameters[i];
-                            if (param == null) continue;
-                            
-                            // Last parameter that contains spaces should be prefixed with :
-                            if (i == message.Parameters.Count - 1 && param.Contains(' '))
-                            {
-                                rawMessage += $" :{param}";
-                            }
-                            else
-                            {
-                                rawMessage += $" {param}";
-                            }
-                        }
-                    }
-                    
-                    // Only invoke MessageReceived for incoming messages
-                    MessageReceived?.Invoke(rawMessage);
-                }
-                catch (Exception ex)
-                {
-                    _logAction($"Error processing received message: {ex.Message}");
-                }
-            };
-
-            _client.RawMessageSent += (sender, e) =>
-            {
-                try
-                {
-                    if (e?.Message == null)
-                    {
-                        return;
-                    }
-
-                    // Simplified: just log command and first parameter for sent messages
-                    var message = e.Message;
-                    if (message.Command != null)
-                    {
-                        var logMsg = message.Command;
-                        if (message.Parameters != null && message.Parameters.Count > 0 && message.Parameters[0] != null)
-                        {
-                            logMsg += $" {message.Parameters[0]}";
-                        }
-                        RawMessageSent?.Invoke(logMsg);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logAction($"Error processing sent message: {ex.Message}");
-                }
-            };
-
             // Create registration info (IrcDotNet handles password automatically)
             var registrationInfo = new IrcUserRegistrationInfo
             {
