@@ -439,72 +439,76 @@ public sealed class IRCLeaveChannelNode : ModuleNode<IRCBridgeModule>, IFlowInpu
 // ============================
 
 [Node("IRC Connection Status")]
-public sealed class IRCConnectionStatusNode : ModuleNode<IRCBridgeModule>
+public sealed class IRCConnectionStatusNode : ModuleNode<IRCBridgeModule>, IFlowInput
 {
+    public FlowContinuation Next = new("Next");
+    public FlowCall Call = new();
+
     public ValueOutput<bool> Connected = new("Is Connected");
     public ValueOutput<string> Channel = new("Channel Name");
     public ValueOutput<string> Nickname = new("Nickname");
     public ValueOutput<int> UserCount = new("User Count");
 
-    public FlowCall Call = new();
-
-    protected override Task Process(PulseContext c)
+    protected override async Task Process(PulseContext c)
     {
         Connected.Write(Module.IsConnected, c);
         Channel.Write(Module.GetChannelName(), c);
         Nickname.Write(Module.GetNickname(), c);
         UserCount.Write(Module.GetUserCount(), c);
-        return Task.CompletedTask;
+        await Next.Execute(c);
     }
 }
 
 [Node("IRC Get Last Message")]
-public sealed class IRCGetLastMessageNode : ModuleNode<IRCBridgeModule>
+public sealed class IRCGetLastMessageNode : ModuleNode<IRCBridgeModule>, IFlowInput
 {
+    public FlowContinuation Next = new("Next");
+    public FlowCall Call = new();
+
     public ValueOutput<string> Message = new("Last Message");
     public ValueOutput<string> User = new("Last Message User");
     public ValueOutput<string> EventTime = new("Last Event Time");
 
-    public FlowCall Call = new();
-
-    protected override Task Process(PulseContext c)
+    protected override async Task Process(PulseContext c)
     {
         Message.Write(Module.GetVariableValue<string>(IRCBridgeVariable.LastMessage) ?? string.Empty, c);
         User.Write(Module.GetVariableValue<string>(IRCBridgeVariable.LastMessageUser) ?? string.Empty, c);
         EventTime.Write(Module.GetVariableValue<string>(IRCBridgeVariable.LastEventTime) ?? string.Empty, c);
-        return Task.CompletedTask;
+        await Next.Execute(c);
     }
 }
 
 [Node("IRC Get Last Joined User")]
-public sealed class IRCGetLastJoinedUserNode : ModuleNode<IRCBridgeModule>
+public sealed class IRCGetLastJoinedUserNode : ModuleNode<IRCBridgeModule>, IFlowInput
 {
+    public FlowContinuation Next = new("Next");
+    public FlowCall Call = new();
+
     public ValueOutput<string> User = new("Last Joined User");
     public ValueOutput<string> EventTime = new("Last Event Time");
 
-    public FlowCall Call = new();
-
-    protected override Task Process(PulseContext c)
+    protected override async Task Process(PulseContext c)
     {
         User.Write(Module.GetVariableValue<string>(IRCBridgeVariable.LastJoinedUser) ?? string.Empty, c);
         EventTime.Write(Module.GetVariableValue<string>(IRCBridgeVariable.LastEventTime) ?? string.Empty, c);
-        return Task.CompletedTask;
+        await Next.Execute(c);
     }
 }
 
 [Node("IRC Get Last Left User")]
-public sealed class IRCGetLastLeftUserNode : ModuleNode<IRCBridgeModule>
+public sealed class IRCGetLastLeftUserNode : ModuleNode<IRCBridgeModule>, IFlowInput
 {
+    public FlowContinuation Next = new("Next");
+    public FlowCall Call = new();
+
     public ValueOutput<string> User = new("Last Left User");
     public ValueOutput<string> EventTime = new("Last Event Time");
 
-    public FlowCall Call = new();
-
-    protected override Task Process(PulseContext c)
+    protected override async Task Process(PulseContext c)
     {
         User.Write(Module.GetVariableValue<string>(IRCBridgeVariable.LastLeftUser) ?? string.Empty, c);
         EventTime.Write(Module.GetVariableValue<string>(IRCBridgeVariable.LastEventTime) ?? string.Empty, c);
-        return Task.CompletedTask;
+        await Next.Execute(c);
     }
 }
 
@@ -515,8 +519,9 @@ public sealed class IRCGetLastLeftUserNode : ModuleNode<IRCBridgeModule>
 // They expose the event data when the module triggers events
 
 [Node("On IRC User Joined")]
-public sealed class OnIRCUserJoinedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler
+public sealed class OnIRCUserJoinedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler, IFlowInput
 {
+    public FlowContinuation Next = new("Next");
     public FlowCall OnUserJoined = new("On User Joined");
 
     public ValueOutput<string> User = new("User");
@@ -540,12 +545,14 @@ public sealed class OnIRCUserJoinedNode : ModuleNode<IRCBridgeModule>, IModuleNo
         EventTime.Write(Module.GetVariableValue<string>(IRCBridgeVariable.LastEventTime) ?? string.Empty, c);
         
         await OnUserJoined.Execute(c);
+        await Next.Execute(c);
     }
 }
 
 [Node("On IRC User Left")]
-public sealed class OnIRCUserLeftNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler
+public sealed class OnIRCUserLeftNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler, IFlowInput
 {
+    public FlowContinuation Next = new("Next");
     public FlowCall OnUserLeft = new("On User Left");
 
     public ValueOutput<string> User = new("User");
@@ -569,12 +576,14 @@ public sealed class OnIRCUserLeftNode : ModuleNode<IRCBridgeModule>, IModuleNode
         EventTime.Write(Module.GetVariableValue<string>(IRCBridgeVariable.LastEventTime) ?? string.Empty, c);
         
         await OnUserLeft.Execute(c);
+        await Next.Execute(c);
     }
 }
 
 [Node("On IRC Message Received")]
-public sealed class OnIRCMessageReceivedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler
+public sealed class OnIRCMessageReceivedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler, IFlowInput
 {
+    public FlowContinuation Next = new("Next");
     public FlowCall OnMessageReceived = new("On Message Received");
 
     public ValueOutput<string> Message = new("Message");
@@ -601,12 +610,14 @@ public sealed class OnIRCMessageReceivedNode : ModuleNode<IRCBridgeModule>, IMod
         EventTime.Write(Module.GetVariableValue<string>(IRCBridgeVariable.LastEventTime) ?? string.Empty, c);
         
         await OnMessageReceived.Execute(c);
+        await Next.Execute(c);
     }
 }
 
 [Node("On IRC Connected")]
-public sealed class OnIRCConnectedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler
+public sealed class OnIRCConnectedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler, IFlowInput
 {
+    public FlowContinuation Next = new("Next");
     public FlowCall OnConnected = new("On Connected");
 
     public ValueOutput<string> ServerStatus = new("Server Status");
@@ -627,12 +638,14 @@ public sealed class OnIRCConnectedNode : ModuleNode<IRCBridgeModule>, IModuleNod
         Nickname.Write(Module.GetNickname(), c);
         
         await OnConnected.Execute(c);
+        await Next.Execute(c);
     }
 }
 
 [Node("On IRC Disconnected")]
-public sealed class OnIRCDisconnectedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler
+public sealed class OnIRCDisconnectedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler, IFlowInput
 {
+    public FlowContinuation Next = new("Next");
     public FlowCall OnDisconnected = new("On Disconnected");
 
     public ValueOutput<string> ServerStatus = new("Server Status");
@@ -650,12 +663,14 @@ public sealed class OnIRCDisconnectedNode : ModuleNode<IRCBridgeModule>, IModule
         ServerStatus.Write(Module.GetVariableValue<string>(IRCBridgeVariable.ServerStatus) ?? string.Empty, c);
         
         await OnDisconnected.Execute(c);
+        await Next.Execute(c);
     }
 }
 
 [Node("On IRC Channel Joined")]
-public sealed class OnIRCChannelJoinedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler
+public sealed class OnIRCChannelJoinedNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler, IFlowInput
 {
+    public FlowContinuation Next = new("Next");
     public FlowCall OnChannelJoined = new("On Channel Joined");
 
     public ValueOutput<string> Channel = new("Channel");
@@ -676,12 +691,14 @@ public sealed class OnIRCChannelJoinedNode : ModuleNode<IRCBridgeModule>, IModul
         UserCount.Write(Module.GetUserCount(), c);
         
         await OnChannelJoined.Execute(c);
+        await Next.Execute(c);
     }
 }
 
 [Node("On IRC Error")]
-public sealed class OnIRCErrorNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler
+public sealed class OnIRCErrorNode : ModuleNode<IRCBridgeModule>, IModuleNodeEventHandler, IFlowInput
 {
+    public FlowContinuation Next = new("Next");
     public FlowCall OnError = new("On Error");
 
     public ValueOutput<string> ErrorMessage = new("Error Message");
@@ -703,5 +720,6 @@ public sealed class OnIRCErrorNode : ModuleNode<IRCBridgeModule>, IModuleNodeEve
         ServerStatus.Write(status, c);
         
         await OnError.Execute(c);
+        await Next.Execute(c);
     }
 }
