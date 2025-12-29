@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Parameters;
 using VRCOSC.App.SDK.VRChat;
-using VRCOSCModule = VRCOSC.App.SDK.Modules.Module;
+using Module = VRCOSC.App.SDK.Modules.Module;
 
 namespace Bluscream.Modules;
 
@@ -17,7 +17,7 @@ namespace Bluscream.Modules;
 [ModuleDescription("Connect to IRC servers and receive events for channel activity")]
 [ModuleType(ModuleType.Integrations)]
 [ModuleInfo("https://github.com/Bluscream/VRCOSC-Modules")]
-public class IRCBridgeModule : VRCOSCModule
+public class IRCBridgeModule : Module
 {
     private IRCClient? _ircClient;
     private IRCMessageHandler? _messageHandler;
@@ -168,7 +168,8 @@ public class IRCBridgeModule : VRCOSCModule
                 ChangeState(IRCBridgeState.Connected);
                 this.SendParameterSafe(IRCBridgeParameter.Connected, true);
                 TriggerEvent(IRCBridgeEvent.OnConnected);
-                Log($"Connected to IRC server {serverAddress}:{serverPort}, joining channel {channel}...");
+                var channel = GetSettingValue<string>(IRCBridgeSetting.Channel);
+                Log($"Connected to IRC server {serverAddress}:{serverPort}" + (!string.IsNullOrEmpty(channel) ? $", joining channel {channel}..." : ""));
             };
 
             _ircClient.Disconnected += () =>
@@ -361,7 +362,7 @@ public class IRCBridgeModule : VRCOSCModule
     public T? GetVariableValue<T>(IRCBridgeVariable variable) where T : notnull
     {
         // Use reflection to call the protected GetVariableValue<T>(Enum) method
-        var method = typeof(VRCOSCModule).GetMethod("GetVariableValue", 
+        var method = typeof(Module).GetMethod("GetVariableValue", 
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance,
             null, 
             new[] { typeof(Enum) }, 
