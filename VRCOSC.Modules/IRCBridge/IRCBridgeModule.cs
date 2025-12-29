@@ -21,6 +21,7 @@ public class IRCBridgeModule : Module
 {
     private IRCClient? _ircClient;
     private IRCMessageHandler? _messageHandler;
+    private bool _isStopping = false;
 
     protected override void OnPreLoad()
     {
@@ -109,6 +110,7 @@ public class IRCBridgeModule : Module
 
     protected override Task OnModuleStop()
     {
+        _isStopping = true;
         DisconnectFromIRC();
         return Task.CompletedTask;
     }
@@ -174,20 +176,27 @@ public class IRCBridgeModule : Module
 
             _ircClient.Disconnected += () =>
             {
-                SetVariableValue(IRCBridgeVariable.ServerStatus, "Disconnected");
-                this.SendParameterSafe(IRCBridgeParameter.Connected, false);
-                ChangeState(IRCBridgeState.Disconnected);
-                TriggerEvent(IRCBridgeEvent.OnDisconnected);
-                Log("Disconnected from IRC server");
-
-                // Auto-reconnect if enabled
-                if (GetSettingValue<bool>(IRCBridgeSetting.AutoReconnect))
+                // Prevent duplicate disconnect handling
+                if (!_isStopping)
                 {
-                    var delay = GetSettingValue<int>(IRCBridgeSetting.ReconnectDelay);
-                    _ = Task.Delay(delay).ContinueWith(async _ =>
+                    SetVariableValue(IRCBridgeVariable.ServerStatus, "Disconnected");
+                    this.SendParameterSafe(IRCBridgeParameter.Connected, false);
+                    ChangeState(IRCBridgeState.Disconnected);
+                    TriggerEvent(IRCBridgeEvent.OnDisconnected);
+                    Log("Disconnected from IRC server");
+
+                    // Auto-reconnect if enabled
+                    if (GetSettingValue<bool>(IRCBridgeSetting.AutoReconnect))
                     {
-                        await ConnectToIRC();
-                    });
+                        var delay = GetSettingValue<int>(IRCBridgeSetting.ReconnectDelay);
+                        _ = Task.Delay(delay).ContinueWith(async _ =>
+                        {
+                            if (!_isStopping)
+                            {
+                                await ConnectToIRC();
+                            }
+                        });
+                    }
                 }
             };
 
@@ -342,14 +351,19 @@ public class IRCBridgeModule : Module
 
         try
         {
+            Log("Stopping");
             _ircClient.Disconnect();
-            _ircClient.Dispose();
-            _ircClient = null;
-            _messageHandler = null;
         }
         catch (Exception ex)
         {
-            Log($"Error disconnecting from IRC: {ex.Message}");
+            Log($"Error during disconnect: {ex.Message}");
+        }
+        finally
+        {
+            _ircClient?.Dispose();
+            _ircClient = null;
+            _messageHandler = null;
+            Log("Stopped");
         }
     }
 
@@ -398,7 +412,18 @@ public class IRCBridgeModule : Module
 
     public void SendParameterSafePublic(IRCBridgeParameter parameter, object value)
     {
-        this.SendParameterSafe(parameter, value);
+        // Don't send parameters if module is stopping or stopped
+        if (!_isStopping)
+        {
+            try
+            {
+                this.SendParameterSafe(parameter, value);
+            }
+            catch (InvalidOperationException)
+            {
+                // OSC not connected, ignore during shutdown
+            }
+        }
     }
 
     public T PublicGetSettingValue<T>(IRCBridgeSetting setting) => GetSettingValue<T>(setting);

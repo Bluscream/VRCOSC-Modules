@@ -163,8 +163,19 @@ public class IRCMessageHandler
                 _module.SetVariableValuePublic(IRCBridgeVariable.LastJoinedUser, user);
                 _module.SetVariableValuePublic(IRCBridgeVariable.LastEventTime, DateTime.Now.ToString("HH:mm:ss"));
                 _module.TriggerEventPublic(IRCBridgeEvent.OnUserJoined);
-                _module.SendParameterSafePublic(IRCBridgeParameter.UserJoined, true);
-                _ = Task.Delay(1000).ContinueWith(_ => _module.SendParameterSafePublic(IRCBridgeParameter.UserJoined, false));
+                try
+                {
+                    _module.SendParameterSafePublic(IRCBridgeParameter.UserJoined, true);
+                    _ = Task.Delay(1000).ContinueWith(_ => 
+                    {
+                        try
+                        {
+                            _module.SendParameterSafePublic(IRCBridgeParameter.UserJoined, false);
+                        }
+                        catch { }
+                    });
+                }
+                catch { }
                 
                 // Update user count (increment)
                 var currentCount = _module.GetVariableValue<int>(IRCBridgeVariable.UserCount);
@@ -214,8 +225,19 @@ public class IRCMessageHandler
                 _module.SetVariableValuePublic(IRCBridgeVariable.LastLeftUser, user);
                 _module.SetVariableValuePublic(IRCBridgeVariable.LastEventTime, DateTime.Now.ToString("HH:mm:ss"));
                 _module.TriggerEventPublic(IRCBridgeEvent.OnUserLeft);
-                _module.SendParameterSafePublic(IRCBridgeParameter.UserLeft, true);
-                _ = Task.Delay(1000).ContinueWith(_ => _module.SendParameterSafePublic(IRCBridgeParameter.UserLeft, false));
+                try
+                {
+                    _module.SendParameterSafePublic(IRCBridgeParameter.UserLeft, true);
+                    _ = Task.Delay(1000).ContinueWith(_ => 
+                    {
+                        try
+                        {
+                            _module.SendParameterSafePublic(IRCBridgeParameter.UserLeft, false);
+                        }
+                        catch { }
+                    });
+                }
+                catch { }
                 
                 // Update user count (decrement)
                 var currentCount = _module.GetVariableValue<int>(IRCBridgeVariable.UserCount);
@@ -258,8 +280,19 @@ public class IRCMessageHandler
                 _module.SetVariableValuePublic(IRCBridgeVariable.LastLeftUser, user);
                 _module.SetVariableValuePublic(IRCBridgeVariable.LastEventTime, DateTime.Now.ToString("HH:mm:ss"));
                 _module.TriggerEventPublic(IRCBridgeEvent.OnUserLeft);
-                _module.SendParameterSafePublic(IRCBridgeParameter.UserLeft, true);
-                _ = Task.Delay(1000).ContinueWith(_ => _module.SendParameterSafePublic(IRCBridgeParameter.UserLeft, false));
+                try
+                {
+                    _module.SendParameterSafePublic(IRCBridgeParameter.UserLeft, true);
+                    _ = Task.Delay(1000).ContinueWith(_ => 
+                    {
+                        try
+                        {
+                            _module.SendParameterSafePublic(IRCBridgeParameter.UserLeft, false);
+                        }
+                        catch { }
+                    });
+                }
+                catch { }
                 
                 // Update user count (decrement)
                 var currentCount = _module.GetVariableValue<int>(IRCBridgeVariable.UserCount);
@@ -304,8 +337,25 @@ public class IRCMessageHandler
                 _module.SetVariableValuePublic(IRCBridgeVariable.LastMessageUser, user);
                 _module.SetVariableValuePublic(IRCBridgeVariable.LastEventTime, DateTime.Now.ToString("HH:mm:ss"));
                 _module.TriggerEventPublic(IRCBridgeEvent.OnMessageReceived);
-                _module.SendParameterSafePublic(IRCBridgeParameter.MessageReceived, true);
-                _ = Task.Delay(1000).ContinueWith(_ => _module.SendParameterSafePublic(IRCBridgeParameter.MessageReceived, false));
+                try
+                {
+                    _module.SendParameterSafePublic(IRCBridgeParameter.MessageReceived, true);
+                    _ = Task.Delay(1000).ContinueWith(_ => 
+                    {
+                        try
+                        {
+                            _module.SendParameterSafePublic(IRCBridgeParameter.MessageReceived, false);
+                        }
+                        catch
+                        {
+                            // Ignore errors during delayed parameter updates
+                        }
+                    });
+                }
+                catch
+                {
+                    // Ignore errors if module is stopping
+                }
                 
                 if (_module.GetSettingValue<bool>(IRCBridgeSetting.LogMessages))
                 {
