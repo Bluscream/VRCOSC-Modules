@@ -11,7 +11,6 @@ public enum IRCBridgeSetting
     Channel,
     Nickname,
     Username,
-    RealName,
     Password,
     NickServName,
     NickServPassword,

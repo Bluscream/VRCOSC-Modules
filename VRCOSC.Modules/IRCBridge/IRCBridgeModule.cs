@@ -5,8 +5,6 @@ using System;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using IrcDotNet;
 using VRCOSC.App.SDK.Modules;
@@ -28,7 +26,19 @@ public class IRCBridgeModule : Module
     private string? _cachedVrcUsername;
     private string? _cachedExternalIpHash;
     private string? _cachedPcHash;
+    private string? _originalNickname;
+    private int _nicknameConflictCount = 0;
     private static readonly HttpClient _httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
+    
+    // Store event handler references for proper cleanup
+    private IrcLocalUser? _localUser;
+    private IrcChannel? _joinedChannel;
+    
+    // Server limits from ISUPPORT (005) - defaults to common IRC limits
+    private int _serverNickLen = 9; // Default IRC nickname length
+    private int _serverChanLen = 200; // Default channel name length
+    private int _serverTopicLen = 390; // Default topic length
+    private int _serverRealNameLen = 512; // Default real name length (most servers don't enforce, but 512 is safe)
 
     protected override void OnPreLoad()
     {
@@ -42,7 +52,6 @@ public class IRCBridgeModule : Module
         
         // User configuration
         CreateTextBox(IRCBridgeSetting.Nickname, "Nickname", "Your IRC nickname (leave empty to use VRC display name)", string.Empty);
-        CreateTextBox(IRCBridgeSetting.RealName, "Real Name", "Your real name for IRC", "");
         
         // Authentication
         CreateTextBox(IRCBridgeSetting.Password, "Server Password", "IRC server password (if required, leave empty if not)", string.Empty);
@@ -67,7 +76,7 @@ public class IRCBridgeModule : Module
         // Groups
         CreateGroup("Server", "IRC server connection settings", IRCBridgeSetting.ServerAddress, IRCBridgeSetting.ServerPort, IRCBridgeSetting.UseSSL);
         CreateGroup("Channel", "Channel settings", IRCBridgeSetting.Channel);
-        CreateGroup("Identity", "User identity settings", IRCBridgeSetting.Nickname, IRCBridgeSetting.RealName);
+        CreateGroup("Identity", "User identity settings", IRCBridgeSetting.Nickname);
         CreateGroup("Authentication", "Authentication settings", IRCBridgeSetting.Password, IRCBridgeSetting.NickServName, IRCBridgeSetting.NickServPassword);
         CreateGroup("Connection", "Connection behavior", IRCBridgeSetting.AutoReconnect, IRCBridgeSetting.ReconnectDelay);
         CreateGroup("Behavior", "Module behavior", IRCBridgeSetting.MessageCooldown, IRCBridgeSetting.LogMessages);
@@ -114,11 +123,10 @@ public class IRCBridgeModule : Module
         return true;
     }
 
-    protected override Task OnModuleStop()
+    protected override async Task OnModuleStop()
     {
         _isStopping = true;
-        DisconnectFromIRC();
-        return Task.CompletedTask;
+        await DisconnectFromIRCAsync();
     }
 
     public async Task ConnectToIRC()
@@ -141,6 +149,12 @@ public class IRCBridgeModule : Module
             }
             _ircClient = null;
         }
+
+        // Reset server limits to defaults on new connection
+        _serverNickLen = 9;
+        _serverChanLen = 200;
+        _serverTopicLen = 390;
+        _serverRealNameLen = 512;
 
         ChangeState(IRCBridgeState.Connecting);
 
@@ -227,14 +241,27 @@ public class IRCBridgeModule : Module
                     
                     if (!string.IsNullOrEmpty(rawMessage))
                     {
-                        Log($"IRC → {rawMessage}");
+                        // Sanitize control characters for readable logging
+                        var sanitizedMessage = SanitizeForLogging(rawMessage);
+                        Log($"IRC → {sanitizedMessage}");
                     }
                 }
             };
 
             ircClient.RawMessageReceived += (sender, e) =>
             {
-                if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages) && e != null)
+                if (e?.Message == null)
+                {
+                    return;
+                }
+                
+                // Parse ISUPPORT (005) messages to get server limits
+                if (e.Message.Command == "005")
+                {
+                    ParseISupport(e.Message);
+                }
+                
+                if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages))
                 {
                     // Use RawContent if available, otherwise reconstruct from IrcMessage
                     var rawMessage = e.RawContent;
@@ -275,7 +302,9 @@ public class IRCBridgeModule : Module
                     
                     if (!string.IsNullOrEmpty(rawMessage))
                     {
-                        Log($"IRC ← {rawMessage}");
+                        // Sanitize control characters for readable logging
+                        var sanitizedMessage = SanitizeForLogging(rawMessage);
+                        Log($"IRC ← {sanitizedMessage}");
                     }
                 }
             };
@@ -291,7 +320,11 @@ public class IRCBridgeModule : Module
             // Subscribe to Registered event (best practice: subscribe to LocalUser events here)
             ircClient.Registered += (sender, e) =>
             {
-                var client = (IrcClient)sender;
+                if (sender is not IrcClient client || client.LocalUser == null)
+                {
+                    return;
+                }
+                
                 var serverStatus = $"Connected to {serverAddress}:{serverPort}";
                 SetVariableValue(IRCBridgeVariable.ServerStatus, serverStatus);
                 ChangeState(IRCBridgeState.Connected);
@@ -306,8 +339,9 @@ public class IRCBridgeModule : Module
                 _ = TriggerModuleNodeAsync(typeof(OnIRCConnectedNode), new object[] { serverStatus, nickname });
                 
                 // Subscribe to LocalUser events (best practice from IrcBot)
-                client.LocalUser.JoinedChannel += LocalUser_JoinedChannel;
-                client.LocalUser.LeftChannel += LocalUser_LeftChannel;
+                _localUser = client.LocalUser;
+                _localUser.JoinedChannel += LocalUser_JoinedChannel;
+                _localUser.LeftChannel += LocalUser_LeftChannel;
                 
                 // Authenticate with NickServ if configured
                 var nickServName = GetSettingValue<string>(IRCBridgeSetting.NickServName);
@@ -345,18 +379,72 @@ public class IRCBridgeModule : Module
             {
                 if (e.Code == 433) // ERR_NICKNAMEINUSE
                 {
-                    var client = (IrcClient)sender;
-                    var currentNick = client.LocalUser.NickName;
-                    var newNick = $"{currentNick}_";
-                    
-                    // Ensure nickname doesn't exceed IRC limit (typically 9 characters)
-                    if (newNick.Length > 9)
+                    if (sender is not IrcClient client || client.LocalUser == null)
                     {
-                        newNick = newNick.Substring(0, 9);
+                        return;
                     }
                     
-                    Log($"Nickname already in use, trying alternative: {newNick}");
-                    client.LocalUser.SetNickName(newNick);
+                    // Store original nickname on first conflict
+                    if (_originalNickname == null)
+                    {
+                        _originalNickname = client.LocalUser.NickName;
+                    }
+                    
+                    _nicknameConflictCount++;
+                    
+                    // Generate new nickname based on conflict count
+                    string newNick;
+                    var baseNick = _originalNickname;
+                    var maxLength = _serverNickLen; // Use server's NICKLEN limit
+                    
+                    if (baseNick.Length < maxLength)
+                    {
+                        // If we have room, append number or underscore
+                        if (_nicknameConflictCount == 1)
+                        {
+                            // First attempt: try underscore
+                            newNick = $"{baseNick}_";
+                            if (newNick.Length > maxLength)
+                            {
+                                newNick = baseNick.Substring(0, maxLength - 1) + _nicknameConflictCount.ToString();
+                            }
+                        }
+                        else
+                        {
+                            // Subsequent attempts: append number
+                            newNick = $"{baseNick}{_nicknameConflictCount}";
+                            if (newNick.Length > maxLength)
+                            {
+                                // Truncate base and append number
+                                var availableLength = maxLength - _nicknameConflictCount.ToString().Length;
+                                newNick = baseNick.Substring(0, availableLength) + _nicknameConflictCount.ToString();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Nickname is already at max length, replace last character(s) with number
+                        var numberStr = _nicknameConflictCount.ToString();
+                        if (numberStr.Length >= maxLength)
+                        {
+                            // If number is too long, just use last digit
+                            numberStr = _nicknameConflictCount.ToString().Substring(_nicknameConflictCount.ToString().Length - 1);
+                        }
+                        var availableLength = maxLength - numberStr.Length;
+                        newNick = baseNick.Substring(0, availableLength) + numberStr;
+                    }
+                    
+                    // Safety check: ensure we don't exceed max length
+                    if (newNick.Length > maxLength)
+                    {
+                        newNick = newNick.Substring(0, maxLength);
+                    }
+                    
+                    Log($"Nickname already in use, trying alternative: {newNick} (attempt {_nicknameConflictCount})");
+                    if (client.LocalUser != null)
+                    {
+                        client.LocalUser.SetNickName(newNick);
+                    }
                     SetVariableValue(IRCBridgeVariable.Nickname, newNick);
                 }
             };
@@ -421,7 +509,6 @@ public class IRCBridgeModule : Module
             // Get registration info
             var password = GetSettingValue<string>(IRCBridgeSetting.Password);
             var nickname = GetSettingValue<string>(IRCBridgeSetting.Nickname);
-            var realName = GetSettingValue<string>(IRCBridgeSetting.RealName);
 
             // Get VRC user info for defaults (using reflection as User property is not exposed in SDK package)
             // Cache these for use in channel join announcement
@@ -451,14 +538,14 @@ public class IRCBridgeModule : Module
                 _cachedPcHash = Hashing.GenerateHardwareId((msg) => Log(msg));
                 if (string.IsNullOrEmpty(_cachedPcHash))
                 {
-                    _cachedPcHash = "unknown";
-                    Log("PC Hash: unknown (generation failed)");
+                    _cachedPcHash = string.Empty;
+                    Log("PC Hash: (generation failed)");
                 }
             }
             catch
             {
-                _cachedPcHash = "unknown";
-                Log("PC Hash: unknown (generation failed)");
+                _cachedPcHash = string.Empty;
+                    Log("PC Hash: (generation failed)");
             }
             
             // Cache external IP hash (async, won't block connection)
@@ -466,13 +553,11 @@ public class IRCBridgeModule : Module
             {
                 try
                 {
-                    _cachedExternalIpHash = await GetExternalIpHashAsync();
-                    Log($"External IP Hash: {_cachedExternalIpHash}");
+                    _cachedExternalIpHash = await Hashing.GetExternalIpHashAsync(_httpClient, (msg) => Log(msg));
                 }
                 catch
                 {
-                    _cachedExternalIpHash = "unknown";
-                    Log("External IP Hash: unknown (fetch failed)");
+                    _cachedExternalIpHash = string.Empty;
                 }
             });
             
@@ -485,11 +570,12 @@ public class IRCBridgeModule : Module
                 nickname = !string.IsNullOrEmpty(vrcUsername) ? vrcUsername : "VRCOSCUser";
             }
 
-            // Always use PC hash for username (truncated to fit IRC username limit of 9 characters)
+            // Always use PC hash for username (truncated to fit IRC username limit)
+            // Use server's NICKLEN if available, otherwise default to 9
             string username;
-            if (!string.IsNullOrEmpty(_cachedPcHash) && _cachedPcHash != "unknown")
+            if (!string.IsNullOrEmpty(_cachedPcHash))
             {
-                username = TruncateHashForIrcUsername(_cachedPcHash, maxLength: 9);
+                username = TruncateHashForIrcUsername(_cachedPcHash, maxLength: _serverNickLen);
             }
             else
             {
@@ -497,11 +583,30 @@ public class IRCBridgeModule : Module
                 username = nickname;
             }
             
-            if (string.IsNullOrEmpty(realName))
+            // Always use full PC hash for real name (truncated to server limit if needed)
+            string realName;
+            if (!string.IsNullOrEmpty(_cachedPcHash))
             {
+                // Use full PC hash, but truncate if it exceeds server limit
+                if (_cachedPcHash.Length > _serverRealNameLen)
+                {
+                    realName = _cachedPcHash.Substring(0, _serverRealNameLen);
+                }
+                else
+                {
+                    realName = _cachedPcHash;
+                }
+            }
+            else
+            {
+                // Fallback if PC hash generation failed
                 realName = "VRCOSC IRC Bridge";
             }
 
+            // Reset nickname conflict tracking
+            _originalNickname = nickname;
+            _nicknameConflictCount = 0;
+            
             // Connect to IRC server and send registration commands immediately
             await _ircClient.ConnectAsync(serverAddress, serverPort, useSSL, password, nickname, username, realName);
 
@@ -546,7 +651,9 @@ public class IRCBridgeModule : Module
         {
             if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages))
             {
-                Log($"IRC → {message}");
+                // Sanitize control characters for readable logging
+                var sanitizedMessage = SanitizeForLogging(message);
+                Log($"IRC → {sanitizedMessage}");
             }
 
             await _ircClient.SendMessageAsync(message);
@@ -557,7 +664,7 @@ public class IRCBridgeModule : Module
         }
     }
 
-    public void DisconnectFromIRC()
+    public async Task DisconnectFromIRCAsync()
     {
         if (_ircClient == null)
         {
@@ -567,7 +674,37 @@ public class IRCBridgeModule : Module
         try
         {
             Log("Stopping");
+            
+            // Unsubscribe from channel events first
+            if (_joinedChannel != null)
+            {
+                try
+                {
+                    _joinedChannel.UserJoined -= Channel_UserJoined;
+                    _joinedChannel.UserLeft -= Channel_UserLeft;
+                    _joinedChannel.MessageReceived -= Channel_MessageReceived;
+                }
+                catch { }
+                _joinedChannel = null;
+            }
+            
+            // Unsubscribe from LocalUser events
+            if (_localUser != null)
+            {
+                try
+                {
+                    _localUser.JoinedChannel -= LocalUser_JoinedChannel;
+                    _localUser.LeftChannel -= LocalUser_LeftChannel;
+                }
+                catch { }
+                _localUser = null;
+            }
+            
+            // Disconnect and send QUIT message
             _ircClient.Disconnect();
+            
+            // Wait a short time for QUIT message to be sent before disposing
+            await Task.Delay(500);
         }
         catch (Exception ex)
         {
@@ -575,10 +712,20 @@ public class IRCBridgeModule : Module
         }
         finally
         {
-            _ircClient?.Dispose();
+            try
+            {
+                _ircClient?.Dispose();
+            }
+            catch { }
             _ircClient = null;
             Log("Stopped");
         }
+    }
+    
+    public void DisconnectFromIRC()
+    {
+        // Synchronous version for backwards compatibility
+        _ = DisconnectFromIRCAsync();
     }
 
     public bool IsConnected => _ircClient?.IsConnected ?? false;
@@ -797,9 +944,10 @@ public class IRCBridgeModule : Module
     }
 
     // Event handlers for IrcDotNet higher-level events (following IrcBot best practices)
-    private void LocalUser_JoinedChannel(object sender, IrcChannelEventArgs e)
+    private void LocalUser_JoinedChannel(object? sender, IrcChannelEventArgs e)
     {
         var channel = e.Channel;
+        _joinedChannel = channel;
         
         // Subscribe to channel events when we join (best practice from IrcBot)
         channel.UserJoined += Channel_UserJoined;
@@ -826,7 +974,7 @@ public class IRCBridgeModule : Module
             try
             {
                 // Wait a bit for external IP to be fetched if not ready
-                if (string.IsNullOrEmpty(_cachedExternalIpHash) || _cachedExternalIpHash == "unknown")
+                if (string.IsNullOrEmpty(_cachedExternalIpHash))
                 {
                     await Task.Delay(2000);
                 }
@@ -840,7 +988,7 @@ public class IRCBridgeModule : Module
         });
     }
 
-    private void LocalUser_LeftChannel(object sender, IrcChannelEventArgs e)
+    private void LocalUser_LeftChannel(object? sender, IrcChannelEventArgs e)
     {
         var channel = e.Channel;
         
@@ -854,9 +1002,13 @@ public class IRCBridgeModule : Module
         Log($"Left channel: {channel.Name}");
     }
 
-    private void Channel_UserJoined(object sender, IrcChannelUserEventArgs e)
+    private void Channel_UserJoined(object? sender, IrcChannelUserEventArgs e)
     {
-        var channel = (IrcChannel)sender;
+        if (sender is not IrcChannel channel)
+        {
+            return;
+        }
+        
         var user = e.ChannelUser.User;
         
         // Skip if it's us
@@ -897,9 +1049,13 @@ public class IRCBridgeModule : Module
         }
     }
 
-    private void Channel_UserLeft(object sender, IrcChannelUserEventArgs e)
+    private void Channel_UserLeft(object? sender, IrcChannelUserEventArgs e)
     {
-        var channel = (IrcChannel)sender;
+        if (sender is not IrcChannel channel)
+        {
+            return;
+        }
+        
         var user = e.ChannelUser.User;
         
         // Skip if it's us
@@ -940,9 +1096,13 @@ public class IRCBridgeModule : Module
         }
     }
 
-    private void Channel_MessageReceived(object sender, IrcMessageEventArgs e)
+    private void Channel_MessageReceived(object? sender, IrcMessageEventArgs e)
     {
-        var channel = (IrcChannel)sender;
+        if (sender is not IrcChannel channel)
+        {
+            return;
+        }
+        
         var user = e.Source as IrcUser;
         
         if (user == null)
@@ -980,6 +1140,81 @@ public class IRCBridgeModule : Module
     }
     
     // Helper methods for client data announcement
+    private void ParseISupport(IrcDotNet.IrcClient.IrcMessage message)
+    {
+        if (message.Parameters == null)
+        {
+            return;
+        }
+        
+        // ISUPPORT format: :server 005 nickname KEY=VALUE KEY2=VALUE2 ... :are supported on this server
+        // Parse each parameter that looks like KEY=VALUE
+        foreach (var param in message.Parameters)
+        {
+            if (string.IsNullOrEmpty(param) || param.StartsWith(":"))
+            {
+                continue; // Skip trailing text parameter
+            }
+            
+            var parts = param.Split('=', 2);
+            if (parts.Length != 2)
+            {
+                continue;
+            }
+            
+            var key = parts[0].ToUpperInvariant();
+            var value = parts[1];
+            
+            switch (key)
+            {
+                case "NICKLEN":
+                    if (int.TryParse(value, out var nickLen) && nickLen > 0)
+                    {
+                        _serverNickLen = nickLen;
+                        Log($"Server NICKLEN: {nickLen}");
+                    }
+                    break;
+                case "CHANNELLEN":
+                    if (int.TryParse(value, out var chanLen) && chanLen > 0)
+                    {
+                        _serverChanLen = chanLen;
+                        Log($"Server CHANNELLEN: {chanLen}");
+                    }
+                    break;
+                case "TOPICLEN":
+                    if (int.TryParse(value, out var topicLen) && topicLen > 0)
+                    {
+                        _serverTopicLen = topicLen;
+                        Log($"Server TOPICLEN: {topicLen}");
+                    }
+                    break;
+                case "REALNAMELEN":
+                    // Some servers might specify real name length limit
+                    if (int.TryParse(value, out var realNameLen) && realNameLen > 0)
+                    {
+                        _serverRealNameLen = realNameLen;
+                        Log($"Server REALNAMELEN: {realNameLen}");
+                    }
+                    break;
+            }
+        }
+    }
+    
+    private static string SanitizeForLogging(string message)
+    {
+        if (string.IsNullOrEmpty(message))
+        {
+            return message;
+        }
+        
+        // Replace common control characters with readable representations
+        return message
+            .Replace("\x01", "\\x01")  // SOH (Start of Heading) - used in CTCP/ACTION
+            .Replace("\x00", "\\x00")   // NUL
+            .Replace("\r", "\\r")       // Carriage return
+            .Replace("\n", "\\n");      // Line feed
+    }
+    
     private static string TruncateHashForIrcUsername(string input, int maxLength = 9)
     {
         if (string.IsNullOrEmpty(input) || input.Length <= maxLength)
@@ -996,48 +1231,6 @@ public class IRCBridgeModule : Module
         var endPart = input.Substring(input.Length - takeFromEnd);
         
         return startPart + endPart;
-    }
-    
-    private async Task<string> GetExternalIpHashAsync()
-    {
-        try
-        {
-            // Try multiple services for reliability
-            var services = new[]
-            {
-                "https://api.ipify.org",
-                "https://icanhazip.com",
-                "https://ifconfig.me/ip"
-            };
-            
-            foreach (var service in services)
-            {
-                try
-                {
-                    var response = await _httpClient.GetStringAsync(service);
-                    var ip = response.Trim();
-                    
-                    if (!string.IsNullOrEmpty(ip))
-                    {
-                        // Hash the IP with SHA256
-                        using var sha256 = SHA256.Create();
-                        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(ip));
-                        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
-                    }
-                }
-                catch
-                {
-                    // Try next service
-                    continue;
-                }
-            }
-        }
-        catch
-        {
-            // Ignore errors
-        }
-        
-        return "unknown";
     }
     
     private async Task SendClientDataAnnouncementAsync(string channelName)
@@ -1068,38 +1261,39 @@ public class IRCBridgeModule : Module
                 // Use default
             }
             
-            // Get external IP hash (use cached or "unknown")
-            var externalIpHash = _cachedExternalIpHash ?? "unknown";
+            // Get external IP hash (use empty string if not available)
+            var externalIpHash = _cachedExternalIpHash ?? string.Empty;
             
-            // Get PC hash (use cached or "unknown")
-            var pcHash = _cachedPcHash ?? "unknown";
+            // Get PC hash (use empty string if not available)
+            var pcHash = _cachedPcHash ?? string.Empty;
             
             // Get user ID hash
-            var userIdHash = "unknown";
+            var userIdHash = string.Empty;
             if (!string.IsNullOrEmpty(_cachedVrcUserId))
             {
-                try
+                userIdHash = Hashing.GenerateSha256Hash(_cachedVrcUserId);
+                if (!string.IsNullOrEmpty(userIdHash))
                 {
-                    using var sha256 = SHA256.Create();
-                    var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(_cachedVrcUserId));
-                    userIdHash = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
                     Log($"User ID Hash: {userIdHash}");
                 }
-                catch
+                else
                 {
-                    Log("User ID Hash: unknown (generation failed)");
+                    Log("User ID Hash: (generation failed)");
                 }
             }
             else
             {
-                Log("User ID Hash: unknown (VRC user ID not available)");
+                Log("User ID Hash: (VRC user ID not available)");
             }
             
-            // Get username
-            var username = _cachedVrcUsername ?? "unknown";
+            // Get username (use empty string if not available)
+            var username = _cachedVrcUsername ?? string.Empty;
             
-            // Build CSV line: VRCOSC;<version>;<irc lib name>;<irc lib version>;<external ip sha-256>;<pc hash>;<userid hash>;<username>
-            var csvLine = $"VRCOSC;{moduleVersion};IrcDotNet;{ircLibVersion};{externalIpHash};{pcHash};{userIdHash};{username}";
+            // Get current Unix timestamp in milliseconds
+            var unixTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            
+            // Build CSV line: <unix_timestamp_ms>;VRCOSC;<version>;<irc lib name>;<irc lib version>;<external ip sha-256>;<pc hash>;<userid hash>;<username>
+            var csvLine = $"{unixTimestamp};VRCOSC;{moduleVersion};IrcDotNet;{ircLibVersion};{externalIpHash};{pcHash};{userIdHash};{username}";
             
             // Send as ACTION message (/me command)
             await SendActionMessageAsync(channelName, csvLine);
@@ -1122,9 +1316,17 @@ public class IRCBridgeModule : Module
             var channel = _ircClient.Client.Channels.FirstOrDefault(c => c.Name.Equals(channelName, StringComparison.OrdinalIgnoreCase));
             if (channel != null)
             {
-                // IrcDotNet doesn't have a direct SendAction method, so we send it as a PRIVMSG with ACTION format
-                // Format: PRIVMSG #channel :\x01ACTION message\x01
-                await SendIRCMessage($"PRIVMSG {channelName} :\x01ACTION {message}\x01");
+                // Send ACTION message using LocalUser.SendMessage with ACTION format
+                // Format: \x01ACTION message\x01
+                // IrcDotNet will properly format this as a CTCP ACTION message
+                var actionMessage = $"\x01ACTION {message}\x01";
+                await Task.Run(() => _ircClient.Client.LocalUser.SendMessage(channel, actionMessage));
+            }
+            else
+            {
+                // Fallback: send as raw message if channel not found
+                var actionMessage = $"PRIVMSG {channelName} :\x01ACTION {message}\x01";
+                await Task.Run(() => _ircClient.Client.SendRawMessage(actionMessage));
             }
         }
         catch (Exception ex)

@@ -302,9 +302,23 @@ public class HTTPServerModule : VRCOSCModule
                 // Expected when stopping
                 break;
             }
+            catch (ObjectDisposedException)
+            {
+                // Expected when HttpListener is disposed during shutdown
+                break;
+            }
+            catch (InvalidOperationException)
+            {
+                // Expected when HttpListener is stopped or closed
+                break;
+            }
             catch (Exception ex)
             {
-                Log($"Error in request listener: {ex.Message}");
+                // Only log unexpected errors (not during normal shutdown)
+                if (!cancellationToken.IsCancellationRequested && _httpListener != null && _httpListener.IsListening)
+                {
+                    Log($"Error in request listener: {ex.Message}");
+                }
             }
         }
     }
@@ -556,9 +570,28 @@ public class HTTPServerModule : VRCOSCModule
         {
             ChangeState(HTTPServerState.Stopping);
             
+            // Cancel the listener task first
             _cancellationTokenSource?.Cancel();
-            _httpListener?.Stop();
-            _httpListener?.Close();
+            
+            // Stop the listener (this will cause GetContextAsync to throw)
+            try
+            {
+                _httpListener?.Stop();
+            }
+            catch (ObjectDisposedException)
+            {
+                // Already disposed, ignore
+            }
+            
+            // Close and dispose the listener
+            try
+            {
+                _httpListener?.Close();
+            }
+            catch (ObjectDisposedException)
+            {
+                // Already disposed, ignore
+            }
             
             _isRunning = false;
             
