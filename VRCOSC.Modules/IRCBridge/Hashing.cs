@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Bluscream.Modules;
 
-public static class HardwareIdGenerator
+public static class Hashing
 {
     public static string GenerateHardwareId(Action<string>? logAction = null)
     {
@@ -18,7 +18,6 @@ public static class HardwareIdGenerator
             
             // Get CPU serial number
             var cpuId = GetCpuId();
-            logAction?.Invoke($"CPU ID: {(string.IsNullOrEmpty(cpuId) ? "(empty)" : cpuId)}");
             if (!string.IsNullOrEmpty(cpuId))
             {
                 components.Append(cpuId);
@@ -26,7 +25,6 @@ public static class HardwareIdGenerator
             
             // Get motherboard serial number
             var motherboardId = GetMotherboardId();
-            logAction?.Invoke($"Motherboard ID: {(string.IsNullOrEmpty(motherboardId) ? "(empty)" : motherboardId)}");
             if (!string.IsNullOrEmpty(motherboardId))
             {
                 components.Append(motherboardId);
@@ -34,34 +32,30 @@ public static class HardwareIdGenerator
             
             // Get GPU serial number
             var gpuId = GetGpuId();
-            logAction?.Invoke($"GPU ID: {(string.IsNullOrEmpty(gpuId) ? "(empty)" : gpuId)}");
             if (!string.IsNullOrEmpty(gpuId))
             {
                 components.Append(gpuId);
             }
             
-            var componentsString = components.ToString();
-            logAction?.Invoke($"Combined components string length: {componentsString.Length}");
-            logAction?.Invoke($"Combined components (first 100 chars): {(componentsString.Length > 100 ? componentsString.Substring(0, 100) + "..." : componentsString)}");
-            
             if (components.Length == 0)
             {
-                logAction?.Invoke("No hardware components found, returning empty string");
                 return string.Empty;
             }
             
             // Generate SHA256 hash of all components
+            var componentsString = components.ToString();
             using var sha256 = SHA256.Create();
             var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(componentsString));
             var hashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
-            logAction?.Invoke($"Final SHA256 hash: {hashString}");
-            logAction?.Invoke($"Hash length: {hashString.Length}");
+            
+            // Only log the final hash
+            logAction?.Invoke($"PC Hash: {hashString}");
+            
             return hashString;
         }
         catch (Exception ex)
         {
-            logAction?.Invoke($"Exception during generation: {ex.Message}");
-            logAction?.Invoke($"Stack trace: {ex.StackTrace}");
+            logAction?.Invoke($"Exception during PC hash generation: {ex.Message}");
             return string.Empty;
         }
     }

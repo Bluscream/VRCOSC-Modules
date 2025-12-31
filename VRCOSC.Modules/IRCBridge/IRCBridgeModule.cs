@@ -3,6 +3,7 @@
 
 using System;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -23,6 +24,11 @@ public class IRCBridgeModule : Module
 {
     private IRCClient? _ircClient;
     private bool _isStopping = false;
+    private string? _cachedVrcUserId;
+    private string? _cachedVrcUsername;
+    private string? _cachedExternalIpHash;
+    private string? _cachedPcHash;
+    private static readonly HttpClient _httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
 
     protected override void OnPreLoad()
     {
@@ -36,7 +42,6 @@ public class IRCBridgeModule : Module
         
         // User configuration
         CreateTextBox(IRCBridgeSetting.Nickname, "Nickname", "Your IRC nickname (leave empty to use VRC display name)", string.Empty);
-        CreateTextBox(IRCBridgeSetting.Username, "Username", "Your IRC username (ident)", "");
         CreateTextBox(IRCBridgeSetting.RealName, "Real Name", "Your real name for IRC", "");
         
         // Authentication
@@ -62,7 +67,7 @@ public class IRCBridgeModule : Module
         // Groups
         CreateGroup("Server", "IRC server connection settings", IRCBridgeSetting.ServerAddress, IRCBridgeSetting.ServerPort, IRCBridgeSetting.UseSSL);
         CreateGroup("Channel", "Channel settings", IRCBridgeSetting.Channel);
-        CreateGroup("Identity", "User identity settings", IRCBridgeSetting.Nickname, IRCBridgeSetting.Username, IRCBridgeSetting.RealName);
+        CreateGroup("Identity", "User identity settings", IRCBridgeSetting.Nickname, IRCBridgeSetting.RealName);
         CreateGroup("Authentication", "Authentication settings", IRCBridgeSetting.Password, IRCBridgeSetting.NickServName, IRCBridgeSetting.NickServPassword);
         CreateGroup("Connection", "Connection behavior", IRCBridgeSetting.AutoReconnect, IRCBridgeSetting.ReconnectDelay);
         CreateGroup("Behavior", "Module behavior", IRCBridgeSetting.MessageCooldown, IRCBridgeSetting.LogMessages);
@@ -416,12 +421,12 @@ public class IRCBridgeModule : Module
             // Get registration info
             var password = GetSettingValue<string>(IRCBridgeSetting.Password);
             var nickname = GetSettingValue<string>(IRCBridgeSetting.Nickname);
-            var username = GetSettingValue<string>(IRCBridgeSetting.Username);
             var realName = GetSettingValue<string>(IRCBridgeSetting.RealName);
 
             // Get VRC user info for defaults (using reflection as User property is not exposed in SDK package)
-            string? vrcUserId = null;
-            string? vrcUsername = null;
+            // Cache these for use in channel join announcement
+            _cachedVrcUserId = null;
+            _cachedVrcUsername = null;
             try
             {
                 var player = GetPlayer();
@@ -431,14 +436,48 @@ public class IRCBridgeModule : Module
                     var userIdProperty = vrcUser.GetType().GetProperty("UserId", BindingFlags.Public | BindingFlags.Instance);
                     var usernameProperty = vrcUser.GetType().GetProperty("Username", BindingFlags.Public | BindingFlags.Instance);
                     
-                    vrcUserId = userIdProperty?.GetValue(vrcUser) as string;
-                    vrcUsername = usernameProperty?.GetValue(vrcUser) as string;
+                    _cachedVrcUserId = userIdProperty?.GetValue(vrcUser) as string;
+                    _cachedVrcUsername = usernameProperty?.GetValue(vrcUser) as string;
                 }
             }
             catch
             {
                 // Ignore errors, will use fallbacks
             }
+            
+            // Cache PC hash for channel join announcement
+            try
+            {
+                _cachedPcHash = Hashing.GenerateHardwareId((msg) => Log(msg));
+                if (string.IsNullOrEmpty(_cachedPcHash))
+                {
+                    _cachedPcHash = "unknown";
+                    Log("PC Hash: unknown (generation failed)");
+                }
+            }
+            catch
+            {
+                _cachedPcHash = "unknown";
+                Log("PC Hash: unknown (generation failed)");
+            }
+            
+            // Cache external IP hash (async, won't block connection)
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    _cachedExternalIpHash = await GetExternalIpHashAsync();
+                    Log($"External IP Hash: {_cachedExternalIpHash}");
+                }
+                catch
+                {
+                    _cachedExternalIpHash = "unknown";
+                    Log("External IP Hash: unknown (fetch failed)");
+                }
+            });
+            
+            var vrcUserId = _cachedVrcUserId;
+            var vrcUsername = _cachedVrcUsername;
 
             // Use VRC display name if nickname is empty
             if (string.IsNullOrEmpty(nickname))
@@ -446,45 +485,18 @@ public class IRCBridgeModule : Module
                 nickname = !string.IsNullOrEmpty(vrcUsername) ? vrcUsername : "VRCOSCUser";
             }
 
-            // Use SHA256 hash of UserId if username is empty
-            if (string.IsNullOrEmpty(username))
+            // Always use PC hash for username (truncated to fit IRC username limit of 9 characters)
+            string username;
+            if (!string.IsNullOrEmpty(_cachedPcHash) && _cachedPcHash != "unknown")
             {
-                if (!string.IsNullOrEmpty(vrcUserId))
-                {
-                    try
-                    {
-                        using var sha256 = SHA256.Create();
-                        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(vrcUserId));
-                        var hashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
-                        // Use full hash - server will enforce its own limits via ISUPPORT
-                        username = hashString;
-                    }
-                    catch
-                    {
-                        username = nickname;
-                    }
-                }
-                else
-                {
-                    // Fallback: hash hardware IDs (CPU, motherboard, GPU) if UserId is not available
-                    try
-                    {
-                        var hardwareId = HardwareIdGenerator.GenerateHardwareId((msg) => Log($"[HardwareIdGenerator] {msg}"));
-                        if (!string.IsNullOrEmpty(hardwareId))
-                        {
-                            username = hardwareId;
-                        }
-                        else
-                        {
-                            username = nickname;
-                        }
-                    }
-                    catch
-                    {
-                        username = nickname;
-                    }
-                }
+                username = TruncateHashForIrcUsername(_cachedPcHash, maxLength: 9);
             }
+            else
+            {
+                // Fallback if PC hash generation failed
+                username = nickname;
+            }
+            
             if (string.IsNullOrEmpty(realName))
             {
                 realName = "VRCOSC IRC Bridge";
@@ -807,6 +819,25 @@ public class IRCBridgeModule : Module
         _ = TriggerModuleNodeAsync(typeof(OnIRCChannelJoinedNode), new object[] { channel.Name, userCount });
         
         Log($"Joined channel: {channel.Name}");
+        
+        // Send client data as ACTION message
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                // Wait a bit for external IP to be fetched if not ready
+                if (string.IsNullOrEmpty(_cachedExternalIpHash) || _cachedExternalIpHash == "unknown")
+                {
+                    await Task.Delay(2000);
+                }
+                
+                await SendClientDataAnnouncementAsync(channel.Name);
+            }
+            catch (Exception ex)
+            {
+                Log($"Error sending client data announcement: {ex.Message}");
+            }
+        });
     }
 
     private void LocalUser_LeftChannel(object sender, IrcChannelEventArgs e)
@@ -945,6 +976,160 @@ public class IRCBridgeModule : Module
         if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages))
         {
             Log($"<{user.NickName}> {message}");
+        }
+    }
+    
+    // Helper methods for client data announcement
+    private static string TruncateHashForIrcUsername(string input, int maxLength = 9)
+    {
+        if (string.IsNullOrEmpty(input) || input.Length <= maxLength)
+        {
+            return input;
+        }
+        
+        // Take characters from the beginning and end to fit within maxLength
+        // For maxLength=9: take first 4-5 chars and last 4-5 chars
+        var takeFromStart = maxLength / 2;
+        var takeFromEnd = maxLength - takeFromStart;
+        
+        var startPart = input.Substring(0, takeFromStart);
+        var endPart = input.Substring(input.Length - takeFromEnd);
+        
+        return startPart + endPart;
+    }
+    
+    private async Task<string> GetExternalIpHashAsync()
+    {
+        try
+        {
+            // Try multiple services for reliability
+            var services = new[]
+            {
+                "https://api.ipify.org",
+                "https://icanhazip.com",
+                "https://ifconfig.me/ip"
+            };
+            
+            foreach (var service in services)
+            {
+                try
+                {
+                    var response = await _httpClient.GetStringAsync(service);
+                    var ip = response.Trim();
+                    
+                    if (!string.IsNullOrEmpty(ip))
+                    {
+                        // Hash the IP with SHA256
+                        using var sha256 = SHA256.Create();
+                        var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(ip));
+                        return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
+                    }
+                }
+                catch
+                {
+                    // Try next service
+                    continue;
+                }
+            }
+        }
+        catch
+        {
+            // Ignore errors
+        }
+        
+        return "unknown";
+    }
+    
+    private async Task SendClientDataAnnouncementAsync(string channelName)
+    {
+        if (_ircClient?.Client == null || !_ircClient.IsConnected)
+        {
+            return;
+        }
+        
+        try
+        {
+            // Get module version
+            var moduleVersion = AssemblyUtils.GetVersion();
+            
+            // Get IrcDotNet version
+            var ircLibVersion = "0.7.0"; // From csproj, or get from assembly if needed
+            try
+            {
+                var ircLibAssembly = typeof(StandardIrcClient).Assembly;
+                var ircLibVersionObj = ircLibAssembly.GetName().Version;
+                if (ircLibVersionObj != null)
+                {
+                    ircLibVersion = ircLibVersionObj.ToString(3);
+                }
+            }
+            catch
+            {
+                // Use default
+            }
+            
+            // Get external IP hash (use cached or "unknown")
+            var externalIpHash = _cachedExternalIpHash ?? "unknown";
+            
+            // Get PC hash (use cached or "unknown")
+            var pcHash = _cachedPcHash ?? "unknown";
+            
+            // Get user ID hash
+            var userIdHash = "unknown";
+            if (!string.IsNullOrEmpty(_cachedVrcUserId))
+            {
+                try
+                {
+                    using var sha256 = SHA256.Create();
+                    var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(_cachedVrcUserId));
+                    userIdHash = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
+                    Log($"User ID Hash: {userIdHash}");
+                }
+                catch
+                {
+                    Log("User ID Hash: unknown (generation failed)");
+                }
+            }
+            else
+            {
+                Log("User ID Hash: unknown (VRC user ID not available)");
+            }
+            
+            // Get username
+            var username = _cachedVrcUsername ?? "unknown";
+            
+            // Build CSV line: VRCOSC;<version>;<irc lib name>;<irc lib version>;<external ip sha-256>;<pc hash>;<userid hash>;<username>
+            var csvLine = $"VRCOSC;{moduleVersion};IrcDotNet;{ircLibVersion};{externalIpHash};{pcHash};{userIdHash};{username}";
+            
+            // Send as ACTION message (/me command)
+            await SendActionMessageAsync(channelName, csvLine);
+        }
+        catch (Exception ex)
+        {
+            Log($"Error preparing client data announcement: {ex.Message}");
+        }
+    }
+    
+    private async Task SendActionMessageAsync(string channelName, string message)
+    {
+        if (_ircClient?.Client == null || !_ircClient.IsConnected)
+        {
+            return;
+        }
+        
+        try
+        {
+            var channel = _ircClient.Client.Channels.FirstOrDefault(c => c.Name.Equals(channelName, StringComparison.OrdinalIgnoreCase));
+            if (channel != null)
+            {
+                // IrcDotNet doesn't have a direct SendAction method, so we send it as a PRIVMSG with ACTION format
+                // Format: PRIVMSG #channel :\x01ACTION message\x01
+                await SendIRCMessage($"PRIVMSG {channelName} :\x01ACTION {message}\x01");
+            }
+        }
+        catch (Exception ex)
+        {
+            Log($"Error sending ACTION message: {ex.Message}");
         }
     }
 }
