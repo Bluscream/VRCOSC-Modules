@@ -66,6 +66,7 @@ public class IRCBridgeModule : Module
         // Behavior settings
         CreateTextBox(IRCBridgeSetting.MessageCooldown, "Message Cooldown (ms)", "Minimum time between processing same event type", 100);
         CreateToggle(IRCBridgeSetting.LogMessages, "Log Messages", "Log all IRC messages to console", false);
+        CreateToggle(IRCBridgeSetting.RespondToCommands, "Respond To Commands", "Respond to chat commands (e.g., @bot ping, @bot time)", true);
 
         // OSC Parameters
         RegisterParameter<bool>(IRCBridgeParameter.Connected, "VRCOSC/IRCBridge/Connected", ParameterMode.Write, "Connected", "True when connected to IRC server");
@@ -80,7 +81,7 @@ public class IRCBridgeModule : Module
         CreateGroup("Identity", "User identity settings", IRCBridgeSetting.Nickname);
         CreateGroup("Authentication", "Authentication settings", IRCBridgeSetting.Password, IRCBridgeSetting.NickServName, IRCBridgeSetting.NickServPassword);
         CreateGroup("Connection", "Connection behavior", IRCBridgeSetting.AutoReconnect, IRCBridgeSetting.ReconnectDelay);
-        CreateGroup("Behavior", "Module behavior", IRCBridgeSetting.MessageCooldown, IRCBridgeSetting.LogMessages);
+        CreateGroup("Behavior", "Module behavior", IRCBridgeSetting.MessageCooldown, IRCBridgeSetting.LogMessages, IRCBridgeSetting.RespondToCommands);
     }
 
     protected override void OnPostLoad()
@@ -974,8 +975,8 @@ public class IRCBridgeModule : Module
         
         _ = SendParameterPulseAsync(IRCBridgeParameter.MessageReceived);
         
-        // Handle commands: "@<botnickname> <command>"
-        if (_ircClient?.Client?.LocalUser != null)
+        // Handle commands: "@<botnickname> <command>" (only if enabled)
+        if (GetSettingValue<bool>(IRCBridgeSetting.RespondToCommands) && _ircClient?.Client?.LocalUser != null)
         {
             var botNickname = _ircClient.Client.LocalUser.NickName;
             if (!string.IsNullOrEmpty(botNickname))
