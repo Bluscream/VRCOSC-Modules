@@ -6,6 +6,6 @@ using System.Reflection;
 
 [assembly: AssemblyTitle("Bluscream's Modules")]
 [assembly: AssemblyDescription("Bluscream's unofficial modules")]
-[assembly: AssemblyVersion("2025.1229.16")]
-[assembly: AssemblyFileVersion("2025.1229.16")]
+[assembly: AssemblyVersion("2025.1231.0")]
+[assembly: AssemblyFileVersion("2025.1231.0")]
 [assembly: SuppressMessage("Platform Compatibility", "CA1416:This call site is reachable on all platforms")]
