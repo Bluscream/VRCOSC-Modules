@@ -129,7 +129,7 @@ public class IRCBridgeModule : Module
     protected override async Task OnModuleStop()
     {
         _isStopping = true;
-        await DisconnectFromIRCAsync();
+        await DisconnectFromIRCAsync("Module stopping");
     }
 
     public async Task ConnectToIRC()
@@ -549,7 +549,7 @@ public class IRCBridgeModule : Module
         }
     }
 
-    public async Task DisconnectFromIRCAsync()
+    public async Task DisconnectFromIRCAsync(string? quitReason = null)
     {
         if (_ircClient == null)
         {
@@ -586,8 +586,8 @@ public class IRCBridgeModule : Module
                 _ctcpClient = null;
             }
             
-            // Disconnect and send QUIT message
-            _ircClient.Disconnect();
+            // Disconnect and send QUIT message with reason
+            _ircClient.Disconnect(quitReason);
             
             // Wait a short time for QUIT message to be sent before disposing
             await Task.Delay(500);
@@ -608,10 +608,10 @@ public class IRCBridgeModule : Module
         }
     }
     
-    public void DisconnectFromIRC()
+    public void DisconnectFromIRC(string? quitReason = null)
     {
         // Synchronous version for backwards compatibility
-        _ = DisconnectFromIRCAsync();
+        _ = DisconnectFromIRCAsync(quitReason ?? "Manual disconnect");
     }
 
     public bool IsConnected => _ircClient?.IsConnected ?? false;

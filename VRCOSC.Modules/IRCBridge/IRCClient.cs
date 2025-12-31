@@ -178,7 +178,7 @@ public class IRCClient : IDisposable
         }
     }
 
-    public void Disconnect()
+    public void Disconnect(string? quitReason = null)
     {
         if (!_isConnected && !_isConnecting)
         {
@@ -189,7 +189,8 @@ public class IRCClient : IDisposable
         {
             if (_client != null && _client.IsConnected)
             {
-                _client.Quit("VRCOSC IRC Bridge disconnecting");
+                var reason = quitReason ?? "VRCOSC IRC Bridge disconnecting";
+                _client.Quit(reason);
             }
             
             _client?.Disconnect();
