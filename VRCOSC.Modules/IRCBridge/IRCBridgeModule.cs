@@ -1020,6 +1020,25 @@ public class IRCBridgeModule : Module
                         }
                     });
                 }
+                
+                // Handle version command: "@<botnickname> version" -> "@<username> <version info>"
+                var versionPattern = $@"@{Regex.Escape(botNickLower)}\s+version\b";
+                if (Regex.IsMatch(messageLower, versionPattern, RegexOptions.IgnoreCase))
+                {
+                    // Respond with version information
+                    _ = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            var versionString = ClientDataBuilder.GetVersionString();
+                            await SendMessageToChannelAsync(channel.Name, $"@{user.NickName} {versionString}");
+                        }
+                        catch (Exception ex)
+                        {
+                            Log($"Error sending version response: {ex.Message}");
+                        }
+                    });
+                }
             }
         }
         

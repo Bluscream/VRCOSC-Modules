@@ -115,4 +115,38 @@ public static class ClientDataBuilder
         }
         return (string.Empty, string.Empty);
     }
+    
+    /// <summary>
+    /// Gets a formatted version string with app, library, and module versions
+    /// Format: "AppName Version, LibraryName Version, ModuleName Version"
+    /// </summary>
+    public static string GetVersionString()
+    {
+        var parts = new List<string>();
+        
+        // Get executing assembly (VRCOSC app) name and version
+        var executingAssemblyName = GetExecutingAssemblyName();
+        var executingAssemblyVersion = GetExecutingAssemblyVersion();
+        if (!string.IsNullOrEmpty(executingAssemblyName) && !string.IsNullOrEmpty(executingAssemblyVersion))
+        {
+            parts.Add($"{executingAssemblyName} {executingAssemblyVersion}");
+        }
+        
+        // Get IrcDotNet version and name
+        var (ircLibName, ircLibVersion) = GetIrcDotNetInfo();
+        if (!string.IsNullOrEmpty(ircLibName) && !string.IsNullOrEmpty(ircLibVersion))
+        {
+            parts.Add($"{ircLibName} {ircLibVersion}");
+        }
+        
+        // Get module version and name
+        var moduleVersion = AssemblyUtils.GetVersion();
+        var moduleName = AssemblyUtils.GetAssemblyName();
+        if (!string.IsNullOrEmpty(moduleName) && !string.IsNullOrEmpty(moduleVersion))
+        {
+            parts.Add($"{moduleName} {moduleVersion}");
+        }
+        
+        return string.Join(", ", parts);
+    }
 }
