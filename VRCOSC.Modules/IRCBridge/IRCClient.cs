@@ -1,10 +1,11 @@
-// Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
-// See the LICENSE file in the repository root for full license text.
+// This is free and unencumbered software released into the public domain.
+// For more information, please refer to <https://unlicense.org>
 
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using IrcDotNet;
+using Bluscream.Modules.IRCBridge.Utils;
 
 namespace Bluscream.Modules;
 
@@ -75,43 +76,7 @@ public class IRCClient : IDisposable
         {
             try
             {
-                // Reconstruct raw IRC message from IrcMessage object
-                var message = e.Message;
-                var rawMessage = string.Empty;
-                
-                // Add prefix if present
-                if (message.Prefix != null)
-                {
-                    rawMessage += $":{message.Prefix} ";
-                }
-                
-                // Add command (can be null for some message types)
-                if (message.Command != null)
-                {
-                    rawMessage += message.Command;
-                }
-                
-                // Add parameters
-                if (message.Parameters != null && message.Parameters.Count > 0)
-                {
-                    for (int i = 0; i < message.Parameters.Count; i++)
-                    {
-                        var param = message.Parameters[i];
-                        if (param == null) continue;
-                        
-                        // Last parameter that contains spaces should be prefixed with :
-                        if (i == message.Parameters.Count - 1 && param.Contains(' '))
-                        {
-                            rawMessage += $" :{param}";
-                        }
-                        else
-                        {
-                            rawMessage += $" {param}";
-                        }
-                    }
-                }
-                
-                // Only invoke MessageReceived for incoming messages
+                var rawMessage = IRCMessageUtils.ReconstructRawMessage(e.Message);
                 MessageReceived?.Invoke(rawMessage);
             }
             catch (Exception ex)

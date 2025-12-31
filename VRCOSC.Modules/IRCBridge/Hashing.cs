@@ -1,5 +1,5 @@
-// Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
-// See the LICENSE file in the repository root for full license text.
+// This is free and unencumbered software released into the public domain.
+// For more information, please refer to <https://unlicense.org>
 
 using System;
 using System.Collections.Generic;
@@ -69,13 +69,6 @@ public static class Hashing
         }
     }
     
-    private static string GetCpuId()
-    {
-        // Legacy method - use GetAllCpuIds() for consistency
-        var cpuIds = GetAllCpuIds();
-        return cpuIds.Count > 0 ? cpuIds[0] : string.Empty;
-    }
-    
     private static List<string> GetAllCpuIds()
     {
         var cpuIds = new List<string>();
@@ -119,13 +112,6 @@ public static class Hashing
             // Ignore errors
         }
         return string.Empty;
-    }
-    
-    private static string GetGpuId()
-    {
-        // Legacy method - use GetAllGpuIds() for consistency
-        var gpuIds = GetAllGpuIds();
-        return gpuIds.Count > 0 ? gpuIds[0] : string.Empty;
     }
     
     private static List<string> GetAllGpuIds()
@@ -173,6 +159,49 @@ public static class Hashing
         {
             return string.Empty;
         }
+    }
+    
+    /// <summary>
+    /// Generate CRC32 hash of a string input and return as hexadecimal string
+    /// CRC32 produces an 8-character hex string (32 bits = 4 bytes = 8 hex chars)
+    /// </summary>
+    public static string GenerateCrc32Hash(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            return string.Empty;
+        }
+        
+        try
+        {
+            var bytes = Encoding.UTF8.GetBytes(input);
+            var crc = ComputeCrc32(bytes);
+            return crc.ToString("x8"); // 8 hex characters (lowercase)
+        }
+        catch
+        {
+            return string.Empty;
+        }
+    }
+    
+    /// <summary>
+    /// Compute CRC32 checksum for a byte array
+    /// </summary>
+    private static uint ComputeCrc32(byte[] data)
+    {
+        const uint polynomial = 0xEDB88320; // CRC32 polynomial
+        var crc = 0xFFFFFFFFu;
+        
+        foreach (var b in data)
+        {
+            crc ^= b;
+            for (var i = 0; i < 8; i++)
+            {
+                crc = (crc >> 1) ^ ((crc & 1) != 0 ? polynomial : 0);
+            }
+        }
+        
+        return crc ^ 0xFFFFFFFFu;
     }
     
     /// <summary>

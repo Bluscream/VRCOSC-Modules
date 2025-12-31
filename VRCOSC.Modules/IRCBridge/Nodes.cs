@@ -1,5 +1,5 @@
-// Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
-// See the LICENSE file in the repository root for full license text.
+// This is free and unencumbered software released into the public domain.
+// For more information, please refer to <https://unlicense.org>
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
