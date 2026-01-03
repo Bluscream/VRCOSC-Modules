@@ -83,21 +83,24 @@ public partial class IRCBridgeModule
             // Wire up raw message logging (for debugging)
             ircClient.RawMessageSent += (sender, e) =>
             {
-                if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages) && e != null)
+                if (e == null) return;
+                
+                var rawMessage = e.RawContent ?? IRCMessageUtils.ReconstructRawMessage(e.Message);
+                if (string.IsNullOrEmpty(rawMessage)) return;
+                
+                var category = IRCMessageUtils.CategorizeMessage(rawMessage, e.Message);
+                bool shouldLog = category switch
                 {
-                    var rawMessage = e.RawContent ?? IRCMessageUtils.ReconstructRawMessage(e.Message);
-                    if (!string.IsNullOrEmpty(rawMessage))
-                    {
-                        // Skip logging welcome/join message (CSV line with hashes)
-                        // Check if it's a PRIVMSG with ACTION containing multiple semicolons (CSV format)
-                        if (rawMessage.Contains("PRIVMSG") && rawMessage.Contains("ACTION") && rawMessage.Split(';').Length > 5)
-                        {
-                            return; // Skip logging the welcome message
-                        }
-                        
-                        var sanitizedMessage = IRCMessageUtils.SanitizeForLogging(rawMessage);
-                        Log($"IRC → {sanitizedMessage}");
-                    }
+                    IRCMessageCategory.Chat => GetSettingValue<bool>(IRCBridgeSetting.LogChatMessages),
+                    IRCMessageCategory.System => GetSettingValue<bool>(IRCBridgeSetting.LogSystemMessages),
+                    IRCMessageCategory.Event => GetSettingValue<bool>(IRCBridgeSetting.LogEvents),
+                    _ => false
+                };
+                
+                if (shouldLog)
+                {
+                    var sanitizedMessage = IRCMessageUtils.SanitizeForLogging(rawMessage);
+                    Log($"IRC → {sanitizedMessage}");
                 }
             };
 
@@ -114,14 +117,22 @@ public partial class IRCBridgeModule
                     _isupportParser.ParseISupport(e.Message);
                 }
                 
-                if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages))
+                var rawMessage = e.RawContent ?? IRCMessageUtils.ReconstructRawMessage(e.Message);
+                if (string.IsNullOrEmpty(rawMessage)) return;
+                
+                var category = IRCMessageUtils.CategorizeMessage(rawMessage, e.Message);
+                bool shouldLog = category switch
                 {
-                    var rawMessage = e.RawContent ?? IRCMessageUtils.ReconstructRawMessage(e.Message);
-                    if (!string.IsNullOrEmpty(rawMessage))
-                    {
-                        var sanitizedMessage = IRCMessageUtils.SanitizeForLogging(rawMessage);
-                        Log($"IRC ← {sanitizedMessage}");
-                    }
+                    IRCMessageCategory.Chat => GetSettingValue<bool>(IRCBridgeSetting.LogChatMessages),
+                    IRCMessageCategory.System => GetSettingValue<bool>(IRCBridgeSetting.LogSystemMessages),
+                    IRCMessageCategory.Event => GetSettingValue<bool>(IRCBridgeSetting.LogEvents),
+                    _ => false
+                };
+                
+                if (shouldLog)
+                {
+                    var sanitizedMessage = IRCMessageUtils.SanitizeForLogging(rawMessage);
+                    Log($"IRC ← {sanitizedMessage}");
                 }
             };
 
@@ -349,7 +360,7 @@ public partial class IRCBridgeModule
                 errorMessage += $" (Inner: {ex.InnerException.Message})";
             }
             Log($"Failed to connect to IRC: {errorMessage}");
-            if (ex.StackTrace != null && GetSettingValue<bool>(IRCBridgeSetting.LogMessages))
+            if (ex.StackTrace != null && GetSettingValue<bool>(IRCBridgeSetting.LogSystemMessages))
             {
                 Log($"Stack trace: {ex.StackTrace}");
             }
@@ -374,7 +385,7 @@ public partial class IRCBridgeModule
 
         try
         {
-            if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages))
+            if (GetSettingValue<bool>(IRCBridgeSetting.LogChatMessages))
             {
                 // Sanitize control characters for readable logging
                 var sanitizedMessage = IRCMessageUtils.SanitizeForLogging(message);

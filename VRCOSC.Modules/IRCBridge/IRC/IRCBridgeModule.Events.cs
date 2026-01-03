@@ -81,7 +81,7 @@ public partial class IRCBridgeModule
         SetVariableValue(IRCBridgeVariable.UserCount, userCount);
         SendParameterSafePublic(IRCBridgeParameter.UserCount, userCount);
         
-        if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages))
+        if (GetSettingValue<bool>(IRCBridgeSetting.LogEvents))
         {
             Log($"User joined: {user.NickName}");
         }
@@ -116,7 +116,7 @@ public partial class IRCBridgeModule
         SetVariableValue(IRCBridgeVariable.UserCount, userCount);
         SendParameterSafePublic(IRCBridgeParameter.UserCount, userCount);
         
-        if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages))
+        if (GetSettingValue<bool>(IRCBridgeSetting.LogEvents))
         {
             Log($"User left: {user.NickName}");
         }
@@ -214,7 +214,7 @@ public partial class IRCBridgeModule
             }
         }
         
-        if (GetSettingValue<bool>(IRCBridgeSetting.LogMessages))
+        if (GetSettingValue<bool>(IRCBridgeSetting.LogChatMessages))
         {
             Log($"<{user.NickName}> {message}");
         }

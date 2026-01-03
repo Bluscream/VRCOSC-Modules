@@ -73,7 +73,9 @@ public partial class IRCBridgeModule : Module, IVRCClientEventHandler
         
         // Behavior settings
         CreateTextBox(IRCBridgeSetting.MessageCooldown, "Message Cooldown (ms)", "Minimum time between processing same event type", 100);
-        CreateToggle(IRCBridgeSetting.LogMessages, "Log Messages", "Log all IRC messages to console", false);
+        CreateToggle(IRCBridgeSetting.LogChatMessages, "Log Chat Messages", "Log incoming and outgoing channel/private messages from users", false);
+        CreateToggle(IRCBridgeSetting.LogSystemMessages, "Log System Messages", "Log server responses and system messages (numeric codes, etc.)", false);
+        CreateToggle(IRCBridgeSetting.LogEvents, "Log Events", "Log IRC events (JOIN, NICK, MODE, etc.)", false);
         CreateToggle(IRCBridgeSetting.RespondToCommands, "Respond To Commands", "Respond to chat commands (e.g., @bot ping, @bot time)", true);
 
         // OSC Parameters
@@ -89,7 +91,7 @@ public partial class IRCBridgeModule : Module, IVRCClientEventHandler
         CreateGroup("Identity", "User identity settings", IRCBridgeSetting.Nickname);
         CreateGroup("Authentication", "Authentication settings", IRCBridgeSetting.Password, IRCBridgeSetting.NickServName, IRCBridgeSetting.NickServPassword);
         CreateGroup("Connection", "Connection behavior", IRCBridgeSetting.AutoReconnect, IRCBridgeSetting.ReconnectDelay);
-        CreateGroup("Behavior", "Module behavior", IRCBridgeSetting.MessageCooldown, IRCBridgeSetting.LogMessages, IRCBridgeSetting.RespondToCommands);
+        CreateGroup("Behavior", "Module behavior", IRCBridgeSetting.MessageCooldown, IRCBridgeSetting.LogChatMessages, IRCBridgeSetting.LogSystemMessages, IRCBridgeSetting.LogEvents, IRCBridgeSetting.RespondToCommands);
     }
 
     protected override void OnPostLoad()

@@ -17,7 +17,9 @@ public enum IRCBridgeSetting
     AutoReconnect,
     ReconnectDelay,
     MessageCooldown,
-    LogMessages,
+    LogChatMessages,
+    LogSystemMessages,
+    LogEvents,
     RespondToCommands
 }
 
