@@ -2,6 +2,7 @@
 // For more information, please refer to <https://unlicense.org>
 
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -127,6 +128,41 @@ public partial class IRCBridgeModule
                         var userCount = _joinedChannel.Users.Count;
                         SetVariableValue(IRCBridgeVariable.UserCount, userCount);
                         SendParameterSafePublic(IRCBridgeParameter.UserCount, userCount);
+                    }
+                }
+                
+                // Handle QUIT - when a user disconnects from IRC, they leave all channels
+                if (e.Message.Command == "QUIT" && _joinedChannel != null)
+                {
+                    // Extract nickname from prefix (format: :nickname!user@host)
+                    var prefix = e.Message.Prefix;
+                    if (!string.IsNullOrEmpty(prefix))
+                    {
+                        var nickname = prefix.Split('!')[0];
+                        if (!string.IsNullOrEmpty(nickname) && nickname.StartsWith(":"))
+                        {
+                            nickname = nickname.Substring(1);
+                        }
+                        
+                        // Check if this user was in our channel
+                        var userInChannel = _joinedChannel.Users.FirstOrDefault(u => 
+                            u.User != null && u.User.NickName.Equals(nickname, StringComparison.OrdinalIgnoreCase));
+                        
+                        if (userInChannel != null && !(userInChannel.User is IrcLocalUser))
+                        {
+                            // User was in channel, update count
+                            // Note: IrcDotNet should automatically remove the user from channel.Users
+                            // but we'll update the count after a brief delay to ensure it's processed
+                            _ = Task.Delay(100).ContinueWith(_ =>
+                            {
+                                if (_joinedChannel != null)
+                                {
+                                    var userCount = _joinedChannel.Users.Count;
+                                    SetVariableValue(IRCBridgeVariable.UserCount, userCount);
+                                    SendParameterSafePublic(IRCBridgeParameter.UserCount, userCount);
+                                }
+                            });
+                        }
                     }
                 }
                 
