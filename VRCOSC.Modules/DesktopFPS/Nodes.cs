@@ -28,18 +28,3 @@ public sealed class GetFPSNode : ModuleNode<DesktopFPSModule>, IActiveUpdateNode
     public Task<bool> OnUpdate(PulseContext c) => Task.FromResult(true);
 }
 
-[Node("Is VRChat Running")]
-[NodeForceReprocess]
-public sealed class IsVRChatRunningNode : ModuleNode<DesktopFPSModule>, IActiveUpdateNode
-{
-    public int UpdateOffset => 0;
-    public ValueOutput<bool> IsRunning = new();
-
-    protected override Task Process(PulseContext c)
-    {
-        IsRunning.Write(Module.IsVRChatRunning(), c);
-        return Task.CompletedTask;
-    }
-
-    public Task<bool> OnUpdate(PulseContext c) => Task.FromResult(true);
-}
