@@ -4,6 +4,7 @@
 using VRCOSC.App.Nodes;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Nodes;
+using Bluscream;
 
 namespace Bluscream.Modules;
 
@@ -35,7 +36,7 @@ public sealed class HTTPGetRequestNode : ModuleNode<HTTPModule>{
         {
             var url = Url.Read(c);
             
-            if (string.IsNullOrEmpty(url))
+            if (url.IsNullOrEmpty())
             {
                 Error.Write("URL is required", c);
                 await OnError.Execute(c);
@@ -84,7 +85,7 @@ public sealed class HTTPPostRequestNode : ModuleNode<HTTPModule>{
             var url = Url.Read(c);
             var body = Body.Read(c);
             
-            if (string.IsNullOrEmpty(url))
+            if (url.IsNullOrEmpty())
             {
                 Error.Write("URL is required", c);
                 await OnError.Execute(c);
@@ -136,7 +137,7 @@ public sealed class HTTPRequestNode : ModuleNode<HTTPModule>{
             var url = Url.Read(c);
             var body = Body.Read(c);
             
-            if (string.IsNullOrEmpty(url))
+            if (url.IsNullOrEmpty())
             {
                 Error.Write("URL is required", c);
                 await OnError.Execute(c);
@@ -144,7 +145,7 @@ public sealed class HTTPRequestNode : ModuleNode<HTTPModule>{
             }
 
             var response = await Module.SendRequest(method.ToString(), url, 
-                string.IsNullOrEmpty(body) ? null : body);
+                body.IsNullOrEmpty() ? null : body);
             
             ResponseBody.Write(response.Body, c);
             StatusCode.Write(response.StatusCode, c);

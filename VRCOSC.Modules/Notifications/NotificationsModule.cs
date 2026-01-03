@@ -143,7 +143,7 @@ public class NotificationsModule : Module
             
             SendParameter(NotificationsParameter.NotificationSent, true);
             SendParameter(NotificationsParameter.NotificationCount, _notificationsSent);
-            Task.Delay(1000).ContinueWith(_ => SendParameter(NotificationsParameter.NotificationSent, false));
+            TaskUtils.DelayedAction(1000, () => SendParameter(NotificationsParameter.NotificationSent, false));
         }
         else
         {
@@ -151,7 +151,7 @@ public class NotificationsModule : Module
             TriggerEvent(NotificationsEvent.OnNotificationFailed);
             
             SendParameter(NotificationsParameter.NotificationFailed, true);
-            Task.Delay(1000).ContinueWith(_ => SendParameter(NotificationsParameter.NotificationFailed, false));
+            TaskUtils.DelayedAction(1000, () => SendParameter(NotificationsParameter.NotificationFailed, false));
         }
     }
 

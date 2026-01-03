@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Bluscream;
 
 namespace Bluscream.Modules;
 
@@ -15,7 +16,7 @@ public static class WebhookNotificationSender
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(url))
+            if (url.IsNullOrWhiteSpace())
             {
                 Console.WriteLine("[Webhook Notification] No URL configured");
                 return false;

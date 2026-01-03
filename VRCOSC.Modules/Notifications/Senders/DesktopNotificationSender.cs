@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Bluscream;
 
 namespace Bluscream.Modules;
 
@@ -66,7 +67,7 @@ $toast = [Windows.UI.Notifications.ToastNotification]::new($xml)
                 return false;
             }
             
-            if (!string.IsNullOrEmpty(error))
+            if (!error.IsNullOrEmpty())
             {
                 Console.WriteLine($"[Desktop Notification] PowerShell stderr: {error}");
             }

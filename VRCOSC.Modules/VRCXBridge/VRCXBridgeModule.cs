@@ -425,14 +425,14 @@ public class VRCXBridgeModule : VRCOSCModule
     }
     private async Task HandleVRCXMessage(string message)
     {
-        if (string.IsNullOrWhiteSpace(message))
+        if (message.IsNullOrWhiteSpace())
         {
             Log("Received empty message");
             return;
         }
         if (GetSettingValue<bool>(VRCXBridgeSetting.LogRawIpc))
         {
-            var preview = message.Length > 100 ? message.Substring(0, 100) + "..." : message;
+            var preview = message.Truncate(100);
             Log($"IPC ← VRCX: {preview}");
         }
         JsonNode? json = null;
@@ -466,7 +466,7 @@ public class VRCXBridgeModule : VRCOSCModule
             }
             return;
         }
-        if (string.IsNullOrEmpty(msgType))
+        if (msgType.IsNullOrEmpty())
         {
             if (GetSettingValue<bool>(VRCXBridgeSetting.LogRawIpc))
             {
@@ -480,7 +480,7 @@ public class VRCXBridgeModule : VRCOSCModule
             return;
         }
         JsonNode? data = null;
-        if (!string.IsNullOrEmpty(dataStr))
+        if (!dataStr.IsNullOrEmpty())
         {
             try
             {
@@ -508,7 +508,7 @@ public class VRCXBridgeModule : VRCOSCModule
                     // Send OSC to VRChat from VRCX
                     var address = data?["address"]?.ToString();
                     var valueNode = data?["value"];
-                    if (!string.IsNullOrEmpty(address) && valueNode != null)
+                    if (!address.IsNullOrEmpty() && valueNode != null)
                     {
                         try
                         {
@@ -525,7 +525,7 @@ public class VRCXBridgeModule : VRCOSCModule
                     var command = data?["command"]?.ToString();
                     var cmdArgs = data?["args"];
                     var cmdRequestId = data?["requestId"]?.ToString();
-                    if (!string.IsNullOrEmpty(command))
+                    if (!command.IsNullOrEmpty())
                     {
                         try
                         {
@@ -541,7 +541,7 @@ public class VRCXBridgeModule : VRCOSCModule
                     // Response to our command sent to VRCX
                     var requestId = data?["requestId"]?.ToString();
                     var result = data?["result"];
-                    if (!string.IsNullOrEmpty(requestId))
+                    if (!requestId.IsNullOrEmpty())
                     {
                         if (_pendingRequests.TryGetValue(requestId, out var tcs))
                         {
@@ -744,7 +744,7 @@ public class VRCXBridgeModule : VRCOSCModule
                 ? (GetSettingValue<string>(VRCXBridgeSetting.IpcMessageType) ?? "Event7List")
                 : "VrcxMessage";
             // Fallback to Event7List if empty
-            if (string.IsNullOrWhiteSpace(messageType))
+            if (messageType.IsNullOrWhiteSpace())
             {
                 messageType = "Event7List";
             }
@@ -867,7 +867,7 @@ public class VRCXBridgeModule : VRCOSCModule
             {
                 case "GET_VARIABLE":
                     var getVarName = args?["name"]?.ToString();
-                    if (!string.IsNullOrEmpty(getVarName) && _chatVariables.TryGetValue(getVarName, out var value))
+                    if (!getVarName.IsNullOrEmpty() && _chatVariables.TryGetValue(getVarName, out var value))
                     {
                         result = new { success = true, value };
                     }
@@ -879,7 +879,7 @@ public class VRCXBridgeModule : VRCOSCModule
                 case "SET_VARIABLE":
                     var setVarName = args?["name"]?.ToString();
                     var setValue = args?["value"];
-                    if (!string.IsNullOrEmpty(setVarName) && setValue != null)
+                    if (!setVarName.IsNullOrEmpty() && setValue != null)
                     {
                         var valueKind = setValue.GetValueKind();
                         var varKey = $"vrcx_{setVarName}";
@@ -1021,7 +1021,7 @@ public class VRCXBridgeModule : VRCOSCModule
                 case "CREATE_STATE":
                     var createStateName = args?["name"]?.ToString();
                     var createStateDisplay = args?["displayName"]?.ToString();
-                    if (!string.IsNullOrEmpty(createStateName))
+                    if (!createStateName.IsNullOrEmpty())
                     {
                         try
                         {
@@ -1043,7 +1043,7 @@ public class VRCXBridgeModule : VRCOSCModule
                 case "CHANGE_STATE":
                     var changeStateName = args?["name"]?.ToString();
                     var changeStateDisplay = args?["displayName"]?.ToString();
-                    if (!string.IsNullOrEmpty(changeStateName))
+                    if (!changeStateName.IsNullOrEmpty())
                     {
                         try
                         {
@@ -1066,7 +1066,7 @@ public class VRCXBridgeModule : VRCOSCModule
                 case "CREATE_EVENT":
                     var createEventName = args?["name"]?.ToString();
                     var createEventDisplay = args?["displayName"]?.ToString();
-                    if (!string.IsNullOrEmpty(createEventName))
+                    if (!createEventName.IsNullOrEmpty())
                     {
                         try
                         {
@@ -1087,7 +1087,7 @@ public class VRCXBridgeModule : VRCOSCModule
                 case "TRIGGER_EVENT":
                     var triggerEventName = args?["name"]?.ToString();
                     var triggerEventDisplay = args?["displayName"]?.ToString();
-                    if (!string.IsNullOrEmpty(triggerEventName))
+                    if (!triggerEventName.IsNullOrEmpty())
                     {
                         try
                         {

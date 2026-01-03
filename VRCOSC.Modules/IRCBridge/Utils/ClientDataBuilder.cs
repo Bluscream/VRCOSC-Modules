@@ -64,38 +64,12 @@ public static class ClientDataBuilder
     
     private static string GetExecutingAssemblyName()
     {
-        try
-        {
-            var executingAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
-            var executingAssemblyNameObj = executingAssembly.GetName();
-            if (!string.IsNullOrEmpty(executingAssemblyNameObj.Name))
-            {
-                return executingAssemblyNameObj.Name;
-            }
-        }
-        catch
-        {
-            // Ignore errors
-        }
-        return string.Empty;
+        return AssemblyUtils.GetEntryAssemblyName();
     }
     
     private static string GetExecutingAssemblyVersion()
     {
-        try
-        {
-            var executingAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
-            var executingVersionObj = executingAssembly.GetName().Version;
-            if (executingVersionObj != null)
-            {
-                return executingVersionObj.ToString(3);
-            }
-        }
-        catch
-        {
-            // Ignore errors
-        }
-        return string.Empty;
+        return AssemblyUtils.GetEntryAssemblyVersion();
     }
     
     private static (string name, string version) GetIrcDotNetInfo()

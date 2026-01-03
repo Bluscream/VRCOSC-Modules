@@ -4,6 +4,7 @@
 using VRCOSC.App.Nodes;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Nodes;
+using Bluscream;
 
 namespace Bluscream.Modules;
 
@@ -74,7 +75,7 @@ public sealed class VRCXSendInviteNode : ModuleNode<VRCXBridgeModule>{
             var worldName = WorldName.Read(c);
             var message = Message.Read(c);
             
-            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(instanceId))
+            if (userId.IsNullOrEmpty() || instanceId.IsNullOrEmpty())
             {
                 Error.Write("User ID and Instance ID are required", c);
                 await OnError.Execute(c);
@@ -82,7 +83,7 @@ public sealed class VRCXSendInviteNode : ModuleNode<VRCXBridgeModule>{
             }
 
             var result = await Module.SendInvite(userId, instanceId, worldId, worldName, 
-                string.IsNullOrEmpty(message) ? null : message);
+                message.IsNullOrEmpty() ? null : message);
             
             if (result != null && result["success"]?.GetValue<bool>() == true)
             {
@@ -119,7 +120,7 @@ public sealed class VRCXGetUserInfoNode : ModuleNode<VRCXBridgeModule>{
         {
             var userId = UserId.Read(c);
             
-            if (string.IsNullOrEmpty(userId))
+            if (userId.IsNullOrEmpty())
             {
                 Error.Write("User ID is required", c);
                 await OnError.Execute(c);
@@ -211,14 +212,14 @@ public sealed class VRCXShowToastNode : ModuleNode<VRCXBridgeModule>{
             var message = Message.Read(c);
             var type = Type.Read(c);
             
-            if (string.IsNullOrEmpty(message))
+            if (message.IsNullOrEmpty())
             {
                 Error.Write("Message is required", c);
                 await OnError.Execute(c);
                 return;
             }
 
-            var result = await Module.ShowVRCXToast(message, string.IsNullOrEmpty(type) ? "info" : type);
+            var result = await Module.ShowVRCXToast(message, type.IsNullOrEmpty() ? "info" : type);
             
             if (result != null && result["success"]?.GetValue<bool>() == true)
             {

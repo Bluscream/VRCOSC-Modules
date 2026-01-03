@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text.Json;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Parameters;
+using Bluscream;
 
 namespace Bluscream.Modules;
 
@@ -79,7 +80,7 @@ public class HTTPModule : Module
                 }
             }
 
-            if (!string.IsNullOrEmpty(body))
+            if (!body.IsNullOrEmpty())
             {
                 request.Content = new StringContent(body);
             }
@@ -90,7 +91,7 @@ public class HTTPModule : Module
             var statusCode = (int)response.StatusCode;
             SendParameter(HTTPParameter.StatusCode, statusCode);
             SetVariableValue(HTTPVariable.LastStatusCode, statusCode);
-            SetVariableValue(HTTPVariable.LastResponse, responseBody.Length > 200 ? responseBody.Substring(0, 200) + "..." : responseBody);
+            SetVariableValue(HTTPVariable.LastResponse, responseBody.Truncate(200));
 
             if (response.IsSuccessStatusCode)
             {
@@ -109,7 +110,7 @@ public class HTTPModule : Module
             }
 
             // Return to idle after delay
-            _ = Task.Delay(1000).ContinueWith(_ => ChangeState(HTTPState.Idle));
+            TaskUtils.DelayedAction(1000, () => ChangeState(HTTPState.Idle));
 
             return new HttpResponse
             {
@@ -128,7 +129,7 @@ public class HTTPModule : Module
             await SendFailedParameter();
             
             // Return to idle after delay
-            _ = Task.Delay(1000).ContinueWith(_ => ChangeState(HTTPState.Idle));
+            TaskUtils.DelayedAction(1000, () => ChangeState(HTTPState.Idle));
             
             return new HttpResponse
             {

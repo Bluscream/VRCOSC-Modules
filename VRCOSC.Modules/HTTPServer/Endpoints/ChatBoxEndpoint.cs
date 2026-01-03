@@ -59,7 +59,7 @@ public static class ChatBoxEndpoint
             var send = data.RootElement.TryGetProperty("send", out var sendElement) && sendElement.GetBoolean();
             var minimalBackground = data.RootElement.TryGetProperty("minimalBackground", out var bgElement) && bgElement.GetBoolean();
 
-            if (string.IsNullOrEmpty(message))
+            if (message.IsNullOrEmpty())
             {
                 module.SendJsonResponse(context.Response, 400, new { success = false, error = "Missing 'message' field in request body" });
                 return;

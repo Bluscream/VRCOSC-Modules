@@ -74,7 +74,7 @@ public static class ApiEndpoint
                     uptime = module.GetUptime(),
                     requestCount = module.GetRequestCount(),
                     url = module.GetDisplayUrl(),
-                    time = DateTime.UtcNow.ToString("o")
+                    time = DateTime.UtcNow.ToIso8601()
                 },
                 player = new
                 {
@@ -82,7 +82,7 @@ public static class ApiEndpoint
                     {
                         id = avatarId,
                         name = avatarName ?? "Unknown",
-                        loaded = !string.IsNullOrEmpty(avatarId)
+                        loaded = !avatarId.IsNullOrEmpty()
                     }
                 },
                 chatbox = chatBoxState ?? new

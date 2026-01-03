@@ -4,16 +4,133 @@
 using System;
 using System.Collections.Generic;
 using System.Management;
+using System.Net;
 using System.Net.Http;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using VRCOSC.App.SDK.Modules;
+using VRCOSC.App.SDK.Modules.Attributes;
+using Bluscream;
 
 namespace Bluscream.Modules;
 
-public static class Hashing
+public class Hashing : IDisposable
 {
-    public static string GenerateHardwareId(Action<string>? logAction = null)
+    private readonly HttpClient _httpClient;
+    
+    // Cached values (not hashes)
+    private IPAddress? _cachedExternalIp;
+    private string? _cachedPcHash;
+    
+    // Events
+    public event Action<IPAddress?, IPAddress?>? OnExternalIpChanged;
+    public event Action<string?, string?>? OnPcHashChanged;
+    
+    public Hashing(HttpClient httpClient)
+    {
+        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    }
+    
+    // Public properties to access cached values
+    public IPAddress? ExternalIp => _cachedExternalIp;
+    public string? PcHash => _cachedPcHash;
+    
+    // Hash getters (hash on demand)
+    public string? ExternalIpHash => _cachedExternalIp != null ? HashingUtils.GenerateSha256Hash(_cachedExternalIp.ToString()) : null;
+    
+    public async Task InitializeAsync()
+    {
+        // Initialize PC hash
+        await UpdatePcHashAsync();
+        
+        // Initialize external IP (async, don't wait)
+        _ = UpdateExternalIpAsync();
+    }
+    
+    public async Task UpdateExternalIpAsync()
+    {
+        try
+        {
+            // Try multiple services for reliability
+            var services = new[]
+            {
+                "https://api.ipify.org",
+                "https://icanhazip.com",
+                "https://ifconfig.me/ip",
+                "http://ip-api.com/line?fields=query"
+            };
+            
+            IPAddress? newIp = null;
+            foreach (var service in services)
+            {
+                try
+                {
+                    var response = await _httpClient.GetStringAsync(service);
+                    var ipString = response.Trim();
+                    
+                    if (!string.IsNullOrEmpty(ipString) && IPAddress.TryParse(ipString, out var ip))
+                    {
+                        newIp = ip;
+                        break;
+                    }
+                }
+                catch
+                {
+                    // Try next service
+                    continue;
+                }
+            }
+            
+            // Check if IP changed
+            if (newIp != null && !Equals(newIp, _cachedExternalIp))
+            {
+                var oldIp = _cachedExternalIp;
+                _cachedExternalIp = newIp;
+                OnExternalIpChanged?.Invoke(oldIp, newIp);
+            }
+            else if (newIp == null && _cachedExternalIp != null)
+            {
+                // IP fetch failed, clear cache
+                var oldIp = _cachedExternalIp;
+                _cachedExternalIp = null;
+                OnExternalIpChanged?.Invoke(oldIp, null);
+            }
+        }
+        catch
+        {
+            // Ignore errors
+        }
+    }
+    
+    public async Task UpdatePcHashAsync()
+    {
+        try
+        {
+            var newPcHash = GenerateHardwareId();
+            
+            if (newPcHash != _cachedPcHash)
+            {
+                var oldPcHash = _cachedPcHash;
+                _cachedPcHash = newPcHash;
+                OnPcHashChanged?.Invoke(oldPcHash, newPcHash);
+            }
+        }
+        catch
+        {
+            // Ignore errors
+        }
+    }
+    
+    [ModuleUpdate(ModuleUpdateMode.Custom, false, 60000)] // Every 60 seconds
+    private async void CheckForChanges()
+    {
+        await UpdatePcHashAsync();
+        await UpdateExternalIpAsync();
+    }
+    
+    #region Static Hash Generation Methods
+    
+    public static string GenerateHardwareId()
     {
         try
         {
@@ -53,18 +170,10 @@ public static class Hashing
             
             // Generate SHA256 hash of all components
             var componentsString = components.ToString();
-            using var sha256 = SHA256.Create();
-            var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(componentsString));
-            var hashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
-            
-            // Only log the final hash
-            logAction?.Invoke($"PC Hash: {hashString}");
-            
-            return hashString;
+            return HashingUtils.GenerateSha256Hash(componentsString);
         }
-        catch (Exception ex)
+        catch
         {
-            logAction?.Invoke($"Exception during PC hash generation: {ex.Message}");
             return string.Empty;
         }
     }
@@ -139,117 +248,10 @@ public static class Hashing
         return gpuIds;
     }
     
-    /// <summary>
-    /// Generate SHA256 hash of a string input
-    /// </summary>
-    public static string GenerateSha256Hash(string input)
-    {
-        if (string.IsNullOrEmpty(input))
-        {
-            return string.Empty;
-        }
-        
-        try
-        {
-            using var sha256 = SHA256.Create();
-            var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
-            return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
-        }
-        catch
-        {
-            return string.Empty;
-        }
-    }
+    #endregion
     
-    /// <summary>
-    /// Generate CRC32 hash of a string input and return as hexadecimal string
-    /// CRC32 produces an 8-character hex string (32 bits = 4 bytes = 8 hex chars)
-    /// </summary>
-    public static string GenerateCrc32Hash(string input)
+    public void Dispose()
     {
-        if (string.IsNullOrEmpty(input))
-        {
-            return string.Empty;
-        }
-        
-        try
-        {
-            var bytes = Encoding.UTF8.GetBytes(input);
-            var crc = ComputeCrc32(bytes);
-            return crc.ToString("x8"); // 8 hex characters (lowercase)
-        }
-        catch
-        {
-            return string.Empty;
-        }
-    }
-    
-    /// <summary>
-    /// Compute CRC32 checksum for a byte array
-    /// </summary>
-    private static uint ComputeCrc32(byte[] data)
-    {
-        const uint polynomial = 0xEDB88320; // CRC32 polynomial
-        var crc = 0xFFFFFFFFu;
-        
-        foreach (var b in data)
-        {
-            crc ^= b;
-            for (var i = 0; i < 8; i++)
-            {
-                crc = (crc >> 1) ^ ((crc & 1) != 0 ? polynomial : 0);
-            }
-        }
-        
-        return crc ^ 0xFFFFFFFFu;
-    }
-    
-    /// <summary>
-    /// Get external IP address and return its SHA256 hash
-    /// </summary>
-    public static async Task<string> GetExternalIpHashAsync(HttpClient httpClient, Action<string>? logAction = null)
-    {
-        try
-        {
-            // Try multiple services for reliability
-            var services = new[]
-            {
-                "https://api.ipify.org",
-                "https://icanhazip.com",
-                "https://ifconfig.me/ip"
-            };
-            
-            foreach (var service in services)
-            {
-                try
-                {
-                    var response = await httpClient.GetStringAsync(service);
-                    var ip = response.Trim();
-                    
-                    if (!string.IsNullOrEmpty(ip))
-                    {
-                        // Hash the IP with SHA256
-                        var hash = GenerateSha256Hash(ip);
-                        if (!string.IsNullOrEmpty(hash))
-                        {
-                            logAction?.Invoke($"External IP Hash: {hash}");
-                            return hash;
-                        }
-                    }
-                }
-                catch
-                {
-                    // Try next service
-                    continue;
-                }
-            }
-        }
-        catch
-        {
-            // Ignore errors
-        }
-        
-        logAction?.Invoke("External IP Hash: (fetch failed)");
-        return string.Empty;
+        // Cleanup if needed
     }
 }

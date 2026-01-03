@@ -203,7 +203,8 @@ public class HTTPServerModule : VRCOSCModule
             ChangeState(HTTPServerState.Starting);
             
             var portStr = GetSettingValue<string>(HTTPServerSetting.Port);
-            if (!int.TryParse(portStr, out var port) || port < 1024 || port > 65535)
+            var port = portStr.ToIntOrDefault(0);
+            if (port < 1024 || port > 65535)
             {
                 Log($"Invalid port number: {portStr}. Must be between 1024-65535.");
                 SetVariableValue(HTTPServerVariable.ServerStatus, "Error: Invalid port");
@@ -380,7 +381,7 @@ public class HTTPServerModule : VRCOSCModule
 
     private bool CheckAuthentication(HttpListenerRequest request, HttpListenerResponse response)
     {
-        var requiresAuth = GetSettingValue<bool>(HTTPServerSetting.RequireAuthentication) && !string.IsNullOrEmpty(_authToken);
+        var requiresAuth = GetSettingValue<bool>(HTTPServerSetting.RequireAuthentication) && !_authToken.IsNullOrEmpty();
         var path = request.Url?.AbsolutePath ?? "/";
         
         // Skip auth for docs
@@ -392,7 +393,7 @@ public class HTTPServerModule : VRCOSCModule
         if (requiresAuth)
         {
             var authHeader = request.Headers["Authorization"];
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer ") || authHeader.Substring(7) != _authToken)
+            if (authHeader.IsNullOrEmpty() || !authHeader.StartsWith("Bearer ") || authHeader.RemovePrefix("Bearer ") != _authToken)
             {
                 SendJsonResponse(response, 401, new { error = "Unauthorized", message = "Valid bearer token required" });
                 return false;
@@ -416,7 +417,7 @@ public class HTTPServerModule : VRCOSCModule
         SetVariableValue(HTTPServerVariable.LastRequest, $"{method} {path}");
         SendParameter(HTTPServerParameter.RequestCount, _requestCount);
         SendParameter(HTTPServerParameter.RequestReceived, true);
-        _ = Task.Delay(1000).ContinueWith(_ => SendParameter(HTTPServerParameter.RequestReceived, false));
+        TaskUtils.DelayedAction(1000, () => SendParameter(HTTPServerParameter.RequestReceived, false));
         TriggerEvent(HTTPServerEvent.OnRequestReceived);
 
         // Route based on path and method

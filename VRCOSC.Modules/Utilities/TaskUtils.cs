@@ -108,4 +108,14 @@ public static class TaskUtils
         }
         return null;
     }
+    
+    /// <summary>
+    /// Execute an action after a delay (fire and forget)
+    /// </summary>
+    /// <param name="delayMs">Delay in milliseconds</param>
+    /// <param name="action">Action to execute after delay</param>
+    public static void DelayedAction(int delayMs, Action action)
+    {
+        _ = Task.Delay(delayMs).ContinueWith(_ => action());
+    }
 }

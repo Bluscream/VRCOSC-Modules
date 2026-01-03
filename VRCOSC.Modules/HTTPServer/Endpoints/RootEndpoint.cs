@@ -18,7 +18,7 @@ public static class RootEndpoint
             version = AssemblyUtils.GetVersion(),
             documentation = $"{module.GetDisplayUrl()}/docs",
             endpoints = module.GetEndpointsList(),
-            timestamp = DateTime.UtcNow.ToString("o"),
+            timestamp = DateTime.UtcNow.ToIso8601(),
             requestCount = module.GetRequestCount()
         };
 

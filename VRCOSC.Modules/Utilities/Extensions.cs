@@ -46,6 +46,7 @@ public static class Extensions
     public static Task<bool> WithTimeout(this Task task, int timeoutMs) => TaskUtils.WithTimeout(task, timeoutMs);
     public static Task<T?> RetryAsync<T>(Func<Task<T>> action, int maxRetries = 3, int initialDelayMs = 100) => TaskUtils.RetryAsync(action, maxRetries, initialDelayMs);
     public static Task RetryAsync(Func<Task> action, int maxRetries = 3, int initialDelayMs = 100) => TaskUtils.RetryAsync(action, maxRetries, initialDelayMs);
+    public static void DelayedAction(int delayMs, Action action) => TaskUtils.DelayedAction(delayMs, action);
 
     #endregion
 

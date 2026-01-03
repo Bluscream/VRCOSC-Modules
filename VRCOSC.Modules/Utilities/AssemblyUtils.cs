@@ -59,4 +59,38 @@ public static class AssemblyUtils
         _cachedVersion = null;
         _cachedAssemblyName = null;
     }
+    
+    /// <summary>
+    /// Get the entry assembly name (the application, not the module)
+    /// </summary>
+    public static string GetEntryAssemblyName()
+    {
+        try
+        {
+            var entryAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
+            var assemblyNameObj = entryAssembly.GetName();
+            return assemblyNameObj.Name ?? string.Empty;
+        }
+        catch
+        {
+            return string.Empty;
+        }
+    }
+    
+    /// <summary>
+    /// Get the entry assembly version (the application, not the module)
+    /// </summary>
+    public static string GetEntryAssemblyVersion()
+    {
+        try
+        {
+            var entryAssembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
+            var versionObj = entryAssembly.GetName().Version;
+            return versionObj?.ToString(3) ?? string.Empty;
+        }
+        catch
+        {
+            return string.Empty;
+        }
+    }
 }

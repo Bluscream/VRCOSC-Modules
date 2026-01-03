@@ -27,9 +27,9 @@ public sealed class SendDesktopNotificationNode : ModuleNode<NotificationsModule
             var message = Message.Read(c);
 
             // Use defaults if not provided
-            if (string.IsNullOrWhiteSpace(title))
+            if (title.IsNullOrWhiteSpace())
                 title = Module.GetDefaultTitle();
-            if (string.IsNullOrWhiteSpace(message))
+            if (message.IsNullOrWhiteSpace())
                 message = Module.GetDefaultMessage();
 
             if (Module.IsLoggingEnabled())
@@ -79,9 +79,9 @@ public sealed class SendXSOverlayNotificationNode : ModuleNode<NotificationsModu
             var opacity = Opacity.Read(c);
 
             // Use defaults if not provided
-            if (string.IsNullOrWhiteSpace(title))
+            if (title.IsNullOrWhiteSpace())
                 title = Module.GetDefaultTitle();
-            if (string.IsNullOrWhiteSpace(message))
+            if (message.IsNullOrWhiteSpace())
                 message = Module.GetDefaultMessage();
             if (timeout <= 0)
                 timeout = Module.GetDefaultTimeout();
@@ -135,9 +135,9 @@ public sealed class SendOVRToolkitNotificationNode : ModuleNode<NotificationsMod
             var wristNotification = WristNotification.Read(c);
 
             // Use defaults if not provided
-            if (string.IsNullOrWhiteSpace(title))
+            if (title.IsNullOrWhiteSpace())
                 title = Module.GetDefaultTitle();
-            if (string.IsNullOrWhiteSpace(message))
+            if (message.IsNullOrWhiteSpace())
                 message = Module.GetDefaultMessage();
 
             if (!hudNotification && !wristNotification)
@@ -196,9 +196,9 @@ public sealed class SendNotificationAllNode : ModuleNode<NotificationsModule>, I
             var opacity = Opacity.Read(c);
 
             // Use defaults if not provided
-            if (string.IsNullOrWhiteSpace(title))
+            if (title.IsNullOrWhiteSpace())
                 title = Module.GetDefaultTitle();
-            if (string.IsNullOrWhiteSpace(message))
+            if (message.IsNullOrWhiteSpace())
                 message = Module.GetDefaultMessage();
             if (timeout <= 0)
                 timeout = Module.GetDefaultTimeout();
