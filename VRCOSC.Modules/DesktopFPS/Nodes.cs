@@ -44,25 +44,3 @@ public sealed class IsVRChatRunningNode : ModuleNode<DesktopFPSModule>, IActiveU
     public Task<bool> OnUpdate(PulseContext c) => Task.FromResult(true);
 }
 
-// ============================
-// Event Nodes
-// ============================
-
-[Node("On FPS Changed")]
-public sealed class OnFPSChangedNode : ModuleNode<DesktopFPSModule>, IModuleNodeEventHandler
-{
-    public FlowCall OnChanged = new("On Changed");
-
-    public ValueOutput<float> FPS = new();
-
-    public Task Write(object[] args, PulseContext c)
-    {
-        FPS.Write(Module.GetFPS(), c);
-        return Task.CompletedTask;
-    }
-
-    protected override async Task Process(PulseContext c)
-    {
-        await OnChanged.Execute(c);
-    }
-}

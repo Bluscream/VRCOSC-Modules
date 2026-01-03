@@ -31,10 +31,6 @@ public class DesktopFPSModule : Module
     {
         // Variables
         CreateVariable<float>(DesktopFPSVariable.FPS, "FPS");
-        CreateVariable<bool>(DesktopFPSVariable.VRChatProcessFound, "VRChat Process Found");
-
-        // Events
-        CreateEvent(DesktopFPSEvent.OnFPSChanged, "On FPS Changed");
     }
 
     protected override async Task<bool> OnModuleStart()
@@ -42,8 +38,6 @@ public class DesktopFPSModule : Module
         // Find VRChat process
         _vrchatProcess = FPSMeasurementUtils.FindVRChatProcess();
         _vrchatProcessFound = _vrchatProcess != null;
-
-        SetVariableValue(DesktopFPSVariable.VRChatProcessFound, _vrchatProcessFound);
 
         return true;
     }
@@ -66,31 +60,22 @@ public class DesktopFPSModule : Module
         return Task.CompletedTask;
     }
 
-    [ModuleUpdate(ModuleUpdateMode.Custom, true, 100)]
+    [ModuleUpdate(ModuleUpdateMode.Custom, true, 1000)]
     private void updateFPS()
     {
         try
         {
-            // Check if VRChat process still exists
             if (_vrchatProcess == null || _vrchatProcess.HasExited)
             {
                 _vrchatProcess = FPSMeasurementUtils.FindVRChatProcess();
                 
                 if (_vrchatProcess == null)
                 {
-                    if (_vrchatProcessFound)
-                    {
-                        _vrchatProcessFound = false;
-                        SetVariableValue(DesktopFPSVariable.VRChatProcessFound, false);
-                    }
+                    _vrchatProcessFound = false;
                 }
                 else
                 {
-                    if (!_vrchatProcessFound)
-                    {
-                        _vrchatProcessFound = true;
-                        SetVariableValue(DesktopFPSVariable.VRChatProcessFound, true);
-                    }
+                    _vrchatProcessFound = true;
                 }
             }
 
@@ -104,13 +89,7 @@ public class DesktopFPSModule : Module
                     // Update variables and parameters
                     SetVariableValue(DesktopFPSVariable.FPS, (float)vrchatFPS);
                     SendParameter(DesktopFPSParameter.FPS, (float)vrchatFPS);
-
-                    // Trigger event on significant change (threshold: 5 FPS)
-                    if (Math.Abs(vrchatFPS - _lastVRChatFPS) >= 5.0)
-                    {
-                        TriggerEvent(DesktopFPSEvent.OnFPSChanged);
-                        _lastVRChatFPS = vrchatFPS;
-                    }
+                    _lastVRChatFPS = vrchatFPS;
                 }
             }
         }
@@ -138,16 +117,6 @@ public class DesktopFPSModule : Module
 
     public bool IsVRChatRunning()
     {
-        var method = typeof(Module).GetMethod("GetVariableValue", 
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance,
-            null, 
-            new[] { typeof(Enum) }, 
-            null);
-        if (method != null)
-        {
-            var genericMethod = method.MakeGenericMethod(typeof(bool));
-            return (bool)(genericMethod.Invoke(this, new object[] { DesktopFPSVariable.VRChatProcessFound }) ?? false);
-        }
-        return false;
+        return _vrchatProcess != null && !_vrchatProcess.HasExited;
     }
 }

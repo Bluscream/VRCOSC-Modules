@@ -12,13 +12,11 @@ public enum DesktopFPSParameter
     FPS
 }
 
-public enum DesktopFPSVariable
-{
-    FPS,
-    VRChatProcessFound
-}
+    public enum DesktopFPSVariable
+    {
+        FPS
+    }
 
 public enum DesktopFPSEvent
 {
-    OnFPSChanged
 }
