@@ -475,7 +475,7 @@ public class VRCXBridgeModule : VRCOSCModule
             return;
         }
         // Silently ignore non-OSC related messages
-        if (!msgType.StartsWith("OSC_") && msgType != "PluginEvent" && msgType != "VRCXLaunch")
+        if (!msgType!.StartsWith("OSC_") && msgType != "PluginEvent" && msgType != "VRCXLaunch")
         {
             return;
         }
@@ -484,7 +484,7 @@ public class VRCXBridgeModule : VRCOSCModule
         {
             try
             {
-                data = JsonNode.Parse(dataStr);
+                data = JsonNode.Parse(dataStr!);
             }
             catch (JsonException dataEx)
             {
@@ -512,7 +512,7 @@ public class VRCXBridgeModule : VRCOSCModule
                     {
                         try
                         {
-                            await SendOSCToVRChat(address, valueNode);
+                            await SendOSCToVRChat(address!, valueNode);
                         }
                         catch (Exception oscEx)
                         {
@@ -529,7 +529,7 @@ public class VRCXBridgeModule : VRCOSCModule
                     {
                         try
                         {
-                            await HandleVRCXCommand(command, cmdArgs, cmdRequestId);
+                            await HandleVRCXCommand(command!, cmdArgs, cmdRequestId);
                         }
                         catch (Exception cmdEx)
                         {
@@ -543,12 +543,12 @@ public class VRCXBridgeModule : VRCOSCModule
                     var result = data?["result"];
                     if (!requestId.IsNullOrEmpty())
                     {
-                        if (_pendingRequests.TryGetValue(requestId, out var tcs))
+                        if (_pendingRequests.TryGetValue(requestId!, out var tcs))
                         {
                             try
                             {
                                 tcs.SetResult(result!);
-                                _pendingRequests.Remove(requestId);
+                                _pendingRequests.Remove(requestId!);
                             }
                             catch (Exception tcsEx)
                             {
@@ -867,7 +867,7 @@ public class VRCXBridgeModule : VRCOSCModule
             {
                 case "GET_VARIABLE":
                     var getVarName = args?["name"]?.ToString();
-                    if (!getVarName.IsNullOrEmpty() && _chatVariables.TryGetValue(getVarName, out var value))
+                    if (!getVarName.IsNullOrEmpty() && _chatVariables.TryGetValue(getVarName!, out var value))
                     {
                         result = new { success = true, value };
                     }
@@ -884,7 +884,7 @@ public class VRCXBridgeModule : VRCOSCModule
                         var valueKind = setValue.GetValueKind();
                         var varKey = $"vrcx_{setVarName}";
                         // Create variable if it doesn't exist yet
-                        if (!_chatVariables.ContainsKey(setVarName))
+                        if (!_chatVariables.ContainsKey(setVarName!))
                         {
                             try
                             {
@@ -920,12 +920,12 @@ public class VRCXBridgeModule : VRCOSCModule
                                         break;
                                 }
                                 // Set display name after creation (like Counter module does)
-                                GetVariable(varKey)!.DisplayName.Value = setVarName;
-                                _variableTypes[setVarName] = varType;
+                                GetVariable(varKey)!.DisplayName.Value = setVarName!;
+                                _variableTypes[setVarName!] = varType;
                                 // Persist variable info for recreation on next load
-                                PersistedVariables[setVarName] = new VariableInfo
+                                PersistedVariables[setVarName!] = new VariableInfo
                                 {
-                                    DisplayName = setVarName,
+                                    DisplayName = setVarName!,
                                     TypeName = typeName
                                 };
                         Log($"Created new ChatBox variable: {varKey} ({typeName})");
@@ -959,7 +959,7 @@ public class VRCXBridgeModule : VRCOSCModule
                                 varValue = setValue.GetValue<string>();
                                 break;
                         }
-                        _chatVariables[setVarName] = varValue;
+                        _chatVariables[setVarName!] = varValue;
                         try
                         {
                             // Set variable with proper type casting
@@ -1025,7 +1025,7 @@ public class VRCXBridgeModule : VRCOSCModule
                     {
                         try
                         {
-                            EnsureStateExists(createStateName, createStateDisplay);
+                            EnsureStateExists(createStateName!, createStateDisplay);
                             result = new { success = true };
                         }
                         catch (Exception stateEx)
@@ -1047,7 +1047,7 @@ public class VRCXBridgeModule : VRCOSCModule
                     {
                         try
                         {
-                            EnsureStateExists(changeStateName, changeStateDisplay);
+                            EnsureStateExists(changeStateName!, changeStateDisplay);
                             var stateKey = $"vrcx_{changeStateName}";
                             ChangeState(stateKey);
                             result = new { success = true };
@@ -1070,7 +1070,7 @@ public class VRCXBridgeModule : VRCOSCModule
                     {
                         try
                         {
-                            EnsureEventExists(createEventName, createEventDisplay);
+                            EnsureEventExists(createEventName!, createEventDisplay);
                             result = new { success = true };
                         }
                         catch (Exception eventEx)
@@ -1091,7 +1091,7 @@ public class VRCXBridgeModule : VRCOSCModule
                     {
                         try
                         {
-                            EnsureEventExists(triggerEventName, triggerEventDisplay);
+                            EnsureEventExists(triggerEventName!, triggerEventDisplay);
                             var eventKey = $"vrcx_{triggerEventName}";
                             TriggerEvent(eventKey);
                             result = new { success = true };

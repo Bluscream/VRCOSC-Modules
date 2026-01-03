@@ -17,6 +17,20 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+# Kill VRCOSC before starting
+Write-Host "Stopping VRCOSC..." -ForegroundColor Cyan
+$vrcoscProcesses = Get-Process -Name "VRCOSC","VRCOSC-Dev" -ErrorAction SilentlyContinue
+if ($vrcoscProcesses) {
+    $vrcoscProcesses | Stop-Process -Force -ErrorAction SilentlyContinue
+    Start-Sleep -Seconds 2
+    Write-Host "[OK] Stopped VRCOSC" -ForegroundColor Green
+} else {
+    Write-Host "VRCOSC is not running" -ForegroundColor Yellow
+}
+
+# Find VRCOSC executable path
+$vrcoscExe = "$env:LOCALAPPDATA\VRCOSC\current\VRCOSC.exe"
+
 # Get the latest release version or use provided version
 if (-not $Version) {
     Write-Host "Getting latest release version..." -ForegroundColor Cyan
@@ -50,15 +64,30 @@ if (-not $Version) {
 
 Write-Host "Using version: $Version" -ForegroundColor Green
 
+# Clear logs folder
+Write-Host "Clearing logs folder..." -ForegroundColor Cyan
+$logsPath = "$env:APPDATA\VRCOSC\logs"
+if (Test-Path $logsPath) {
+    $fileCount = (Get-ChildItem $logsPath -File -ErrorAction SilentlyContinue).Count
+    Get-ChildItem $logsPath -File -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
+    Write-Host "[OK] Cleared $fileCount file(s) from logs folder: $logsPath" -ForegroundColor Green
+} else {
+    Write-Host "Logs folder not found: $logsPath" -ForegroundColor Yellow
+}
+
 # Update AssemblyInfo.cs
 $assemblyInfoPath = "VRCOSC.Modules\AssemblyInfo.cs"
 if (Test-Path $assemblyInfoPath) {
     Write-Host "Updating AssemblyInfo.cs..." -ForegroundColor Cyan
     $content = Get-Content $assemblyInfoPath -Raw
-    $content = $content -replace '\[assembly: AssemblyVersion\("([^"]+)"\)\]', "[assembly: AssemblyVersion(`"$Version`")]"
-    $content = $content -replace '\[assembly: AssemblyFileVersion\("([^"]+)"\)\]', "[assembly: AssemblyFileVersion(`"$Version`")]"
+    $oldVersionPattern = 'AssemblyVersion\("([^"]+)"\)'
+    $newVersionText = "AssemblyVersion(`"$Version`")"
+    $oldFileVersionPattern = 'AssemblyFileVersion\("([^"]+)"\)'
+    $newFileVersionText = "AssemblyFileVersion(`"$Version`")"
+    $content = $content -replace $oldVersionPattern, $newVersionText
+    $content = $content -replace $oldFileVersionPattern, $newFileVersionText
     Set-Content $assemblyInfoPath -Value $content -NoNewline
-    Write-Host "✓ Updated AssemblyInfo.cs" -ForegroundColor Green
+    Write-Host "[OK] Updated AssemblyInfo.cs" -ForegroundColor Green
 }
 else {
     Write-Warning "AssemblyInfo.cs not found at $assemblyInfoPath"
@@ -72,7 +101,7 @@ if ($LASTEXITCODE -ne 0) {
     $buildResult | Write-Host
     exit 1
 }
-Write-Host "✓ Build succeeded" -ForegroundColor Green
+Write-Host "[OK] Build succeeded" -ForegroundColor Green
 
 # Find the DLL
 $dllPath = "VRCOSC.Modules\bin\Release\net10.0-windows10.0.26100.0\win-x64\Bluscream.Modules.dll"
@@ -95,12 +124,12 @@ if (-not $SkipCommit) {
 
 - Updated AssemblyInfo version to $Version"
     git commit -m $commitMessage
-    Write-Host "✓ Committed changes" -ForegroundColor Green
+    Write-Host "[OK] Committed changes" -ForegroundColor Green
     
     if (-not $NoPush) {
         Write-Host "Pushing to origin..." -ForegroundColor Cyan
         git push origin main
-        Write-Host "✓ Pushed to origin" -ForegroundColor Green
+        Write-Host "[OK] Pushed to origin" -ForegroundColor Green
     }
 }
 else {
@@ -135,7 +164,7 @@ if (-not $SkipRelease) {
     # Cleanup
     Remove-Item $tempDll -Force -ErrorAction SilentlyContinue
     
-    Write-Host "✓ Release $Version created" -ForegroundColor Green
+    Write-Host "[OK] Release $Version created" -ForegroundColor Green
     Write-Host "Release URL: https://github.com/Bluscream/VRCOSC-Modules/releases/tag/$Version" -ForegroundColor Cyan
 }
 else {
@@ -143,3 +172,12 @@ else {
 }
 
 Write-Host "`nDone! Version $Version" -ForegroundColor Green
+
+# Restart VRCOSC
+if ($vrcoscExe) {
+    Write-Host "Restarting VRCOSC..." -ForegroundColor Cyan
+    Start-Process -FilePath $vrcoscExe -ErrorAction SilentlyContinue
+    Write-Host "[OK] Restarted VRCOSC" -ForegroundColor Green
+} else {
+    Write-Host "Could not find VRCOSC executable to restart" -ForegroundColor Yellow
+}

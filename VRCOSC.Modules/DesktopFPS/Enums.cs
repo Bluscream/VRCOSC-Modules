@@ -5,45 +5,20 @@ namespace Bluscream.Modules;
 
 public enum DesktopFPSSetting
 {
-    UpdateInterval,
-    SmoothingWindow,
-    TrackVRChatFPS,
-    TrackSystemFPS,
-    LogFPS
 }
 
 public enum DesktopFPSParameter
 {
-    VRChatFPS,
-    SystemFPS,
-    AverageVRChatFPS,
-    AverageSystemFPS,
-    MinVRChatFPS,
-    MaxVRChatFPS
+    FPS
 }
 
 public enum DesktopFPSVariable
 {
-    VRChatFPS,
-    SystemFPS,
-    AverageVRChatFPS,
-    AverageSystemFPS,
-    MinVRChatFPS,
-    MaxVRChatFPS,
+    FPS,
     VRChatProcessFound
-}
-
-public enum DesktopFPSState
-{
-    Monitoring,
-    VRChatNotFound,
-    Error
 }
 
 public enum DesktopFPSEvent
 {
-    OnVRChatFPSChanged,
-    OnSystemFPSChanged,
-    OnVRChatProcessFound,
-    OnVRChatProcessLost
+    OnFPSChanged
 }

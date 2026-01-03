@@ -393,7 +393,7 @@ public class HTTPServerModule : VRCOSCModule
         if (requiresAuth)
         {
             var authHeader = request.Headers["Authorization"];
-            if (authHeader.IsNullOrEmpty() || !authHeader.StartsWith("Bearer ") || authHeader.RemovePrefix("Bearer ") != _authToken)
+            if (authHeader.IsNullOrEmpty() || !authHeader!.StartsWith("Bearer ") || authHeader.RemovePrefix("Bearer ") != _authToken)
             {
                 SendJsonResponse(response, 401, new { error = "Unauthorized", message = "Valid bearer token required" });
                 return false;

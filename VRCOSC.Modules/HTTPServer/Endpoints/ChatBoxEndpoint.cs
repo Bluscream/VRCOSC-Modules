@@ -66,7 +66,7 @@ public static class ChatBoxEndpoint
             }
 
             // Use utilities to send chatbox message
-            var success = ReflectionUtils.SendChatBox(message, minimalBackground);
+            var success = ReflectionUtils.SendChatBox(message!, minimalBackground);
 
             var responseObj = new
             {
