@@ -18,26 +18,26 @@ namespace Bluscream.Modules;
 public class DesktopFPSModule : Module
 {
     private Process? _vrchatProcess;
-    private double _lastVRChatFPS = 0;
-    private bool _vrchatProcessFound = false;
 
     protected override void OnPreLoad()
     {
         // OSC Parameters
-        RegisterParameter<float>(DesktopFPSParameter.FPS, "VRCOSC/DesktopFPS/FPS", ParameterMode.Write, "FPS", "Current VRChat FPS");
+        RegisterParameter<int>(DesktopFPSParameter.FPS, "Info/FPS", ParameterMode.Write, "FPS", "Current VRChat FPS");
     }
 
     protected override void OnPostLoad()
     {
         // Variables
-        CreateVariable<float>(DesktopFPSVariable.FPS, "FPS");
+        CreateVariable<int>(DesktopFPSVariable.FPS, "FPS");
+        // Initialize to -1 (before first measurement)
+        SetVariableValue(DesktopFPSVariable.FPS, -1);
+        SendParameter(DesktopFPSParameter.FPS, -1);
     }
 
     protected override async Task<bool> OnModuleStart()
     {
         // Find VRChat process
         _vrchatProcess = FPSMeasurementUtils.FindVRChatProcess();
-        _vrchatProcessFound = _vrchatProcess != null;
 
         return true;
     }
@@ -71,36 +71,51 @@ public class DesktopFPSModule : Module
                 
                 if (_vrchatProcess == null)
                 {
-                    _vrchatProcessFound = false;
-                }
-                else
-                {
-                    _vrchatProcessFound = true;
+                    // Set to -1 if process not found
+                    SetVariableValue(DesktopFPSVariable.FPS, -1);
+                    SendParameter(DesktopFPSParameter.FPS, -1);
+                    return;
                 }
             }
 
             if (_vrchatProcess != null && !_vrchatProcess.HasExited)
             {
-                const int smoothingWindow = 10; // Default smoothing window
-                double vrchatFPS = FPSMeasurementUtils.GetProcessFPS(_vrchatProcess, smoothingWindow);
+                double vrchatFPS = FPSMeasurementUtils.GetProcessFPS(_vrchatProcess);
                 
                 if (vrchatFPS > 0)
                 {
+                    // Cap FPS between 0 and 1000, then convert to int
+                    int fpsInt = (int)Math.Round(Math.Max(0, Math.Min(1000, vrchatFPS)));
+                    
                     // Update variables and parameters
-                    SetVariableValue(DesktopFPSVariable.FPS, (float)vrchatFPS);
-                    SendParameter(DesktopFPSParameter.FPS, (float)vrchatFPS);
-                    _lastVRChatFPS = vrchatFPS;
+                    SetVariableValue(DesktopFPSVariable.FPS, fpsInt);
+                    SendParameter(DesktopFPSParameter.FPS, fpsInt);
                 }
+                else
+                {
+                    // Set to -1 if measurement failed
+                    SetVariableValue(DesktopFPSVariable.FPS, -1);
+                    SendParameter(DesktopFPSParameter.FPS, -1);
+                }
+            }
+            else
+            {
+                // Set to -1 if process has exited
+                SetVariableValue(DesktopFPSVariable.FPS, -1);
+                SendParameter(DesktopFPSParameter.FPS, -1);
             }
         }
         catch (Exception ex)
         {
             Log($"Error updating FPS: {ex.Message}");
+            // Set to -1 on error
+            SetVariableValue(DesktopFPSVariable.FPS, -1);
+            SendParameter(DesktopFPSParameter.FPS, -1);
         }
     }
 
     // Public accessor methods for nodes
-    public float GetFPS()
+    public int GetFPS()
     {
         var method = typeof(Module).GetMethod("GetVariableValue", 
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance,
@@ -109,10 +124,10 @@ public class DesktopFPSModule : Module
             null);
         if (method != null)
         {
-            var genericMethod = method.MakeGenericMethod(typeof(float));
-            return (float)(genericMethod.Invoke(this, new object[] { DesktopFPSVariable.FPS }) ?? 0f);
+            var genericMethod = method.MakeGenericMethod(typeof(int));
+            return (int)(genericMethod.Invoke(this, new object[] { DesktopFPSVariable.FPS }) ?? -1);
         }
-        return 0f;
+        return -1;
     }
 
     public bool IsVRChatRunning()

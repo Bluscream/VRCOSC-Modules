@@ -37,7 +37,7 @@ public static class FPSMeasurementUtils
     /// <summary>
     /// Gets the FPS for a process using PresentMon ETW
     /// </summary>
-    public static double GetProcessFPS(Process process, int smoothingWindow = 10)
+    public static double GetProcessFPS(Process process)
     {
         if (process == null || process.HasExited)
         {

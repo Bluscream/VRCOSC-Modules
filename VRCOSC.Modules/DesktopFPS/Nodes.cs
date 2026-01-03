@@ -17,7 +17,7 @@ namespace Bluscream.Modules;
 public sealed class GetFPSNode : ModuleNode<DesktopFPSModule>, IActiveUpdateNode
 {
     public int UpdateOffset => 0;
-    public ValueOutput<float> FPS = new();
+    public ValueOutput<int> FPS = new();
 
     protected override Task Process(PulseContext c)
     {
@@ -27,4 +27,3 @@ public sealed class GetFPSNode : ModuleNode<DesktopFPSModule>, IActiveUpdateNode
 
     public Task<bool> OnUpdate(PulseContext c) => Task.FromResult(true);
 }
-
