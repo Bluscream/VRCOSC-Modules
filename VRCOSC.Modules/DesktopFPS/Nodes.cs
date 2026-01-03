@@ -43,4 +43,3 @@ public sealed class IsVRChatRunningNode : ModuleNode<DesktopFPSModule>, IActiveU
 
     public Task<bool> OnUpdate(PulseContext c) => Task.FromResult(true);
 }
-
