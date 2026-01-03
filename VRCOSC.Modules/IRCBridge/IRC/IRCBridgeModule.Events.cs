@@ -26,13 +26,14 @@ public partial class IRCBridgeModule
         SetVariableValue(IRCBridgeVariable.ChannelName, channel.Name);
         TriggerEvent(IRCBridgeEvent.OnChannelJoined);
         
-        // Update user count
-        var userCount = channel.Users.Count;
-        SetVariableValue(IRCBridgeVariable.UserCount, userCount);
-        SendParameterSafePublic(IRCBridgeParameter.UserCount, userCount);
+        // User count will be updated when NAMES list completes (366 message)
+        // For now, set to 1 (just us) as a placeholder
+        var initialUserCount = channel.Users.Count;
+        SetVariableValue(IRCBridgeVariable.UserCount, initialUserCount);
+        SendParameterSafePublic(IRCBridgeParameter.UserCount, initialUserCount);
         
         // Trigger pulse graph node with channel name and user count
-        _ = TriggerModuleNodeAsync(typeof(OnIRCChannelJoinedNode), new object[] { channel.Name, userCount });
+        _ = TriggerModuleNodeAsync(typeof(OnIRCChannelJoinedNode), new object[] { channel.Name, initialUserCount });
         
         // Send client data as ACTION message (fire-and-forget)
         _ = SendClientDataAnnouncementWithDelayAsync(channel.Name);

@@ -117,6 +117,19 @@ public partial class IRCBridgeModule
                     _isupportParser.ParseISupport(e.Message);
                 }
                 
+                // Handle 366 (RPL_ENDOFNAMES) - End of /NAMES list - update user count when list is complete
+                if (e.Message.Command == "366" && e.Message.Parameters != null && e.Message.Parameters.Count >= 2)
+                {
+                    var channelName = e.Message.Parameters[1];
+                    if (!string.IsNullOrEmpty(channelName) && _joinedChannel != null && _joinedChannel.Name == channelName)
+                    {
+                        // NAMES list is complete, update user count
+                        var userCount = _joinedChannel.Users.Count;
+                        SetVariableValue(IRCBridgeVariable.UserCount, userCount);
+                        SendParameterSafePublic(IRCBridgeParameter.UserCount, userCount);
+                    }
+                }
+                
                 var rawMessage = e.RawContent ?? IRCMessageUtils.ReconstructRawMessage(e.Message);
                 if (string.IsNullOrEmpty(rawMessage)) return;
                 
