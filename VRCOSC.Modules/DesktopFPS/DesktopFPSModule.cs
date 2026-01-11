@@ -31,13 +31,15 @@ public class DesktopFPSModule : Module
         CreateVariable<int>(DesktopFPSVariable.FPS, "FPS");
         // Initialize to -1 (before first measurement)
         SetVariableValue(DesktopFPSVariable.FPS, -1);
-        SendParameter(DesktopFPSParameter.FPS, -1);
     }
 
     protected override async Task<bool> OnModuleStart()
     {
         // Find VRChat process
         _vrchatProcess = FPSMeasurementUtils.FindVRChatProcess();
+        
+        // Send initial parameter value now that OSC is connected
+        SendParameter(DesktopFPSParameter.FPS, -1);
 
         return true;
     }
