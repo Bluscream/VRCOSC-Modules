@@ -35,6 +35,7 @@
   <ItemGroup>
     <!-- Exclude deprecated HTTP module from compilation -->
     <Compile Remove="HTTP\**\*.cs" />
+    <Compile Remove="DesktopFPS\**\*.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource
