@@ -11,6 +11,8 @@ using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Modules.Attributes;
 using VRCOSC.App.SDK.Parameters;
 using VRCOSC.App.SDK.VRChat;
+using VRCOSC.App.SDK.VRChat.Logs;
+using VRCOSC.App.SDK.VRChat.Logs.Handlers;
 using Module = VRCOSC.App.SDK.Modules.Module;
 using Bluscream.Modules.IRCBridge.Utils;
 
@@ -133,7 +135,7 @@ public partial class IRCBridgeModule : Module, IVRCClientEventHandler
         SetVariableValue(IRCBridgeVariable.ServerStatus, "Disconnected");
         
         // Initialize VRChat instance
-        _vrchat = new VRChat(GetPlayer());
+        _vrchat = new VRChat(GetClient());
         
         // Subscribe to VRChat change events
         _vrchat.OnUsernameChanged += OnVRChatUsernameChanged;
@@ -243,10 +245,13 @@ public partial class IRCBridgeModule : Module, IVRCClientEventHandler
     
     #region IVRCClientEventHandler
     
-    public void OnUserAuthenticated(VRChatClientEventUserAuthenticated eventArgs)
+    public void HandleClientEvent(IVRChatClientEvent @event)
     {
-        // Forward to VRChat instance
-        _vrchat?.OnUserAuthenticated(eventArgs);
+        if (@event is UserAuthenticatedClientEvent userAuthenticatedEvent)
+        {
+            // Forward to VRChat instance
+            _vrchat?.HandleClientEvent(userAuthenticatedEvent);
+        }
     }
     
     #endregion
