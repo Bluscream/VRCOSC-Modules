@@ -135,6 +135,44 @@ mkdir -p "$LOCAL_PKG_DIR"
 cp "$DLL_PATH" "$LOCAL_PKG_DIR/Bluscream.Modules.dll"
 echo "[OK] Deployed DLL to $LOCAL_PKG_DIR"
 
+# Deploy Silk.NET dependency DLLs (not copied by the build since VRCOSC is the host app)
+NUGET_CACHE="${NUGET_PACKAGES:-$HOME/.nuget/packages}"
+SILK_VERSION="2.22.0"
+SILK_TFM="net5.0"   # best available target under the Silk 2.22.0 packages
+declare -A SILK_PKGS=(
+    ["Silk.NET.OpenXR"]="silk.net.openxr"
+    ["Silk.NET.OpenXR.Extensions.EXT"]="silk.net.openxr.extensions.ext"
+    ["Silk.NET.Core"]="silk.net.core"
+    ["Silk.NET.Maths"]="silk.net.maths"
+)
+for NAME in "${!SILK_PKGS[@]}"; do
+    PKG="${SILK_PKGS[$NAME]}"
+    SRC="$NUGET_CACHE/$PKG/$SILK_VERSION/lib/$SILK_TFM/$NAME.dll"
+    if [ -f "$SRC" ]; then
+        cp "$SRC" "$LOCAL_PKG_DIR/$NAME.dll"
+        echo "[OK] Deployed $NAME.dll"
+    else
+        echo "[WARN] $NAME.dll not found at $SRC"
+    fi
+done
+
+# Clean up any native dll from packages/local that shouldn't be there (causes BadImageFormatException)
+rm -f "$LOCAL_PKG_DIR/openxr_loader.dll"
+
+# Deploy openxr_loader.dll to the VRCOSC main AppData Local folder (where VRCOSC.exe resides)
+STEAMVR_LOADER="/run/media/system/Data/Games/Steam/steamapps/common/SteamVR/bin/win64/openxr_loader.dll"
+INSTALL_DIR="$VRC_COMPATDATA/pfx/drive_c/users/steamuser/AppData/Local/VRCOSC"
+if [ -f "$STEAMVR_LOADER" ]; then
+    if [ -d "$INSTALL_DIR" ]; then
+        cp "$STEAMVR_LOADER" "$INSTALL_DIR/openxr_loader.dll"
+        echo "[OK] Deployed openxr_loader.dll to $INSTALL_DIR"
+    else
+        echo "[WARN] VRCOSC install directory not found at $INSTALL_DIR"
+    fi
+else
+    echo "[WARN] openxr_loader.dll not found in SteamVR at $STEAMVR_LOADER"
+fi
+
 # Git operations
 if [ "$SKIP_COMMIT" = false ]; then
     echo "Committing changes..."

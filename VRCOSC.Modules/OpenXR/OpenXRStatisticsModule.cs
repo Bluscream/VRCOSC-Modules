@@ -158,7 +158,7 @@ public class OpenXRStatisticsModule : Module
     [ModuleUpdate(ModuleUpdateMode.ChatBox)]
     private void UpdateVariables()
     {
-        SetVariableValue(OpenXRVariable.FPS,          (int)MathF.Round(_currentFps));
+        SetVariableValue(OpenXRVariable.FPS,          MathF.Round(_currentFps));
         SetVariableValue(OpenXRVariable.UserPresent,  _hmd.IsPresent);
         SetVariableValue(OpenXRVariable.HMD_Battery,  (int)(_hmd.BatteryPercent  * 100f));
         SetVariableValue(OpenXRVariable.HMD_Charging, _hmd.IsCharging);
