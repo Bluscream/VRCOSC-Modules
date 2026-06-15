@@ -75,23 +75,6 @@ internal static unsafe class OpenXRHelper
         foreach (var p in ptrs) Marshal.FreeHGlobal(p);
     }
 
-    // ── Linux shell helper ────────────────────────────────────────
-    public static string RunShell(string command)
-    {
-        using var proc = new System.Diagnostics.Process();
-        proc.StartInfo = new System.Diagnostics.ProcessStartInfo
-        {
-            FileName               = "/bin/bash",
-            Arguments              = $"-c \"{command.Replace("\"", "\\\"")}\"",
-            RedirectStandardOutput = true,
-            UseShellExecute        = false,
-            CreateNoWindow         = true
-        };
-        proc.Start();
-        var output = proc.StandardOutput.ReadToEnd();
-        proc.WaitForExit(3000);
-        return output;
-    }
 }
 
 /// <summary>Mutable device state, shared between Stats and Gesture modules.</summary>

@@ -3,6 +3,7 @@
 // Uses Silk.NET.OpenXR for cross-platform support (Windows + Linux).
 
 using System.Runtime.InteropServices;
+using Bluscream.Modules.Utilities;
 using Silk.NET.OpenXR;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Parameters;
@@ -225,49 +226,25 @@ public class OpenXRStatisticsModule : Module
 
     private void PollBatteryViaUPower()
     {
-        try
-        {
-            var output = OpenXRHelper.RunShell("flatpak-spawn --host upower -e 2>/dev/null");
-            foreach (var path in output.Split('\n', StringSplitOptions.RemoveEmptyEntries))
-            {
-                if (!path.Contains("headset") && !path.Contains("controller") &&
-                    !path.Contains("gamepad")  && !path.Contains("input")) continue;
+        var keywords = new[] { "headset", "controller", "gamepad", "input" };
+        var devices  = LinuxUtils.GetUPowerDevices(filter: null, useNative: true);
 
-                var info = OpenXRHelper.RunShell($"flatpak-spawn --host upower -i \"{path}\" 2>/dev/null");
-                ParseUPowerOutput(path.ToLower(), info);
-            }
-            _hmd.IsConnected = _hmd.BatteryPercent > 0;
-        }
-        catch { /* UPower not available */ }
-    }
-
-    private void ParseUPowerOutput(string path, string info)
-    {
-        float pct = 0f; bool charging = false, present = false;
-        foreach (var raw in info.Split('\n'))
+        foreach (var dev in devices.Where(d => keywords.Any(k => d.Path.Contains(k, StringComparison.OrdinalIgnoreCase))))
         {
-            var line = raw.Trim();
-            if (line.StartsWith("percentage:", StringComparison.OrdinalIgnoreCase))
-            {
-                var val = line.Split(':')[1].Trim().TrimEnd('%');
-                if (float.TryParse(val, out var f)) pct = f / 100f;
-            }
-            if (line.StartsWith("state:", StringComparison.OrdinalIgnoreCase))
-                charging = line.Contains("charging", StringComparison.OrdinalIgnoreCase);
-            if (line.StartsWith("present:", StringComparison.OrdinalIgnoreCase))
-                present  = line.Contains("yes", StringComparison.OrdinalIgnoreCase);
+            var path = dev.Path.ToLower();
+            if (path.Contains("headset") || path.Contains("hmd"))
+            { _hmd.BatteryPercent = dev.BatteryLevel; _hmd.IsCharging = dev.IsCharging; _hmd.IsConnected = dev.IsPresent; _hmd.IsPresent = dev.IsPresent; }
+            else if (path.Contains("left") || path.Contains("_l_"))
+            { _lHand.BatteryPercent = dev.BatteryLevel; _lHand.IsCharging = dev.IsCharging; _lHand.IsConnected = dev.IsPresent; }
+            else if (path.Contains("right") || path.Contains("_r_"))
+            { _rHand.BatteryPercent = dev.BatteryLevel; _rHand.IsCharging = dev.IsCharging; _rHand.IsConnected = dev.IsPresent; }
+            else if (!_lHand.IsConnected)
+            { _lHand.BatteryPercent = dev.BatteryLevel; _lHand.IsCharging = dev.IsCharging; _lHand.IsConnected = dev.IsPresent; }
+            else if (!_rHand.IsConnected)
+            { _rHand.BatteryPercent = dev.BatteryLevel; _rHand.IsCharging = dev.IsCharging; _rHand.IsConnected = dev.IsPresent; }
         }
 
-        if (path.Contains("headset") || path.Contains("hmd"))
-        { _hmd.BatteryPercent = pct; _hmd.IsCharging = charging; _hmd.IsConnected = present; _hmd.IsPresent = present; }
-        else if (path.Contains("left") || path.Contains("_l_"))
-        { _lHand.BatteryPercent = pct; _lHand.IsCharging = charging; _lHand.IsConnected = present; }
-        else if (path.Contains("right") || path.Contains("_r_"))
-        { _rHand.BatteryPercent = pct; _rHand.IsCharging = charging; _rHand.IsConnected = present; }
-        else if (!_lHand.IsConnected)
-        { _lHand.BatteryPercent = pct; _lHand.IsCharging = charging; _lHand.IsConnected = present; }
-        else if (!_rHand.IsConnected)
-        { _rHand.BatteryPercent = pct; _rHand.IsCharging = charging; _rHand.IsConnected = present; }
+        _hmd.IsConnected = _hmd.BatteryPercent > 0;
     }
 
     // ─────────────────── Enums ────────────────────────────────────────

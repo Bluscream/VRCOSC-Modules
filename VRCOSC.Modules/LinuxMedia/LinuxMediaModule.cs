@@ -2,8 +2,8 @@
 // See the LICENSE file in the repository root for full license text.
 
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
+using Bluscream.Modules.Utilities;
 using VRCOSC.App.ChatBox.Clips.Variables.Instances;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Parameters;
@@ -89,7 +89,7 @@ public class LinuxMediaModule : Module
             }
 
             Log($"MPRIS query helper script deployed to {targetPath}");
-            RunBashCommand("flatpak-spawn --host chmod +x /home/blu/.local/bin/vrcosc_mpris_query.sh");
+            LinuxUtils.ChmodPlusX(targetPath, ex => Log($"Error making script executable: {ex.Message}"));
         }
         catch (Exception ex)
         {
@@ -112,8 +112,7 @@ public class LinuxMediaModule : Module
             string tempFile = System.IO.Path.Combine(wineHomeDir, ".vrcosc_mpris.txt");
             string hostFile = homeDir + "/.vrcosc_mpris.txt";
 
-            string query = "flatpak-spawn --host /home/blu/.local/bin/vrcosc_mpris_query.sh";
-            RunBashCommand(query);
+            LinuxUtils.RunHost("/home/blu/.local/bin/vrcosc_mpris_query.sh", ex => Log($"Error: {ex.Message}"));
 
             if (!System.IO.File.Exists(tempFile))
             {
@@ -208,63 +207,35 @@ public class LinuxMediaModule : Module
         {
             case MediaParameter.Play:
                 if (parameter.GetValue<bool>())
-                    RunBashCommand("flatpak-spawn --host /home/blu/.local/bin/vrcosc_mpris_query.sh control play");
+                    LinuxUtils.RunHost("/home/blu/.local/bin/vrcosc_mpris_query.sh control play",   ex => Log($"Error: {ex.Message}"));
                 else
-                    RunBashCommand("flatpak-spawn --host /home/blu/.local/bin/vrcosc_mpris_query.sh control pause");
+                    LinuxUtils.RunHost("/home/blu/.local/bin/vrcosc_mpris_query.sh control pause",  ex => Log($"Error: {ex.Message}"));
                 break;
 
             case MediaParameter.Next when parameter.GetValue<bool>():
-                RunBashCommand("flatpak-spawn --host /home/blu/.local/bin/vrcosc_mpris_query.sh control next");
+                LinuxUtils.RunHost("/home/blu/.local/bin/vrcosc_mpris_query.sh control next",       ex => Log($"Error: {ex.Message}"));
                 break;
 
             case MediaParameter.Previous when parameter.GetValue<bool>():
-                RunBashCommand("flatpak-spawn --host /home/blu/.local/bin/vrcosc_mpris_query.sh control previous");
+                LinuxUtils.RunHost("/home/blu/.local/bin/vrcosc_mpris_query.sh control previous",   ex => Log($"Error: {ex.Message}"));
                 break;
 
             case MediaParameter.Position:
                 if (_durationMicroseconds > 0)
                 {
                     long targetPos = (long)(parameter.GetValue<float>() * _durationMicroseconds);
-                    RunBashCommand($"flatpak-spawn --host /home/blu/.local/bin/vrcosc_mpris_query.sh control position {targetPos}");
+                    LinuxUtils.RunHost($"/home/blu/.local/bin/vrcosc_mpris_query.sh control position {targetPos}", ex => Log($"Error: {ex.Message}"));
                 }
                 break;
 
             case MediaParameter.Volume:
                 _volume = parameter.GetValue<float>();
-                RunBashCommand($"flatpak-spawn --host /home/blu/.local/bin/vrcosc_mpris_query.sh control volume {_volume}");
+                LinuxUtils.RunHost($"/home/blu/.local/bin/vrcosc_mpris_query.sh control volume {_volume}",          ex => Log($"Error: {ex.Message}"));
                 break;
         }
     }
 
-    private void RunBashCommand(string command)
-    {
-        try
-        {
-            using var process = Process.Start(new ProcessStartInfo
-            {
-                FileName = "Z:\\bin\\bash",
-                Arguments = $"-c \"{command.Replace("\"", "\\\"")}\"",
-                UseShellExecute = true,
-                CreateNoWindow = true,
-                WorkingDirectory = "C:\\"
-            });
-            if (process != null)
-            {
-                try
-                {
-                    process.WaitForExit();
-                }
-                catch (InvalidOperationException)
-                {
-                    // Ignore "No process is associated with this object" under Wine
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Log($"Error executing bash command: {ex.Message}");
-        }
-    }
+
 
     private enum MediaParameter
     {
