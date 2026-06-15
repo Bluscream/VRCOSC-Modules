@@ -42,9 +42,10 @@
     <EmbeddedResource Include="VRChatSettings\Definitions\config.schema.json" LogicalName="Bluscream.Modules.Definitions.config.schema.json" />
     <EmbeddedResource Include="HTTPServer\openapi.json" LogicalName="Bluscream.Modules.HTTPServer.openapi.json" />
     <EmbeddedResource Include="HTTPServer\swagger-ui.html" LogicalName="Bluscream.Modules.HTTPServer.swagger-ui.html" />
+    <EmbeddedResource Include="LinuxMedia\vrcosc_mpris_query.sh" LogicalName="Bluscream.Modules.LinuxMedia.vrcosc_mpris_query.sh" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <!-- Copy only YOUR module DLL (HttpListener is built into .NET) -->
-    <Exec Command="xcopy /Q /R /F /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;%25appdata%25\VRCOSC\packages\local\&quot;" />
+    <!-- <Exec Command="xcopy /Q /R /F /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;%25appdata%25\VRCOSC\packages\local\&quot;" /> -->
   </Target>
 </Project>
