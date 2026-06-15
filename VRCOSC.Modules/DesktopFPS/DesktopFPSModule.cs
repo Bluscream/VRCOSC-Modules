@@ -65,6 +65,7 @@ public class DesktopFPSModule : Module
     [ModuleUpdate(ModuleUpdateMode.Custom, true, 1000)]
     private void updateFPS()
     {
+        if (!Bluscream.ModuleUtils.IsStarted()) return;
         try
         {
             if (_vrchatProcess == null || _vrchatProcess.HasExited)

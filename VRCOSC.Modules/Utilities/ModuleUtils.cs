@@ -85,4 +85,30 @@ public static class ModuleUtils
             return false;
         }
     }
+
+    /// <summary>
+    /// Checks if the host VRCOSC application is in the 'Started' state (connected to VRChat).
+    /// Uses reflection since AppManager is internal to VRCOSC.App.
+    /// </summary>
+    public static bool IsStarted()
+    {
+        try
+        {
+            var appManagerType = Type.GetType("VRCOSC.App.AppManager, VRCOSC.App");
+            if (appManagerType is null) return false;
+            var getInstance = appManagerType.GetMethod("GetInstance", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public);
+            if (getInstance is null) return false;
+            var appManager = getInstance.Invoke(null, null);
+            if (appManager is null) return false;
+            var stateProp = appManagerType.GetProperty("State");
+            if (stateProp is null) return false;
+            var stateObj = stateProp.GetValue(appManager);
+            if (stateObj is null) return false;
+            var valProp = stateObj.GetType().GetProperty("Value");
+            if (valProp is null) return false;
+            var val = valProp.GetValue(stateObj);
+            return val?.ToString() == "Started";
+        }
+        catch { return false; }
+    }
 }

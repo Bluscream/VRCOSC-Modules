@@ -73,6 +73,8 @@ public class OpenXRGestureExtensionsModule : Module
     [ModuleUpdate(ModuleUpdateMode.Custom, true, 1000f / 60f)]
     private void SendParameters()
     {
+        if (!Bluscream.ModuleUtils.IsStarted()) return;
+
         if (_xrReady && _handTrackingSupported && _handTrackingExt is not null)
             UpdateHandCurls();
 

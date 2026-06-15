@@ -105,6 +105,7 @@ public class LinuxMediaModule : Module
     [ModuleUpdate(ModuleUpdateMode.Custom, true, 1000)]
     private void UpdateMediaState()
     {
+        if (!Bluscream.ModuleUtils.IsStarted()) return;
         try
         {
             string homeDir = Environment.GetEnvironmentVariable("HOME") ?? "/home/blu";

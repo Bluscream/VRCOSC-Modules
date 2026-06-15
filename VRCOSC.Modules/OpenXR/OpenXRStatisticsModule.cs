@@ -171,6 +171,8 @@ public class OpenXRStatisticsModule : Module
     [ModuleUpdate(ModuleUpdateMode.Custom, true, 1000)]
     private void UpdateSlowParameters()
     {
+        if (!Bluscream.ModuleUtils.IsStarted()) return;
+
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             PollBatteryViaUPower();
 
@@ -193,6 +195,7 @@ public class OpenXRStatisticsModule : Module
     [ModuleUpdate(ModuleUpdateMode.Custom, true, 1000f / 60f)]
     private void UpdateRealtimeParameters()
     {
+        if (!Bluscream.ModuleUtils.IsStarted()) return;
         if (!_xrReady || _xr is null) return;
 
         _currentFps = EstimateFpsFromFrameState();
