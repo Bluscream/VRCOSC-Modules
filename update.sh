@@ -118,12 +118,7 @@ fi
 
 # Build the project
 echo "Building project in distrobox container..."
-if distrobox list | grep -q "arch"; then
-    distrobox-enter -n arch -- dotnet build VRCOSC.Modules/Bluscream.Modules.csproj --configuration Release --no-incremental
-else
-    echo "Error: 'arch' distrobox container not found. Cannot compile module."
-    exit 1
-fi
+distrobox-enter -n arch -- dotnet build VRCOSC.Modules/Bluscream.Modules.csproj --configuration Release --no-incremental
 
 DLL_PATH="VRCOSC.Modules/bin/Release/net10.0-windows10.0.26100.0/win-x64/Bluscream.Modules.dll"
 if [ ! -f "$DLL_PATH" ]; then
