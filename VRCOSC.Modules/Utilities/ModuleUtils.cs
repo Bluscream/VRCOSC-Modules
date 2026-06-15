@@ -80,6 +80,8 @@ public static class ModuleUtils
                         log($"[Bluscream] {tempPath} already exists with correct size.");
                     }
 
+                    UnblockFile(tempPath, log);
+
                     bool result = SetDllDirectory(tempDir);
                     if (!result)
                     {
@@ -96,6 +98,27 @@ public static class ModuleUtils
             {
                 log($"[Bluscream] Error initializing native openxr_loader: {ex}");
             }
+        }
+    }
+
+    /// <summary>
+    /// Removes the Zone.Identifier alternate data stream (Mark of the Web) to prevent OS loading blocks.
+    /// </summary>
+    private static void UnblockFile(string filePath, Action<string> log)
+    {
+        try
+        {
+            string adsPath = filePath + ":Zone.Identifier";
+            if (File.Exists(adsPath))
+            {
+                log($"[Bluscream] Removing Mark of the Web block from {filePath}...");
+                File.Delete(adsPath);
+                log($"[Bluscream] Successfully unblocked {filePath}.");
+            }
+        }
+        catch (Exception ex)
+        {
+            log($"[Bluscream] Warning: Failed to unblock file {filePath}: {ex.Message}");
         }
     }
 
