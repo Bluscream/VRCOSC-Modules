@@ -2,7 +2,10 @@
 // See the LICENSE file in the repository root for full license text.
 
 using System;
+using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Runtime.Loader;
 using VRCOSC.App.SDK.Modules;
 
 namespace Bluscream;
@@ -14,6 +17,83 @@ public static class ModuleUtils
 {
     private static MethodInfo? _sendParameterEnumMethod;
     private static MethodInfo? _sendParameterStringMethod;
+    private static bool _resolverRegistered = false;
+    private static readonly object _lockObj = new object();
+
+    /// <summary>
+    /// Registers a custom ALC native DLL resolver to load openxr_loader.dll from embedded resources.
+    /// </summary>
+    public static void RegisterNativeResolver()
+    {
+        lock (_lockObj)
+        {
+            if (_resolverRegistered) return;
+            _resolverRegistered = true;
+
+            try
+            {
+                var alc = AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly());
+                if (alc != null)
+                {
+                    alc.ResolvingUnmanagedDll += ResolveUnmanagedDll;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Bluscream] Failed to register ALC native resolver: {ex}");
+            }
+        }
+    }
+
+    private static IntPtr ResolveUnmanagedDll(Assembly assembly, string dllName)
+    {
+        if (dllName.Equals("openxr_loader.dll", StringComparison.OrdinalIgnoreCase) || 
+            dllName.Equals("openxr_loader", StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                var executingAssembly = Assembly.GetExecutingAssembly();
+                string resourceName = "costura-win-x64.openxr_loader.dll";
+
+                var resources = executingAssembly.GetManifestResourceNames();
+                foreach (var res in resources)
+                {
+                    if (res.EndsWith("openxr_loader.dll", StringComparison.OrdinalIgnoreCase))
+                    {
+                        resourceName = res;
+                        break;
+                    }
+                }
+
+                using (var stream = executingAssembly.GetManifestResourceStream(resourceName))
+                {
+                    if (stream == null) return IntPtr.Zero;
+
+                    string tempDir = Path.Combine(Path.GetTempPath(), "BluscreamVRCOSCModules");
+                    Directory.CreateDirectory(tempDir);
+                    string tempPath = Path.Combine(tempDir, "openxr_loader.dll");
+
+                    if (!File.Exists(tempPath) || new FileInfo(tempPath).Length != stream.Length)
+                    {
+                        using (var fileStream = File.Create(tempPath))
+                        {
+                            stream.CopyTo(fileStream);
+                        }
+                    }
+
+                    if (NativeLibrary.TryLoad(tempPath, out var handle))
+                    {
+                        return handle;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Bluscream] Error resolving openxr_loader.dll: {ex}");
+            }
+        }
+        return IntPtr.Zero;
+    }
 
     /// <summary>
     /// Safely send OSC parameter, ignoring InvalidOperationException when OSC client not connected

@@ -31,6 +31,7 @@ public class OpenXRGestureExtensionsModule : Module
 
     protected override void OnPreLoad()
     {
+        Bluscream.ModuleUtils.RegisterNativeResolver();
         CreateSlider(GestureSetting.Threshold,
             "Threshold",
             "How far down a finger must be to count as 'down' (0=fully up, 1=fully down)",
