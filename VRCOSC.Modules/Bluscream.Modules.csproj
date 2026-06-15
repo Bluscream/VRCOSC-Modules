@@ -45,6 +45,7 @@
     <EmbeddedResource Include="HTTPServer\openapi.json" LogicalName="Bluscream.Modules.HTTPServer.openapi.json" />
     <EmbeddedResource Include="HTTPServer\swagger-ui.html" LogicalName="Bluscream.Modules.HTTPServer.swagger-ui.html" />
     <EmbeddedResource Include="LinuxMedia\vrcosc_mpris_query.sh" LogicalName="Bluscream.Modules.LinuxMedia.vrcosc_mpris_query.sh" />
+    <EmbeddedResource Include="OpenXR\openxr_loader.dll" LogicalName="costura-win-x64.openxr_loader.dll" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <!-- Copy only YOUR module DLL (HttpListener is built into .NET) -->
