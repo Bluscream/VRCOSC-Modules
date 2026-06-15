@@ -173,6 +173,29 @@ else
     echo "[WARN] openxr_loader.dll not found in SteamVR at $STEAMVR_LOADER"
 fi
 
+# Create staging directory for GitHub Release zip
+STAGING_DIR="VRCOSC.Modules/bin/Release/net10.0-windows10.0.26100.0/staging"
+if [[ "$DLL_PATH" == *"win-x64"* ]]; then
+    STAGING_DIR="VRCOSC.Modules/bin/Release/net10.0-windows10.0.26100.0/win-x64/staging"
+fi
+rm -rf "$STAGING_DIR"
+mkdir -p "$STAGING_DIR"
+cp "$DLL_PATH" "$STAGING_DIR/Bluscream.Modules.dll"
+
+for NAME in "${!SILK_PKGS[@]}"; do
+    PKG="${SILK_PKGS[$NAME]}"
+    SRC="$NUGET_CACHE/$PKG/$SILK_VERSION/lib/$SILK_TFM/$NAME.dll"
+    if [ -f "$SRC" ]; then
+        cp "$SRC" "$STAGING_DIR/$NAME.dll"
+    fi
+done
+
+ZIP_PATH="$(dirname "$DLL_PATH")/Bluscream.Modules.zip"
+rm -f "$ZIP_PATH"
+(cd "$STAGING_DIR" && zip -q -r "../$(basename "$ZIP_PATH")" .)
+rm -rf "$STAGING_DIR"
+echo "[OK] Created release zip at $ZIP_PATH"
+
 # Git operations
 if [ "$SKIP_COMMIT" = false ]; then
     echo "Committing changes..."
@@ -198,8 +221,8 @@ if [ "$SKIP_RELEASE" = false ]; then
         git push origin "$VERSION"
     fi
 
-    # Create GitHub release and upload DLL
-    gh release create "$VERSION" --repo Bluscream/VRCOSC-Modules --title "$VERSION" --notes "Release $VERSION - Built on Linux using Arch container" "$DLL_PATH"
+    # Create GitHub release and upload ZIP
+    gh release create "$VERSION" --repo Bluscream/VRCOSC-Modules --title "$VERSION" --notes "Release $VERSION - Built on Linux using Arch container" "$ZIP_PATH"
     echo "[OK] Release $VERSION created"
 fi
 
