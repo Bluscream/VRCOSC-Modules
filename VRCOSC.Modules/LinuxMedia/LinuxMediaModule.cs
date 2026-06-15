@@ -64,7 +64,7 @@ public class LinuxMediaModule : Module
         try
         {
             string homeDir = Environment.GetEnvironmentVariable("HOME") ?? "/home/blu";
-            string targetPath = System.IO.Path.Combine(homeDir, ".local", "bin", "vrcosc_mpris_query.sh");
+            string targetPath = $"{homeDir}/.local/bin/vrcosc_mpris_query.sh";
 
             var assembly = typeof(LinuxMediaModule).Assembly;
             using var stream = assembly.GetManifestResourceStream("Bluscream.Modules.LinuxMedia.vrcosc_mpris_query.sh");

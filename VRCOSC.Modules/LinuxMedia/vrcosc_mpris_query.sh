@@ -27,7 +27,7 @@ if [ "$1" = "control" ]; then
             ;;
         position)
             # $3 is targetPosition in microseconds
-            dbus-send --session --dest="$player" /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.SetPosition objectpath:"/org/mpris/MediaPlayer2" x11:"$3"
+            dbus-send --session --dest="$player" /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.SetPosition objpath:"/org/mpris/MediaPlayer2" int64:"$3"
             ;;
         volume)
             # $3 is targetVolume double (0.0 to 1.0)

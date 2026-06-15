@@ -95,20 +95,42 @@ public static class ModuleUtils
         try
         {
             var appManagerType = Type.GetType("VRCOSC.App.AppManager, VRCOSC.App");
-            if (appManagerType is null) return false;
+            if (appManagerType is null)
+            {
+                return false;
+            }
             var getInstance = appManagerType.GetMethod("GetInstance", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public);
-            if (getInstance is null) return false;
+            if (getInstance is null)
+            {
+                return false;
+            }
             var appManager = getInstance.Invoke(null, null);
-            if (appManager is null) return false;
+            if (appManager is null)
+            {
+                return false;
+            }
             var stateProp = appManagerType.GetProperty("State");
-            if (stateProp is null) return false;
+            if (stateProp is null)
+            {
+                return false;
+            }
             var stateObj = stateProp.GetValue(appManager);
-            if (stateObj is null) return false;
+            if (stateObj is null)
+            {
+                return false;
+            }
             var valProp = stateObj.GetType().GetProperty("Value");
-            if (valProp is null) return false;
+            if (valProp is null)
+            {
+                return false;
+            }
             var val = valProp.GetValue(stateObj);
-            return val?.ToString() == "Started";
+            var stateStr = val?.ToString() ?? "null";
+            return stateStr == "Started";
         }
-        catch { return false; }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 }
