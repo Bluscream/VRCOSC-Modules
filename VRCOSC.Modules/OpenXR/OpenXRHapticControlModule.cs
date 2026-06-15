@@ -29,7 +29,7 @@ public class OpenXRHapticControlModule : Module
 
     protected override void OnPreLoad()
     {
-        Bluscream.ModuleUtils.RegisterNativeResolver();
+        Bluscream.ModuleUtils.RegisterNativeResolver(Log);
         RegisterParameter<float>(OpenXRHapticParameter.Duration,          "VRCOSC/VR/Haptics/Duration",          ParameterMode.Read, "Duration",            "Duration of haptic in seconds");
         RegisterParameter<float>(OpenXRHapticParameter.Frequency,         "VRCOSC/VR/Haptics/Frequency",         ParameterMode.Read, "Frequency",           "Frequency of haptic (0-1 → 0-300 Hz)");
         RegisterParameter<float>(OpenXRHapticParameter.Amplitude,         "VRCOSC/VR/Haptics/Amplitude",         ParameterMode.Read, "Amplitude",           "Amplitude of haptic (0-1)");

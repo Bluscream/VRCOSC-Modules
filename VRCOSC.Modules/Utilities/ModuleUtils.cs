@@ -20,10 +20,13 @@ public static class ModuleUtils
     private static bool _resolverRegistered = false;
     private static readonly object _lockObj = new object();
 
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+    private static extern bool SetDllDirectory(string lpPathName);
+
     /// <summary>
-    /// Registers a custom ALC native DLL resolver to load openxr_loader.dll from embedded resources.
+    /// Extracts openxr_loader.dll to temp and adds that folder to the Win32 DLL search path.
     /// </summary>
-    public static void RegisterNativeResolver()
+    public static void RegisterNativeResolver(Action<string> log)
     {
         lock (_lockObj)
         {
@@ -32,67 +35,68 @@ public static class ModuleUtils
 
             try
             {
-                var alc = AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly());
-                if (alc != null)
-                {
-                    alc.ResolvingUnmanagedDll += ResolveUnmanagedDll;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[Bluscream] Failed to register ALC native resolver: {ex}");
-            }
-        }
-    }
-
-    private static IntPtr ResolveUnmanagedDll(Assembly assembly, string dllName)
-    {
-        if (dllName.Equals("openxr_loader.dll", StringComparison.OrdinalIgnoreCase) || 
-            dllName.Equals("openxr_loader", StringComparison.OrdinalIgnoreCase))
-        {
-            try
-            {
                 var executingAssembly = Assembly.GetExecutingAssembly();
-                string resourceName = "costura-win-x64.openxr_loader.dll";
+                string resourceName = "Bluscream.Modules.OpenXR.openxr_loader.dll";
+                log($"[Bluscream] Starting RegisterNativeResolver. Assembly: {executingAssembly.FullName}");
 
                 var resources = executingAssembly.GetManifestResourceNames();
+                log($"[Bluscream] Embedded resources found: {string.Join(", ", resources)}");
+
                 foreach (var res in resources)
                 {
-                    if (res.EndsWith("openxr_loader.dll", StringComparison.OrdinalIgnoreCase))
+                    if (res.EndsWith("openxr_loader.dll", System.StringComparison.OrdinalIgnoreCase))
                     {
                         resourceName = res;
                         break;
                     }
                 }
 
+                log($"[Bluscream] Selecting resource: {resourceName}");
+
                 using (var stream = executingAssembly.GetManifestResourceStream(resourceName))
                 {
-                    if (stream == null) return IntPtr.Zero;
+                    if (stream == null)
+                    {
+                        log($"[Bluscream] Manifest resource stream was NULL for {resourceName}");
+                        return;
+                    }
 
                     string tempDir = Path.Combine(Path.GetTempPath(), "BluscreamVRCOSCModules");
+                    log($"[Bluscream] Extraction directory target: {tempDir}");
                     Directory.CreateDirectory(tempDir);
                     string tempPath = Path.Combine(tempDir, "openxr_loader.dll");
 
                     if (!File.Exists(tempPath) || new FileInfo(tempPath).Length != stream.Length)
                     {
+                        log($"[Bluscream] Extracting {resourceName} to {tempPath} (Size: {stream.Length} bytes)...");
                         using (var fileStream = File.Create(tempPath))
                         {
                             stream.CopyTo(fileStream);
                         }
+                        log($"[Bluscream] Successfully extracted {tempPath}.");
+                    }
+                    else
+                    {
+                        log($"[Bluscream] {tempPath} already exists with correct size.");
                     }
 
-                    if (NativeLibrary.TryLoad(tempPath, out var handle))
+                    bool result = SetDllDirectory(tempDir);
+                    if (!result)
                     {
-                        return handle;
+                        int error = Marshal.GetLastWin32Error();
+                        log($"[Bluscream] SetDllDirectory failed with error code: {error}");
+                    }
+                    else
+                    {
+                        log($"[Bluscream] Successfully added '{tempDir}' to the DLL search path.");
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[Bluscream] Error resolving openxr_loader.dll: {ex}");
+                log($"[Bluscream] Error initializing native openxr_loader: {ex}");
             }
         }
-        return IntPtr.Zero;
     }
 
     /// <summary>

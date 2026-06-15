@@ -31,7 +31,7 @@ public class OpenXRStatisticsModule : Module
     // ─────────────────── Module lifecycle ────────────────────────────
     protected override void OnPreLoad()
     {
-        Bluscream.ModuleUtils.RegisterNativeResolver();
+        Bluscream.ModuleUtils.RegisterNativeResolver(Log);
         RegisterParameter<int>  (OpenXRParameter.FPS,           "VRCOSC/VR/FPS/Value",      ParameterMode.Write, "FPS",            "Measured compositor FPS");
         RegisterParameter<float>(OpenXRParameter.FPSNormalised, "VRCOSC/VR/FPS/Normalised", ParameterMode.Write, "FPS Normalised", "FPS normalised 0-240 → 0-1");
 
