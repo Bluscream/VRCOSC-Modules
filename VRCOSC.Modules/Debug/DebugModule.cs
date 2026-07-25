@@ -41,6 +41,19 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         // Debug settings
         CreateToggle(DebugSetting.LogParameterUpdates, "Log Parameter Updates", "Log all parameter updates to console", false);
         CreateToggle(DebugSetting.AutoStartModules, "Auto Start VRCOSC on Load", "Automatically starts VRCOSC when it loads (equivalent to clicking Play button). Bypasses VRChat detection.", false);
+        CreateToggle(DebugSetting.SuppressConnectAsyncLogSpam, "Suppress ConnectAsync Log Spam", "Intercept and suppress repeating 'Please call ConnectAsync first' exception stack traces when OSC is disconnected.", true);
+        CreateToggle(DebugSetting.FixWinRTFilePickerException, "Fix WinRT FilePicker Exception (Linux/Wine)", "Patch VRCOSC PickFileAsync with WPF OpenFileDialog fallback to fix 'WinRT.ActivationFactory threw an exception' / REGDB_E_CLASSNOTREG errors on Linux/Wine.", true);
+        CreateToggle(DebugSetting.BypassChatBoxValidation, "Bypass ChatBox Timeline Validation", "Prevent VRCOSC from wiping out your ChatBox timeline clips when dynamic variables change or are unregistered.", true);
+
+        // Settings Groups
+        CreateGroup("Fixes & Patches", "System & Harmony Patches for Linux/Wine & OSC Connection Logging", DebugSetting.SuppressConnectAsyncLogSpam, DebugSetting.FixWinRTFilePickerException, DebugSetting.BypassChatBoxValidation);
+        CreateGroup("Dump Configuration", "CSV Export Settings", DebugSetting.DumpDirectory, DebugSetting.SortBy, DebugSetting.SortDirection);
+        CreateGroup("Debug Options", "Logging & Automation", DebugSetting.LogParameterUpdates, DebugSetting.AutoStartModules);
+
+        // Apply Harmony Patches if enabled
+        if (this.GetSetting("SuppressConnectAsyncLogSpam", true)) LogSpamFix.ApplyFix(Log);
+        if (this.GetSetting("FixWinRTFilePickerException", true)) LogSpamFix.ApplyFilePickerFix(Log);
+        if (this.GetSetting("BypassChatBoxValidation", true)) LogSpamFix.ApplyChatBoxValidationFix(Log);
 
         // OSC Parameters
         RegisterParameter<bool>(DebugParameter.DumpNow, "VRCOSC/Debug/DumpNow", ParameterMode.Read, "Dump Now", "Set to true to trigger a parameter dump");
@@ -452,7 +465,10 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         // AutoTrackOutgoing,     // Disabled - custom tracking not active
         // MaxParameters,         // Disabled - custom tracking not active
         LogParameterUpdates,
-        AutoStartModules
+        AutoStartModules,
+        SuppressConnectAsyncLogSpam,
+        FixWinRTFilePickerException,
+        BypassChatBoxValidation
     }
 
     private enum CsvSortBy

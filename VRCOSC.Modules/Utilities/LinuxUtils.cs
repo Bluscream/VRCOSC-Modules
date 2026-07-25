@@ -58,13 +58,20 @@ public static class LinuxUtils
         catch (Exception ex) { onError?.Invoke(ex); }
     }
 
+    private static bool? isFlatpak;
+    public static bool IsFlatpakSandbox
+        => isFlatpak ??= System.IO.File.Exists("/.flatpak-info") || System.IO.File.Exists("Z:\\.flatpak-info");
+
+    public static string WrapHostCommand(string command)
+        => IsFlatpakSandbox ? $"flatpak-spawn --host {command}" : command;
+
     /// <summary>
-    /// Runs a command on the Linux host via <c>flatpak-spawn --host</c> inside Wine.
+    /// Runs a command on the Linux host via <c>flatpak-spawn --host</c> (if in Flatpak) or directly inside Wine.
     /// The command string should be the host-side command (e.g. "upower -e").
     /// Fire-and-forget: does not capture output.
     /// </summary>
     public static void RunHost(string command, Action<Exception>? onError = null)
-        => RunWine($"flatpak-spawn --host {command}", onError);
+        => RunWine(WrapHostCommand(command), onError);
 
     // ═══════════════════════════════════════════════════════════════════
     //  NATIVE CONTEXT — direct /bin/bash, captures stdout
@@ -101,7 +108,7 @@ public static class LinuxUtils
     /// capturing stdout. Use from native/distrobox contexts.
     /// </summary>
     public static string RunShellHost(string command, int timeoutMs = 5000)
-        => RunShell($"flatpak-spawn --host {command}", timeoutMs);
+        => RunShell(WrapHostCommand(command), timeoutMs);
 
     // ═══════════════════════════════════════════════════════════════════
     //  UPower battery helpers
@@ -236,7 +243,7 @@ public static class LinuxUtils
         var hostPath = $"/tmp/.bluscream_linuxutils_{Guid.NewGuid():N}.txt";
         var winePath = "Z:" + hostPath.Replace('/', '\\');
 
-        RunWine($"flatpak-spawn --host {command} > \"{hostPath}\" 2>/dev/null");
+        RunWine($"{WrapHostCommand(command)} > \"{hostPath}\" 2>/dev/null");
 
         // Give it a moment to complete, then read the file from the Wine path
         System.Threading.Thread.Sleep(Math.Min(timeoutMs, 1000));

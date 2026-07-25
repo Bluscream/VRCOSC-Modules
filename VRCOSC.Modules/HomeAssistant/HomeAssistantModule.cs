@@ -1,0 +1,514 @@
+// Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
+// See the LICENSE file in the repository root for full license text.
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using VRCOSC.App.SDK.Modules;
+using VRCOSC.App.SDK.Modules.Attributes.Types;
+using VRCOSC.App.SDK.Parameters;
+using Bluscream;
+
+namespace Bluscream.Modules;
+
+[ModuleTitle("HomeAssistant")]
+[ModuleDescription("Integrate Home Assistant entity states, Jinja templates, avatar parameters, and flow nodes")]
+[ModuleType(ModuleType.Integrations)]
+[ModuleInfo("https://github.com/Bluscream/VRCOSC-Modules")]
+public class HomeAssistantModule : Module
+{
+    private HomeAssistantClient? _client;
+    private readonly HashSet<string> _registeredDynamicVars = new();
+    private readonly Dictionary<int, string> _wsTemplateVarMap = new();
+
+    private static readonly string[] RecognizedDomains = new[]
+    {
+        "light", "switch", "binary_sensor", "sensor", "cover", "climate", "media_player",
+        "number", "input_boolean", "input_number", "select", "input_select", "lock",
+        "fan", "scene", "script", "automation", "button"
+    };
+
+    [ModulePersistent("ha_states_cache")]
+    public Dictionary<string, string> CachedStates { get; set; } = new();
+
+    protected override void OnPreLoad()
+    {
+        // Settings
+        CreateTextBox(HomeAssistantSetting.ServerUrl, "Server URL", "Home Assistant base URL (e.g. http://192.168.1.100:8123)", "http://homeassistant.local:8123");
+        CreateTextBox(HomeAssistantSetting.AccessToken, "Access Token", "Long-Lived Access Token generated in Home Assistant profile", string.Empty);
+        CreateTextBox(HomeAssistantSetting.OscPrefix, "OSC Prefix", "Prefix for Home Assistant avatar parameters (e.g. HomeAssistant/)", "HomeAssistant/");
+        CreateToggle(HomeAssistantSetting.EnableWebSocket, "Enable Realtime WebSocket", "Enable real-time state change updates via WebSocket API", true);
+        CreateToggle(HomeAssistantSetting.LogDebug, "Log Debug", "Log detailed Home Assistant debug messages to console", false);
+        CreateToggle(HomeAssistantSetting.LogOscParams, "Log OSC Parameters", "Log incoming/outgoing Home Assistant OSC parameters to console", false);
+        CreateTextBox(HomeAssistantSetting.EntityFilter, "Entity Filter", "Comma-separated list of entity IDs or domains to track (leave empty for all)", string.Empty);
+
+        // Opt-in toggle to register all HA entities as individual ChatBox variables
+        CreateToggle(HomeAssistantSetting.RegisterAllEntityVariables, "Register All Entity Variables", "Register every HA entity state as an individual ChatBox variable (HAState.{entity_id}). Disabled by default to prevent cluttering.", false);
+
+        // Custom Key-Value Pair List for Jinja Template ChatBox Variables
+        CreateKeyValuePairList(
+            HomeAssistantSetting.TemplateVariables,
+            "Custom ChatBox Template Variables",
+            "Configure custom ChatBox variables mapped to Jinja templates or entity states.\nKey: Variable Name (e.g. LivingRoomTemp)\nValue: Jinja Template (e.g. {{ states('sensor.living_room_temp') }}°C)",
+            Array.Empty<MutableKeyValuePair>(),
+            "Variable Name",
+            "Jinja Template / Entity ID"
+        );
+
+        // Parameters
+        RegisterParameter<bool>(HomeAssistantParameter.Connected, "VRCOSC/HomeAssistant/Connected", ParameterMode.Write, "Connected", "True when connected to Home Assistant");
+        RegisterParameter<bool>(HomeAssistantParameter.EventReceived, "VRCOSC/HomeAssistant/EventReceived", ParameterMode.Write, "Event Received", "True for 1 second when a state change event is received");
+        RegisterParameter<bool>(HomeAssistantParameter.Failed, "VRCOSC/HomeAssistant/Failed", ParameterMode.Write, "Failed", "True for 1 second when a request or connection fails");
+
+        // Settings Groups
+        CreateGroup("Connection", "Home Assistant Connection Settings", HomeAssistantSetting.ServerUrl, HomeAssistantSetting.AccessToken, HomeAssistantSetting.EnableWebSocket);
+        CreateGroup("Custom Variables", "Custom Jinja Template ChatBox Variables", HomeAssistantSetting.RegisterAllEntityVariables, HomeAssistantSetting.TemplateVariables);
+        CreateGroup("OSC Configuration", "OSC Parameter Integration", HomeAssistantSetting.OscPrefix, HomeAssistantSetting.EntityFilter);
+        CreateGroup("Debug", "Debug & Logging Options", HomeAssistantSetting.LogDebug, HomeAssistantSetting.LogOscParams);
+    }
+
+    protected override void OnPostLoad()
+    {
+        // Static Clip Variables
+        CreateVariable<bool>(HomeAssistantVariable.Connected, "Connected");
+        CreateVariable<string>(HomeAssistantVariable.LastEntity, "Last Entity");
+        CreateVariable<string>(HomeAssistantVariable.LastState, "Last State");
+        CreateVariable<int>(HomeAssistantVariable.StatesCount, "States Count");
+
+        // Register Template Variables so ChatBoxManager recognizes them before loading timeline clips
+        var templateVars = GetSettingValue<List<MutableKeyValuePair>>(HomeAssistantSetting.TemplateVariables);
+        if (templateVars != null)
+        {
+            foreach (var item in templateVars)
+            {
+                var varName = item.Key?.Value?.Trim();
+                if (!string.IsNullOrEmpty(varName))
+                {
+                    EnsureCustomVariable($"HATemplate.{varName}", varName, string.Empty);
+                }
+            }
+        }
+
+        // Module States
+        CreateState(HomeAssistantState.Disconnected, "Disconnected", "HA Disconnected");
+        CreateState(HomeAssistantState.Connecting, "Connecting", "HA Connecting...");
+        CreateState(HomeAssistantState.Connected, "Connected", "HA Connected ({0})", new[] { GetVariable(HomeAssistantVariable.StatesCount)! });
+        CreateState(HomeAssistantState.Error, "Error", "HA Error");
+
+        // Events
+        CreateEvent(HomeAssistantEvent.OnStateChanged, "On State Changed", "HA {0} = {1}", new[] { GetVariable(HomeAssistantVariable.LastEntity)!, GetVariable(HomeAssistantVariable.LastState)! });
+        CreateEvent(HomeAssistantEvent.OnServiceExecuted, "On Service Executed");
+        CreateEvent(HomeAssistantEvent.OnError, "On Error");
+    }
+
+    protected override async Task<bool> OnModuleStart()
+    {
+        ChangeState(HomeAssistantState.Connecting);
+
+        var serverUrl = GetSettingValue<string>(HomeAssistantSetting.ServerUrl);
+        var token = GetSettingValue<string>(HomeAssistantSetting.AccessToken);
+
+        if (serverUrl.IsNullOrEmpty() || token.IsNullOrEmpty())
+        {
+            Log("Server URL or Access Token is not set. Please configure the module settings.");
+            ChangeState(HomeAssistantState.Error);
+            SendParameter(HomeAssistantParameter.Connected, false);
+            SetVariableValue(HomeAssistantVariable.Connected, false);
+            return false;
+        }
+
+        _client = new HomeAssistantClient(Log, LogDebug);
+        _client.OnStateChanged += HandleStateChanged;
+        _client.OnTemplateRendered += HandleTemplateRendered;
+        _client.OnConnectionStatusChanged += HandleConnectionStatusChanged;
+
+        if (!_client.Initialize(serverUrl, token))
+        {
+            ChangeState(HomeAssistantState.Error);
+            SendParameter(HomeAssistantParameter.Connected, false);
+            SetVariableValue(HomeAssistantVariable.Connected, false);
+            return false;
+        }
+
+        // Fetch initial states REST
+        var initialStates = await _client.GetStatesAsync();
+        if (initialStates != null)
+        {
+            int count = 0;
+            bool registerAll = GetSettingValue<bool>(HomeAssistantSetting.RegisterAllEntityVariables);
+            foreach (var state in initialStates)
+            {
+                if (state != null && !state.EntityId.IsNullOrEmpty())
+                {
+                    CachedStates[state.EntityId] = state.State ?? string.Empty;
+                    if (registerAll)
+                    {
+                        EnsureDynamicVariable(state.EntityId, state.State ?? string.Empty);
+                    }
+                    count++;
+                }
+            }
+            SetVariableValue(HomeAssistantVariable.StatesCount, count);
+        }
+
+        if (GetSettingValue<bool>(HomeAssistantSetting.EnableWebSocket))
+        {
+            await _client.StartWebSocketAsync(serverUrl, token);
+        }
+        else
+        {
+            HandleConnectionStatusChanged(true);
+        }
+
+        // Initialize Custom Key-Value Template Variables
+        await InitializeTemplateVariables();
+
+        return true;
+    }
+
+    protected override Task OnModuleStop()
+    {
+        if (_client != null)
+        {
+            _client.OnStateChanged -= HandleStateChanged;
+            _client.OnTemplateRendered -= HandleTemplateRendered;
+            _client.OnConnectionStatusChanged -= HandleConnectionStatusChanged;
+            _client.StopWebSocket();
+            _client = null;
+        }
+
+        _wsTemplateVarMap.Clear();
+        SendParameter(HomeAssistantParameter.Connected, false);
+        SetVariableValue(HomeAssistantVariable.Connected, false);
+        ChangeState(HomeAssistantState.Disconnected);
+
+        return Task.CompletedTask;
+    }
+
+    private async Task InitializeTemplateVariables()
+    {
+        if (_client == null) return;
+
+        var templateVars = GetSettingValue<List<MutableKeyValuePair>>(HomeAssistantSetting.TemplateVariables);
+        if (templateVars == null || templateVars.Count == 0) return;
+
+        foreach (var item in templateVars)
+        {
+            var varName = item.Key?.Value?.Trim();
+            var template = item.Value?.Value?.Trim();
+
+            if (string.IsNullOrEmpty(varName) || string.IsNullOrEmpty(template)) continue;
+
+            // Register ChatBox variable
+            var varKey = $"HATemplate.{varName}";
+            EnsureCustomVariable(varKey, varName, string.Empty);
+
+            // Initial REST render
+            var initialRender = await _client.RenderTemplateAsync(template);
+            SetVariableValue(varKey, initialRender);
+
+            // Subscribe live WebSocket render if WebSocket is active
+            if (_client.IsConnected)
+            {
+                int subId = await _client.SubscribeRenderTemplateAsync(template);
+                if (subId > 0)
+                {
+                    _wsTemplateVarMap[subId] = varKey;
+                    LogDebug($"Subscribed custom variable '{varName}' (WS ID: {subId}) to template '{template}'");
+                }
+            }
+        }
+    }
+
+    private void HandleConnectionStatusChanged(bool connected)
+    {
+        SendParameter(HomeAssistantParameter.Connected, connected);
+        SetVariableValue(HomeAssistantVariable.Connected, connected);
+
+        if (connected)
+        {
+            ChangeState(HomeAssistantState.Connected);
+            Log("Home Assistant Module Connected.");
+        }
+        else
+        {
+            ChangeState(HomeAssistantState.Disconnected);
+            Log("Home Assistant Module Disconnected.");
+        }
+    }
+
+    private void HandleStateChanged(string entityId, string newState, JsonElement attributes)
+    {
+        if (!IsEntityAllowed(entityId)) return;
+
+        CachedStates[entityId] = newState;
+
+        SetVariableValue(HomeAssistantVariable.LastEntity, entityId);
+        SetVariableValue(HomeAssistantVariable.LastState, newState);
+
+        if (GetSettingValue<bool>(HomeAssistantSetting.RegisterAllEntityVariables))
+        {
+            EnsureDynamicVariable(entityId, newState);
+        }
+
+        TriggerEvent(HomeAssistantEvent.OnStateChanged);
+
+        // Push update to VRChat OSC Parameter
+        PushEntityToOscParameter(entityId, newState, attributes);
+    }
+
+    private void HandleTemplateRendered(int subId, string renderedText)
+    {
+        if (_wsTemplateVarMap.TryGetValue(subId, out var varKey))
+        {
+            SetVariableValue(varKey, renderedText);
+            LogDebug($"Updated template variable '{varKey}' = '{renderedText}'");
+        }
+    }
+
+    private void PushEntityToOscParameter(string entityId, string state, JsonElement attributes)
+    {
+        var prefix = GetSettingValue<string>(HomeAssistantSetting.OscPrefix).TrimEnd('/') + "/";
+        var paramName = prefix + entityId.Replace('.', '_');
+
+        bool isOn = string.Equals(state, "on", StringComparison.OrdinalIgnoreCase);
+        SendParameter(paramName, isOn);
+
+        if (attributes.ValueKind == JsonValueKind.Object)
+        {
+            // Brightness (0..255)
+            if (attributes.TryGetProperty("brightness", out var brightProp) && brightProp.TryGetInt32(out int brightness))
+            {
+                float floatBright = Math.Clamp(brightness / 255.0f, 0.0f, 1.0f);
+                SendParameter(paramName + "/brightness", floatBright);
+                SendParameter(paramName + "/brightness_int", brightness);
+            }
+            // Volume Level (0.0..1.0)
+            if (attributes.TryGetProperty("volume_level", out var volProp) && volProp.TryGetSingle(out float volume))
+            {
+                SendParameter(paramName + "/volume", volume);
+            }
+            // Position (0..100)
+            if (attributes.TryGetProperty("current_position", out var posProp) && posProp.TryGetInt32(out int position))
+            {
+                float floatPos = Math.Clamp(position / 100.0f, 0.0f, 1.0f);
+                SendParameter(paramName + "/position", floatPos);
+            }
+        }
+
+        if (GetSettingValue<bool>(HomeAssistantSetting.LogOscParams))
+        {
+            LogDebug($"Pushed HA -> OSC: {paramName} = {isOn} ({state})");
+        }
+    }
+
+    protected override void OnAnyParameterReceived(VRChatParameter parameter)
+    {
+        if (!Bluscream.ModuleUtils.IsStarted() || _client == null) return;
+
+        var prefix = GetSettingValue<string>(HomeAssistantSetting.OscPrefix).TrimEnd('/');
+        var rawName = parameter.Name;
+
+        // Check if parameter matches HA prefix
+        string path = string.Empty;
+        if (rawName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+        {
+            path = rawName[prefix.Length..].TrimStart('/');
+        }
+        else if (rawName.StartsWith("/avatar/parameters/" + prefix, StringComparison.OrdinalIgnoreCase))
+        {
+            path = rawName[("/avatar/parameters/" + prefix).Length..].TrimStart('/');
+        }
+        else
+        {
+            return;
+        }
+
+        if (path.IsNullOrEmpty()) return;
+
+        if (GetSettingValue<bool>(HomeAssistantSetting.LogOscParams))
+        {
+            LogDebug($"Received OSC Parameter: {rawName} = {parameter.Value}");
+        }
+
+        _ = Task.Run(() => ProcessOscParameterInput(path, parameter));
+    }
+
+    private async Task ProcessOscParameterInput(string path, VRChatParameter parameter)
+    {
+        try
+        {
+            string entityPath = path;
+            string? attribute = null;
+
+            if (path.Contains('/'))
+            {
+                var parts = path.Split('/', 2);
+                entityPath = parts[0];
+                attribute = parts[1];
+            }
+
+            var (entityId, domain) = ResolveEntityIdAndDomain(entityPath);
+            if (entityId.IsNullOrEmpty()) return;
+
+            if (parameter.Value is bool boolVal)
+            {
+                string service = boolVal ? "turn_on" : "turn_off";
+                if (domain == "lock") service = boolVal ? "lock" : "unlock";
+                if (domain == "cover") service = boolVal ? "open_cover" : "close_cover";
+
+                await CallService(domain, service, entityId);
+            }
+            else if (parameter.Value is float floatVal)
+            {
+                if (domain == "light")
+                {
+                    if (floatVal <= 0.0f)
+                    {
+                        await CallService("light", "turn_off", entityId);
+                    }
+                    else
+                    {
+                        int brightness = (int)Math.Round(Math.Clamp(floatVal, 0.0f, 1.0f) * 255);
+                        var data = new Dictionary<string, object> { { "brightness", brightness } };
+                        await CallService("light", "turn_on", entityId, data);
+                    }
+                }
+                else if (domain == "cover")
+                {
+                    int position = (int)Math.Round(Math.Clamp(floatVal, 0.0f, 1.0f) * 100);
+                    var data = new Dictionary<string, object> { { "position", position } };
+                    await CallService("cover", "set_cover_position", entityId, data);
+                }
+                else if (domain == "media_player")
+                {
+                    var data = new Dictionary<string, object> { { "volume_level", floatVal } };
+                    await CallService("media_player", "volume_set", entityId, data);
+                }
+                else
+                {
+                    string service = floatVal > 0.0f ? "turn_on" : "turn_off";
+                    await CallService(domain, service, entityId);
+                }
+            }
+            else if (parameter.Value is int intVal)
+            {
+                if (domain == "light")
+                {
+                    if (intVal <= 0)
+                    {
+                        await CallService("light", "turn_off", entityId);
+                    }
+                    else
+                    {
+                        int brightness = Math.Clamp(intVal, 0, 255);
+                        var data = new Dictionary<string, object> { { "brightness", brightness } };
+                        await CallService("light", "turn_on", entityId, data);
+                    }
+                }
+                else
+                {
+                    string service = intVal > 0 ? "turn_on" : "turn_off";
+                    await CallService(domain, service, entityId);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Log($"Error processing OSC parameter input for {path}: {ex.Message}");
+        }
+    }
+
+    private (string EntityId, string Domain) ResolveEntityIdAndDomain(string entityPath)
+    {
+        if (entityPath.Contains('.'))
+        {
+            var parts = entityPath.Split('.', 2);
+            return (entityPath, parts[0]);
+        }
+
+        foreach (var dom in RecognizedDomains)
+        {
+            if (entityPath.StartsWith(dom + "_", StringComparison.OrdinalIgnoreCase))
+            {
+                string objId = entityPath[(dom.Length + 1)..];
+                return ($"{dom}.{objId}", dom);
+            }
+        }
+
+        if (entityPath.Contains('_'))
+        {
+            var idx = entityPath.IndexOf('_');
+            var dom = entityPath[..idx];
+            var objId = entityPath[(idx + 1)..];
+            return ($"{dom}.{objId}", dom);
+        }
+
+        return (string.Empty, string.Empty);
+    }
+
+    private void EnsureDynamicVariable(string entityId, string stateValue)
+    {
+        var varKey = $"HAState.{entityId}";
+        EnsureCustomVariable(varKey, $"HA State {entityId}", stateValue);
+    }
+
+    private void EnsureCustomVariable(string varKey, string displayName, string initialValue)
+    {
+        if (!_registeredDynamicVars.Contains(varKey))
+        {
+            CreateVariable<string>(varKey, displayName);
+            _registeredDynamicVars.Add(varKey);
+        }
+        SetVariableValue(varKey, initialValue);
+    }
+
+    private bool IsEntityAllowed(string entityId)
+    {
+        var filter = GetSettingValue<string>(HomeAssistantSetting.EntityFilter);
+        if (filter.IsNullOrEmpty()) return true;
+
+        var items = filter.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        return items.Any(item => entityId.Equals(item, StringComparison.OrdinalIgnoreCase) || entityId.StartsWith(item + ".", StringComparison.OrdinalIgnoreCase));
+    }
+
+    #region Public Helper API for Flow Nodes
+
+    public async Task<bool> CallService(string domain, string service, string? entityId = null, object? serviceData = null)
+    {
+        if (_client == null) return false;
+        var success = await _client.CallServiceAsync(domain, service, entityId, serviceData);
+        if (success)
+            TriggerEvent(HomeAssistantEvent.OnServiceExecuted);
+        else
+            TriggerEvent(HomeAssistantEvent.OnError);
+        return success;
+    }
+
+    public async Task<(string State, bool IsOn, Dictionary<string, object> Attributes, string AttributesJson)> GetEntityStateDetails(string entityId)
+    {
+        var emptyDict = new Dictionary<string, object>();
+        if (_client == null) return (string.Empty, false, emptyDict, "{}");
+
+        var stateObj = await _client.GetStateAsync(entityId);
+        if (stateObj == null) return (string.Empty, false, emptyDict, "{}");
+
+        string stateStr = stateObj.State ?? string.Empty;
+        bool isOn = string.Equals(stateStr, "on", StringComparison.OrdinalIgnoreCase);
+        var attrDict = stateObj.Attributes ?? emptyDict;
+        string attrJson = JsonSerializer.Serialize(attrDict);
+
+        return (stateStr, isOn, attrDict, attrJson);
+    }
+
+    public async Task<string> RenderTemplate(string template)
+    {
+        if (_client == null) return "[Error: Client not initialized]";
+        return await _client.RenderTemplateAsync(template);
+    }
+
+    #endregion
+}
