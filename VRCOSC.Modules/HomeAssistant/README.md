@@ -68,14 +68,16 @@ You can send OSC parameters from VRChat to trigger Home Assistant services, and 
 
 VRCOSC maps VRChat OSC parameters to Home Assistant entities based on the **OSC Prefix** (default: `HomeAssistant/`).
 
-- Replace dots (`.`) in Entity IDs with underscores (`_`).
-- Format: `{OSC_Prefix}{domain}_{object_id}` or `{OSC_Prefix}{domain}.{object_id}`.
+- Standard formats supported for bi-directional synchronization:
+  - Slash format: `{OSC_Prefix}{domain}/{object_id}` (e.g. `HomeAssistant/switch/esphome_blus_room_flood_light_relais`)
+  - Underscore format: `{OSC_Prefix}{domain}_{object_id}` (e.g. `HomeAssistant/switch_esphome_blus_room_flood_light_relais`)
+  - Dot format: `{OSC_Prefix}{domain}.{object_id}` (e.g. `HomeAssistant/switch.esphome_blus_room_flood_light_relais`)
 
 #### Examples:
-- Entity ID: `light.desk_lamp` $\rightarrow$ Parameter: `HomeAssistant/light_desk_lamp`
-- Entity ID: `switch.pc_power` $\rightarrow$ Parameter: `HomeAssistant/switch_pc_power`
-- Entity ID: `cover.garage_door` $\rightarrow$ Parameter: `HomeAssistant/cover_garage_door`
-- Sub-attributes (e.g. Brightness): `HomeAssistant/light_desk_lamp/brightness`
+- Entity ID: `light.desk_lamp` $\rightarrow$ Parameter: `HomeAssistant/light/desk_lamp` or `HomeAssistant/light_desk_lamp`
+- Entity ID: `switch.pc_power` $\rightarrow$ Parameter: `HomeAssistant/switch/pc_power` or `HomeAssistant/switch_pc_power`
+- Entity ID: `cover.garage_door` $\rightarrow$ Parameter: `HomeAssistant/cover/garage_door` or `HomeAssistant/cover_garage_door`
+- Sub-attributes (e.g. Brightness): `HomeAssistant/light/desk_lamp/brightness` or `HomeAssistant/light_desk_lamp/brightness`
 
 ---
 

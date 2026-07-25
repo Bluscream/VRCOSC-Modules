@@ -272,10 +272,12 @@ public class HomeAssistantModule : Module
     private void PushEntityToOscParameter(string entityId, string state, JsonElement attributes)
     {
         var prefix = GetSettingValue<string>(HomeAssistantSetting.OscPrefix).TrimEnd('/') + "/";
-        var paramName = prefix + entityId.Replace('.', '_');
+        var paramNameUnderscore = prefix + entityId.Replace('.', '_');
+        var paramNameSlash = prefix + entityId.Replace('.', '/');
 
         bool isOn = string.Equals(state, "on", StringComparison.OrdinalIgnoreCase);
-        SendParameter(paramName, isOn);
+        SendParameter(paramNameUnderscore, isOn);
+        SendParameter(paramNameSlash, isOn);
 
         if (attributes.ValueKind == JsonValueKind.Object)
         {
@@ -283,25 +285,29 @@ public class HomeAssistantModule : Module
             if (attributes.TryGetProperty("brightness", out var brightProp) && brightProp.TryGetInt32(out int brightness))
             {
                 float floatBright = Math.Clamp(brightness / 255.0f, 0.0f, 1.0f);
-                SendParameter(paramName + "/brightness", floatBright);
-                SendParameter(paramName + "/brightness_int", brightness);
+                SendParameter(paramNameUnderscore + "/brightness", floatBright);
+                SendParameter(paramNameUnderscore + "/brightness_int", brightness);
+                SendParameter(paramNameSlash + "/brightness", floatBright);
+                SendParameter(paramNameSlash + "/brightness_int", brightness);
             }
             // Volume Level (0.0..1.0)
             if (attributes.TryGetProperty("volume_level", out var volProp) && volProp.TryGetSingle(out float volume))
             {
-                SendParameter(paramName + "/volume", volume);
+                SendParameter(paramNameUnderscore + "/volume", volume);
+                SendParameter(paramNameSlash + "/volume", volume);
             }
             // Position (0..100)
             if (attributes.TryGetProperty("current_position", out var posProp) && posProp.TryGetInt32(out int position))
             {
                 float floatPos = Math.Clamp(position / 100.0f, 0.0f, 1.0f);
-                SendParameter(paramName + "/position", floatPos);
+                SendParameter(paramNameUnderscore + "/position", floatPos);
+                SendParameter(paramNameSlash + "/position", floatPos);
             }
         }
 
         if (GetSettingValue<bool>(HomeAssistantSetting.LogOscParams))
         {
-            LogDebug($"Pushed HA -> OSC: {paramName} = {isOn} ({state})");
+            LogDebug($"Pushed HA -> OSC: {paramNameSlash} & {paramNameUnderscore} = {isOn} ({state})");
         }
     }
 
@@ -341,18 +347,8 @@ public class HomeAssistantModule : Module
     {
         try
         {
-            string entityPath = path;
-            string? attribute = null;
-
-            if (path.Contains('/'))
-            {
-                var parts = path.Split('/', 2);
-                entityPath = parts[0];
-                attribute = parts[1];
-            }
-
-            var (entityId, domain) = ResolveEntityIdAndDomain(entityPath);
-            if (entityId.IsNullOrEmpty()) return;
+            var (entityId, domain, attribute) = ParseOscPath(path);
+            if (entityId.IsNullOrEmpty() || domain.IsNullOrEmpty()) return;
 
             if (parameter.Value is bool boolVal)
             {
@@ -420,6 +416,29 @@ public class HomeAssistantModule : Module
         {
             Log($"Error processing OSC parameter input for {path}: {ex.Message}");
         }
+    }
+
+    private (string EntityId, string Domain, string? Attribute) ParseOscPath(string path)
+    {
+        var parts = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 0) return (string.Empty, string.Empty, null);
+
+        // Case 1: Slash format domain/object_id[/attribute] (e.g. switch/esphome_blus_room_flood_light_relais or light/desk_lamp/brightness)
+        if (parts.Length >= 2 && RecognizedDomains.Contains(parts[0], StringComparer.OrdinalIgnoreCase))
+        {
+            var dom = parts[0];
+            var objId = parts[1];
+            var entityId = $"{dom}.{objId}";
+            string? attr = parts.Length >= 3 ? parts[2] : null;
+            return (entityId, dom, attr);
+        }
+
+        // Case 2: Dot format or underscore format with potential attribute suffix (e.g. switch.my_switch or light_desk_lamp/brightness)
+        string entityPath = parts[0];
+        string? attribute = parts.Length >= 2 ? parts[1] : null;
+
+        var (resolvedId, resolvedDom) = ResolveEntityIdAndDomain(entityPath);
+        return (resolvedId, resolvedDom, attribute);
     }
 
     private (string EntityId, string Domain) ResolveEntityIdAndDomain(string entityPath)
