@@ -69,7 +69,7 @@ if [ -z "$VRC_COMPATDATA" ]; then
 fi
 
 ROAMING_DIR="$VRC_COMPATDATA/pfx/drive_c/users/steamuser/AppData/Roaming/VRCOSC"
-LOCAL_PKG_DIR="$ROAMING_DIR/packages/local"
+REMOTE_PKG_DIR="$ROAMING_DIR/packages/remote/bluscream.vrcosc.modules"
 
 # Calculate Version
 if [ -z "$VERSION" ]; then
@@ -131,9 +131,9 @@ if [ ! -f "$DLL_PATH" ]; then
 fi
 
 # Deploy locally
-mkdir -p "$LOCAL_PKG_DIR"
-cp "$DLL_PATH" "$LOCAL_PKG_DIR/Bluscream.Modules.dll"
-echo "[OK] Deployed DLL to $LOCAL_PKG_DIR"
+mkdir -p "$REMOTE_PKG_DIR"
+cp "$DLL_PATH" "$REMOTE_PKG_DIR/Bluscream.Modules.dll"
+echo "[OK] Deployed DLL to $REMOTE_PKG_DIR"
 
 # Deploy Silk.NET dependency DLLs (not copied by the build since VRCOSC is the host app)
 NUGET_CACHE="${NUGET_PACKAGES:-$HOME/.nuget/packages}"
@@ -149,15 +149,15 @@ for NAME in "${!SILK_PKGS[@]}"; do
     PKG="${SILK_PKGS[$NAME]}"
     SRC="$NUGET_CACHE/$PKG/$SILK_VERSION/lib/$SILK_TFM/$NAME.dll"
     if [ -f "$SRC" ]; then
-        cp "$SRC" "$LOCAL_PKG_DIR/$NAME.dll"
+        cp "$SRC" "$REMOTE_PKG_DIR/$NAME.dll"
         echo "[OK] Deployed $NAME.dll"
     else
         echo "[WARN] $NAME.dll not found at $SRC"
     fi
 done
 
-# Clean up any native dll from packages/local that shouldn't be there (causes BadImageFormatException)
-rm -f "$LOCAL_PKG_DIR/openxr_loader.dll"
+# Clean up any native dll from packages/remote that shouldn't be there (causes BadImageFormatException)
+rm -f "$REMOTE_PKG_DIR/openxr_loader.dll"
 
 # Deploy openxr_loader.dll to the VRCOSC main AppData Local folder (where VRCOSC.exe resides)
 STEAMVR_LOADER="/run/media/system/Data/Games/Steam/steamapps/common/SteamVR/bin/win64/openxr_loader.dll"
