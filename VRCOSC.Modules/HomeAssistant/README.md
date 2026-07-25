@@ -8,10 +8,11 @@ Integrate **Home Assistant** directly into **VRChat** through VRCOSC! Control sm
 1. [Features](#-features)
 2. [Prerequisites & Setup](#-prerequisites--setup)
 3. [Module Settings](#-module-settings)
-4. [Unity Avatar Parameter Setup (Controlling HA from VRChat)](#-unity-avatar-parameter-setup-controlling-ha-from-vrchat)
+4. [Unity Avatar Parameter Setup (Manual & VRCFury)](#-unity-avatar-parameter-setup-manual--vrcfury)
     - [Parameter Naming Conventions](#1-parameter-naming-conventions)
     - [Supported Domains & Types](#2-supported-domains--types)
-    - [Unity Setup Step-by-Step](#3-unity-setup-step-by-step)
+    - [Manual Setup Step-by-Step](#3-manual-setup-step-by-step)
+    - [VRCFury Setup Step-by-Step](#4-vrcfury-setup-step-by-step)
 5. [ChatBox Integration & Jinja Templates](#-chatbox-integration--jinja-templates)
 6. [VRCOSC Flow Nodes](#-vrcosc-flow-nodes)
 7. [Module Events, Variables & System Parameters](#-module-events-variables--system-parameters)
@@ -59,7 +60,7 @@ Integrate **Home Assistant** directly into **VRChat** through VRCOSC! Control sm
 
 ---
 
-## 🎮 Unity Avatar Parameter Setup (Controlling HA from VRChat)
+## 🎮 Unity Avatar Parameter Setup (Manual & VRCFury)
 
 You can send OSC parameters from VRChat to trigger Home Assistant services, and receive HA updates to drive avatar animations/toggles!
 
@@ -96,7 +97,7 @@ Assign a `float` radial puppet or slider parameter:
 
 ---
 
-### 3. Unity Setup Step-by-Step
+### 3. Manual Setup Step-by-Step
 
 1. Open your Avatar Project in Unity.
 2. Select your avatar's **Expression Parameters** asset.
@@ -105,12 +106,41 @@ Assign a `float` radial puppet or slider parameter:
    - **Type**: `Bool`
    - **Saved**: Optional (enables saving state across world changes)
    - **Synced**: `True`
-4. Open your **VRC Expresssions Menu** asset.
+4. Open your **VRC Expressions Menu** asset.
 5. Add a Control:
    - **Name**: Desk Lamp
    - **Type**: `Toggle`
    - **Parameter**: `HomeAssistant/light_desk_lamp`
 6. Upload your avatar! When you toggle this button in VRChat, VRCOSC sends the command to Home Assistant. Likewise, when you turn the lamp on/off in Home Assistant, the menu toggle updates live in VRCOSC/VRChat.
+
+---
+
+### 4. VRCFury Setup Step-by-Step
+
+Using **VRCFury** is the easiest non-destructive way to add Home Assistant controls without manually editing your avatar's Animator Controllers or Expression Parameters!
+
+#### A. Basic Toggle (e.g. Desk Lamp)
+1. Select your avatar root in the Hierarchy.
+2. In the Inspector, click **Add Component** $\rightarrow$ **VRCFury**.
+3. Click **Add Option** $\rightarrow$ **Toggle**.
+4. Set the Toggle settings:
+   - **Menu Path**: `Home Assistant/Desk Lamp` (or any sub-menu layout you want)
+   - **Saved**: Optional
+5. Under **Global Parameter Name**, enter the full OSC parameter:
+   - `HomeAssistant/light_desk_lamp`
+
+#### B. Radial Puppet / Slider (e.g. Lamp Brightness or Cover Position)
+1. In your **VRCFury** component, click **Add Option** $\rightarrow$ **Slider**.
+2. Set the Slider settings:
+   - **Menu Path**: `Home Assistant/Desk Brightness`
+   - **Parameter**: `HomeAssistant/light_desk_lamp/brightness` (or `HomeAssistant/cover_garage_door`)
+
+#### C. Custom OSC Raw Parameter (For indicator animations)
+If you want Home Assistant to drive avatar animations (like lighting up an LED prop on your avatar when a light turns on in real life):
+1. In **VRCFury**, click **Add Option** $\rightarrow$ **Toggle**.
+2. Add an Action: **Game Object Toggle** (select your prop/LED object).
+3. Enable **Use Global Parameter** and enter `HomeAssistant/light_desk_lamp`.
+4. VRCFury will automatically generate all necessary animator layers, synced parameter entries, and menu items upon avatar build!
 
 ---
 
