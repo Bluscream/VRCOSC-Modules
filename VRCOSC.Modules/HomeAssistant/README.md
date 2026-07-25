@@ -69,7 +69,7 @@ You can send OSC parameters from VRChat to trigger Home Assistant services, and 
 VRCOSC maps VRChat OSC parameters to Home Assistant entities based on the **OSC Prefix** (default: `HomeAssistant/`).
 
 - Replace dots (`.`) in Entity IDs with underscores (`_`).
-- Format: `{OSC_Prefix}{domain}_{object_id}` or `{OSC_Prefix}{domain}/{object_id}`.
+- Format: `{OSC_Prefix}{domain}_{object_id}` or `{OSC_Prefix}{domain}.{object_id}`.
 
 #### Examples:
 - Entity ID: `light.desk_lamp` $\rightarrow$ Parameter: `HomeAssistant/light_desk_lamp`
