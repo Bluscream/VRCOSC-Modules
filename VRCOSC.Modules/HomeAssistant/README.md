@@ -104,7 +104,7 @@ Assign a `float` radial puppet or slider parameter:
 1. Open your Avatar Project in Unity.
 2. Select your avatar's **Expression Parameters** asset.
 3. Add a new parameter:
-   - **Name**: `HomeAssistant/light_desk_lamp` (matching your HA entity `light.desk_lamp`)
+   - **Name**: `HomeAssistant/light/desk_lamp` (matching your HA entity `light.desk_lamp`)
    - **Type**: `Bool`
    - **Saved**: Optional (enables saving state across world changes)
    - **Synced**: `True`
@@ -112,7 +112,7 @@ Assign a `float` radial puppet or slider parameter:
 5. Add a Control:
    - **Name**: Desk Lamp
    - **Type**: `Toggle`
-   - **Parameter**: `HomeAssistant/light_desk_lamp`
+   - **Parameter**: `HomeAssistant/light/desk_lamp`
 6. Upload your avatar! When you toggle this button in VRChat, VRCOSC sends the command to Home Assistant. Likewise, when you turn the lamp on/off in Home Assistant, the menu toggle updates live in VRCOSC/VRChat.
 
 ---
@@ -129,19 +129,19 @@ Using **VRCFury** is the easiest non-destructive way to add Home Assistant contr
    - **Menu Path**: `Home Assistant/Desk Lamp` (or any sub-menu layout you want)
    - **Saved**: Optional
 5. Under **Global Parameter Name**, enter the full OSC parameter:
-   - `HomeAssistant/light_desk_lamp`
+   - `HomeAssistant/light/desk_lamp`
 
 #### B. Radial Puppet / Slider (e.g. Lamp Brightness or Cover Position)
 1. In your **VRCFury** component, click **Add Option** $\rightarrow$ **Slider**.
 2. Set the Slider settings:
    - **Menu Path**: `Home Assistant/Desk Brightness`
-   - **Parameter**: `HomeAssistant/light_desk_lamp/brightness` (or `HomeAssistant/cover_garage_door`)
+   - **Parameter**: `HomeAssistant/light/desk_lamp/brightness` (or `HomeAssistant/cover/garage_door`)
 
 #### C. Custom OSC Raw Parameter (For indicator animations)
 If you want Home Assistant to drive avatar animations (like lighting up an LED prop on your avatar when a light turns on in real life):
 1. In **VRCFury**, click **Add Option** $\rightarrow$ **Toggle**.
 2. Add an Action: **Game Object Toggle** (select your prop/LED object).
-3. Enable **Use Global Parameter** and enter `HomeAssistant/light_desk_lamp`.
+3. Enable **Use Global Parameter** and enter `HomeAssistant/light/desk_lamp`.
 4. VRCFury will automatically generate all necessary animator layers, synced parameter entries, and menu items upon avatar build!
 
 ---
