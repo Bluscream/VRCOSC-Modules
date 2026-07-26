@@ -13,7 +13,8 @@ public enum HomeAssistantSetting
     LogOscParams,
     EntityFilter,
     TemplateVariables,
-    RegisterAllEntityVariables
+    RegisterAllEntityVariables,
+    AllowAnywhereOscPrefix
 }
 
 public enum HomeAssistantParameter

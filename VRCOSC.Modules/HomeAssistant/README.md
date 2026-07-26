@@ -51,6 +51,7 @@ Integrate **Home Assistant** directly into **VRChat** through VRCOSC! Control sm
 | **Server URL** | Text | `http://homeassistant.local:8123` | Base HTTP/WS address of your HA instance |
 | **Access Token** | Text | `""` | Long-Lived Access Token generated in HA profile |
 | **OSC Prefix** | Text | `HomeAssistant/` | Prefix added to avatar parameters (e.g. `HomeAssistant/`) |
+| **Match OSC Prefix Anywhere** | Toggle | `true` | Matches OSC prefix anywhere in parameter paths to support generator prefixes (e.g. VRCFury `VF52_..._OSC/`) |
 | **Enable Realtime WebSocket** | Toggle | `true` | Real-time bi-directional streaming via HA WebSocket API |
 | **Log Debug** | Toggle | `false` | Enables verbose diagnostic console logging |
 | **Log OSC Parameters** | Toggle | `false` | Logs all incoming & outgoing OSC messages |

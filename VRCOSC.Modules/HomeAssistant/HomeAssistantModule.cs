@@ -40,6 +40,7 @@ public class HomeAssistantModule : Module
         CreateTextBox(HomeAssistantSetting.ServerUrl, "Server URL", "Home Assistant base URL (e.g. http://192.168.1.100:8123)", "http://homeassistant.local:8123");
         CreateTextBox(HomeAssistantSetting.AccessToken, "Access Token", "Long-Lived Access Token generated in Home Assistant profile", string.Empty);
         CreateTextBox(HomeAssistantSetting.OscPrefix, "OSC Prefix", "Prefix for Home Assistant avatar parameters (e.g. HomeAssistant/)", "HomeAssistant/");
+        CreateToggle(HomeAssistantSetting.AllowAnywhereOscPrefix, "Match OSC Prefix Anywhere", "Allow matching the OSC prefix anywhere in parameter paths to support generator prefixes (e.g. VRCFury's VF52_..._OSC/HomeAssistant/). If disabled, parameters must start with the exact prefix.", true);
         CreateToggle(HomeAssistantSetting.EnableWebSocket, "Enable Realtime WebSocket", "Enable real-time state change updates via WebSocket API", true);
         CreateToggle(HomeAssistantSetting.LogDebug, "Log Debug", "Log detailed Home Assistant debug messages to console", false);
         CreateToggle(HomeAssistantSetting.LogOscParams, "Log OSC Parameters", "Log incoming/outgoing Home Assistant OSC parameters to console", false);
@@ -66,7 +67,7 @@ public class HomeAssistantModule : Module
         // Settings Groups
         CreateGroup("Connection", "Home Assistant Connection Settings", HomeAssistantSetting.ServerUrl, HomeAssistantSetting.AccessToken, HomeAssistantSetting.EnableWebSocket);
         CreateGroup("Custom Variables", "Custom Jinja Template ChatBox Variables", HomeAssistantSetting.RegisterAllEntityVariables, HomeAssistantSetting.TemplateVariables);
-        CreateGroup("OSC Configuration", "OSC Parameter Integration", HomeAssistantSetting.OscPrefix, HomeAssistantSetting.EntityFilter);
+        CreateGroup("OSC Configuration", "OSC Parameter Integration", HomeAssistantSetting.OscPrefix, HomeAssistantSetting.AllowAnywhereOscPrefix, HomeAssistantSetting.EntityFilter);
         CreateGroup("Debug", "Debug & Logging Options", HomeAssistantSetting.LogDebug, HomeAssistantSetting.LogOscParams);
     }
 
@@ -318,16 +319,36 @@ public class HomeAssistantModule : Module
         var prefix = GetSettingValue<string>(HomeAssistantSetting.OscPrefix).TrimEnd('/');
         var rawName = parameter.Name;
 
-        // Check if parameter matches HA prefix (handling VRCFury prefixes like VF52_VF262_OSC/HomeAssistant/...)
+        // Check if parameter matches HA prefix
         string path = string.Empty;
-        var idx = rawName.IndexOf(prefix, StringComparison.OrdinalIgnoreCase);
-        if (idx >= 0)
+        bool allowAnywhere = GetSettingValue<bool>(HomeAssistantSetting.AllowAnywhereOscPrefix);
+
+        if (allowAnywhere)
         {
-            path = rawName[(idx + prefix.Length)..].TrimStart('/');
+            var idx = rawName.IndexOf(prefix, StringComparison.OrdinalIgnoreCase);
+            if (idx >= 0)
+            {
+                path = rawName[(idx + prefix.Length)..].TrimStart('/');
+            }
+            else
+            {
+                return;
+            }
         }
         else
         {
-            return;
+            if (rawName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            {
+                path = rawName[prefix.Length..].TrimStart('/');
+            }
+            else if (rawName.StartsWith("/avatar/parameters/" + prefix, StringComparison.OrdinalIgnoreCase))
+            {
+                path = rawName[("/avatar/parameters/" + prefix).Length..].TrimStart('/');
+            }
+            else
+            {
+                return;
+            }
         }
 
         if (path.IsNullOrEmpty()) return;
