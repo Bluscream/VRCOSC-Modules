@@ -507,7 +507,8 @@ public class HomeAssistantModule : Module
         if (entityPath.Contains('.'))
         {
             var parts = entityPath.Split('.', 2);
-            return (entityPath, parts[0]);
+            var dom = RecognizedDomains.FirstOrDefault(d => d.Equals(parts[0], StringComparison.OrdinalIgnoreCase)) ?? parts[0];
+            return (entityPath, dom);
         }
 
         foreach (var dom in RecognizedDomains)
@@ -517,14 +518,6 @@ public class HomeAssistantModule : Module
                 string objId = entityPath[(dom.Length + 1)..];
                 return ($"{dom}.{objId}", dom);
             }
-        }
-
-        if (entityPath.Contains('_'))
-        {
-            var idx = entityPath.IndexOf('_');
-            var dom = entityPath[..idx];
-            var objId = entityPath[(idx + 1)..];
-            return ($"{dom}.{objId}", dom);
         }
 
         return (string.Empty, string.Empty);
