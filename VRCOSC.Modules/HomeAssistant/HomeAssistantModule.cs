@@ -368,7 +368,15 @@ public class HomeAssistantModule : Module
                     }
                     else if (parameter.Value is bool bVal)
                     {
-                        await CallService(domain, bVal ? "turn_on" : "turn_off", entityId);
+                        if (!bVal)
+                        {
+                            await CallService(domain, "turn_off", entityId);
+                        }
+                        else
+                        {
+                            var data = new Dictionary<string, object> { { "brightness", 255 } };
+                            await CallService(domain, "turn_on", entityId, data);
+                        }
                         return;
                     }
 
