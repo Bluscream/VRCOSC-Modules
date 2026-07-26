@@ -318,15 +318,12 @@ public class HomeAssistantModule : Module
         var prefix = GetSettingValue<string>(HomeAssistantSetting.OscPrefix).TrimEnd('/');
         var rawName = parameter.Name;
 
-        // Check if parameter matches HA prefix
+        // Check if parameter matches HA prefix (handling VRCFury prefixes like VF52_VF262_OSC/HomeAssistant/...)
         string path = string.Empty;
-        if (rawName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+        var idx = rawName.IndexOf(prefix, StringComparison.OrdinalIgnoreCase);
+        if (idx >= 0)
         {
-            path = rawName[prefix.Length..].TrimStart('/');
-        }
-        else if (rawName.StartsWith("/avatar/parameters/" + prefix, StringComparison.OrdinalIgnoreCase))
-        {
-            path = rawName[("/avatar/parameters/" + prefix).Length..].TrimStart('/');
+            path = rawName[(idx + prefix.Length)..].TrimStart('/');
         }
         else
         {
