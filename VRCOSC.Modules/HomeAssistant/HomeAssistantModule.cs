@@ -350,6 +350,62 @@ public class HomeAssistantModule : Module
             var (entityId, domain, attribute) = ParseOscPath(path);
             if (entityId.IsNullOrEmpty() || domain.IsNullOrEmpty()) return;
 
+            // Handle specific sub-attributes (e.g. HomeAssistant/light/closet_led/brightness)
+            if (!attribute.IsNullOrEmpty())
+            {
+                var attrLower = attribute.ToLowerInvariant();
+
+                if (attrLower == "brightness" || attrLower == "brightness_int")
+                {
+                    int brightness = 0;
+                    if (parameter.Value is float fVal)
+                    {
+                        brightness = attrLower == "brightness_int" ? (int)Math.Clamp(fVal, 0, 255) : (int)Math.Round(Math.Clamp(fVal, 0.0f, 1.0f) * 255);
+                    }
+                    else if (parameter.Value is int iVal)
+                    {
+                        brightness = Math.Clamp(iVal, 0, 255);
+                    }
+                    else if (parameter.Value is bool bVal)
+                    {
+                        await CallService(domain, bVal ? "turn_on" : "turn_off", entityId);
+                        return;
+                    }
+
+                    if (brightness <= 0)
+                    {
+                        await CallService(domain, "turn_off", entityId);
+                    }
+                    else
+                    {
+                        var data = new Dictionary<string, object> { { "brightness", brightness } };
+                        await CallService(domain, "turn_on", entityId, data);
+                    }
+                    return;
+                }
+                else if (attrLower == "volume" || attrLower == "volume_level")
+                {
+                    float volume = 0f;
+                    if (parameter.Value is float fVal) volume = Math.Clamp(fVal, 0.0f, 1.0f);
+                    else if (parameter.Value is int iVal) volume = Math.Clamp(iVal / 100.0f, 0.0f, 1.0f);
+
+                    var data = new Dictionary<string, object> { { "volume_level", volume } };
+                    await CallService(domain, "volume_set", entityId, data);
+                    return;
+                }
+                else if (attrLower == "position")
+                {
+                    int position = 0;
+                    if (parameter.Value is float fVal) position = (int)Math.Round(Math.Clamp(fVal, 0.0f, 1.0f) * 100);
+                    else if (parameter.Value is int iVal) position = Math.Clamp(iVal, 0, 100);
+
+                    var data = new Dictionary<string, object> { { "position", position } };
+                    await CallService(domain, "set_cover_position", entityId, data);
+                    return;
+                }
+            }
+
+            // Default entity-level parameter handling
             if (parameter.Value is bool boolVal)
             {
                 string service = boolVal ? "turn_on" : "turn_off";
