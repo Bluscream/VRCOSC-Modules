@@ -29,6 +29,13 @@ public sealed class LinuxHardwareStatsModule : Module
         CreateTextBox(HardwareStatsSetting.SelectedGPU, "Selected GPU", "Index (0-based) of the GPU to track. Useful for iGPU + dGPU setups." + restartNote, 0);
         CreateTextBox(HardwareStatsSetting.NetworkInterface, "Network Interface", "Interface to monitor (e.g. enp6s0, eth0). Leave empty to combine all non-loopback interfaces." + restartNote, "");
 
+        CreateTextBox(HardwareStatsSetting.RedactedWindowTitlePattern, "Redacted Window Title Pattern",
+            "Regex pattern — if the active window title matches, it is replaced with the Redacted Text. Leave empty to disable.", "");
+        CreateTextBox(HardwareStatsSetting.RedactedProcessNamePattern, "Redacted Process Name Pattern",
+            "Regex pattern — if the active process name matches, it is replaced with the Redacted Text. Leave empty to disable.", "");
+        CreateTextBox(HardwareStatsSetting.RedactedText, "Redacted Text",
+            "Text shown when a window title or process name matches a redaction pattern.", "[REDACTED]");
+
         RegisterParameter<float>(HardwareStatsParameter.CPUUsage, "VRCOSC/Hardware/CPU/Usage", ParameterMode.Write, "CPU Usage", "The CPU usage (0-1)");
         RegisterParameter<int>(HardwareStatsParameter.CPUPower, "VRCOSC/Hardware/CPU/Power", ParameterMode.Write, "CPU Power", "The CPU power draw (W)");
         RegisterParameter<int>(HardwareStatsParameter.CPUTemp, "VRCOSC/Hardware/CPU/Temp", ParameterMode.Write, "CPU Temp", "The CPU temperature (C)");
@@ -47,6 +54,7 @@ public sealed class LinuxHardwareStatsModule : Module
         RegisterParameter<int>(HardwareStatsParameter.NetworkUpload, "VRCOSC/Hardware/Network/Upload", ParameterMode.Write, "Network Upload", "The network upload speed (KB/s)");
         RegisterParameter<int>(HardwareStatsParameter.SystemTemp, "VRCOSC/Hardware/System/Temp", ParameterMode.Write, "System Temp", "The system (ACPI/motherboard) temperature (C)");
         RegisterParameter<int>(HardwareStatsParameter.MaxTemp, "VRCOSC/Hardware/Max/Temp", ParameterMode.Write, "Max Temp", "The highest temperature across all sensors (C)");
+        RegisterParameter<int>(HardwareStatsParameter.WindowFPS, "VRCOSC/Hardware/Window/FPS", ParameterMode.Write, "Window FPS", "The active window FPS (display refresh rate as baseline)");
     }
 
     protected override void OnPostLoad()
@@ -86,6 +94,11 @@ public sealed class LinuxHardwareStatsModule : Module
         CreateVariable<float>(HardwareStatsVariable.NetworkTxTotal, "Network Sent Total (MB)");
         CreateVariable<int>(HardwareStatsVariable.SystemTemp, "System Temp (C)");
         CreateVariable<int>(HardwareStatsVariable.MaxTemp, "Max Temp (C)");
+
+        // --- Active Window ---
+        CreateVariable<string>(HardwareStatsVariable.WindowTitle, "Active Window Title");
+        CreateVariable<string>(HardwareStatsVariable.ProcessName, "Active Process Name");
+        CreateVariable<int>(HardwareStatsVariable.WindowFPS, "Active Window FPS");
 
         CreateState(HardwareStatsState.Default, "Default", "CPU: {0}% | GPU: {1}%\nRAM: {2}GB/{3}GB", new[] { cpuUsageReference, gpuUsageReference, ramUsedReference, ramTotalReference });
         CreateState(HardwareStatsState.WithNetwork, "With Network", "CPU: {0}% | GPU: {1}%\nRAM: {2}GB/{3}GB\n↓{4} ↑{5} KB/s", new[] { cpuUsageReference, gpuUsageReference, ramUsedReference, ramTotalReference, netDownloadReference, netUploadReference });
@@ -295,6 +308,26 @@ public sealed class LinuxHardwareStatsModule : Module
                     SetVariableValue(HardwareStatsVariable.MaxTemp, maxTemp);
                 }
 
+                // Active window (lines 22-24)
+                if (lines.Length >= 25)
+                {
+                    var windowTitle = lines[22].Trim();
+                    var processName = lines[23].Trim();
+                    int.TryParse(lines[24].Trim(), out var windowFps);
+
+                    var titlePattern = GetSettingValue<string>(HardwareStatsSetting.RedactedWindowTitlePattern) ?? "";
+                    var procPattern  = GetSettingValue<string>(HardwareStatsSetting.RedactedProcessNamePattern) ?? "";
+                    var redactedText = GetSettingValue<string>(HardwareStatsSetting.RedactedText) ?? "[REDACTED]";
+
+                    windowTitle = ApplyRedaction(windowTitle, titlePattern, redactedText);
+                    processName = ApplyRedaction(processName, procPattern, redactedText);
+
+                    SendParameter(HardwareStatsParameter.WindowFPS, windowFps);
+                    SetVariableValue(HardwareStatsVariable.WindowTitle, windowTitle);
+                    SetVariableValue(HardwareStatsVariable.ProcessName, processName);
+                    SetVariableValue(HardwareStatsVariable.WindowFPS, windowFps);
+                }
+
                 if (!_firstUpdateDone)
                 {
                     _firstUpdateDone = true;
@@ -311,6 +344,13 @@ public sealed class LinuxHardwareStatsModule : Module
     protected override Task OnModuleStop()
     {
         return Task.CompletedTask;
+    }
+
+    private static string ApplyRedaction(string value, string pattern, string redactedText)
+    {
+        if (string.IsNullOrWhiteSpace(pattern)) return value;
+        try { return Regex.IsMatch(value, pattern, RegexOptions.IgnoreCase) ? redactedText : value; }
+        catch { return value; } // invalid regex — leave unchanged
     }
 
     /// <summary>
@@ -372,7 +412,10 @@ public sealed class LinuxHardwareStatsModule : Module
     {
         SelectedCPU,
         SelectedGPU,
-        NetworkInterface
+        NetworkInterface,
+        RedactedWindowTitlePattern,
+        RedactedProcessNamePattern,
+        RedactedText
     }
 
     private enum HardwareStatsParameter
@@ -394,7 +437,8 @@ public sealed class LinuxHardwareStatsModule : Module
         NetworkDownload,
         NetworkUpload,
         SystemTemp,
-        MaxTemp
+        MaxTemp,
+        WindowFPS
     }
 
     private enum HardwareStatsState
@@ -430,7 +474,10 @@ public sealed class LinuxHardwareStatsModule : Module
         NetworkRxTotal,
         NetworkTxTotal,
         SystemTemp,
-        MaxTemp
+        MaxTemp,
+        WindowTitle,
+        ProcessName,
+        WindowFPS
     }
 }
 

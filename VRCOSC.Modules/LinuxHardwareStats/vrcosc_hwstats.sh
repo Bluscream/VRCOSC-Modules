@@ -289,11 +289,50 @@ for temp_file in /sys/class/hwmon/hwmon*/temp*_input; do
 done
 
 # ---------------------------------------------------------------------------
-# Output (22 lines, 0-indexed)
+# Active Window Info (X11/XWayland via xdotool, KDE Wayland via qdbus fallback)
+# ---------------------------------------------------------------------------
+active_window_title="Unknown"
+active_process_name="Unknown"
+active_window_fps=0
+_xdisplay="${DISPLAY:-:0}"
+
+if command -v xdotool &>/dev/null; then
+    _win_id=$(DISPLAY="$_xdisplay" xdotool getactivewindow 2>/dev/null)
+    if [ -n "$_win_id" ]; then
+        _title=$(DISPLAY="$_xdisplay" xdotool getwindowname "$_win_id" 2>/dev/null)
+        _pid=$(DISPLAY="$_xdisplay" xdotool getwindowpid "$_win_id" 2>/dev/null)
+        [ -n "$_title" ] && active_window_title=$(printf '%s' "$_title" | tr '\n\r\t' ' ' | xargs)
+        if [ -n "$_pid" ]; then
+            _proc=$(ps -p "$_pid" -o comm= 2>/dev/null)
+            [ -n "$_proc" ] && active_process_name=$(printf '%s' "$_proc" | tr '\n\r\t' ' ' | xargs)
+        fi
+    fi
+fi
+
+# KDE KWin Wayland fallback: get caption of active window via DBus
+if [ "$active_window_title" = "Unknown" ] && command -v qdbus &>/dev/null; then
+    _kwin_title=$(qdbus org.kde.KWin /KWin org.kde.KWin.queryWindowInfo 2>/dev/null | \
+        awk -F= '/caption/{print $2; exit}' | xargs)
+    [ -n "$_kwin_title" ] && active_window_title="$_kwin_title"
+fi
+
+# FPS: display refresh rate of primary monitor as a reliable baseline
+# (actual game FPS requires MangoHud or similar; see module README)
+if command -v xrandr &>/dev/null; then
+    active_window_fps=$(DISPLAY="$_xdisplay" xrandr 2>/dev/null | \
+        grep -oP '[0-9]+\.[0-9]+(?=\*)' | head -1 | cut -d. -f1)
+fi
+[ -z "$active_window_fps" ] && active_window_fps=0
+
+# ---------------------------------------------------------------------------
+# Output (25 lines, 0-indexed)
 # 0-15  : original fields (backward compatible)
 # 16-19 : network speeds and totals
 # 20    : system_temp (ACPI / motherboard)
 # 21    : max_temp (highest across all hwmon sensors)
+# 22    : active_window_title
+# 23    : active_process_name
+# 24    : active_window_fps (display refresh rate or game FPS)
 # ---------------------------------------------------------------------------
 cat <<EOF > ~/.vrcosc_hwstats.txt
 $cpu_usage
@@ -318,4 +357,7 @@ $net_rx_total_mb
 $net_tx_total_mb
 $system_temp
 $max_temp
+$active_window_title
+$active_process_name
+$active_window_fps
 EOF
