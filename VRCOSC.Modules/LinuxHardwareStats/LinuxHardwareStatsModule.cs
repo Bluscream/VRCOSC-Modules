@@ -24,9 +24,10 @@ public sealed class LinuxHardwareStatsModule : Module
 
     protected override void OnPreLoad()
     {
-        CreateTextBox(HardwareStatsSetting.SelectedCPU, "Selected CPU", "Index (0-based) of the CPU package to track. Most systems have only one (0).", 0);
-        CreateTextBox(HardwareStatsSetting.SelectedGPU, "Selected GPU", "Index (0-based) of the GPU to track. Useful for iGPU + dGPU setups.", 0);
-        CreateTextBox(HardwareStatsSetting.NetworkInterface, "Network Interface", "Interface to monitor (e.g. enp6s0, eth0). Leave empty to combine all non-loopback interfaces.", "");
+        const string restartNote = " — requires a module restart to apply.";
+        CreateTextBox(HardwareStatsSetting.SelectedCPU, "Selected CPU", "Index (0-based) of the CPU package to track. Most systems have only one (0)." + restartNote, 0);
+        CreateTextBox(HardwareStatsSetting.SelectedGPU, "Selected GPU", "Index (0-based) of the GPU to track. Useful for iGPU + dGPU setups." + restartNote, 0);
+        CreateTextBox(HardwareStatsSetting.NetworkInterface, "Network Interface", "Interface to monitor (e.g. enp6s0, eth0). Leave empty to combine all non-loopback interfaces." + restartNote, "");
 
         RegisterParameter<float>(HardwareStatsParameter.CPUUsage, "VRCOSC/Hardware/CPU/Usage", ParameterMode.Write, "CPU Usage", "The CPU usage (0-1)");
         RegisterParameter<int>(HardwareStatsParameter.CPUPower, "VRCOSC/Hardware/CPU/Power", ParameterMode.Write, "CPU Power", "The CPU power draw (W)");
