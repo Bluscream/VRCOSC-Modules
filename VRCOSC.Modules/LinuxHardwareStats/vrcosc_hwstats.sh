@@ -373,14 +373,23 @@ fi
 
 # ---------------------------------------------------------------------------
 # VR Mode — detect which VR compositor (if any) is running
+#   SteamVR  : vrserver process (doesn't idle)
+#   OpenXR   : Monado (process = active) OR WiVRn with an active client session
+#   Desktop  : nothing
 # ---------------------------------------------------------------------------
 vr_mode="Desktop"
 if pgrep -x vrserver >/dev/null 2>&1; then
     vr_mode="SteamVR"
-elif pgrep -x "monado-service" >/dev/null 2>&1 || \
-     pgrep -x "monado"         >/dev/null 2>&1 || \
-     pgrep -x "wivrn-server"   >/dev/null 2>&1; then
+elif pgrep -x "monado-service" >/dev/null 2>&1 || pgrep -x "monado" >/dev/null 2>&1; then
     vr_mode="OpenXR"
+elif pgrep -x "wivrn-server" >/dev/null 2>&1; then
+    # WiVRn idles with its server process running; only count as active when
+    # the compositor IPC socket has an ESTABLISHED client (a VR app or headset session)
+    _ipc="/run/user/$(id -u)/wivrn/comp_ipc"
+    if [ -S "$_ipc" ]; then
+        _wivrn_clients=$(ss -xn 2>/dev/null | grep -c "$_ipc.*ESTAB\|ESTAB.*$_ipc")
+        [ "$_wivrn_clients" -gt 0 ] && vr_mode="OpenXR"
+    fi
 fi
 
 # ---------------------------------------------------------------------------
