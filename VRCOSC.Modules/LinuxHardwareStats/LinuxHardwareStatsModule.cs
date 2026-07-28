@@ -24,8 +24,9 @@ public sealed class LinuxHardwareStatsModule : Module
 
     protected override void OnPreLoad()
     {
-        CreateTextBox(HardwareStatsSetting.SelectedCPU, "Selected CPU", "Enter the (0th based) index of the CPU you want to track", 0);
-        CreateTextBox(HardwareStatsSetting.SelectedGPU, "Selected GPU", "Enter the (0th based) index of the GPU you want to track", 0);
+        CreateTextBox(HardwareStatsSetting.SelectedCPU, "Selected CPU", "Index (0-based) of the CPU package to track. Most systems have only one (0).", 0);
+        CreateTextBox(HardwareStatsSetting.SelectedGPU, "Selected GPU", "Index (0-based) of the GPU to track. Useful for iGPU + dGPU setups.", 0);
+        CreateTextBox(HardwareStatsSetting.NetworkInterface, "Network Interface", "Interface to monitor (e.g. enp6s0, eth0). Leave empty to combine all non-loopback interfaces.", "");
 
         RegisterParameter<float>(HardwareStatsParameter.CPUUsage, "VRCOSC/Hardware/CPU/Usage", ParameterMode.Write, "CPU Usage", "The CPU usage (0-1)");
         RegisterParameter<int>(HardwareStatsParameter.CPUPower, "VRCOSC/Hardware/CPU/Power", ParameterMode.Write, "CPU Power", "The CPU power draw (W)");
@@ -149,6 +150,16 @@ public sealed class LinuxHardwareStatsModule : Module
             string homeDir = Environment.GetEnvironmentVariable("HOME") ?? "/home/blu";
             string wineHomeDir = "Z:" + homeDir.Replace('/', '\\');
             string tempFile = Path.Combine(wineHomeDir, ".vrcosc_hwstats.txt");
+
+            // Write settings config for the bash script
+            var gpuIndexRaw = GetSettingValue<string>(HardwareStatsSetting.SelectedGPU) ?? "0";
+            var cpuIndexRaw = GetSettingValue<string>(HardwareStatsSetting.SelectedCPU) ?? "0";
+            int.TryParse(gpuIndexRaw, out var gpuIndex);
+            int.TryParse(cpuIndexRaw, out var cpuIndex);
+            var netIface = GetSettingValue<string>(HardwareStatsSetting.NetworkInterface) ?? "";
+            var configFile = Path.Combine(wineHomeDir, ".vrcosc_hwstats_config");
+            File.WriteAllText(configFile,
+                $"GPU_INDEX={gpuIndex}\nCPU_INDEX={cpuIndex}\nNET_IFACE={netIface}\n");
 
             // Run the host script to generate stats
             LinuxUtils.RunHost("/home/blu/.local/bin/vrcosc_hwstats.sh", ex => Log($"Error running hwstats script: {ex.Message}"));
@@ -361,7 +372,8 @@ public sealed class LinuxHardwareStatsModule : Module
     private enum HardwareStatsSetting
     {
         SelectedCPU,
-        SelectedGPU
+        SelectedGPU,
+        NetworkInterface
     }
 
     private enum HardwareStatsParameter
