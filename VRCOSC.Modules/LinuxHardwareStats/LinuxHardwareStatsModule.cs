@@ -55,6 +55,10 @@ public sealed class LinuxHardwareStatsModule : Module
         RegisterParameter<int>(HardwareStatsParameter.SystemTemp, "VRCOSC/Hardware/System/Temp", ParameterMode.Write, "System Temp", "The system (ACPI/motherboard) temperature (C)");
         RegisterParameter<int>(HardwareStatsParameter.MaxTemp, "VRCOSC/Hardware/Max/Temp", ParameterMode.Write, "Max Temp", "The highest temperature across all sensors (C)");
         RegisterParameter<int>(HardwareStatsParameter.WindowFPS, "VRCOSC/Hardware/Window/FPS", ParameterMode.Write, "Window FPS", "The active window FPS (display refresh rate as baseline)");
+        RegisterParameter<bool>(HardwareStatsParameter.VRRunning, "VRCOSC/Hardware/Game/Running", ParameterMode.Write, "VR Running", "True when any VR compositor is active (SteamVR or OpenXR)");
+        RegisterParameter<bool>(HardwareStatsParameter.VRSteamVR, "VRCOSC/Hardware/Game/SteamVR", ParameterMode.Write, "SteamVR Active", "True when SteamVR is the active VR compositor");
+        RegisterParameter<bool>(HardwareStatsParameter.VROpenXR, "VRCOSC/Hardware/Game/OpenXR", ParameterMode.Write, "OpenXR Active", "True when an OpenXR compositor (Monado, WiVRn) is active");
+        RegisterParameter<bool>(HardwareStatsParameter.VRDesktop, "VRCOSC/Hardware/Game/Desktop", ParameterMode.Write, "Desktop Mode", "True when no VR compositor is running");
     }
 
     protected override void OnPostLoad()
@@ -334,7 +338,16 @@ public sealed class LinuxHardwareStatsModule : Module
                 {
                     var vrMode = lines[25].Trim();
                     if (vrMode.Length > 0)
+                    {
                         SetVariableValue(HardwareStatsVariable.VRMode, vrMode);
+                        var isSteamVR = vrMode == "SteamVR";
+                        var isOpenXR  = vrMode == "OpenXR";
+                        var isDesktop = vrMode == "Desktop";
+                        SendParameter(HardwareStatsParameter.VRRunning, isSteamVR || isOpenXR);
+                        SendParameter(HardwareStatsParameter.VRSteamVR, isSteamVR);
+                        SendParameter(HardwareStatsParameter.VROpenXR,  isOpenXR);
+                        SendParameter(HardwareStatsParameter.VRDesktop,  isDesktop);
+                    }
                 }
 
                 if (!_firstUpdateDone)
@@ -447,7 +460,11 @@ public sealed class LinuxHardwareStatsModule : Module
         NetworkUpload,
         SystemTemp,
         MaxTemp,
-        WindowFPS
+        WindowFPS,
+        VRRunning,
+        VRSteamVR,
+        VROpenXR,
+        VRDesktop
     }
 
     private enum HardwareStatsState
