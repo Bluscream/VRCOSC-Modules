@@ -97,18 +97,16 @@ Optional for real game FPS (instead of display refresh rate):
 | Path | Type | Value |
 |---|---|---|
 | `VRCOSC/ClientInfo/Info/FPS` | `int` | Active window FPS — MangoHud log if fresh, otherwise display refresh rate of the window's monitor |
+| `VRCOSC/VR/FPS/Value` | `int` | Same FPS value — populates the standard VR FPS path |
+| `VRCOSC/VR/FPS/Normalised` | `float` | FPS normalised 0–240 → 0–1 (matches `SteamVRStatisticsModule`'s scale) |
 
-> **Why this path?** On Linux, VRChat never sends its FPS over OSC, so the official
-> `ClientInfo` module always writes `0` to this path. This module overwrites it with
-> a real value (MangoHud FPS or display refresh rate) so avatar parameters that
-> depend on `VRCOSC/ClientInfo/Info/FPS` work correctly.
+> **Why these paths?** On Linux:
+> - `ClientInfo` always writes `0` to `VRCOSC/ClientInfo/Info/FPS` (VRChat doesn't send FPS over OSC on Linux).
+> - `SteamVRStatisticsModule` always writes `0` to `VRCOSC/VR/FPS/*` on Monado/WiVRn (those paths use the native OpenVR API which is SteamVR-only).
 >
-> ⚠️ If you run both this module and the official `ClientInfo` module simultaneously,
-> they will race-write to this path every tick. Disable `ClientInfo` on Linux or
-> accept that ClientInfo's `0` may occasionally win a tick.
+> This module overwrites all three with a real value (MangoHud FPS or display refresh rate).
 >
-> This path is **different from** `VRCOSC/VR/FPS/Value` (SteamVR in-headset framerate
-> via OpenVR) — those two coexist fine.
+> ⚠️ If you run `ClientInfo` or `SteamVRStatisticsModule` simultaneously, they will race-write `0` to these paths every tick. Disable those modules on Linux, or accept occasional `0` flicker.
 
 ### Game / VR State
 
