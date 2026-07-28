@@ -6,6 +6,14 @@ Custom modules for VRCOSC including VRChat Settings, VRCX Bridge, and HTTP utili
 
 ## Modules
 
+### Linux Hardware Stats
+
+Linux-native replacement for VRCOSC's official **Hardware Stats** module. Reads CPU, GPU, RAM, VRAM, network, temperatures, active window info, and VR compositor state directly from the Linux host via a bash script — no Windows performance APIs needed.
+
+**See**: [LinuxHardwareStats/README.md](VRCOSC.Modules/LinuxHardwareStats/README.md) for full documentation including OSC paths, conflict notes, and FPS detection chain.
+
+---
+
 ### VRChat Settings
 
 Comprehensive VRChat settings management with pulse nodes for registry and config file access.
