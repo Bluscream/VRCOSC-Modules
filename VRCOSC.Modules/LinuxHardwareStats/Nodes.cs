@@ -99,3 +99,27 @@ public sealed class LinuxVRAMInfoSourceNode : ModuleNode<LinuxHardwareStatsModul
 
     public Task<bool> OnUpdate(PulseContext c) => Task.FromResult(true);
 }
+
+[Node("Linux Network Info Source")]
+public sealed class LinuxNetworkInfoSourceNode : ModuleNode<LinuxHardwareStatsModule>, IActiveUpdateNode
+{
+    public int UpdateOffset => 0;
+    public ValueOutput<int> Download = new();
+    public ValueOutput<int> Upload = new();
+    public ValueOutput<float> RxTotal = new();
+    public ValueOutput<float> TxTotal = new();
+
+    protected override Task Process(PulseContext c)
+    {
+        var net = Module.GetNetwork();
+        if (net is null) return Task.CompletedTask;
+
+        Download.Write((int)net.RxKbps, c);
+        Upload.Write((int)net.TxKbps, c);
+        RxTotal.Write(net.RxTotalMb, c);
+        TxTotal.Write(net.TxTotalMb, c);
+        return Task.CompletedTask;
+    }
+
+    public Task<bool> OnUpdate(PulseContext c) => Task.FromResult(true);
+}

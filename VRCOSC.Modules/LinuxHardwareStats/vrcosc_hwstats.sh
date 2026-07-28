@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 
+# ---------------------------------------------------------------------------
+# Helper: sum rx/tx bytes across all non-loopback interfaces in one awk pass
+# ---------------------------------------------------------------------------
+read_net_totals() {
+    awk '
+        NR > 2 {
+            gsub(/:/, "", $1)
+            if ($1 != "lo") { rx += $2; tx += $10 }
+        }
+        END { print (rx+0) " " (tx+0) }
+    ' /proc/net/dev
+}
+
 # CPU Name
 cpu_name=$(grep -m1 "model name" /proc/cpuinfo | cut -d: -f2 | xargs)
 if [ -z "$cpu_name" ]; then
@@ -27,22 +40,31 @@ if [ "$cpu_temp" -eq 0 ]; then
     fi
 fi
 
-# Measure CPU usage and CPU power (if available) over a 200ms window
+# Measure CPU usage and network rates over a 200ms window
+# Also sample Intel RAPL energy counter (Intel CPUs only)
 read -r _ u1 n1 s1 i1 io1 ir1 si1 st1 _ _ < /proc/stat
 e1=0
-if [ -f /sys/class/powercap/intel-rapl:0/energy_uj ]; then
-    e1=$(cat /sys/class/powercap/intel-rapl:0/energy_uj 2>/dev/null || echo 0)
+if echo "$cpu_name" | grep -qi "intel"; then
+    [ -f /sys/class/powercap/intel-rapl:0/energy_uj ] && \
+        e1=$(cat /sys/class/powercap/intel-rapl:0/energy_uj 2>/dev/null || echo 0)
 fi
 t1=$(date +%s%N)
+
+# Network sample 1 — combined across all non-loopback interfaces
+read net1_rx net1_tx <<< "$(read_net_totals)"
 
 sleep 0.2
 
 read -r _ u2 n2 s2 i2 io2 ir2 si2 st2 _ _ < /proc/stat
 e2=0
-if [ -f /sys/class/powercap/intel-rapl:0/energy_uj ]; then
-    e2=$(cat /sys/class/powercap/intel-rapl:0/energy_uj 2>/dev/null || echo 0)
+if echo "$cpu_name" | grep -qi "intel"; then
+    [ -f /sys/class/powercap/intel-rapl:0/energy_uj ] && \
+        e2=$(cat /sys/class/powercap/intel-rapl:0/energy_uj 2>/dev/null || echo 0)
 fi
 t2=$(date +%s%N)
+
+# Network sample 2
+read net2_rx net2_tx <<< "$(read_net_totals)"
 
 # Calculate CPU Usage
 prev_idle=$((i1 + io1))
@@ -59,15 +81,44 @@ else
     cpu_usage=0
 fi
 
-# Calculate CPU Power (W)
+# Calculate CPU Power (W) — vendor-specific, single result
 cpu_power=0
-if [ "$e1" -gt 0 ] && [ "$e2" -gt 0 ] && [ "$e2" -gt "$e1" ]; then
-    energy_diff=$((e2 - e1)) # microjoules
-    time_diff_ns=$((t2 - t1))
-    if [ "$time_diff_ns" -gt 0 ]; then
-        # Power (W) = energy_diff / (time_diff_ns / 1000)
-        cpu_power=$(( energy_diff * 1000 / time_diff_ns ))
+if echo "$cpu_name" | grep -qi "intel"; then
+    # Intel: RAPL energy counter delta over the 200ms sample window
+    if [ "$e1" -gt 0 ] && [ "$e2" -gt "$e1" ]; then
+        energy_diff=$((e2 - e1))
+        time_diff_ns=$((t2 - t1))
+        [ "$time_diff_ns" -gt 0 ] && cpu_power=$(( energy_diff * 1000 / time_diff_ns ))
     fi
+elif echo "$cpu_name" | grep -qi "amd"; then
+    # AMD: k10temp / zenpower power1_average (rolling average, no sampling needed)
+    for name_file in /sys/class/hwmon/hwmon*/name; do
+        name=$(cat "$name_file" 2>/dev/null)
+        if [ "$name" = "k10temp" ] || [ "$name" = "zenpower" ]; then
+            dir=$(dirname "$name_file")
+            if [ -f "$dir/power1_average" ]; then
+                raw_pow=$(cat "$dir/power1_average" 2>/dev/null || echo 0)
+                cpu_power=$((raw_pow / 1000000))
+                break
+            fi
+        fi
+    done
+fi
+
+# Calculate network speeds
+time_diff_ms=$(( (t2 - t1) / 1000000 ))
+[ "$time_diff_ms" -le 0 ] && time_diff_ms=200
+
+net_rx_kbps=0
+net_tx_kbps=0
+net_rx_total_mb=0
+net_tx_total_mb=0
+
+if [ "$net2_rx" -ge "$net1_rx" ] && [ "$net2_tx" -ge "$net1_tx" ]; then
+    net_rx_kbps=$(( (net2_rx - net1_rx) * 1000 / time_diff_ms / 1024 ))
+    net_tx_kbps=$(( (net2_tx - net1_tx) * 1000 / time_diff_ms / 1024 ))
+    net_rx_total_mb=$(awk "BEGIN {printf \"%.2f\", $net2_rx / 1024 / 1024}")
+    net_tx_total_mb=$(awk "BEGIN {printf \"%.2f\", $net2_tx / 1024 / 1024}")
 fi
 
 # GPU Name, Usage, Power, Temp, VRAM
@@ -82,20 +133,20 @@ vram_usage=0
 
 if command -v nvidia-smi &>/dev/null; then
     nv_data=$(nvidia-smi --query-gpu=name,utilization.gpu,power.draw,temperature.gpu,memory.total,memory.used,memory.free --format=csv,noheader,nounits 2>/dev/null)
-    if [ ! -z "$nv_data" ]; then
+    if [ -n "$nv_data" ]; then
         IFS=',' read -r nv_name nv_util nv_power nv_temp nv_mem_total nv_mem_used nv_mem_free <<< "$nv_data"
         gpu_name=$(echo "$nv_name" | xargs)
         gpu_usage=$(echo "$nv_util" | xargs)
         gpu_power=$(echo "$nv_power" | cut -d. -f1 | xargs)
         gpu_temp=$(echo "$nv_temp" | xargs)
-        
+
         tot_mib=$(echo "$nv_mem_total" | xargs)
         vram_total=$(awk "BEGIN {printf \"%.2f\", $tot_mib / 1024}")
         usd_mib=$(echo "$nv_mem_used" | xargs)
         vram_used=$(awk "BEGIN {printf \"%.2f\", $usd_mib / 1024}")
         fre_mib=$(echo "$nv_mem_free" | xargs)
         vram_free=$(awk "BEGIN {printf \"%.2f\", $fre_mib / 1024}")
-        vram_usage=$(awk "BEGIN {printf \"%.2f\", ($usd_mib / $tot_mib)}")
+        vram_usage=$(awk "BEGIN {printf \"%.4f\", ($usd_mib / $tot_mib)}")
     fi
 else
     # AMD GPU detection
@@ -106,7 +157,7 @@ else
             break
         fi
     done
-    
+
     amd_card=""
     for card_dir in /sys/class/drm/card*; do
         if [ -d "$card_dir/device" ] && [ -f "$card_dir/device/gpu_busy_percent" ]; then
@@ -114,28 +165,51 @@ else
             break
         fi
     done
-    
-    if [ ! -z "$amd_hwmon" ] || [ ! -z "$amd_card" ]; then
-        gpu_name="AMD Radeon GPU"
-        lspci_name=$(lspci | grep -i vga | grep -i amd | cut -d: -f3 | xargs)
-        if [ ! -z "$lspci_name" ]; then
-            gpu_name="$lspci_name"
+
+    if [ -n "$amd_hwmon" ] || [ -n "$amd_card" ]; then
+        # GPU name: prefer lspci SDevice (board marketing name)
+        gpu_name=""
+        if command -v lspci &>/dev/null; then
+            gpu_name=$(lspci -vmm 2>/dev/null | awk '
+                /^Class:.*VGA|^Class:.*3D|^Class:.*Display/ { in_gpu=1; next }
+                in_gpu && /^SDevice:/ { sub(/^SDevice:[[:space:]]+/, ""); print; exit }
+                /^$/ { in_gpu=0 }
+            ')
         fi
-        
+        if [ -n "$gpu_name" ]; then
+            echo "$gpu_name" | grep -qi "^AMD" || gpu_name="AMD $gpu_name"
+        fi
+        # Fallbacks
+        if [ -z "$gpu_name" ] && [ -n "$amd_card" ] && [ -f "$amd_card/device/product_name" ]; then
+            gpu_name=$(cat "$amd_card/device/product_name" 2>/dev/null | xargs)
+        fi
+        if [ -z "$gpu_name" ] && command -v lspci &>/dev/null; then
+            gpu_name=$(lspci 2>/dev/null | grep -iE "VGA|3D|Display" | grep -i amd | grep -oP '\[([^\]]+)\]' | tail -1 | tr -d '[]')
+        fi
+        [ -z "$gpu_name" ] && gpu_name="AMD Radeon GPU"
+
         if [ -f "$amd_card/device/gpu_busy_percent" ]; then
             gpu_usage=$(cat "$amd_card/device/gpu_busy_percent")
         fi
-        
-        if [ -f "$amd_hwmon/power1_average" ]; then
-            raw_pow=$(cat "$amd_hwmon/power1_average")
+
+        # Power: prefer power1_input (instantaneous), fall back to power1_average
+        if [ -f "$amd_hwmon/power1_input" ]; then
+            raw_pow=$(cat "$amd_hwmon/power1_input" 2>/dev/null || echo 0)
+            gpu_power=$((raw_pow / 1000000))
+        elif [ -f "$amd_hwmon/power1_average" ]; then
+            raw_pow=$(cat "$amd_hwmon/power1_average" 2>/dev/null || echo 0)
             gpu_power=$((raw_pow / 1000000))
         fi
-        
-        if [ -f "$amd_hwmon/temp1_input" ]; then
+
+        # GPU temp: prefer junction (temp2) over edge (temp1) — matches Mission Center
+        if [ -f "$amd_hwmon/temp2_input" ]; then
+            raw_temp=$(cat "$amd_hwmon/temp2_input")
+            gpu_temp=$((raw_temp / 1000))
+        elif [ -f "$amd_hwmon/temp1_input" ]; then
             raw_temp=$(cat "$amd_hwmon/temp1_input")
             gpu_temp=$((raw_temp / 1000))
         fi
-        
+
         if [ -f "$amd_card/device/mem_info_vram_total" ] && [ -f "$amd_card/device/mem_info_vram_used" ]; then
             raw_total=$(cat "$amd_card/device/mem_info_vram_total")
             raw_used=$(cat "$amd_card/device/mem_info_vram_used")
@@ -157,7 +231,35 @@ ram_used=$(awk "BEGIN {printf \"%.2f\", $mem_used_kb / 1024 / 1024}")
 ram_free=$(awk "BEGIN {printf \"%.2f\", $mem_avail_kb / 1024 / 1024}")
 ram_usage=$(awk "BEGIN {printf \"%.4f\", ($mem_used_kb / $mem_total_kb)}")
 
-# Format output file
+# System temp — ACPI thermal zone (ambient / motherboard)
+system_temp=0
+for name_file in /sys/class/hwmon/hwmon*/name; do
+    if [ "$(cat "$name_file" 2>/dev/null)" = "acpitz" ]; then
+        dir=$(dirname "$name_file")
+        if [ -f "$dir/temp1_input" ]; then
+            raw_temp=$(cat "$dir/temp1_input")
+            system_temp=$((raw_temp / 1000))
+            break
+        fi
+    fi
+done
+
+# Max temp — highest reading across every hwmon temp sensor on the system
+max_temp=0
+for temp_file in /sys/class/hwmon/hwmon*/temp*_input; do
+    [ -f "$temp_file" ] || continue
+    raw=$(cat "$temp_file" 2>/dev/null || echo 0)
+    temp_c=$((raw / 1000))
+    [ "$temp_c" -gt "$max_temp" ] && max_temp=$temp_c
+done
+
+# ---------------------------------------------------------------------------
+# Output (22 lines, 0-indexed)
+# 0-15  : original fields (backward compatible)
+# 16-19 : network speeds and totals (combined across all non-loopback ifaces)
+# 20    : system_temp (ACPI / motherboard)
+# 21    : max_temp (highest across all hwmon sensors)
+# ---------------------------------------------------------------------------
 cat <<EOF > ~/.vrcosc_hwstats.txt
 $cpu_usage
 $cpu_power
@@ -175,4 +277,10 @@ $vram_used
 $vram_free
 $cpu_name
 $gpu_name
+$net_rx_kbps
+$net_tx_kbps
+$net_rx_total_mb
+$net_tx_total_mb
+$system_temp
+$max_temp
 EOF

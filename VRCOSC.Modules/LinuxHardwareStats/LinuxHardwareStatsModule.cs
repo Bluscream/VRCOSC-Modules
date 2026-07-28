@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Bluscream.Modules.Utilities;
 using VRCOSC.App.SDK.Modules;
@@ -18,6 +19,8 @@ public sealed class LinuxHardwareStatsModule : Module
     private readonly LinuxCPU _cpu = new();
     private readonly LinuxGPU _gpu = new();
     private readonly LinuxRAM _ram = new();
+    private readonly LinuxNetwork _network = new();
+    private bool _firstUpdateDone = false;
 
     protected override void OnPreLoad()
     {
@@ -38,36 +41,58 @@ public sealed class LinuxHardwareStatsModule : Module
         RegisterParameter<int>(HardwareStatsParameter.VRAMTotal, "VRCOSC/Hardware/VRAM/Total", ParameterMode.Write, "VRAM Total", "The total VRAM amount (GB)");
         RegisterParameter<int>(HardwareStatsParameter.VRAMUsed, "VRCOSC/Hardware/VRAM/Used", ParameterMode.Write, "VRAM Used", "The used VRAM amount (GB)");
         RegisterParameter<int>(HardwareStatsParameter.VRAMFree, "VRCOSC/Hardware/VRAM/Free", ParameterMode.Write, "VRAM Free", "The free VRAM amount (GB)");
+        RegisterParameter<int>(HardwareStatsParameter.NetworkDownload, "VRCOSC/Hardware/Network/Download", ParameterMode.Write, "Network Download", "The network download speed (KB/s)");
+        RegisterParameter<int>(HardwareStatsParameter.NetworkUpload, "VRCOSC/Hardware/Network/Upload", ParameterMode.Write, "Network Upload", "The network upload speed (KB/s)");
+        RegisterParameter<int>(HardwareStatsParameter.SystemTemp, "VRCOSC/Hardware/System/Temp", ParameterMode.Write, "System Temp", "The system (ACPI/motherboard) temperature (C)");
+        RegisterParameter<int>(HardwareStatsParameter.MaxTemp, "VRCOSC/Hardware/Max/Temp", ParameterMode.Write, "Max Temp", "The highest temperature across all sensors (C)");
     }
 
     protected override void OnPostLoad()
     {
+        // --- CPU ---
         CreateVariable<string>(HardwareStatsVariable.CPUName, "CPU Name");
+        CreateVariable<string>(HardwareStatsVariable.CPUManufacturer, "CPU Manufacturer");
+        CreateVariable<string>(HardwareStatsVariable.CPUModel, "CPU Model");
         var cpuUsageReference = CreateVariable<int>(HardwareStatsVariable.CPUUsage, "CPU Usage (%)")!;
         CreateVariable<int>(HardwareStatsVariable.CPUPower, "CPU Power (W)");
         CreateVariable<int>(HardwareStatsVariable.CPUTemp, "CPU Temp (C)");
 
+        // --- GPU ---
         CreateVariable<string>(HardwareStatsVariable.GPUName, "GPU Name");
+        CreateVariable<string>(HardwareStatsVariable.GPUManufacturer, "GPU Manufacturer");
+        CreateVariable<string>(HardwareStatsVariable.GPUModel, "GPU Model");
         var gpuUsageReference = CreateVariable<int>(HardwareStatsVariable.GPUUsage, "GPU Usage (%)")!;
         CreateVariable<int>(HardwareStatsVariable.GPUPower, "GPU Power (W)");
         CreateVariable<int>(HardwareStatsVariable.GPUTemp, "GPU Temp (C)");
 
+        // --- RAM ---
         CreateVariable<float>(HardwareStatsVariable.RAMUsage, "RAM Usage (%)");
         var ramTotalReference = CreateVariable<float>(HardwareStatsVariable.RAMTotal, "RAM Total (GB)")!;
         var ramUsedReference = CreateVariable<float>(HardwareStatsVariable.RAMUsed, "RAM Used (GB)")!;
         CreateVariable<float>(HardwareStatsVariable.RAMFree, "RAM Free (GB)");
 
+        // --- VRAM ---
         CreateVariable<float>(HardwareStatsVariable.VRAMUsage, "VRAM Usage (%)");
         CreateVariable<float>(HardwareStatsVariable.VRAMTotal, "VRAM Total (GB)");
         CreateVariable<float>(HardwareStatsVariable.VRAMUsed, "VRAM Used (GB)");
         CreateVariable<float>(HardwareStatsVariable.VRAMFree, "VRAM Free (GB)");
 
+        // --- Network ---
+        var netDownloadReference = CreateVariable<int>(HardwareStatsVariable.NetworkDownload, "Network Download (KB/s)")!;
+        var netUploadReference = CreateVariable<int>(HardwareStatsVariable.NetworkUpload, "Network Upload (KB/s)")!;
+        CreateVariable<float>(HardwareStatsVariable.NetworkRxTotal, "Network Received Total (MB)");
+        CreateVariable<float>(HardwareStatsVariable.NetworkTxTotal, "Network Sent Total (MB)");
+        CreateVariable<int>(HardwareStatsVariable.SystemTemp, "System Temp (C)");
+        CreateVariable<int>(HardwareStatsVariable.MaxTemp, "Max Temp (C)");
+
         CreateState(HardwareStatsState.Default, "Default", "CPU: {0}% | GPU: {1}%\nRAM: {2}GB/{3}GB", new[] { cpuUsageReference, gpuUsageReference, ramUsedReference, ramTotalReference });
+        CreateState(HardwareStatsState.WithNetwork, "With Network", "CPU: {0}% | GPU: {1}%\nRAM: {2}GB/{3}GB\n↓{4} ↑{5} KB/s", new[] { cpuUsageReference, gpuUsageReference, ramUsedReference, ramTotalReference, netDownloadReference, netUploadReference });
     }
 
     protected override Task<bool> OnModuleStart()
     {
         DeployHelperScript();
+        _firstUpdateDone = false;
         ChangeState(HardwareStatsState.Default);
         return Task.FromResult(true);
     }
@@ -113,6 +138,7 @@ public sealed class LinuxHardwareStatsModule : Module
     public LinuxCPU GetCPU() => _cpu;
     public LinuxGPU GetGPU() => _gpu;
     public LinuxRAM GetRAM() => _ram;
+    public LinuxNetwork GetNetwork() => _network;
 
     [ModuleUpdate(ModuleUpdateMode.Custom, true, 2000)]
     private void UpdateParameters()
@@ -152,17 +178,25 @@ public sealed class LinuxHardwareStatsModule : Module
                 var cpuName = lines[14].Trim();
                 var gpuName = lines[15].Trim();
 
+                // Parse structured name info
+                var cpuInfo = HardwareNameParser.ParseCpu(cpuName);
+                var gpuInfo = HardwareNameParser.ParseGpu(gpuName);
+
                 _cpu.Name = cpuName;
+                _cpu.Manufacturer = cpuInfo.Manufacturer;
+                _cpu.Model = cpuInfo.Model;
                 _cpu.Usage = cpuUsage;
                 _cpu.Power = cpuPower;
                 _cpu.Temperature = cpuTemp;
 
                 _gpu.Name = gpuName;
+                _gpu.Manufacturer = gpuInfo.Manufacturer;
+                _gpu.Model = gpuInfo.Model;
                 _gpu.Usage = gpuUsage;
                 _gpu.Power = gpuPower;
                 _gpu.Temperature = gpuTemp;
                 _gpu.MemoryUsage = vramUsage;
-                _gpu.MemoryTotal = vramTotal * 1000f; // Store in MB to match Components.cs units if needed
+                _gpu.MemoryTotal = vramTotal * 1000f;
                 _gpu.MemoryUsed = vramUsed * 1000f;
                 _gpu.MemoryFree = vramFree * 1000f;
 
@@ -171,7 +205,7 @@ public sealed class LinuxHardwareStatsModule : Module
                 _ram.Used = ramUsed;
                 _ram.Available = ramFree;
 
-                // Send Parameters (match Types of parameters in pre-load)
+                // Send Parameters
                 SendParameter(HardwareStatsParameter.CPUUsage, cpuUsage / 100f);
                 SendParameter(HardwareStatsParameter.CPUPower, cpuPower);
                 SendParameter(HardwareStatsParameter.CPUTemp, cpuTemp);
@@ -192,11 +226,15 @@ public sealed class LinuxHardwareStatsModule : Module
 
                 // Set Variable Values
                 SetVariableValue(HardwareStatsVariable.CPUName, cpuName);
+                SetVariableValue(HardwareStatsVariable.CPUManufacturer, _cpu.Manufacturer);
+                SetVariableValue(HardwareStatsVariable.CPUModel, _cpu.Model);
                 SetVariableValue(HardwareStatsVariable.CPUUsage, (int)Math.Round(cpuUsage));
                 SetVariableValue(HardwareStatsVariable.CPUPower, cpuPower);
                 SetVariableValue(HardwareStatsVariable.CPUTemp, cpuTemp);
 
                 SetVariableValue(HardwareStatsVariable.GPUName, gpuName);
+                SetVariableValue(HardwareStatsVariable.GPUManufacturer, _gpu.Manufacturer);
+                SetVariableValue(HardwareStatsVariable.GPUModel, _gpu.Model);
                 SetVariableValue(HardwareStatsVariable.GPUUsage, (int)Math.Round(gpuUsage));
                 SetVariableValue(HardwareStatsVariable.GPUPower, gpuPower);
                 SetVariableValue(HardwareStatsVariable.GPUTemp, gpuTemp);
@@ -210,6 +248,48 @@ public sealed class LinuxHardwareStatsModule : Module
                 SetVariableValue(HardwareStatsVariable.VRAMTotal, vramTotal);
                 SetVariableValue(HardwareStatsVariable.VRAMUsed, vramUsed);
                 SetVariableValue(HardwareStatsVariable.VRAMFree, vramFree);
+
+                // Network + system/max temps (lines 16-21, only present in updated script)
+                if (lines.Length >= 20)
+                {
+                    int.TryParse(lines[16].Trim(), out var netRxKbps);
+                    int.TryParse(lines[17].Trim(), out var netTxKbps);
+                    float.TryParse(lines[18].Trim(), out var netRxTotalMb);
+                    float.TryParse(lines[19].Trim(), out var netTxTotalMb);
+
+                    _network.RxKbps = netRxKbps;
+                    _network.TxKbps = netTxKbps;
+                    _network.RxTotalMb = netRxTotalMb;
+                    _network.TxTotalMb = netTxTotalMb;
+
+                    SendParameter(HardwareStatsParameter.NetworkDownload, netRxKbps);
+                    SendParameter(HardwareStatsParameter.NetworkUpload, netTxKbps);
+
+                    SetVariableValue(HardwareStatsVariable.NetworkDownload, netRxKbps);
+                    SetVariableValue(HardwareStatsVariable.NetworkUpload, netTxKbps);
+                    SetVariableValue(HardwareStatsVariable.NetworkRxTotal, netRxTotalMb);
+                    SetVariableValue(HardwareStatsVariable.NetworkTxTotal, netTxTotalMb);
+                }
+
+                var systemTemp = 0;
+                var maxTemp = 0;
+                if (lines.Length >= 22)
+                {
+                    int.TryParse(lines[20].Trim(), out systemTemp);
+                    int.TryParse(lines[21].Trim(), out maxTemp);
+
+                    SendParameter(HardwareStatsParameter.SystemTemp, systemTemp);
+                    SendParameter(HardwareStatsParameter.MaxTemp, maxTemp);
+
+                    SetVariableValue(HardwareStatsVariable.SystemTemp, systemTemp);
+                    SetVariableValue(HardwareStatsVariable.MaxTemp, maxTemp);
+                }
+
+                if (!_firstUpdateDone)
+                {
+                    _firstUpdateDone = true;
+                    LogDiagnostics(lines.Length, systemTemp);
+                }
             }
         }
         catch (Exception ex)
@@ -221,6 +301,61 @@ public sealed class LinuxHardwareStatsModule : Module
     protected override Task OnModuleStop()
     {
         return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Runs once after the first successful data read and logs warnings for any
+    /// sensor values that are zero / missing, with actionable remediation advice.
+    /// </summary>
+    private void LogDiagnostics(int lineCount, int systemTemp)
+    {
+        // --- CPU ---
+        if (_cpu.Temperature == 0)
+            Log("[DIAG] CPU temperature is 0 — no supported hwmon sensor found. " +
+                "For Intel: ensure the 'coretemp' module is loaded (sudo modprobe coretemp). " +
+                "For AMD: ensure 'k10temp' or 'zenpower' is loaded (sudo modprobe k10temp).");
+
+        if (_cpu.Power == 0)
+        {
+            if (_cpu.Manufacturer.Equals("Intel", StringComparison.OrdinalIgnoreCase))
+                Log("[DIAG] CPU power is 0 — Intel RAPL interface not available. " +
+                    "Ensure the 'intel_rapl_common' module is loaded (sudo modprobe intel_rapl_common) " +
+                    "and /sys/class/powercap/intel-rapl:0/energy_uj is readable (may need root or powercap group).");
+            else if (_cpu.Manufacturer.Equals("AMD", StringComparison.OrdinalIgnoreCase))
+                Log("[DIAG] CPU power is 0 — AMD CPU power via hwmon (k10temp/zenpower power1_average) " +
+                    "is not exposed on this processor. Some Ryzen generations do not provide package power " +
+                    "through sysfs; this is a hardware/driver limitation.");
+            else
+                Log("[DIAG] CPU power is 0 — power sensor not found. " +
+                    "Intel: load 'intel_rapl_common'. AMD: load 'k10temp'.");
+        }
+
+        // --- GPU ---
+        if (_gpu.Name is "Unknown GPU" or "AMD Radeon GPU")
+            Log("[DIAG] GPU not detected or name is generic. " +
+                "NVIDIA: ensure nvidia-smi is installed (nvidia-utils package). " +
+                "AMD: ensure the 'amdgpu' kernel module is loaded and your card is supported.");
+
+        if (_gpu.Temperature == 0)
+            Log("[DIAG] GPU temperature is 0 — hwmon sensor not found for the GPU. " +
+                "AMD: ensure 'amdgpu' module is loaded. " +
+                "NVIDIA: ensure nvidia-smi is installed and working.");
+
+        if (_gpu.Power == 0)
+            Log("[DIAG] GPU power is 0 — power sensor not available. " +
+                "AMD: check /sys/class/hwmon/hwmon*/power1_average (requires amdgpu driver). " +
+                "NVIDIA: ensure nvidia-smi reports power.draw correctly (card may need to be in a supported mode).");
+
+        // --- Temps ---
+        if (lineCount >= 22 && systemTemp == 0)
+            Log("[DIAG] System temperature is 0 — ACPI thermal zone (acpitz hwmon) not found. " +
+                "This is normal on some systems; the sensor may simply not be exposed by firmware.");
+
+        // --- Network ---
+        if (lineCount < 20)
+            Log("[DIAG] Network stats are missing — script is outdated. " +
+                "The module will redeploy the script on next restart; " +
+                "delete ~/.local/bin/vrcosc_hwstats.sh to force a fresh deploy.");
     }
 
     private enum HardwareStatsSetting
@@ -244,21 +379,30 @@ public sealed class LinuxHardwareStatsModule : Module
         VRAMUsage,
         VRAMFree,
         VRAMUsed,
-        VRAMTotal
+        VRAMTotal,
+        NetworkDownload,
+        NetworkUpload,
+        SystemTemp,
+        MaxTemp
     }
 
     private enum HardwareStatsState
     {
-        Default
+        Default,
+        WithNetwork
     }
 
     private enum HardwareStatsVariable
     {
         CPUName,
+        CPUManufacturer,
+        CPUModel,
         CPUUsage,
         CPUPower,
         CPUTemp,
         GPUName,
+        GPUManufacturer,
+        GPUModel,
         GPUUsage,
         GPUPower,
         GPUTemp,
@@ -269,13 +413,25 @@ public sealed class LinuxHardwareStatsModule : Module
         VRAMUsage,
         VRAMFree,
         VRAMUsed,
-        VRAMTotal
+        VRAMTotal,
+        NetworkDownload,
+        NetworkUpload,
+        NetworkRxTotal,
+        NetworkTxTotal,
+        SystemTemp,
+        MaxTemp
     }
 }
+
+// ---------------------------------------------------------------------------
+// Data classes
+// ---------------------------------------------------------------------------
 
 public class LinuxCPU
 {
     public string Name { get; set; } = string.Empty;
+    public string Manufacturer { get; set; } = string.Empty;
+    public string Model { get; set; } = string.Empty;
     public float Usage { get; set; }
     public int Power { get; set; }
     public int Temperature { get; set; }
@@ -284,6 +440,8 @@ public class LinuxCPU
 public class LinuxGPU
 {
     public string Name { get; set; } = string.Empty;
+    public string Manufacturer { get; set; } = string.Empty;
+    public string Model { get; set; } = string.Empty;
     public float Usage { get; set; }
     public int Power { get; set; }
     public int Temperature { get; set; }
@@ -299,4 +457,124 @@ public class LinuxRAM
     public float Total { get; set; }
     public float Used { get; set; }
     public float Available { get; set; }
+}
+
+public class LinuxNetwork
+{
+    public float RxKbps { get; set; }
+    public float TxKbps { get; set; }
+    public float RxTotalMb { get; set; }
+    public float TxTotalMb { get; set; }
+}
+
+// ---------------------------------------------------------------------------
+// Hardware name parser
+// ---------------------------------------------------------------------------
+
+/// <summary>
+/// Parses raw CPU/GPU name strings (from /proc/cpuinfo and lspci/nvidia-smi)
+/// into structured manufacturer, model, and supplementary fields.
+/// </summary>
+public static class HardwareNameParser
+{
+    public record CpuInfo(string Manufacturer, string Model, string FullName);
+    public record GpuInfo(string Manufacturer, string Model, string FullName);
+
+    // Compiled regexes - shared across calls
+    private static readonly Regex CpuNoisyTokens    = new(@"\(R\)|\(TM\)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex CpuGenPrefix      = new(@"^\d+\w*\s+Gen\s+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex CpuAtFreqSuffix   = new(@"\s+CPU\s*@.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex CpuCoresSuffix    = new(@"\s+\d+-Core.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    // Intel model number: i3/i5/i7/i9-NNNNN[K/T/H/X/...] or Xeon XXXXX [vN]
+    private static readonly Regex IntelModelRegex   = new(@"\b([im][0-9]-[0-9]+[A-Z0-9]*(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex IntelXeonRegex    = new(@"\b(Xeon\s+[A-Z0-9\-]+(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    // VRAM label: trailing "16GB" / "8 GB" in GPU name
+    private static readonly Regex GpuVramRegex      = new(@"\b(\d+\s*GB)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    /// <summary>
+    /// Parses a raw /proc/cpuinfo "model name" string.
+    /// Examples:
+    ///   "Intel(R) Core(TM) i9-10900K CPU @ 3.70GHz"  → Intel / i9-10900K
+    ///   "12th Gen Intel(R) Core(TM) i5-12600K"        → Intel / i5-12600K
+    ///   "AMD Ryzen 9 5900X 12-Core Processor"         → AMD   / Ryzen 9 5900X
+    ///   "AMD Ryzen 7 7800X3D 8-Core Processor"        → AMD   / Ryzen 7 7800X3D
+    /// </summary>
+    public static CpuInfo ParseCpu(string fullName)
+    {
+        if (string.IsNullOrWhiteSpace(fullName))
+            return new CpuInfo("", "", fullName);
+
+        if (fullName.Contains("Intel", StringComparison.OrdinalIgnoreCase))
+        {
+            // Strip noise tokens and normalise
+            var s = CpuNoisyTokens.Replace(fullName, "");
+            s = CpuGenPrefix.Replace(s, "");      // "12th Gen " → ""
+            s = CpuAtFreqSuffix.Replace(s, "");   // " CPU @ 3.70GHz" → ""
+            s = CpuCoresSuffix.Replace(s, "");    // " 12-Core Processor" → ""
+            s = s.Trim();
+
+            // Try model number patterns
+            var m = IntelModelRegex.Match(s);
+            if (!m.Success) m = IntelXeonRegex.Match(s);
+
+            var model = m.Success
+                ? m.Groups[1].Value.Trim()
+                : s.Replace("Intel", "").Replace("Core", "").Trim();
+
+            return new CpuInfo("Intel", model, fullName);
+        }
+
+        if (fullName.StartsWith("AMD", StringComparison.OrdinalIgnoreCase))
+        {
+            // Strip "X-Core Processor" suffix, then "AMD " prefix
+            var s = CpuCoresSuffix.Replace(fullName, "").Trim();
+            var model = Regex.Replace(s, @"^AMD\s+", "", RegexOptions.IgnoreCase).Trim();
+            return new CpuInfo("AMD", model, fullName);
+        }
+
+        // Unknown vendor — return whole name as model
+        return new CpuInfo("", fullName, fullName);
+    }
+
+    /// <summary>
+    /// Parses a GPU name from nvidia-smi or lspci SDevice.
+    /// Examples:
+    ///   "NVIDIA GeForce RTX 4090"        → NVIDIA / GeForce RTX 4090
+    ///   "AMD Radeon RX 9070 XT 16GB"     → AMD    / Radeon RX 9070 XT  / 16GB
+    ///   "Radeon RX 6800 XT"              → AMD    / Radeon RX 6800 XT
+    ///   "Intel Arc A770"                 → Intel  / Arc A770
+    ///   "Intel Arc B580 Limited Edition" → Intel  / Arc B580 Limited Edition
+    /// </summary>
+    public static GpuInfo ParseGpu(string fullName)
+    {
+        if (string.IsNullOrWhiteSpace(fullName))
+            return new GpuInfo("", "", fullName);
+
+        // Strip trailing VRAM label (e.g., "16GB") for cleaner model name
+        var vramMatch = GpuVramRegex.Match(fullName);
+        var withoutVram = vramMatch.Success
+            ? fullName[..vramMatch.Index].TrimEnd()
+            : fullName;
+
+        if (fullName.StartsWith("NVIDIA", StringComparison.OrdinalIgnoreCase))
+        {
+            var model = Regex.Replace(withoutVram, @"^NVIDIA\s+", "", RegexOptions.IgnoreCase).Trim();
+            return new GpuInfo("NVIDIA", model, fullName);
+        }
+
+        if (fullName.Contains("AMD", StringComparison.OrdinalIgnoreCase) ||
+            fullName.Contains("Radeon", StringComparison.OrdinalIgnoreCase))
+        {
+            var model = Regex.Replace(withoutVram, @"^AMD\s+", "", RegexOptions.IgnoreCase).Trim();
+            return new GpuInfo("AMD", model, fullName);
+        }
+
+        if (fullName.Contains("Intel", StringComparison.OrdinalIgnoreCase))
+        {
+            var model = Regex.Replace(withoutVram, @"^Intel\s+", "", RegexOptions.IgnoreCase).Trim();
+            return new GpuInfo("Intel", model, fullName);
+        }
+
+        return new GpuInfo("", fullName, fullName);
+    }
 }
