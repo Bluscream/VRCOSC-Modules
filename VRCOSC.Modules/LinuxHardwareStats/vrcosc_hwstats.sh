@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 
 # ---------------------------------------------------------------------------
-# Load optional config written by VRCOSC before each run
-# GPU_INDEX  : which GPU to use (0-based, default 0)
-# CPU_INDEX  : which CPU package to use (0-based, default 0)
+# Settings baked in at deploy time by VRCOSC (LinuxHardwareStatsModule)
+# GPU_INDEX  : which GPU to use (0-based)
+# CPU_INDEX  : which CPU package to use (0-based)
 # NET_IFACE  : specific interface to monitor, or empty = combine all non-lo
 # ---------------------------------------------------------------------------
 GPU_INDEX=0
 CPU_INDEX=0
 NET_IFACE=""
-[ -f ~/.vrcosc_hwstats_config ] && source ~/.vrcosc_hwstats_config
 
 # ---------------------------------------------------------------------------
 # Helper: network byte totals (single iface or combined all non-loopback)

@@ -94,30 +94,9 @@ public sealed class LinuxHardwareStatsModule : Module
     protected override Task<bool> OnModuleStart()
     {
         DeployHelperScript();
-        WriteScriptConfig();
         _firstUpdateDone = false;
         ChangeState(HardwareStatsState.Default);
         return Task.FromResult(true);
-    }
-
-    private void WriteScriptConfig()
-    {
-        try
-        {
-            string homeDir = Environment.GetEnvironmentVariable("HOME") ?? "/home/blu";
-            string wineHomeDir = "Z:" + homeDir.Replace('/', '\\');
-            var gpuIndexRaw = GetSettingValue<string>(HardwareStatsSetting.SelectedGPU) ?? "0";
-            var cpuIndexRaw = GetSettingValue<string>(HardwareStatsSetting.SelectedCPU) ?? "0";
-            int.TryParse(gpuIndexRaw, out var gpuIndex);
-            int.TryParse(cpuIndexRaw, out var cpuIndex);
-            var netIface = GetSettingValue<string>(HardwareStatsSetting.NetworkInterface) ?? "";
-            var configFile = Path.Combine(wineHomeDir, ".vrcosc_hwstats_config");
-            File.WriteAllText(configFile, $"GPU_INDEX={gpuIndex}\nCPU_INDEX={cpuIndex}\nNET_IFACE={netIface}\n");
-        }
-        catch (Exception ex)
-        {
-            Log($"Error writing hwstats config: {ex.Message}");
-        }
     }
 
     private void DeployHelperScript()
@@ -135,21 +114,29 @@ public sealed class LinuxHardwareStatsModule : Module
                 return;
             }
 
+            // Read the template and bake in the current settings
+            using var reader = new StreamReader(stream);
+            var gpuIndexRaw = GetSettingValue<string>(HardwareStatsSetting.SelectedGPU) ?? "0";
+            var cpuIndexRaw = GetSettingValue<string>(HardwareStatsSetting.SelectedCPU) ?? "0";
+            int.TryParse(gpuIndexRaw, out var gpuIndex);
+            int.TryParse(cpuIndexRaw, out var cpuIndex);
+            var netIface = GetSettingValue<string>(HardwareStatsSetting.NetworkInterface) ?? "";
+
+            var scriptContent = reader.ReadToEnd()
+                .Replace("GPU_INDEX=0", $"GPU_INDEX={gpuIndex}")
+                .Replace("CPU_INDEX=0", $"CPU_INDEX={cpuIndex}")
+                .Replace("NET_IFACE=\"\"", $"NET_IFACE=\"{netIface}\"");
+
             string wineHomeDir = "Z:" + homeDir.Replace('/', '\\');
             string wineTargetPath = Path.Combine(wineHomeDir, ".local", "bin", "vrcosc_hwstats.sh");
 
             string? dir = Path.GetDirectoryName(wineTargetPath);
             if (dir != null && !Directory.Exists(dir))
-            {
                 Directory.CreateDirectory(dir);
-            }
 
-            using (var fileStream = File.Create(wineTargetPath))
-            {
-                stream.CopyTo(fileStream);
-            }
+            File.WriteAllText(wineTargetPath, scriptContent);
 
-            Log($"Linux hardware stats helper script deployed to {targetPath}");
+            Log($"Linux hardware stats helper script deployed to {targetPath} (GPU={gpuIndex}, CPU={cpuIndex}, NET={(string.IsNullOrEmpty(netIface) ? "all" : netIface)})");
             LinuxUtils.ChmodPlusX(targetPath, ex => Log($"Error making script executable: {ex.Message}"));
         }
         catch (Exception ex)
