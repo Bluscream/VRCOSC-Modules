@@ -99,6 +99,7 @@ public sealed class LinuxHardwareStatsModule : Module
         CreateVariable<string>(HardwareStatsVariable.WindowTitle, "Active Window Title");
         CreateVariable<string>(HardwareStatsVariable.ProcessName, "Active Process Name");
         CreateVariable<int>(HardwareStatsVariable.WindowFPS, "Active Window FPS");
+        CreateVariable<string>(HardwareStatsVariable.VRMode, "VR Mode");
 
         CreateState(HardwareStatsState.Default, "Default", "CPU: {0}% | GPU: {1}%\nRAM: {2}GB/{3}GB", new[] { cpuUsageReference, gpuUsageReference, ramUsedReference, ramTotalReference });
         CreateState(HardwareStatsState.WithNetwork, "With Network", "CPU: {0}% | GPU: {1}%\nRAM: {2}GB/{3}GB\n↓{4} ↑{5} KB/s", new[] { cpuUsageReference, gpuUsageReference, ramUsedReference, ramTotalReference, netDownloadReference, netUploadReference });
@@ -328,6 +329,14 @@ public sealed class LinuxHardwareStatsModule : Module
                     SetVariableValue(HardwareStatsVariable.WindowFPS, windowFps);
                 }
 
+                // VR Mode (line 25)
+                if (lines.Length >= 26)
+                {
+                    var vrMode = lines[25].Trim();
+                    if (vrMode.Length > 0)
+                        SetVariableValue(HardwareStatsVariable.VRMode, vrMode);
+                }
+
                 if (!_firstUpdateDone)
                 {
                     _firstUpdateDone = true;
@@ -477,7 +486,8 @@ public sealed class LinuxHardwareStatsModule : Module
         MaxTemp,
         WindowTitle,
         ProcessName,
-        WindowFPS
+        WindowFPS,
+        VRMode
     }
 }
 

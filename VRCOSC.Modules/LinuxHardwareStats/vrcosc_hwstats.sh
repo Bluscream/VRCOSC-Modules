@@ -372,14 +372,27 @@ fi
 [ -z "$active_window_fps" ] && active_window_fps=0
 
 # ---------------------------------------------------------------------------
-# Output (25 lines, 0-indexed)
+# VR Mode — detect which VR compositor (if any) is running
+# ---------------------------------------------------------------------------
+vr_mode="Desktop"
+if pgrep -x vrserver >/dev/null 2>&1; then
+    vr_mode="SteamVR"
+elif pgrep -x "monado-service" >/dev/null 2>&1 || \
+     pgrep -x "monado"         >/dev/null 2>&1 || \
+     pgrep -x "wivrn-server"   >/dev/null 2>&1; then
+    vr_mode="OpenXR"
+fi
+
+# ---------------------------------------------------------------------------
+# Output (26 lines, 0-indexed)
 # 0-15  : original fields (backward compatible)
 # 16-19 : network speeds and totals
 # 20    : system_temp (ACPI / motherboard)
 # 21    : max_temp (highest across all hwmon sensors)
 # 22    : active_window_title
 # 23    : active_process_name
-# 24    : active_window_fps (display refresh rate or game FPS)
+# 24    : active_window_fps (MangoHud FPS or window monitor refresh rate)
+# 25    : vr_mode (Desktop / SteamVR / OpenXR)
 # ---------------------------------------------------------------------------
 cat <<EOF > ~/.vrcosc_hwstats.txt
 $cpu_usage
@@ -407,4 +420,5 @@ $max_temp
 $active_window_title
 $active_process_name
 $active_window_fps
+$vr_mode
 EOF
