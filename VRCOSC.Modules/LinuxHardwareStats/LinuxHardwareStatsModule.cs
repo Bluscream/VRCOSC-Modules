@@ -54,7 +54,7 @@ public sealed class LinuxHardwareStatsModule : Module
         RegisterParameter<int>(HardwareStatsParameter.NetworkUpload, "VRCOSC/Hardware/Network/Upload", ParameterMode.Write, "Network Upload", "The network upload speed (KB/s)");
         RegisterParameter<int>(HardwareStatsParameter.SystemTemp, "VRCOSC/Hardware/System/Temp", ParameterMode.Write, "System Temp", "The system (ACPI/motherboard) temperature (C)");
         RegisterParameter<int>(HardwareStatsParameter.MaxTemp, "VRCOSC/Hardware/Max/Temp", ParameterMode.Write, "Max Temp", "The highest temperature across all sensors (C)");
-        RegisterParameter<int>(HardwareStatsParameter.WindowFPS, "VRCOSC/Hardware/Window/FPS", ParameterMode.Write, "Window FPS", "The active window FPS (display refresh rate as baseline)");
+        RegisterParameter<int>(HardwareStatsParameter.WindowFPS, "VRCOSC/ClientInfo/Info/FPS", ParameterMode.Write, "Window FPS", "The active window FPS (MangoHud or display refresh rate) — populates the standard ClientInfo FPS path which is always 0 on Linux");
         RegisterParameter<bool>(HardwareStatsParameter.VRRunning, "VRCOSC/Hardware/Game/Running", ParameterMode.Write, "VRChat Running", "True when the VRChat process is running on the host");
         RegisterParameter<bool>(HardwareStatsParameter.VRSteamVR, "VRCOSC/Hardware/Game/SteamVR", ParameterMode.Write, "SteamVR Active", "True when SteamVR is the active VR compositor");
         RegisterParameter<bool>(HardwareStatsParameter.VROpenXR, "VRCOSC/Hardware/Game/OpenXR", ParameterMode.Write, "OpenXR Active", "True when an OpenXR compositor (Monado, WiVRn) is active");
