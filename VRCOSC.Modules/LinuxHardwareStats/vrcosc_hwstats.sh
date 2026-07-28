@@ -392,8 +392,12 @@ elif pgrep -x "wivrn-server" >/dev/null 2>&1; then
     fi
 fi
 
+# VRChat running — detect VRChat.exe via Wine/Proton on the host
+vrchat_running=0
+pgrep -f "VRChat.exe" >/dev/null 2>&1 && vrchat_running=1
+
 # ---------------------------------------------------------------------------
-# Output (26 lines, 0-indexed)
+# Output (27 lines, 0-indexed)
 # 0-15  : original fields (backward compatible)
 # 16-19 : network speeds and totals
 # 20    : system_temp (ACPI / motherboard)
@@ -402,6 +406,7 @@ fi
 # 23    : active_process_name
 # 24    : active_window_fps (MangoHud FPS or window monitor refresh rate)
 # 25    : vr_mode (Desktop / SteamVR / OpenXR)
+# 26    : vrchat_running (0 or 1)
 # ---------------------------------------------------------------------------
 cat <<EOF > ~/.vrcosc_hwstats.txt
 $cpu_usage
@@ -430,4 +435,5 @@ $active_window_title
 $active_process_name
 $active_window_fps
 $vr_mode
+$vrchat_running
 EOF
