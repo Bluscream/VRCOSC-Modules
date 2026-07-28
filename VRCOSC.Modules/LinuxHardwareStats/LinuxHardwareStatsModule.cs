@@ -93,9 +93,30 @@ public sealed class LinuxHardwareStatsModule : Module
     protected override Task<bool> OnModuleStart()
     {
         DeployHelperScript();
+        WriteScriptConfig();
         _firstUpdateDone = false;
         ChangeState(HardwareStatsState.Default);
         return Task.FromResult(true);
+    }
+
+    private void WriteScriptConfig()
+    {
+        try
+        {
+            string homeDir = Environment.GetEnvironmentVariable("HOME") ?? "/home/blu";
+            string wineHomeDir = "Z:" + homeDir.Replace('/', '\\');
+            var gpuIndexRaw = GetSettingValue<string>(HardwareStatsSetting.SelectedGPU) ?? "0";
+            var cpuIndexRaw = GetSettingValue<string>(HardwareStatsSetting.SelectedCPU) ?? "0";
+            int.TryParse(gpuIndexRaw, out var gpuIndex);
+            int.TryParse(cpuIndexRaw, out var cpuIndex);
+            var netIface = GetSettingValue<string>(HardwareStatsSetting.NetworkInterface) ?? "";
+            var configFile = Path.Combine(wineHomeDir, ".vrcosc_hwstats_config");
+            File.WriteAllText(configFile, $"GPU_INDEX={gpuIndex}\nCPU_INDEX={cpuIndex}\nNET_IFACE={netIface}\n");
+        }
+        catch (Exception ex)
+        {
+            Log($"Error writing hwstats config: {ex.Message}");
+        }
     }
 
     private void DeployHelperScript()
@@ -150,16 +171,6 @@ public sealed class LinuxHardwareStatsModule : Module
             string homeDir = Environment.GetEnvironmentVariable("HOME") ?? "/home/blu";
             string wineHomeDir = "Z:" + homeDir.Replace('/', '\\');
             string tempFile = Path.Combine(wineHomeDir, ".vrcosc_hwstats.txt");
-
-            // Write settings config for the bash script
-            var gpuIndexRaw = GetSettingValue<string>(HardwareStatsSetting.SelectedGPU) ?? "0";
-            var cpuIndexRaw = GetSettingValue<string>(HardwareStatsSetting.SelectedCPU) ?? "0";
-            int.TryParse(gpuIndexRaw, out var gpuIndex);
-            int.TryParse(cpuIndexRaw, out var cpuIndex);
-            var netIface = GetSettingValue<string>(HardwareStatsSetting.NetworkInterface) ?? "";
-            var configFile = Path.Combine(wineHomeDir, ".vrcosc_hwstats_config");
-            File.WriteAllText(configFile,
-                $"GPU_INDEX={gpuIndex}\nCPU_INDEX={cpuIndex}\nNET_IFACE={netIface}\n");
 
             // Run the host script to generate stats
             LinuxUtils.RunHost("/home/blu/.local/bin/vrcosc_hwstats.sh", ex => Log($"Error running hwstats script: {ex.Message}"));
