@@ -316,11 +316,58 @@ if [ "$active_window_title" = "Unknown" ] && command -v qdbus &>/dev/null; then
     [ -n "$_kwin_title" ] && active_window_title="$_kwin_title"
 fi
 
-# FPS: display refresh rate of primary monitor as a reliable baseline
-# (actual game FPS requires MangoHud or similar; see module README)
-if command -v xrandr &>/dev/null; then
-    active_window_fps=$(DISPLAY="$_xdisplay" xrandr 2>/dev/null | \
-        grep -oP '[0-9]+\.[0-9]+(?=\*)' | head -1 | cut -d. -f1)
+# FPS — priority: MangoHud log → window's monitor refresh rate → primary display rate
+
+# 1. MangoHud: look for a fresh CSV log matching the active process (updated <30s ago)
+if [ -n "$_pid" ]; then
+    _proc_comm=$(cat /proc/"$_pid"/comm 2>/dev/null || echo "")
+    if [ -n "$_proc_comm" ]; then
+        for _mhdir in "$HOME/.cache/MangoHud" "$HOME/MangoHud" "/tmp/MangoHud"; do
+            [ -d "$_mhdir" ] || continue
+            _mhlog=$(ls -t "$_mhdir/${_proc_comm}"*.csv 2>/dev/null | head -1)
+            if [ -n "$_mhlog" ]; then
+                _age=$(( $(date +%s) - $(stat -c %Y "$_mhlog" 2>/dev/null || echo 0) ))
+                if [ "$_age" -lt 30 ]; then
+                    _mh_fps=$(tail -1 "$_mhlog" 2>/dev/null | cut -d, -f1 | cut -d. -f1)
+                    if [ -n "$_mh_fps" ] && [ "$_mh_fps" -gt 0 ] 2>/dev/null; then
+                        active_window_fps="$_mh_fps"
+                        break
+                    fi
+                fi
+            fi
+        done
+    fi
+fi
+
+# 2. Refresh rate of the monitor the active window is on (via window center point)
+if [ "$active_window_fps" -eq 0 ] && command -v xrandr &>/dev/null; then
+    _mon_fps=""
+    if [ -n "$_win_id" ]; then
+        _geo=$(DISPLAY="$_xdisplay" xdotool getwindowgeometry --shell "$_win_id" 2>/dev/null)
+        _gx=$(echo "$_geo" | grep '^X='      | cut -d= -f2)
+        _gy=$(echo "$_geo" | grep '^Y='      | cut -d= -f2)
+        _gw=$(echo "$_geo" | grep '^WIDTH='  | cut -d= -f2)
+        _gh=$(echo "$_geo" | grep '^HEIGHT=' | cut -d= -f2)
+        _cx=$(( ${_gx:-0} + ${_gw:-0}/2 ))
+        _cy=$(( ${_gy:-0} + ${_gh:-0}/2 ))
+        _mon_fps=$(DISPLAY="$_xdisplay" xrandr 2>/dev/null | awk -v cx="$_cx" -v cy="$_cy" '
+            / connected / {
+                in_mon = 0
+                if (match($0, /([0-9]+)x([0-9]+)\+(-?[0-9]+)\+(-?[0-9]+)/, m))
+                    if (cx+0 >= m[3]+0 && cx+0 < m[3]+0+m[1]+0 &&
+                        cy+0 >= m[4]+0 && cy+0 < m[4]+0+m[2]+0) in_mon = 1
+            }
+            in_mon && /\*/ {
+                if (match($0, /([0-9]+)\.[0-9]+\*/, m)) { print m[1]; exit }
+            }
+        ')
+    fi
+    # 3. Final fallback: primary display (or first active mode)
+    if [ -z "$_mon_fps" ]; then
+        _mon_fps=$(DISPLAY="$_xdisplay" xrandr 2>/dev/null | \
+            grep -oP '[0-9]+\.[0-9]+(?=\*)' | head -1 | cut -d. -f1)
+    fi
+    [ -n "$_mon_fps" ] && active_window_fps="$_mon_fps"
 fi
 [ -z "$active_window_fps" ] && active_window_fps=0
 
