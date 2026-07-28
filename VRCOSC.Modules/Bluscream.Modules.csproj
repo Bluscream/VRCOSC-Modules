@@ -50,8 +50,9 @@
     <EmbeddedResource Include="LinuxHardwareStats\vrcosc_hwstats.sh" LogicalName="Bluscream.Modules.LinuxHardwareStats.vrcosc_hwstats.sh" />
     <EmbeddedResource Include="OpenXR\openxr_loader.dll" LogicalName="Bluscream.Modules.OpenXR.openxr_loader.dll" />
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <!-- Copy only YOUR module DLL (HttpListener is built into .NET) -->
-    <!-- <Exec Command="xcopy /Q /R /F /Y &quot;$(TargetDir)$(TargetName).dll&quot; &quot;%25appdata%25\VRCOSC\packages\local\&quot;" /> -->
-  </Target>
+  <!--
+    No post-build deploy step here on purpose. Deployment is owned by update.sh,
+    which builds Release and copies to packages/remote/bluscream.vrcosc.modules
+    (NOT packages/local — VRCOSC would load the module twice).
+  -->
 </Project>

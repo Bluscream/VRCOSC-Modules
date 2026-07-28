@@ -55,8 +55,7 @@ public sealed class LinuxHardwareStatsModule : Module
         RegisterParameter<int>(HardwareStatsParameter.SystemTemp, "VRCOSC/Hardware/System/Temp", ParameterMode.Write, "System Temp", "The system (ACPI/motherboard) temperature (C)");
         RegisterParameter<int>(HardwareStatsParameter.MaxTemp, "VRCOSC/Hardware/Max/Temp", ParameterMode.Write, "Max Temp", "The highest temperature across all sensors (C)");
         RegisterParameter<int>(HardwareStatsParameter.WindowFPS, "VRCOSC/ClientInfo/Info/FPS", ParameterMode.Write, "Window FPS", "The active window FPS (MangoHud or display refresh rate) — populates the standard ClientInfo FPS path which is always 0 on Linux");
-        RegisterParameter<int>(HardwareStatsParameter.VRFPSValue, "VRCOSC/VR/FPS/Value", ParameterMode.Write, "VR FPS", "The active window FPS written to the standard VR FPS path — SteamVRStatisticsModule uses OpenVR which gives 0 on Monado/WiVRn");
-        RegisterParameter<float>(HardwareStatsParameter.VRFPSNormalised, "VRCOSC/VR/FPS/Normalised", ParameterMode.Write, "VR FPS Normalised", "FPS normalised 0-240 → 0-1, matching SteamVRStatisticsModule's scale");
+        RegisterParameter<float>(HardwareStatsParameter.WindowFPSNormalised, "VRCOSC/Hardware/Window/FPS/Normalised", ParameterMode.Write, "Window FPS Normalised", "Window FPS normalised 0-240 → 0-1, matching the VR FPS scale");
         RegisterParameter<bool>(HardwareStatsParameter.VRRunning, "VRCOSC/Hardware/Game/Running", ParameterMode.Write, "VRChat Running", "True when the VRChat process is running on the host");
         RegisterParameter<bool>(HardwareStatsParameter.VRSteamVR, "VRCOSC/Hardware/Game/SteamVR", ParameterMode.Write, "SteamVR Active", "True when SteamVR is the active VR compositor");
         RegisterParameter<bool>(HardwareStatsParameter.VROpenXR, "VRCOSC/Hardware/Game/OpenXR", ParameterMode.Write, "OpenXR Active", "True when an OpenXR compositor (Monado, WiVRn) is active");
@@ -136,10 +135,8 @@ public sealed class LinuxHardwareStatsModule : Module
 
             // Read the template and bake in the current settings
             using var reader = new StreamReader(stream);
-            var gpuIndexRaw = GetSettingValue<string>(HardwareStatsSetting.SelectedGPU) ?? "0";
-            var cpuIndexRaw = GetSettingValue<string>(HardwareStatsSetting.SelectedCPU) ?? "0";
-            int.TryParse(gpuIndexRaw, out var gpuIndex);
-            int.TryParse(cpuIndexRaw, out var cpuIndex);
+            var gpuIndex = GetSettingValue<int>(HardwareStatsSetting.SelectedGPU);
+            var cpuIndex = GetSettingValue<int>(HardwareStatsSetting.SelectedCPU);
             var netIface = GetSettingValue<string>(HardwareStatsSetting.NetworkInterface) ?? "";
 
             var scriptContent = reader.ReadToEnd()
@@ -330,8 +327,7 @@ public sealed class LinuxHardwareStatsModule : Module
                     processName = ApplyRedaction(processName, procPattern, redactedText);
 
                     SendParameter(HardwareStatsParameter.WindowFPS, windowFps);
-                    SendParameter(HardwareStatsParameter.VRFPSValue, windowFps);
-                    SendParameter(HardwareStatsParameter.VRFPSNormalised, Math.Clamp(windowFps / 240f, 0f, 1f));
+                    SendParameter(HardwareStatsParameter.WindowFPSNormalised, Math.Clamp(windowFps / 240f, 0f, 1f));
                     SetVariableValue(HardwareStatsVariable.WindowTitle, windowTitle);
                     SetVariableValue(HardwareStatsVariable.ProcessName, processName);
                     SetVariableValue(HardwareStatsVariable.WindowFPS, windowFps);
@@ -471,8 +467,7 @@ public sealed class LinuxHardwareStatsModule : Module
         SystemTemp,
         MaxTemp,
         WindowFPS,
-        VRFPSValue,
-        VRFPSNormalised,
+        WindowFPSNormalised,
         VRRunning,
         VRSteamVR,
         VROpenXR,

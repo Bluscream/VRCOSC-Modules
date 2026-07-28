@@ -288,20 +288,23 @@ for temp_file in /sys/class/hwmon/hwmon*/temp*_input; do
     [ "$temp_c" -gt "$max_temp" ] && max_temp=$temp_c
 done
 
-# ---------------------------------------------------------------------------
-# Active Window Info (X11/XWayland via xdotool, KDE Wayland via qdbus fallback)
-# ---------------------------------------------------------------------------
+# Active window info
 active_window_title="Unknown"
 active_process_name="Unknown"
-active_window_fps=0
+_win_id=""
+
 _xdisplay="${DISPLAY:-:0}"
 
+# Try X11/XWayland first
 if command -v xdotool &>/dev/null; then
     _win_id=$(DISPLAY="$_xdisplay" xdotool getactivewindow 2>/dev/null)
+
     if [ -n "$_win_id" ]; then
         _title=$(DISPLAY="$_xdisplay" xdotool getwindowname "$_win_id" 2>/dev/null)
-        _pid=$(DISPLAY="$_xdisplay" xdotool getwindowpid "$_win_id" 2>/dev/null)
+
         [ -n "$_title" ] && active_window_title=$(printf '%s' "$_title" | tr '\n\r\t' ' ' | xargs)
+
+        _pid=$(DISPLAY="$_xdisplay" xdotool getwindowpid "$_win_id" 2>/dev/null)
         if [ -n "$_pid" ]; then
             _proc=$(ps -p "$_pid" -o comm= 2>/dev/null)
             [ -n "$_proc" ] && active_process_name=$(printf '%s' "$_proc" | tr '\n\r\t' ' ' | xargs)
@@ -309,11 +312,36 @@ if command -v xdotool &>/dev/null; then
     fi
 fi
 
-# KDE KWin Wayland fallback: get caption of active window via DBus
+# Fallback: kdotool Wayland/X11 compatible layer
+if [ "$active_window_title" = "Unknown" ] && command -v kdotool &>/dev/null; then
+    _kdotool_win=$(kdotool getactivewindow 2>/dev/null)
+
+    if [ -n "$_kdotool_win" ]; then
+        _kdotool_title=$(kdotool getwindowname "$_kdotool_win" 2>/dev/null | tr '\n\r\t' ' ' | xargs)
+
+        [ -n "$_kdotool_title" ] && active_window_title="$_kdotool_title"
+
+        _kdotool_pid=$(kdotool getwindowpid "$_kdotool_win" 2>/dev/null)
+        if [ -n "$_kdotool_pid" ]; then
+            _proc=$(ps -p "$_kdotool_pid" -o comm= 2>/dev/null | xargs)
+            [ -n "$_proc" ] && active_process_name="$_proc"
+        fi
+    fi
+fi
+
+# Final KDE Wayland fallback
 if [ "$active_window_title" = "Unknown" ] && command -v qdbus &>/dev/null; then
-    _kwin_title=$(qdbus org.kde.KWin /KWin org.kde.KWin.queryWindowInfo 2>/dev/null | \
-        awk -F= '/caption/{print $2; exit}' | xargs)
+    _kwin_info=$(qdbus org.kde.KWin /KWin org.kde.KWin.queryWindowInfo 2>/dev/null) # Causes crosshair cursor which blocks input
+
+    _kwin_title=$(echo "$_kwin_info" | awk -F= '/^caption:/{print $2}' | xargs)
+    _kwin_pid=$(echo "$_kwin_info" | awk -F= '/^pid:/{print $2}' | xargs)
+
     [ -n "$_kwin_title" ] && active_window_title="$_kwin_title"
+
+    if [ -n "$_kwin_pid" ]; then
+        _proc=$(ps -p "$_kwin_pid" -o comm= 2>/dev/null | xargs)
+        [ -n "$_proc" ] && active_process_name="$_proc"
+    fi
 fi
 
 # FPS — priority: MangoHud log → window's monitor refresh rate → primary display rate

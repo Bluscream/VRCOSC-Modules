@@ -97,16 +97,15 @@ Optional for real game FPS (instead of display refresh rate):
 | Path | Type | Value |
 |---|---|---|
 | `VRCOSC/ClientInfo/Info/FPS` | `int` | Active window FPS — MangoHud log if fresh, otherwise display refresh rate of the window's monitor |
-| `VRCOSC/VR/FPS/Value` | `int` | Same FPS value — populates the standard VR FPS path |
-| `VRCOSC/VR/FPS/Normalised` | `float` | FPS normalised 0–240 → 0–1 (matches `SteamVRStatisticsModule`'s scale) |
+| `VRCOSC/Hardware/Window/FPS/Normalised` | `float` | Same FPS normalised 0–240 → 0–1 (matches the VR FPS scale) |
 
-> **Why these paths?** On Linux:
-> - `ClientInfo` always writes `0` to `VRCOSC/ClientInfo/Info/FPS` (VRChat doesn't send FPS over OSC on Linux).
-> - `SteamVRStatisticsModule` always writes `0` to `VRCOSC/VR/FPS/*` on Monado/WiVRn (those paths use the native OpenVR API which is SteamVR-only).
+> **Why `ClientInfo/Info/FPS`?** On Linux the `ClientInfo` module always writes `0` there — VRChat doesn't report FPS over OSC on this platform. This module overwrites it with a real value, so avatars already built around the standard path work with no changes.
 >
-> This module overwrites all three with a real value (MangoHud FPS or display refresh rate).
->
-> ⚠️ If you run `ClientInfo` or `SteamVRStatisticsModule` simultaneously, they will race-write `0` to these paths every tick. Disable those modules on Linux, or accept occasional `0` flicker.
+> ⚠️ If you run `ClientInfo` simultaneously it will race-write `0` to that path every tick. Disable it on Linux, or accept occasional `0` flicker.
+
+> **VR FPS lives elsewhere.** `VRCOSC/VR/FPS/Value` and `/Normalised` are *headset compositor* FPS, not window FPS, and this module deliberately leaves them alone:
+> - **SteamVR** → handled by the stock `SteamVRStatisticsModule`.
+> - **Monado / WiVRn** → handled by our `OpenXRStatisticsModule`, which only writes while an OpenXR session is actually live, so the two never fight.
 
 ### Game / VR State
 
@@ -163,9 +162,12 @@ The following paths are **unique to this module** and have no conflicts:
 
 ```
 VRCOSC/Hardware/Network/*    VRCOSC/Hardware/System/Temp
-VRCOSC/Hardware/Max/Temp     VRCOSC/Hardware/Window/FPS
+VRCOSC/Hardware/Max/Temp     VRCOSC/Hardware/Window/FPS/Normalised
 VRCOSC/Hardware/Game/*
 ```
+
+`VRCOSC/ClientInfo/Info/FPS` is also an **intentional** overlap — see the Active
+Window section above. Disable the `ClientInfo` module on Linux.
 
 ---
 
