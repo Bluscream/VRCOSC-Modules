@@ -100,7 +100,7 @@ public class HomeAssistantModule : Module
         CreateVariable<string>(HomeAssistantVariable.LastEntity, "Last Entity");
         CreateVariable<string>(HomeAssistantVariable.LastState, "Last State");
         CreateVariable<int>(HomeAssistantVariable.StatesCount, "States Count");
-        CreateVariable<object>(HomeAssistantVariable.EntityState, "Entity State / Attribute", typeof(HomeAssistant.HomeAssistantEntityClipVariable));
+        CreateVariable<Dictionary<string, HomeAssistant.HAEntityStateSnapshot>>(HomeAssistantVariable.EntityState, "Entity State / Attribute", typeof(HomeAssistant.HomeAssistantEntityClipVariable));
 
         // Register Template Variables so ChatBoxManager recognizes them before loading timeline clips
         var templateVars = GetSettingValue<List<MutableKeyValuePair>>(HomeAssistantSetting.TemplateVariables);
