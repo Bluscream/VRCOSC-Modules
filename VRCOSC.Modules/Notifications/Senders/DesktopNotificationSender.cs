@@ -9,6 +9,21 @@ public static class DesktopNotificationSender
 {
     public static bool SendNotification(string title, string message, int timeout = 5000)
     {
+        // On Linux, go through the host's notify-send. The PowerShell toast path below
+        // does work under Wine, but the toast is raised *inside the prefix* and never
+        // reaches the real desktop, so the user sees nothing.
+        if (Utilities.LinuxUtils.IsLinux)
+        {
+            var failed = false;
+            Utilities.LinuxUtils.NotifySend(title, message,
+                onError: ex =>
+                {
+                    failed = true;
+                    Console.WriteLine($"[Desktop Notification] notify-send failed: {ex.Message}");
+                });
+            return !failed;
+        }
+
         try
         {
             // Use PowerShell with BurntToast or fallback to simpler notification

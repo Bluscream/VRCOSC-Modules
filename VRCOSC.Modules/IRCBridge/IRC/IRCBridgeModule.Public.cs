@@ -19,18 +19,9 @@ public partial class IRCBridgeModule
     // Public accessor for GetVariableValue to be used by nodes
     public T? GetVariableValue<T>(IRCBridgeVariable variable) where T : notnull
     {
-        // Use reflection to call the protected GetVariableValue<T>(Enum) method
-        var method = typeof(Module).GetMethod("GetVariableValue", 
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance,
-            null, 
-            new[] { typeof(Enum) }, 
-            null);
-        if (method != null)
-        {
-            var genericMethod = method.MakeGenericMethod(typeof(T));
-            return (T?)genericMethod.Invoke(this, new object[] { variable });
-        }
-        return default;
+        // The SDK's GetVariableValue<T>(Enum) is protected, so it can only be reached
+        // reflectively. ReflectionUtils owns that call so it exists in one place.
+        return ReflectionUtils.GetModuleVariableValue<T>(this, variable);
     }
 
     // Public wrapper methods

@@ -28,6 +28,31 @@ public static class LinuxUtils
     /// <summary>Returns true when running on a Linux host.</summary>
     public static bool IsLinux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
+    /// <summary>
+    /// The user's home directory expressed as a path Wine can open — Wine maps drive Z: to
+    /// the filesystem root, so <c>/home/blu</c> becomes <c>Z:\home\blu</c>.
+    /// </summary>
+    /// <remarks>
+    /// Do NOT write <c>"Z:" + homeDir</c>. When HOME is unset, which it is under Wine,
+    /// the fallback (<see cref="Environment.SpecialFolder.UserProfile"/>) already returns a
+    /// Windows path such as <c>C:\users\steamuser</c>. Concatenating yields
+    /// <c>Z:C:\users\steamuser</c>, and <c>Z:foo</c> in Windows path syntax means "foo
+    /// relative to the current directory on drive Z" — so instead of failing, it silently
+    /// creates a literal <c>C:\users\...</c> tree inside whatever the process's working
+    /// directory happens to be. That produced a stray `C:` folder in the repo, which
+    /// `git add -A` would then have committed.
+    /// </remarks>
+    public static string GetWineHomeDir()
+    {
+        var home = Environment.GetEnvironmentVariable("HOME");
+
+        // Only a POSIX path needs translating; anything else is already Windows-shaped.
+        if (!string.IsNullOrEmpty(home) && home.StartsWith('/'))
+            return "Z:" + home.Replace('/', '\\');
+
+        return Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+    }
+
     // ═══════════════════════════════════════════════════════════════════
     //  WINE CONTEXT — called from inside VRCOSC (Wine/Proton process)
     // ═══════════════════════════════════════════════════════════════════
@@ -72,6 +97,20 @@ public static class LinuxUtils
     /// </summary>
     public static void RunHost(string command, Action<Exception>? onError = null)
         => RunWine(WrapHostCommand(command), onError);
+
+    /// <summary>
+    /// Runs one of this package's helper scripts from the host's <c>~/.local/bin</c>.
+    ///
+    /// The path is resolved by the *host* shell expanding <c>$HOME</c>, not by this
+    /// process: we run inside Wine, so our own HOME is the Wine user's home and would
+    /// point somewhere else entirely. Letting the host expand it keeps the call correct
+    /// for any user on any machine — no username is baked in.
+    /// </summary>
+    public static void RunHostScript(string scriptName, string? arguments = null, Action<Exception>? onError = null)
+    {
+        var argumentSuffix = string.IsNullOrWhiteSpace(arguments) ? string.Empty : $" {arguments}";
+        RunHost($"sh -c '\"$HOME/.local/bin/{scriptName}\"{argumentSuffix}'", onError);
+    }
 
     // ═══════════════════════════════════════════════════════════════════
     //  NATIVE CONTEXT — direct /bin/bash, captures stdout
@@ -222,10 +261,50 @@ public static class LinuxUtils
     /// Returns whether a named process is running on the Linux host.
     /// Uses <c>pgrep</c> via <c>flatpak-spawn --host</c>.
     /// </summary>
-    public static bool IsHostProcessRunning(string processName)
+    /// <param name="processName">Process name, or a command-line pattern when
+    /// <paramref name="matchFullCommandLine"/> is set.</param>
+    /// <param name="matchFullCommandLine">
+    /// Use <c>pgrep -f</c> instead of <c>pgrep -x</c>. Required for anything launched
+    /// through Wine or Proton: a Windows game shows up as a wine loader process, so an
+    /// exact-name match on e.g. "VRChat" never hits, while <c>-f "VRChat.exe"</c> does.
+    /// </param>
+    public static bool IsHostProcessRunning(string processName, bool matchFullCommandLine = false)
+        => !string.IsNullOrWhiteSpace(GetHostProcessId(processName, matchFullCommandLine));
+
+    /// <summary>
+    /// PID of the first host process matching <paramref name="processName"/>, or null.
+    /// See <see cref="IsHostProcessRunning"/> for when to set
+    /// <paramref name="matchFullCommandLine"/>.
+    /// </summary>
+    public static string? GetHostProcessId(string processName, bool matchFullCommandLine = false)
     {
-        var output = RunShellHost($"pgrep -x {processName}");
-        return !string.IsNullOrWhiteSpace(output);
+        var flag = matchFullCommandLine ? "-f" : "-x";
+        var output = RunShellHost($"pgrep {flag} \"{processName}\"");
+        if (string.IsNullOrWhiteSpace(output)) return null;
+
+        // pgrep prints one pid per line; take the first.
+        return output.Split('\n', StringSplitOptions.RemoveEmptyEntries)[0].Trim();
+    }
+
+    /// <summary>
+    /// Reads a file from the Linux host — <c>/proc</c>, <c>/sys</c>, or anything else the
+    /// Wine side cannot see directly. Returns an empty string on failure.
+    /// </summary>
+    public static string ReadHostFile(string path, int timeoutMs = 5000)
+        => RunShellHost($"cat \"{path}\"", timeoutMs);
+
+    /// <summary>
+    /// Sends a desktop notification through <c>notify-send</c> on the host.
+    /// </summary>
+    /// <remarks>
+    /// Windows toast notifications raised from inside the prefix surface into Wine rather
+    /// than the real desktop, so on Linux this is the path that actually notifies the user.
+    /// </remarks>
+    public static void NotifySend(string title, string body, string urgency = "normal",
+                                  Action<Exception>? onError = null)
+    {
+        static string Q(string s) => s.Replace("\\", "\\\\").Replace("\"", "\\\"");
+        RunHost($"notify-send -u {urgency} \"{Q(title)}\" \"{Q(body)}\"", onError);
     }
 
     // ═══════════════════════════════════════════════════════════════════

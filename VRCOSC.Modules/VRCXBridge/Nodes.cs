@@ -22,7 +22,7 @@ public sealed class VRCXGetOnlineFriendsNode : ModuleNode<VRCXBridgeModule>
     public ValueOutput<string> FriendsJson = new("Friends JSON");
     public ValueOutput<string> Error = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -65,7 +65,7 @@ public sealed class VRCXSendInviteNode : ModuleNode<VRCXBridgeModule>{
     
     public ValueOutput<string> Error = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -114,7 +114,7 @@ public sealed class VRCXGetUserInfoNode : ModuleNode<VRCXBridgeModule>{
     public new ValueOutput<string> DisplayName = new("Display Name");
     public ValueOutput<string> Error = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -163,7 +163,7 @@ public sealed class VRCXGetCurrentLocationNode : ModuleNode<VRCXBridgeModule>{
     public ValueOutput<string> LocationJson = new("Location JSON");
     public ValueOutput<string> Error = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -205,7 +205,7 @@ public sealed class VRCXShowToastNode : ModuleNode<VRCXBridgeModule>{
     
     public ValueOutput<string> Error = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -249,7 +249,7 @@ public sealed class VRCXConnectionStatusNode : ModuleNode<VRCXBridgeModule>{
 
     public FlowCall Call = new();
 
-    protected override Task Process(PulseContext c)
+    protected override Task Process(PulseCtx c)
     {
         // Just output true if module is running
         Connected.Write(true, c); // Todo: Make this actually check if the connection is active

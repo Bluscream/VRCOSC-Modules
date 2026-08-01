@@ -26,6 +26,95 @@ internal static unsafe class OpenXRHelper
         dst[len] = 0;
     }
 
+    // ── Instance/system bring-up ──────────────────────────────────
+    /// <summary>
+    /// Creates an OpenXR instance and resolves the HMD system id — the identical preamble
+    /// all three OpenXR modules need before they diverge into their own setup.
+    /// </summary>
+    /// <remarks>
+    /// This was copy-pasted in OpenXRStatistics, OpenXRHapticControl and
+    /// OpenXRGestureExtensions, right down to the error strings, so a fix to one silently
+    /// missed the other two. Callers that need more (a session, action sets, extensions)
+    /// still do that themselves — only the common prefix lives here.
+    /// </remarks>
+    /// <param name="log">Module logger; the caller's Log so messages keep their module prefix.</param>
+    /// <returns>True if both the instance and the system were obtained.</returns>
+    public static bool CreateInstanceAndSystem(XR xr, string appName, Action<string> log,
+                                               ref Instance instance, ref ulong systemId,
+                                               string[]? extensions = null)
+    {
+        var appInfo = new ApplicationInfo();
+        FillApplicationInfo(ref appInfo, appName);
+        appInfo.ApplicationVersion = 1;
+        appInfo.ApiVersion = XrVersion10;
+
+        IntPtr[]? extPtrs = null;
+
+        try
+        {
+            var createInfo = new InstanceCreateInfo
+            {
+                Type = StructureType.InstanceCreateInfo,
+                ApplicationInfo = appInfo,
+                EnabledExtensionCount = 0,
+                EnabledExtensionNames = null
+            };
+
+            if (extensions is { Length: > 0 })
+            {
+                extPtrs = AllocStringPointers(extensions);
+                fixed (IntPtr* pp = extPtrs)
+                {
+                    createInfo.EnabledExtensionCount = (uint)extensions.Length;
+                    createInfo.EnabledExtensionNames = (byte**)pp;
+
+                    if (xr.CreateInstance(in createInfo, ref instance) != Result.Success)
+                    {
+                        log("xrCreateInstance failed — is an OpenXR runtime installed?");
+                        return false;
+                    }
+                }
+            }
+            else if (xr.CreateInstance(in createInfo, ref instance) != Result.Success)
+            {
+                log("xrCreateInstance failed — is an OpenXR runtime installed?");
+                return false;
+            }
+        }
+        finally
+        {
+            // The runtime copies the strings during xrCreateInstance, so they are safe to
+            // free as soon as the call returns.
+            if (extPtrs is not null) FreeStringPointers(extPtrs);
+        }
+
+        var sysInfo = new SystemGetInfo { Type = StructureType.SystemGetInfo, FormFactor = FormFactor.HeadMountedDisplay };
+        if (xr.GetSystem(instance, in sysInfo, ref systemId) != Result.Success)
+        {
+            log("xrGetSystem failed — is an HMD connected?");
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Destroys the session and instance and disposes the API object — the common tail of
+    /// every module's TearDownOpenXR. Anything module-specific (action sets, actions,
+    /// hand trackers) must be destroyed by the caller BEFORE calling this, since OpenXR
+    /// requires children to go before their parent instance.
+    /// </summary>
+    public static void DestroySessionAndInstance(ref XR? xr, ref Session session, ref Instance instance)
+    {
+        if (xr is null) return;
+
+        if (session.Handle != 0) { xr.DestroySession(session); session = default; }
+        if (instance.Handle != 0) { xr.DestroyInstance(instance); instance = default; }
+
+        xr.Dispose();
+        xr = null;
+    }
+
     // ── Per-struct fill helpers ───────────────────────────────────
     public static void FillApplicationInfo(ref ApplicationInfo info, string appName)
     {

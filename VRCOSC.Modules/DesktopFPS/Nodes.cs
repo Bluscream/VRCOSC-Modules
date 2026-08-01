@@ -19,11 +19,11 @@ public sealed class GetFPSNode : ModuleNode<DesktopFPSModule>, IActiveUpdateNode
     public int UpdateOffset => 0;
     public ValueOutput<int> FPS = new();
 
-    protected override Task Process(PulseContext c)
+    protected override Task Process(PulseCtx c)
     {
         FPS.Write(Module.GetFPS(), c);
         return Task.CompletedTask;
     }
 
-    public Task<bool> OnUpdate(PulseContext c) => Task.FromResult(true);
+    public Task<bool> OnUpdate(PulseCtx c) => Task.FromResult(true);
 }

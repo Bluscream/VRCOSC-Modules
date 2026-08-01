@@ -142,47 +142,12 @@ public class OpenXRGestureExtensionsModule : Module
 
         bool htSupported = _xr.IsInstanceExtensionPresent(null, ExtHandTracking.ExtensionName);
 
-        var appInfo = new ApplicationInfo();
-        OpenXRHelper.FillApplicationInfo(ref appInfo, "VRCOSC OpenXR Gestures");
-        appInfo.ApplicationVersion = 1;
-        appInfo.ApiVersion = OpenXRHelper.XrVersion10;
+        // Only request the hand-tracking extension when the runtime advertises it —
+        // xrCreateInstance fails outright on an unsupported extension name.
+        var extensions = htSupported ? new[] { ExtHandTracking.ExtensionName } : null;
 
-        Result result;
-        if (htSupported)
-        {
-            // Allocate extension name pointers as unmanaged memory
-            var extPtrs = OpenXRHelper.AllocStringPointers(new[] { ExtHandTracking.ExtensionName });
-            try
-            {
-                // Convert IntPtr[] to byte*[] on the stack
-                var ptrArray = new byte*[extPtrs.Length];
-                for (int i = 0; i < extPtrs.Length; i++) ptrArray[i] = (byte*)extPtrs[i];
-
-                fixed (byte** ppExts = ptrArray)
-                {
-                    var instCI = new InstanceCreateInfo
-                    {
-                        Type = StructureType.InstanceCreateInfo,
-                        ApplicationInfo = appInfo,
-                        EnabledExtensionCount = (uint)ptrArray.Length,
-                        EnabledExtensionNames = ppExts
-                    };
-                    result = _xr.CreateInstance(in instCI, ref _instance);
-                }
-            }
-            finally { OpenXRHelper.FreeStringPointers(extPtrs); }
-        }
-        else
-        {
-            var instCI = new InstanceCreateInfo { Type = StructureType.InstanceCreateInfo, ApplicationInfo = appInfo };
-            result = _xr.CreateInstance(in instCI, ref _instance);
-        }
-
-        if (result != Result.Success) { Log($"xrCreateInstance failed: {result}"); return false; }
-
-        var sysInfo = new SystemGetInfo { Type = StructureType.SystemGetInfo, FormFactor = FormFactor.HeadMountedDisplay };
-        if (_xr.GetSystem(_instance, in sysInfo, ref _systemId) != Result.Success)
-        { Log("xrGetSystem failed — no HMD connected?"); return false; }
+        if (!OpenXRHelper.CreateInstanceAndSystem(_xr, "VRCOSC OpenXR Gestures", Log, ref _instance, ref _systemId, extensions))
+            return false;
 
         _handTrackingSupported = htSupported;
 
@@ -226,12 +191,7 @@ public class OpenXRGestureExtensionsModule : Module
             if (_rightTracker.Handle != 0) { _handTrackingExt.DestroyHandTracker(_rightTracker); _rightTracker = default; }
             _handTrackingExt.Dispose(); _handTrackingExt = null;
         }
-        if (_xr is not null)
-        {
-            if (_session.Handle  != 0) { _xr.DestroySession(_session);   _session  = default; }
-            if (_instance.Handle != 0) { _xr.DestroyInstance(_instance); _instance = default; }
-            _xr.Dispose(); _xr = null;
-        }
+        OpenXRHelper.DestroySessionAndInstance(ref _xr, ref _session, ref _instance);
         _xrReady = false;
     }
 

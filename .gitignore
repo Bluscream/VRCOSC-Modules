@@ -15,3 +15,20 @@ dist/
 *.dll
 
 VRCOSC.Modules\VRChatSettings\Definitions\*.*
+
+# Backups. update.sh runs `git add -A`, so anything left lying around gets committed
+# unless it is ignored here.
+*.bak
+*.bak-*
+*.bak.*
+*~
+
+# Stray Wine drive-letter directories.
+#
+# LinuxMedia and LinuxHardwareStats deploy their helper scripts to a Wine path built as
+# `"Z:" + homeDir`. When that path is not resolved against a real Wine prefix, .NET treats
+# it as RELATIVE and creates a literal `C:` or `Z:` directory under the current working
+# directory - which is this repo when the module is exercised from a build here. Harmless
+# in itself, but `git add -A` would happily commit it.
+/C:/
+/Z:/

@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "VRCOSC HTTP Server API",
+    "title": "VRCOSC HTTP/MCP Server API",
     "version": "1.0.0",
     "description": "Control VRChat OSC parameters via HTTP requests",
     "contact": {
@@ -16,7 +16,7 @@
   "servers": [
     {
       "url": "http://localhost:8080",
-      "description": "Local VRCOSC HTTP Server"
+      "description": "Local VRCOSC HTTP/MCP Server"
     }
   ],
   "tags": [
@@ -259,6 +259,69 @@
           }
         }
       }
+    },
+    "/mcp": {
+      "post": {
+        "tags": ["MCP"],
+        "summary": "Model Context Protocol endpoint (JSON-RPC 2.0)",
+        "description": "Streamable-HTTP MCP transport so AI agents can read and control this VRCOSC instance. Supports initialize, ping, tools/list and tools/call. Notifications receive 202 with no body.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "jsonrpc": { "type": "string", "example": "2.0" },
+                  "id": { "description": "Request id; omit for notifications" },
+                  "method": { "type": "string", "example": "tools/list" },
+                  "params": { "type": "object" }
+                },
+                "required": ["jsonrpc", "method"]
+              },
+              "examples": {
+                "listTools": {
+                  "summary": "List available tools",
+                  "value": { "jsonrpc": "2.0", "id": 1, "method": "tools/list" }
+                },
+                "callTool": {
+                  "summary": "Send a chatbox message",
+                  "value": {
+                    "jsonrpc": "2.0",
+                    "id": 2,
+                    "method": "tools/call",
+                    "params": {
+                      "name": "vrcosc_send_chatbox",
+                      "arguments": { "text": "hello from MCP" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON-RPC response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "jsonrpc": { "type": "string" },
+                    "id": {},
+                    "result": { "type": "object" },
+                    "error": { "type": "object" }
+                  }
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Notification accepted; no response body"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -268,7 +331,7 @@
         "properties": {
           "message": {
             "type": "string",
-            "example": "VRCOSC HTTP Server is running"
+            "example": "VRCOSC HTTP/MCP Server is running"
           },
           "version": {
             "type": "string",

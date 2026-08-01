@@ -209,7 +209,7 @@ public class HomeAssistantModule : Module
 
             // Initial REST render
             var initialRender = await _client.RenderTemplateAsync(template);
-            SetVariableValue(varKey, initialRender);
+            SetVariableValue(varKey, initialRender ?? string.Empty);
 
             // Subscribe live WebSocket render if WebSocket is active
             if (_client.IsConnected)
@@ -272,7 +272,7 @@ public class HomeAssistantModule : Module
 
     private void PushEntityToOscParameter(string entityId, string state, JsonElement attributes)
     {
-        var prefix = GetSettingValue<string>(HomeAssistantSetting.OscPrefix).TrimEnd('/') + "/";
+        var prefix = (GetSettingValue<string>(HomeAssistantSetting.OscPrefix) ?? string.Empty).TrimEnd('/') + "/";
         var paramNameUnderscore = prefix + entityId.Replace('.', '_');
         var paramNameSlash = prefix + entityId.Replace('.', '/');
 
@@ -316,7 +316,7 @@ public class HomeAssistantModule : Module
     {
         if (!Bluscream.ModuleUtils.IsStarted() || _client == null) return;
 
-        var prefix = GetSettingValue<string>(HomeAssistantSetting.OscPrefix).TrimEnd('/');
+        var prefix = (GetSettingValue<string>(HomeAssistantSetting.OscPrefix) ?? string.Empty).TrimEnd('/');
         var rawName = parameter.Name;
 
         // Check if parameter matches HA prefix

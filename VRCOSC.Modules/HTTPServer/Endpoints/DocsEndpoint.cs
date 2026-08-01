@@ -1,3 +1,4 @@
+using EmbedIO;
 using System;
 using System.IO;
 using System.Net;
@@ -10,9 +11,9 @@ namespace Bluscream.Modules.HTTPServer.Endpoints;
 /// <summary>
 /// Handles GET /docs and GET /openapi.json
 /// </summary>
-public static class DocsEndpoint
+internal static class DocsEndpoint
 {
-    public static async Task HandleSwaggerUI(HttpListenerContext context, HTTPServerModule module)
+    internal static async Task HandleSwaggerUI(IHttpContext context, HTTPServerModule module)
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "Bluscream.Modules.HTTPServer.swagger-ui.html";
@@ -34,7 +35,7 @@ public static class DocsEndpoint
         context.Response.Close();
     }
 
-    public static async Task HandleOpenApiSpec(HttpListenerContext context, HTTPServerModule module)
+    internal static async Task HandleOpenApiSpec(IHttpContext context, HTTPServerModule module)
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "Bluscream.Modules.HTTPServer.openapi.json";

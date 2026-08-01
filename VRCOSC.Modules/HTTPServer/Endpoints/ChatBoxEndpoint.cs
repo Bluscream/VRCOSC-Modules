@@ -1,3 +1,4 @@
+using EmbedIO;
 using System;
 using System.IO;
 using System.Net;
@@ -12,9 +13,9 @@ namespace Bluscream.Modules.HTTPServer.Endpoints;
 /// GET returns current chatbox text (plain text)
 /// POST sends a message to chatbox (JSON)
 /// </summary>
-public static class ChatBoxEndpoint
+internal static class ChatBoxEndpoint
 {
-    public static async Task HandleGet(HttpListenerContext context, HTTPServerModule module)
+    internal static async Task HandleGet(IHttpContext context, HTTPServerModule module)
     {
         try
         {
@@ -47,7 +48,7 @@ public static class ChatBoxEndpoint
         }
     }
 
-    public static async Task HandlePost(HttpListenerContext context, HTTPServerModule module)
+    internal static async Task HandlePost(IHttpContext context, HTTPServerModule module)
     {
         try
         {

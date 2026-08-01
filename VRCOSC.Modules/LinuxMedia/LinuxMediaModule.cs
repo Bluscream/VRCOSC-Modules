@@ -63,7 +63,7 @@ public class LinuxMediaModule : Module
     {
         try
         {
-            string homeDir = Environment.GetEnvironmentVariable("HOME") ?? "/home/blu";
+            string homeDir = Environment.GetEnvironmentVariable("HOME") ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string targetPath = $"{homeDir}/.local/bin/vrcosc_mpris_query.sh";
 
             var assembly = typeof(LinuxMediaModule).Assembly;
@@ -74,7 +74,7 @@ public class LinuxMediaModule : Module
                 return;
             }
 
-            string wineHomeDir = "Z:" + homeDir.Replace('/', '\\');
+            string wineHomeDir = LinuxUtils.GetWineHomeDir();
             string wineTargetPath = System.IO.Path.Combine(wineHomeDir, ".local", "bin", "vrcosc_mpris_query.sh");
 
             string? dir = System.IO.Path.GetDirectoryName(wineTargetPath);
@@ -108,12 +108,12 @@ public class LinuxMediaModule : Module
         if (!Bluscream.ModuleUtils.IsStarted()) return;
         try
         {
-            string homeDir = Environment.GetEnvironmentVariable("HOME") ?? "/home/blu";
-            string wineHomeDir = "Z:" + homeDir.Replace('/', '\\');
+            string homeDir = Environment.GetEnvironmentVariable("HOME") ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string wineHomeDir = LinuxUtils.GetWineHomeDir();
             string tempFile = System.IO.Path.Combine(wineHomeDir, ".vrcosc_mpris.txt");
             string hostFile = homeDir + "/.vrcosc_mpris.txt";
 
-            LinuxUtils.RunHost("/home/blu/.local/bin/vrcosc_mpris_query.sh", ex => Log($"Error: {ex.Message}"));
+            LinuxUtils.RunHostScript("vrcosc_mpris_query.sh", null, ex => Log($"Error: {ex.Message}"));
 
             if (!System.IO.File.Exists(tempFile))
             {
@@ -208,30 +208,30 @@ public class LinuxMediaModule : Module
         {
             case MediaParameter.Play:
                 if (parameter.GetValue<bool>())
-                    LinuxUtils.RunHost("/home/blu/.local/bin/vrcosc_mpris_query.sh control play",   ex => Log($"Error: {ex.Message}"));
+                    LinuxUtils.RunHostScript("vrcosc_mpris_query.sh", "control play",   ex => Log($"Error: {ex.Message}"));
                 else
-                    LinuxUtils.RunHost("/home/blu/.local/bin/vrcosc_mpris_query.sh control pause",  ex => Log($"Error: {ex.Message}"));
+                    LinuxUtils.RunHostScript("vrcosc_mpris_query.sh", "control pause",  ex => Log($"Error: {ex.Message}"));
                 break;
 
             case MediaParameter.Next when parameter.GetValue<bool>():
-                LinuxUtils.RunHost("/home/blu/.local/bin/vrcosc_mpris_query.sh control next",       ex => Log($"Error: {ex.Message}"));
+                LinuxUtils.RunHostScript("vrcosc_mpris_query.sh", "control next",       ex => Log($"Error: {ex.Message}"));
                 break;
 
             case MediaParameter.Previous when parameter.GetValue<bool>():
-                LinuxUtils.RunHost("/home/blu/.local/bin/vrcosc_mpris_query.sh control previous",   ex => Log($"Error: {ex.Message}"));
+                LinuxUtils.RunHostScript("vrcosc_mpris_query.sh", "control previous",   ex => Log($"Error: {ex.Message}"));
                 break;
 
             case MediaParameter.Position:
                 if (_durationMicroseconds > 0)
                 {
                     long targetPos = (long)(parameter.GetValue<float>() * _durationMicroseconds);
-                    LinuxUtils.RunHost($"/home/blu/.local/bin/vrcosc_mpris_query.sh control position {targetPos}", ex => Log($"Error: {ex.Message}"));
+                    LinuxUtils.RunHostScript("vrcosc_mpris_query.sh", $"control position {targetPos}", ex => Log($"Error: {ex.Message}"));
                 }
                 break;
 
             case MediaParameter.Volume:
                 _volume = parameter.GetValue<float>();
-                LinuxUtils.RunHost($"/home/blu/.local/bin/vrcosc_mpris_query.sh control volume {_volume}",          ex => Log($"Error: {ex.Message}"));
+                LinuxUtils.RunHostScript("vrcosc_mpris_query.sh", $"control volume {_volume}",          ex => Log($"Error: {ex.Message}"));
                 break;
         }
     }

@@ -10,7 +10,7 @@ using VRCOSC.App.SDK.Nodes;
 namespace Bluscream.Modules;
 
 [Node("Dump All Parameters")]
-public sealed class DumpAllParametersNode : ModuleNode<DebugModule>, IFlowInput
+public sealed class DumpAllParametersNode : FlowModuleNode<DebugModule>
 {
     public ValueInput<string?> File = new("File", "Optional custom file path (leave empty for auto-generated)");
     public FlowContinuation Next = new("Next");
@@ -19,7 +19,7 @@ public sealed class DumpAllParametersNode : ModuleNode<DebugModule>, IFlowInput
     public ValueOutput<int> TotalParameters = new("Total Parameters");
     public ValueOutput<string> Error = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -44,11 +44,11 @@ public sealed class DumpAllParametersNode : ModuleNode<DebugModule>, IFlowInput
 
 // Commented out - Clear does not work with VRCOSC's built-in tracking
 // [Node("Clear Parameter Tracking")]
-// public sealed class ClearParameterTrackingNode : ModuleNode<DebugModule>, IFlowInput
+// public sealed class ClearParameterTrackingNode : FlowModuleNode<DebugModule>
 // {
 //     public FlowContinuation Next = new("Next");
 // 
-//     protected override async Task Process(PulseContext c)
+//     protected override async Task Process(PulseCtx c)
 //     {
 //         Module.ClearTracking();
 //         await Next.Execute(c);
@@ -56,14 +56,14 @@ public sealed class DumpAllParametersNode : ModuleNode<DebugModule>, IFlowInput
 // }
 
 [Node("Get Parameter Counts")]
-public sealed class GetParameterCountsNode : ModuleNode<DebugModule>, IFlowInput
+public sealed class GetParameterCountsNode : FlowModuleNode<DebugModule>
 {
     public FlowContinuation Next = new("Next");
     public ValueOutput<int> IncomingCount = new("Incoming Count");
     public ValueOutput<int> OutgoingCount = new("Outgoing Count");
     public ValueOutput<int> TotalCount = new("Total Count");
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         var incoming = Module.GetIncomingParameters().Count;
         var outgoing = Module.GetOutgoingParameters().Count;
@@ -77,7 +77,7 @@ public sealed class GetParameterCountsNode : ModuleNode<DebugModule>, IFlowInput
 }
 
 [Node("Get All Parameters")]
-public sealed class GetAllParametersNode : ModuleNode<DebugModule>, IFlowInput
+public sealed class GetAllParametersNode : FlowModuleNode<DebugModule>
 {
     public FlowContinuation Next = new("Next");
     public ValueOutput<Dictionary<string, object>> Parameters = new("Parameters");
@@ -85,7 +85,7 @@ public sealed class GetAllParametersNode : ModuleNode<DebugModule>, IFlowInput
     public ValueOutput<int> OutgoingCount = new("Outgoing Count");
     public ValueOutput<int> TotalCount = new("Total Count");
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         var incoming = Module.GetIncomingParameters();
         var outgoing = Module.GetOutgoingParameters();

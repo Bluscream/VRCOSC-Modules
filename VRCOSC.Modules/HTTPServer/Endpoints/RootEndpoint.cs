@@ -1,3 +1,4 @@
+using EmbedIO;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -8,13 +9,13 @@ namespace Bluscream.Modules.HTTPServer.Endpoints;
 /// <summary>
 /// Handles GET / - Server information endpoint
 /// </summary>
-public static class RootEndpoint
+internal static class RootEndpoint
 {
-    public static async Task Handle(HttpListenerContext context, HTTPServerModule module)
+    internal static async Task Handle(IHttpContext context, HTTPServerModule module)
     {
         var responseObj = new
         {
-            message = "VRCOSC HTTP Server is running",
+            message = "VRCOSC HTTP/MCP Server is running",
             version = AssemblyUtils.GetVersion(),
             documentation = $"{module.GetDisplayUrl()}/docs",
             endpoints = module.GetEndpointsList(),

@@ -81,8 +81,20 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
 
         ChangeState(DebugState.Idle);
         
-        // Auto-start VRCOSC if enabled (read from disk since settings aren't loaded yet in OnPostLoad)
-        if (this.GetSetting("AutoStartModules", false))
+        // Auto-start VRCOSC if enabled (read from disk since settings aren't loaded yet in OnPostLoad).
+        // Log what the disk read resolved to: a silent false here is indistinguishable from the
+        // setting being off, which previously made a broken lookup impossible to diagnose.
+        var autoStartEnabled = this.GetSetting("AutoStartModules", false);
+        if (!autoStartEnabled)
+        {
+            var settingsPath = this.GetSettingsFilePath();
+            var settings = this.GetSettings();
+            Log($"Auto-start disabled. settingsFile={settingsPath ?? "NOT RESOLVED"}, " +
+                $"keys={(settings == null ? "NULL" : string.Join(",", settings.Keys))}, " +
+                $"profileId={ReflectionUtils.GetCurrentProfileId() ?? "NULL"}");
+        }
+
+        if (autoStartEnabled)
         {
             _ = Task.Run(async () =>
             {
@@ -102,13 +114,14 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
                         return;
                     }
                     
-                    // If in Waiting state, user manually clicked Play - let it proceed
+                    // "Waiting" means VRCOSC is blocked on VRChat detection — which is
+                    // precisely what this setting says it bypasses. Skipping here made
+                    // auto-start a no-op in the only situation it exists for.
                     if (currentState == "Waiting")
                     {
-                        Log("⏭ VRCOSC is waiting for VRChat, skipping auto-start");
-                        return;
+                        Log("VRCOSC is waiting for VRChat — force-starting anyway (detection bypass)");
                     }
-                    
+
                     Log("🚀 Force-starting VRCOSC (skipping VRChat detection)...");
                     var error = ReflectionUtils.ForceAppManagerStart();
                     

@@ -30,7 +30,7 @@ public sealed class HTTPGetRequestNode : ModuleNode<HTTPModule>{
     public ValueOutput<int> StatusCode = new("Status Code");
     public ValueOutput<string> Error = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -78,7 +78,7 @@ public sealed class HTTPPostRequestNode : ModuleNode<HTTPModule>{
     public ValueOutput<int> StatusCode = new("Status Code");
     public ValueOutput<string> Error = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -129,7 +129,7 @@ public sealed class HTTPRequestNode : ModuleNode<HTTPModule>{
     public ValueOutput<bool> Success = new();
     public ValueOutput<string> Error = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {

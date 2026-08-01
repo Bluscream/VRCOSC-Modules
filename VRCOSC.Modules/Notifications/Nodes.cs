@@ -9,7 +9,7 @@ namespace Bluscream.Modules;
 
 // Send Desktop Notification Node
 [Node("Send Desktop Notification")]
-public sealed class SendDesktopNotificationNode : ModuleNode<NotificationsModule>, IFlowInput
+public sealed class SendDesktopNotificationNode : FlowModuleNode<NotificationsModule>
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
@@ -19,7 +19,7 @@ public sealed class SendDesktopNotificationNode : ModuleNode<NotificationsModule
 
     public ValueOutput<bool> Success = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -57,7 +57,7 @@ public sealed class SendDesktopNotificationNode : ModuleNode<NotificationsModule
 
 // Send XSOverlay Notification Node
 [Node("Send XSOverlay Notification")]
-public sealed class SendXSOverlayNotificationNode : ModuleNode<NotificationsModule>, IFlowInput
+public sealed class SendXSOverlayNotificationNode : FlowModuleNode<NotificationsModule>
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
@@ -69,7 +69,7 @@ public sealed class SendXSOverlayNotificationNode : ModuleNode<NotificationsModu
 
     public ValueOutput<bool> Success = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -113,7 +113,7 @@ public sealed class SendXSOverlayNotificationNode : ModuleNode<NotificationsModu
 
 // Send OVRToolkit Notification Node
 [Node("Send OVRToolkit Notification")]
-public sealed class SendOVRToolkitNotificationNode : ModuleNode<NotificationsModule>, IFlowInput
+public sealed class SendOVRToolkitNotificationNode : FlowModuleNode<NotificationsModule>
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
@@ -125,7 +125,7 @@ public sealed class SendOVRToolkitNotificationNode : ModuleNode<NotificationsMod
 
     public ValueOutput<bool> Success = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -171,7 +171,7 @@ public sealed class SendOVRToolkitNotificationNode : ModuleNode<NotificationsMod
 
 // Send Notification to All Enabled Targets Node
 [Node("Send Notification")]
-public sealed class SendNotificationAllNode : ModuleNode<NotificationsModule>, IFlowInput
+public sealed class SendNotificationAllNode : FlowModuleNode<NotificationsModule>
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
@@ -186,7 +186,7 @@ public sealed class SendNotificationAllNode : ModuleNode<NotificationsModule>, I
     public ValueOutput<bool> OVRToolkitSuccess = new("OVRToolkit");
     public ValueOutput<bool> WebhookSuccess = new("Webhook");
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {

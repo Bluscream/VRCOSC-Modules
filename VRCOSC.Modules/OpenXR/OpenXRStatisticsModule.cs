@@ -117,31 +117,8 @@ public class OpenXRStatisticsModule : Module
     {
         if (_xr is null) return false;
 
-        var appInfo = new ApplicationInfo();
-        OpenXRHelper.FillApplicationInfo(ref appInfo, "VRCOSC OpenXR Stats");
-        appInfo.ApplicationVersion = 1;
-        appInfo.ApiVersion = OpenXRHelper.XrVersion10;
-
-        var createInfo = new InstanceCreateInfo
-        {
-            Type = StructureType.InstanceCreateInfo,
-            ApplicationInfo = appInfo,
-            EnabledExtensionCount = 0,
-            EnabledExtensionNames = null
-        };
-
-        if (_xr.CreateInstance(in createInfo, ref _instance) != Result.Success)
-        {
-            Log("xrCreateInstance failed — is an OpenXR runtime installed?");
+        if (!OpenXRHelper.CreateInstanceAndSystem(_xr, "VRCOSC OpenXR Stats", Log, ref _instance, ref _systemId))
             return false;
-        }
-
-        var sysInfo = new SystemGetInfo { Type = StructureType.SystemGetInfo, FormFactor = FormFactor.HeadMountedDisplay };
-        if (_xr.GetSystem(_instance, in sysInfo, ref _systemId) != Result.Success)
-        {
-            Log("xrGetSystem failed — is an HMD connected?");
-            return false;
-        }
 
         Log($"OpenXR system found (ID={_systemId}).");
         return true;
@@ -149,10 +126,8 @@ public class OpenXRStatisticsModule : Module
 
     private void TearDownOpenXR()
     {
-        if (_xr is null) return;
-        if (_session.Handle  != 0) { _xr.DestroySession(_session);   _session  = default; }
-        if (_instance.Handle != 0) { _xr.DestroyInstance(_instance); _instance = default; }
-        _xr.Dispose(); _xr = null; _xrReady = false;
+        OpenXRHelper.DestroySessionAndInstance(ref _xr, ref _session, ref _instance);
+        _xrReady = false;
     }
 
     // ─────────────────── Module update loops ─────────────────────────
@@ -174,7 +149,7 @@ public class OpenXRStatisticsModule : Module
     {
         if (!Bluscream.ModuleUtils.IsStarted()) return;
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        if (LinuxUtils.IsLinux)
             PollBatteryViaUPower();
 
         SendParameter(OpenXRParameter.UserPresent,      _hmd.IsPresent);

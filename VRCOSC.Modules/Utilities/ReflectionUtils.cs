@@ -16,8 +16,308 @@ namespace Bluscream;
 /// </summary>
 public static class ReflectionUtils
 {
+    #region Type Resolution
+
+    /// <summary>
+    /// Resolve a type from a host assembly by full name, independent of load context.
+    ///
+    /// A plain <c>Type.GetType("Some.Type, VRCOSC.App")</c> resolves against the *calling*
+    /// assembly's <see cref="System.Runtime.Loader.AssemblyLoadContext"/>. VRCOSC loads
+    /// module packages into their own ALC, so a plain Type.GetType from module code can
+    /// return null even though the host assembly is loaded — silently, since every caller
+    /// here treats null as "not available". That produced empty module lists, a null
+    /// active profile, and a Debug-module auto-start that never fired.
+    ///
+    /// Searching the loaded assemblies finds the host's already-loaded copy regardless of
+    /// which context asks.
+    /// </summary>
+    private static Type? FindHostType(string fullTypeName, string assemblyName)
+    {
+        // Fast path: works when the calling context can already see the assembly.
+        var type = Type.GetType($"{fullTypeName}, {assemblyName}");
+        if (type != null) return type;
+
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            if (!string.Equals(assembly.GetName().Name, assemblyName, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            type = assembly.GetType(fullTypeName);
+            if (type != null) return type;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Where VRCOSC actually stores its data (the directory containing
+    /// <c>profiles/</c>, <c>configuration/</c>, <c>packages/</c>, <c>logs/</c>).
+    ///
+    /// Asks the host rather than reconstructing the path: <c>AppManager.Storage.BasePath</c>
+    /// is whatever VRCOSC itself resolved at startup, so this stays correct no matter which
+    /// OS user, Wine user, or prefix the process runs under — nothing here assumes a
+    /// username or a fixed layout.
+    ///
+    /// Falls back to the same expression VRCOSC uses internally
+    /// (<c>ApplicationData/VRCOSC</c>) only when the host isn't reachable yet.
+    /// </summary>
+    public static string? GetVrcoscBasePath()
+    {
+        try
+        {
+            var appManager = GetAppManager();
+            if (appManager != null)
+            {
+                var storage = GetMemberValue(appManager, "Storage");
+                if (storage != null &&
+                    GetMemberValue(storage, "BasePath") is string basePath &&
+                    !string.IsNullOrWhiteSpace(basePath) &&
+                    Directory.Exists(basePath))
+                {
+                    return basePath;
+                }
+            }
+        }
+        catch
+        {
+            // Fall through to the environment-derived path below.
+        }
+
+        var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        if (string.IsNullOrWhiteSpace(appData)) return null;
+
+        var fallback = Path.Combine(appData, "VRCOSC");
+        return Directory.Exists(fallback) ? fallback : null;
+    }
+
+    /// <summary>
+    /// Read an instance member by name, whether it is declared as a property or a field.
+    ///
+    /// VRCOSC's internals mix both — <c>Profile.ID</c> is a plain field while
+    /// <c>Module.Enabled</c> is a property. Code that only calls GetProperty silently
+    /// returns null for the fields, so prefer this for any host member lookup.
+    /// </summary>
+    public static object? GetMemberValue(object instance, string memberName)
+    {
+        var type = instance.GetType();
+
+        var property = type.GetProperty(memberName, AnyInstance);
+        if (property != null) return property.GetValue(instance);
+
+        var field = type.GetField(memberName, AnyInstance);
+        return field?.GetValue(instance);
+    }
+
+    #endregion
+
+    #region Generic reflection primitives
+    // ------------------------------------------------------------------------------------
+    // Reflection belongs in this class. Module code should call these rather than reaching
+    // for System.Reflection directly, so that the BindingFlags choices, the property-vs-field
+    // fallback and the null handling are decided in exactly one place.
+    //
+    // Why that matters here specifically: VRCOSC's internals mix fields and properties
+    // (Profile.ID is a field, Module.Enabled is a property), and a bare GetProperty call
+    // silently returns null for the fields rather than throwing. Bugs from that look like
+    // "the value is just empty" and are tedious to trace. Every helper below goes through
+    // GetMemberValue, which checks both.
+    // ------------------------------------------------------------------------------------
+
+    /// <summary>Public + non-public instance members. The right default for host internals.</summary>
+    public const BindingFlags AnyInstance = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+
+    /// <summary>Public + non-public static members.</summary>
+    public const BindingFlags AnyStatic = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
+
+    /// <summary>
+    /// Reads a property or field and converts it to <typeparamref name="T"/>, returning
+    /// <paramref name="defaultValue"/> if the member is missing, null, or not convertible.
+    /// Never throws.
+    /// </summary>
+    public static T? GetMemberValue<T>(object? instance, string memberName, T? defaultValue = default)
+    {
+        if (instance is null) return defaultValue;
+
+        try
+        {
+            var value = GetMemberValue(instance, memberName);
+            if (value is null) return defaultValue;
+            if (value is T typed) return typed;
+
+            // Handles the int/long/enum widening that reflection hands back.
+            var target = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
+            return target.IsEnum
+                ? (T)Enum.ToObject(target, value)
+                : (T)Convert.ChangeType(value, target);
+        }
+        catch
+        {
+            return defaultValue;
+        }
+    }
+
+    /// <summary>Try-pattern variant of <see cref="GetMemberValue{T}"/>.</summary>
+    public static bool TryGetMemberValue<T>(object? instance, string memberName, out T? value)
+    {
+        value = default;
+        if (instance is null) return false;
+
+        var raw = GetMemberValue(instance, memberName);
+        if (raw is null) return false;
+
+        value = GetMemberValue<T>(instance, memberName);
+        return value is not null;
+    }
+
+    /// <summary>
+    /// Writes a property or field. Returns false if the member does not exist, is
+    /// read-only, or the value will not convert — rather than throwing.
+    /// </summary>
+    public static bool SetMemberValue(object? instance, string memberName, object? value)
+    {
+        if (instance is null) return false;
+
+        try
+        {
+            var type = instance.GetType();
+
+            var property = type.GetProperty(memberName, AnyInstance);
+            if (property is { CanWrite: true })
+            {
+                property.SetValue(instance, ConvertFor(property.PropertyType, value));
+                return true;
+            }
+
+            var field = type.GetField(memberName, AnyInstance);
+            if (field is not null && !field.IsInitOnly)
+            {
+                field.SetValue(instance, ConvertFor(field.FieldType, value));
+                return true;
+            }
+        }
+        catch
+        {
+            // fall through
+        }
+
+        return false;
+    }
+
+    private static object? ConvertFor(Type target, object? value)
+    {
+        if (value is null) return null;
+        if (target.IsInstanceOfType(value)) return value;
+
+        var underlying = Nullable.GetUnderlyingType(target) ?? target;
+        return underlying.IsEnum ? Enum.ToObject(underlying, value) : Convert.ChangeType(value, underlying);
+    }
+
+    /// <summary>
+    /// Invokes an instance method by name. Returns null if it does not exist or throws.
+    /// Overloads are resolved by argument types, so pass the arguments you actually mean.
+    /// </summary>
+    public static object? InvokeMethod(object? instance, string methodName, params object?[] args)
+    {
+        if (instance is null) return null;
+
+        try
+        {
+            var type = instance.GetType();
+            var argTypes = args.Select(a => a?.GetType() ?? typeof(object)).ToArray();
+
+            var method = type.GetMethod(methodName, AnyInstance, null, argTypes, null)
+                         ?? type.GetMethod(methodName, AnyInstance);
+
+            return method?.Invoke(instance, args);
+        }
+        catch (TargetInvocationException e)
+        {
+            // Unwrap so callers see the real failure, not the reflection wrapper.
+            Logger?.Invoke($"Reflection: {methodName} threw {e.InnerException?.GetType().Name}: {e.InnerException?.Message}");
+            return null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>Typed variant of <see cref="InvokeMethod"/>.</summary>
+    public static T? InvokeMethod<T>(object? instance, string methodName, params object?[] args)
+    {
+        var result = InvokeMethod(instance, methodName, args);
+        return result is T typed ? typed : default;
+    }
+
+    /// <summary>
+    /// Invokes a generic method by name, closing it over <paramref name="typeArguments"/>.
+    /// <see cref="InvokeMethod"/> cannot do this — an open generic must be closed with
+    /// MakeGenericMethod before it can be called.
+    /// </summary>
+    public static object? InvokeGenericMethod(object? instance, string methodName, Type[] typeArguments,
+                                              Type[] parameterTypes, params object?[] args)
+    {
+        if (instance is null) return null;
+
+        try
+        {
+            var method = instance.GetType().GetMethod(methodName, AnyInstance, null, parameterTypes, null);
+            return method?.MakeGenericMethod(typeArguments).Invoke(instance, args);
+        }
+        catch (TargetInvocationException e)
+        {
+            Logger?.Invoke($"Reflection: {methodName}<{string.Join(",", typeArguments.Select(t => t.Name))}> threw: {e.InnerException?.Message}");
+            return null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Reads a module variable via the SDK's protected <c>GetVariableValue&lt;T&gt;(Enum)</c>.
+    /// </summary>
+    /// <remarks>
+    /// Modules need this to expose their own variables to their nodes, but the SDK method is
+    /// protected, so it can only be reached reflectively. Two modules had hand-rolled the same
+    /// MakeGenericMethod dance; this is that call, once.
+    /// </remarks>
+    public static T? GetModuleVariableValue<T>(object module, Enum variable, T? defaultValue = default)
+    {
+        var result = InvokeGenericMethod(module, "GetVariableValue", [typeof(T)], [typeof(Enum)], variable);
+        return result is T typed ? typed : defaultValue;
+    }
+
+    /// <summary>
+    /// All methods on <paramref name="type"/> carrying <typeparamref name="TAttribute"/>.
+    /// For attribute-driven registration, where the caller genuinely needs MethodInfo
+    /// rather than a value (e.g. handing them to a framework factory).
+    /// </summary>
+    public static IEnumerable<MethodInfo> GetMethodsWithAttribute<TAttribute>(Type type, BindingFlags flags = AnyStatic)
+        where TAttribute : Attribute
+        => type.GetMethods(flags).Where(m => m.GetCustomAttribute<TAttribute>() != null);
+
+    /// <summary>Reads a static property or field off <paramref name="type"/>.</summary>
+    public static object? GetStaticMemberValue(Type type, string memberName)
+    {
+        var property = type.GetProperty(memberName, AnyStatic);
+        if (property != null) return property.GetValue(null);
+
+        return type.GetField(memberName, AnyStatic)?.GetValue(null);
+    }
+
+    /// <summary>
+    /// Optional sink for diagnostics from the helpers above. Left unset they stay silent,
+    /// which is what module code wants — reflection failures here are usually expected
+    /// (a host member that only exists on some VRCOSC versions).
+    /// </summary>
+    public static Action<string>? Logger { get; set; }
+
+    #endregion
+
     #region Reflection Caches
-    
+
     // Type caches
     private static Type? _appManagerType;
     private static Type? _moduleManagerType;
@@ -53,7 +353,7 @@ public static class ReflectionUtils
     {
         try
         {
-            _appManagerType ??= Type.GetType("VRCOSC.App.AppManager, VRCOSC.App");
+            _appManagerType ??= FindHostType("VRCOSC.App.AppManager", "VRCOSC.App");
             if (_appManagerType == null) return (null, "AppManager type not found");
 
             _appManagerGetInstanceMethod ??= _appManagerType.GetMethod("GetInstance", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
@@ -87,7 +387,7 @@ public static class ReflectionUtils
     {
         try
         {
-            _moduleManagerType ??= Type.GetType("VRCOSC.App.Modules.ModuleManager, VRCOSC.App");
+            _moduleManagerType ??= FindHostType("VRCOSC.App.Modules.ModuleManager", "VRCOSC.App");
             if (_moduleManagerType == null) return (null, "ModuleManager type not found");
 
             _moduleManagerGetInstanceMethod ??= _moduleManagerType.GetMethod("GetInstance", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
@@ -120,7 +420,7 @@ public static class ReflectionUtils
     {
         try
         {
-            var profileManagerType = Type.GetType("VRCOSC.App.Profiles.ProfileManager, VRCOSC.App");
+            var profileManagerType = FindHostType("VRCOSC.App.Profiles.ProfileManager", "VRCOSC.App");
             if (profileManagerType == null) return null;
 
             var getInstanceMethod = profileManagerType.GetMethod("GetInstance", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
@@ -158,12 +458,10 @@ public static class ReflectionUtils
             var profile = valueProp.GetValue(activeProfileObservable);
             if (profile == null) return null;
 
-            // Get ID from profile
-            var idProp = profile.GetType().GetProperty("ID", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            if (idProp == null) return null;
-
-            var id = idProp.GetValue(profile);
-            return id?.ToString();
+            // Profile.ID is a *field* (`public Guid ID;`), not a property — GetProperty
+            // returns null for it, which is what made this silently return null and take
+            // every caller down the wrong-profile fallback path.
+            return GetMemberValue(profile, "ID")?.ToString();
         }
         catch
         {
@@ -182,13 +480,10 @@ public static class ReflectionUtils
             var profileId = GetCurrentProfileId();
             if (profileId == null) return null;
 
-            var appDataPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "VRCOSC",
-                "profiles",
-                profileId,
-                "modules"
-            );
+            var basePath = GetVrcoscBasePath();
+            if (basePath == null) return null;
+
+            var appDataPath = Path.Combine(basePath, "profiles", profileId, "modules");
 
             return Directory.Exists(appDataPath) ? appDataPath : null;
         }
@@ -209,7 +504,7 @@ public static class ReflectionUtils
     {
         try
         {
-            _chatBoxManagerType ??= Type.GetType("VRCOSC.App.ChatBox.ChatBoxManager, VRCOSC.App");
+            _chatBoxManagerType ??= FindHostType("VRCOSC.App.ChatBox.ChatBoxManager", "VRCOSC.App");
             if (_chatBoxManagerType == null) return null;
 
             _chatBoxManagerGetInstanceMethod ??= _chatBoxManagerType.GetMethod("GetInstance", BindingFlags.NonPublic | BindingFlags.Static);
@@ -983,53 +1278,33 @@ public static class ReflectionUtils
                 return null;
             }
 
-            // Get Modules dictionary - ObservableDictionary<ModulePackage, List<Module>>
-            var modulesDict = moduleManager.GetType().GetProperty("Modules", BindingFlags.Public | BindingFlags.Instance);
-            if (modulesDict == null)
+            // ModuleManager exposes a private `modules` property that already flattens
+            // Modules.Values.SelectMany(...). Prefer it: ObservableDictionary implements
+            // IDictionary<,> *and* declares its own Values, so GetProperty("Values") can
+            // throw AmbiguousMatchException — which the catch below turned into a silent
+            // null, reporting zero modules while 60 were loaded.
+            var flat = GetMemberValue(moduleManager, "modules") as System.Collections.IEnumerable;
+            if (flat == null)
             {
-                System.Diagnostics.Debug.WriteLine("GetAllModulesInfo: Modules property not found");
-                return null;
-            }
-
-            var dict = modulesDict.GetValue(moduleManager);
-            if (dict == null)
-            {
-                System.Diagnostics.Debug.WriteLine("GetAllModulesInfo: Modules dictionary is null");
-                return null;
-            }
-
-            System.Diagnostics.Debug.WriteLine($"GetAllModulesInfo: Got dict type: {dict.GetType().FullName}");
-
-            // Flatten the dictionary values
-            var valuesProperty = dict.GetType().GetProperty("Values");
-            var values = valuesProperty?.GetValue(dict) as System.Collections.IEnumerable;
-            
-            if (values == null)
-            {
-                System.Diagnostics.Debug.WriteLine("GetAllModulesInfo: Values is null");
+                System.Diagnostics.Debug.WriteLine("GetAllModulesInfo: could not read ModuleManager.modules");
                 return null;
             }
 
             var modulesList = new List<object>();
             int totalModules = 0;
 
-            // Iterate through each List<Module>
-            foreach (var moduleList in values)
+            foreach (var module in flat)
             {
-                if (moduleList is not System.Collections.IEnumerable enumerable) continue;
-
-                foreach (var module in enumerable)
-                {
-                    if (module == null) continue;
-                    totalModules++;
+                if (module == null) continue;
+                totalModules++;
 
                     var moduleType = module.GetType();
 
                 // Get basic properties
                 var titleAttr = moduleType.GetCustomAttribute(typeof(System.ComponentModel.DisplayNameAttribute), true) 
-                    ?? moduleType.GetCustomAttribute(Type.GetType("VRCOSC.App.SDK.Modules.ModuleTitleAttribute, VRCOSC.App.SDK") ?? typeof(object), true);
-                var descAttr = moduleType.GetCustomAttribute(Type.GetType("VRCOSC.App.SDK.Modules.ModuleDescriptionAttribute, VRCOSC.App.SDK") ?? typeof(object), true);
-                var authorAttr = moduleType.GetCustomAttribute(Type.GetType("VRCOSC.App.SDK.Modules.ModuleAuthorAttribute, VRCOSC.App.SDK") ?? typeof(object), true);
+                    ?? moduleType.GetCustomAttribute(FindHostType("VRCOSC.App.SDK.Modules.ModuleTitleAttribute", "VRCOSC.App.SDK") ?? typeof(object), true);
+                var descAttr = moduleType.GetCustomAttribute(FindHostType("VRCOSC.App.SDK.Modules.ModuleDescriptionAttribute", "VRCOSC.App.SDK") ?? typeof(object), true);
+                var authorAttr = moduleType.GetCustomAttribute(FindHostType("VRCOSC.App.SDK.Modules.ModuleAuthorAttribute", "VRCOSC.App.SDK") ?? typeof(object), true);
 
                 var titleProp = titleAttr?.GetType().GetProperty("Title") ?? titleAttr?.GetType().GetProperty("DisplayName");
                 var descProp = descAttr?.GetType().GetProperty("Description");
@@ -1066,7 +1341,6 @@ public static class ReflectionUtils
                         state = stateStr,
                         running = stateStr.Equals("Started", StringComparison.OrdinalIgnoreCase)
                     });
-                }
             }
 
             return modulesList;
@@ -1439,12 +1713,8 @@ public static class ReflectionUtils
             }
 
             // Fallback: Search all profile directories if reflection failed
-            var appDataPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "VRCOSC"
-            );
-
-            if (!Directory.Exists(appDataPath))
+            var appDataPath = GetVrcoscBasePath();
+            if (appDataPath == null)
                 return null;
 
             var profilesPath = Path.Combine(appDataPath, "profiles");

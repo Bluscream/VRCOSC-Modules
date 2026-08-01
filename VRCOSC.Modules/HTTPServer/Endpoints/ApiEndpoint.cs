@@ -1,3 +1,4 @@
+using EmbedIO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +11,9 @@ namespace Bluscream.Modules.HTTPServer.Endpoints;
 /// <summary>
 /// Handles GET /api - Comprehensive API data endpoint
 /// </summary>
-public static class ApiEndpoint
+internal static class ApiEndpoint
 {
-    public static async Task Handle(HttpListenerContext context, HTTPServerModule module)
+    internal static async Task Handle(IHttpContext context, HTTPServerModule module)
     {
         try
         {

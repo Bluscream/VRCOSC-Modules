@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Regenerate docs/ whenever C# sources are part of a commit, and stage the result so the
+# map never drifts from the code it describes.
+#
+# Install with:  tools/install-hooks.sh
+#
+# Skip for a single commit with:  git commit --no-verify
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+# Only bother when the commit actually touches C#. Docs edits, script tweaks and README
+# changes should not pay for a full re-scan.
+if ! git diff --cached --name-only --diff-filter=ACMR | grep -q '\.cs$'; then
+    exit 0
+fi
+
+if ! command -v python3 >/dev/null 2>&1; then
+    echo "pre-commit: python3 not found — skipping docs regeneration." >&2
+    exit 0
+fi
+
+echo "pre-commit: regenerating docs/ ..."
+if ! python3 tools/gen-docs.py; then
+    echo "pre-commit: gen-docs.py failed — commit aborted." >&2
+    echo "            Fix it, or bypass once with 'git commit --no-verify'." >&2
+    exit 1
+fi
+
+# Stage whatever changed. Deliberately limited to docs/ so the hook can never sweep up
+# unrelated working-tree edits into the commit.
+if ! git diff --quiet -- docs/; then
+    git add docs/
+    echo "pre-commit: docs/ updated and staged."
+else
+    echo "pre-commit: docs/ already up to date."
+fi

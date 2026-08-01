@@ -9,8 +9,8 @@ using VRCOSC.App.SDK.Nodes;
 namespace Bluscream.Modules;
 
 // Start HTTP Server Node
-[Node("Start HTTP Server")]
-public sealed class StartHTTPServerNode : ModuleNode<HTTPServerModule>, IFlowInput
+[Node("Start HTTP/MCP Server")]
+public sealed class StartHTTPServerNode : FlowModuleNode<HTTPServerModule>
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
@@ -19,7 +19,7 @@ public sealed class StartHTTPServerNode : ModuleNode<HTTPServerModule>, IFlowInp
     public ValueOutput<string> ServerUrl = new("Server URL");
     public ValueOutput<string> Error = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -47,14 +47,14 @@ public sealed class StartHTTPServerNode : ModuleNode<HTTPServerModule>, IFlowInp
 }
 
 // Stop HTTP Server Node
-[Node("Stop HTTP Server")]
-public sealed class StopHTTPServerNode : ModuleNode<HTTPServerModule>, IFlowInput
+[Node("Stop HTTP/MCP Server")]
+public sealed class StopHTTPServerNode : FlowModuleNode<HTTPServerModule>
 {
     public FlowContinuation Next = new("Next");
 
     public ValueOutput<bool> Success = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -71,13 +71,13 @@ public sealed class StopHTTPServerNode : ModuleNode<HTTPServerModule>, IFlowInpu
 }
 
 // Get Server Status Node
-[Node("Get HTTP Server Status")]
+[Node("Get HTTP/MCP Server Status")]
 public sealed class GetHTTPServerStatusNode : ModuleNode<HTTPServerModule>
 {
     public ValueOutput<bool> IsRunning = new("Is Running");
     public ValueOutput<string> ServerUrl = new("Server URL");
 
-    protected override Task Process(PulseContext c)
+    protected override Task Process(PulseCtx c)
     {
         IsRunning.Write(Module.IsRunning, c);
         ServerUrl.Write(Module.GetServerUrl(), c);

@@ -6,7 +6,47 @@
     <Nullable>enable</Nullable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <LangVersion>latestmajor</LangVersion>
-    <WindowsSdkPackageVersion>10.0.26100.1</WindowsSdkPackageVersion>
+    <!-- Three-target build, one per VRCOSC install. Select with -p:VrcoscTarget=<t>:
+         (update.sh wraps this; see its beta and dev flags)
+
+           stable  VRCOSC          app 2026.708.0   SDK 2026.501.0   nuget.org
+           beta    VRCOSC-BETA     app 2026.702.0   SDK 2026.702.0   local feed
+           dev     VRCOSC-DEV      app upstream dev SDK 2026.718.0   local feed
+
+         The three are NOT interchangeable: a DLL only loads on the line it was compiled
+         against, otherwise VRCOSC throws TypeLoadException at package import and ends up
+         with zero modules.
+
+         stable uses the old concrete node API (ModuleNode<T>, FlowContinuation,
+         FlowCall, NodeGenericTypeFilter). beta and dev both use the newer interface API
+         (IModuleNode<T>, FlowOutput, IPulseContext) and are near-identical - they differ
+         by ~6 SDK files, mostly PiShock - so they share the BETA_SDK code path and only
+         the SDK version differs. DEV_SDK is defined as well for the rare case something
+         needs to split them. See GlobalUsings.cs.
+
+         Only 2026.501.0 is on nuget.org; upstream stopped publishing the SDK after it.
+         2026.702.0 (tag) and 2026.718.0 (origin/dev @ 9e2a774a) are packed locally into
+         ../local-nuget-feed - see nuget.config for the repack command.
+
+         Never let the SDK version be date-derived. VRCOSC's Directory.Build.props stamps
+         GlobalVersion from DateTime.Now, so packing two different branches on the same
+         day produces the same version number and NuGet silently serves whichever it
+         cached first. That is exactly how the old 2026.729.0 pin ended up built against
+         the feat/cli fork rather than upstream, which went unnoticed because it still
+         compiled clean. Always pass -p:GlobalVersion explicitly when packing. -->
+    <VrcoscTarget Condition="'$(VrcoscTarget)' == ''">stable</VrcoscTarget>
+    <!-- back-compat: -p:BetaSdk=true still selects the beta target -->
+    <VrcoscTarget Condition="'$(BetaSdk)' == 'true'">beta</VrcoscTarget>
+
+    <VrcoscSdkVersion Condition="'$(VrcoscTarget)' == 'stable'">2026.501.0</VrcoscSdkVersion>
+    <VrcoscSdkVersion Condition="'$(VrcoscTarget)' == 'beta'">2026.702.0</VrcoscSdkVersion>
+    <VrcoscSdkVersion Condition="'$(VrcoscTarget)' == 'dev'">2026.718.0</VrcoscSdkVersion>
+
+    <DefineConstants Condition="'$(VrcoscTarget)' != 'stable'">$(DefineConstants);BETA_SDK</DefineConstants>
+    <DefineConstants Condition="'$(VrcoscTarget)' == 'dev'">$(DefineConstants);DEV_SDK</DefineConstants>
+
+    <WindowsSdkPackageVersion Condition="'$(VrcoscTarget)' == 'stable'">10.0.26100.1</WindowsSdkPackageVersion>
+    <WindowsSdkPackageVersion Condition="'$(VrcoscTarget)' != 'stable'">10.0.26100.56</WindowsSdkPackageVersion>
     <SupportedOSPlatform>windows10.0.22621.0</SupportedOSPlatform>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -17,8 +57,19 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="HADotNet.Core" Version="1.6.0" />
+    <!--
+      MCP protocol layer + cross-platform HTTP server.
+      ModelContextProtocol.Core (not .AspNetCore) on purpose: the AspNetCore package
+      carries a FrameworkReference on Microsoft.AspNetCore.App, which is NOT installed
+      in the Wine/Proton dotnet runtime VRCOSC runs under. Core has no framework
+      reference and still ships StreamableHttpServerTransport.
+      EmbedIO is used in HttpListenerMode.EmbedIO — its own socket-based listener —
+      because System.Net.HttpListener needs http.sys, which Wine stubs out.
+    -->
+    <PackageReference Include="ModelContextProtocol.Core" Version="2.0.0" />
+    <PackageReference Include="EmbedIO" Version="3.5.2" />
     <PackageReference Include="Lib.Harmony" Version="2.4.2" />
-    <PackageReference Include="VolcanicArts.VRCOSC.SDK" Version="2026.501.0" />
+    <PackageReference Include="VolcanicArts.VRCOSC.SDK" Version="$(VrcoscSdkVersion)" />
     <PackageReference Include="Costura.Fody" Version="6.1.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

@@ -16,7 +16,7 @@ public sealed class LinuxCPUInfoSourceNode : ModuleNode<LinuxHardwareStatsModule
     public ValueOutput<int> Power = new();
     public ValueOutput<int> Temperature = new();
 
-    protected override Task Process(PulseContext c)
+    protected override Task Process(PulseCtx c)
     {
         var cpu = Module.GetCPU();
         if (cpu is null) return Task.CompletedTask;
@@ -27,7 +27,7 @@ public sealed class LinuxCPUInfoSourceNode : ModuleNode<LinuxHardwareStatsModule
         return Task.CompletedTask;
     }
 
-    public Task<bool> OnUpdate(PulseContext c) => Task.FromResult(true);
+    public Task<bool> OnUpdate(PulseCtx c) => Task.FromResult(true);
 }
 
 [Node("Linux GPU Info Source")]
@@ -38,7 +38,7 @@ public sealed class LinuxGPUInfoSourceNode : ModuleNode<LinuxHardwareStatsModule
     public ValueOutput<int> Power = new();
     public ValueOutput<int> Temperature = new();
 
-    protected override Task Process(PulseContext c)
+    protected override Task Process(PulseCtx c)
     {
         var gpu = Module.GetGPU();
         if (gpu is null) return Task.CompletedTask;
@@ -49,7 +49,7 @@ public sealed class LinuxGPUInfoSourceNode : ModuleNode<LinuxHardwareStatsModule
         return Task.CompletedTask;
     }
 
-    public Task<bool> OnUpdate(PulseContext c) => Task.FromResult(true);
+    public Task<bool> OnUpdate(PulseCtx c) => Task.FromResult(true);
 }
 
 [Node("Linux RAM Info Source")]
@@ -61,7 +61,7 @@ public sealed class LinuxRAMInfoSourceNode : ModuleNode<LinuxHardwareStatsModule
     public ValueOutput<float> Used = new();
     public ValueOutput<float> Free = new();
 
-    protected override Task Process(PulseContext c)
+    protected override Task Process(PulseCtx c)
     {
         var ram = Module.GetRAM();
         if (ram is null) return Task.CompletedTask;
@@ -73,7 +73,7 @@ public sealed class LinuxRAMInfoSourceNode : ModuleNode<LinuxHardwareStatsModule
         return Task.CompletedTask;
     }
 
-    public Task<bool> OnUpdate(PulseContext c) => Task.FromResult(true);
+    public Task<bool> OnUpdate(PulseCtx c) => Task.FromResult(true);
 }
 
 [Node("Linux VRAM Info Source")]
@@ -85,7 +85,7 @@ public sealed class LinuxVRAMInfoSourceNode : ModuleNode<LinuxHardwareStatsModul
     public ValueOutput<float> Used = new();
     public ValueOutput<float> Free = new();
 
-    protected override Task Process(PulseContext c)
+    protected override Task Process(PulseCtx c)
     {
         var gpu = Module.GetGPU();
         if (gpu is null) return Task.CompletedTask;
@@ -97,7 +97,7 @@ public sealed class LinuxVRAMInfoSourceNode : ModuleNode<LinuxHardwareStatsModul
         return Task.CompletedTask;
     }
 
-    public Task<bool> OnUpdate(PulseContext c) => Task.FromResult(true);
+    public Task<bool> OnUpdate(PulseCtx c) => Task.FromResult(true);
 }
 
 [Node("Linux Network Info Source")]
@@ -109,7 +109,7 @@ public sealed class LinuxNetworkInfoSourceNode : ModuleNode<LinuxHardwareStatsMo
     public ValueOutput<float> RxTotal = new();
     public ValueOutput<float> TxTotal = new();
 
-    protected override Task Process(PulseContext c)
+    protected override Task Process(PulseCtx c)
     {
         var net = Module.GetNetwork();
         if (net is null) return Task.CompletedTask;
@@ -121,5 +121,5 @@ public sealed class LinuxNetworkInfoSourceNode : ModuleNode<LinuxHardwareStatsMo
         return Task.CompletedTask;
     }
 
-    public Task<bool> OnUpdate(PulseContext c) => Task.FromResult(true);
+    public Task<bool> OnUpdate(PulseCtx c) => Task.FromResult(true);
 }

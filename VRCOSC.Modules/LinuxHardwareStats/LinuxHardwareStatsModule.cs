@@ -93,10 +93,10 @@ public sealed class LinuxHardwareStatsModule : Module
         CreateVariable<float>(HardwareStatsVariable.VRAMFree, "VRAM Free (GB)");
 
         // --- Network ---
-        var netDownloadReference = CreateVariable<int>(HardwareStatsVariable.NetworkDownload, "Network Download (KB/s)")!;
-        var netUploadReference = CreateVariable<int>(HardwareStatsVariable.NetworkUpload, "Network Upload (KB/s)")!;
-        CreateVariable<float>(HardwareStatsVariable.NetworkRxTotal, "Network Received Total (MB)");
-        CreateVariable<float>(HardwareStatsVariable.NetworkTxTotal, "Network Sent Total (MB)");
+        var netDownloadReference = CreateVariable<string>(HardwareStatsVariable.NetworkDownload, "Network Download")!;
+        var netUploadReference = CreateVariable<string>(HardwareStatsVariable.NetworkUpload, "Network Upload")!;
+        CreateVariable<string>(HardwareStatsVariable.NetworkRxTotal, "Network Received Total");
+        CreateVariable<string>(HardwareStatsVariable.NetworkTxTotal, "Network Sent Total");
         CreateVariable<int>(HardwareStatsVariable.SystemTemp, "System Temp (C)");
         CreateVariable<int>(HardwareStatsVariable.MaxTemp, "Max Temp (C)");
 
@@ -106,8 +106,17 @@ public sealed class LinuxHardwareStatsModule : Module
         CreateVariable<int>(HardwareStatsVariable.WindowFPS, "Active Window FPS");
         CreateVariable<string>(HardwareStatsVariable.VRMode, "VR Mode");
 
-        CreateState(HardwareStatsState.Default, "Default", "CPU: {0}% | GPU: {1}%\nRAM: {2}GB/{3}GB", new[] { cpuUsageReference, gpuUsageReference, ramUsedReference, ramTotalReference });
-        CreateState(HardwareStatsState.WithNetwork, "With Network", "CPU: {0}% | GPU: {1}%\nRAM: {2}GB/{3}GB\n↓{4} ↑{5} KB/s", new[] { cpuUsageReference, gpuUsageReference, ramUsedReference, ramTotalReference, netDownloadReference, netUploadReference });
+        CreateState(HardwareStatsState.Default, "Default",
+            "CPU: {0}% | GPU: {1}%\nRAM: {2}GB/{3}GB\n↓{4} ↑{5}",
+            new[]
+            {
+                cpuUsageReference,
+                gpuUsageReference,
+                ramUsedReference,
+                ramTotalReference,
+                netDownloadReference,
+                netUploadReference
+        });
     }
 
     protected override Task<bool> OnModuleStart()
@@ -122,7 +131,7 @@ public sealed class LinuxHardwareStatsModule : Module
     {
         try
         {
-            string homeDir = Environment.GetEnvironmentVariable("HOME") ?? "/home/blu";
+            string homeDir = Environment.GetEnvironmentVariable("HOME") ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string targetPath = $"{homeDir}/.local/bin/vrcosc_hwstats.sh";
 
             var assembly = typeof(LinuxHardwareStatsModule).Assembly;
@@ -144,7 +153,7 @@ public sealed class LinuxHardwareStatsModule : Module
                 .Replace("CPU_INDEX=0", $"CPU_INDEX={cpuIndex}")
                 .Replace("NET_IFACE=\"\"", $"NET_IFACE=\"{netIface}\"");
 
-            string wineHomeDir = "Z:" + homeDir.Replace('/', '\\');
+            string wineHomeDir = LinuxUtils.GetWineHomeDir();
             string wineTargetPath = Path.Combine(wineHomeDir, ".local", "bin", "vrcosc_hwstats.sh");
 
             string? dir = Path.GetDirectoryName(wineTargetPath);
@@ -173,12 +182,12 @@ public sealed class LinuxHardwareStatsModule : Module
         if (!Bluscream.ModuleUtils.IsStarted()) return;
         try
         {
-            string homeDir = Environment.GetEnvironmentVariable("HOME") ?? "/home/blu";
-            string wineHomeDir = "Z:" + homeDir.Replace('/', '\\');
+            string homeDir = Environment.GetEnvironmentVariable("HOME") ?? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string wineHomeDir = LinuxUtils.GetWineHomeDir();
             string tempFile = Path.Combine(wineHomeDir, ".vrcosc_hwstats.txt");
 
             // Run the host script to generate stats
-            LinuxUtils.RunHost("/home/blu/.local/bin/vrcosc_hwstats.sh", ex => Log($"Error running hwstats script: {ex.Message}"));
+            LinuxUtils.RunHostScript("vrcosc_hwstats.sh", null, ex => Log($"Error running hwstats script: {ex.Message}"));
 
             if (!File.Exists(tempFile))
             {
@@ -292,10 +301,20 @@ public sealed class LinuxHardwareStatsModule : Module
                     SendParameter(HardwareStatsParameter.NetworkDownload, netRxKbps);
                     SendParameter(HardwareStatsParameter.NetworkUpload, netTxKbps);
 
-                    SetVariableValue(HardwareStatsVariable.NetworkDownload, netRxKbps);
-                    SetVariableValue(HardwareStatsVariable.NetworkUpload, netTxKbps);
-                    SetVariableValue(HardwareStatsVariable.NetworkRxTotal, netRxTotalMb);
-                    SetVariableValue(HardwareStatsVariable.NetworkTxTotal, netTxTotalMb);
+                    SetVariableValue(
+                        HardwareStatsVariable.NetworkDownload,
+                        FormatBytesPerSecond(netRxKbps));
+
+                    SetVariableValue(
+                        HardwareStatsVariable.NetworkUpload,
+                        FormatBytesPerSecond(netTxKbps));
+                    SetVariableValue(
+                        HardwareStatsVariable.NetworkRxTotal,
+                        FormatBytes(netRxTotalMb));
+
+                    SetVariableValue(
+                        HardwareStatsVariable.NetworkTxTotal,
+                        FormatBytes(netTxTotalMb));
                 }
 
                 var systemTemp = 0;
@@ -372,6 +391,50 @@ public sealed class LinuxHardwareStatsModule : Module
     protected override Task OnModuleStop()
     {
         return Task.CompletedTask;
+    }
+
+    private static string FormatBytes(float mb)
+    {
+        double bytes = mb * 1024 * 1024;
+
+        string[] units = { "B", "KB", "MB", "GB", "TB" };
+        int unit = 0;
+
+        while (bytes >= 1024 && unit < units.Length - 1)
+        {
+            bytes /= 1024;
+            unit++;
+        }
+
+        if (unit == 0)
+            return $"{bytes:0} {units[unit]}";
+
+        if (bytes >= 100)
+            return $"{bytes:0} {units[unit]}";
+
+        return $"{bytes:0.0} {units[unit]}";
+    }
+
+    private static string FormatBytesPerSecond(float kb)
+    {
+        double bytes = kb * 1024;
+
+        string[] units = { "B/s", "KB/s", "MB/s", "GB/s", "TB/s" };
+        int unit = 0;
+
+        while (bytes >= 1024 && unit < units.Length - 1)
+        {
+            bytes /= 1024;
+            unit++;
+        }
+
+        if (unit == 0)
+            return $"{bytes:0} {units[unit]}";
+
+        if (bytes >= 100)
+            return $"{bytes:0} {units[unit]}";
+
+        return $"{bytes:0.0} {units[unit]}";
     }
 
     private static string ApplyRedaction(string value, string pattern, string redactedText)
@@ -476,8 +539,7 @@ public sealed class LinuxHardwareStatsModule : Module
 
     private enum HardwareStatsState
     {
-        Default,
-        WithNetwork
+        Default
     }
 
     private enum HardwareStatsVariable

@@ -37,7 +37,18 @@ public class DesktopFPSModule : Module
     {
         // Find VRChat process
         _vrchatProcess = FPSMeasurementUtils.FindVRChatProcess();
-        
+
+        // Say so up front rather than sitting at -1 forever. PresentMon is ETW-based, so
+        // it cannot see a Proton-launched VRChat from inside this Wine prefix.
+        if (!FPSMeasurementUtils.IsFpsMeasurementSupported)
+        {
+            Log(FPSMeasurementUtils.IsVRChatRunning()
+                ? "VRChat is running on the host, but PresentMon (ETW) cannot measure it from inside Wine. "
+                  + "Use the LinuxHardwareStats module instead — it publishes FPS to VRCOSC/VR/FPS/Value."
+                : "FPS measurement is unavailable on Linux (PresentMon is ETW/Windows-only). "
+                  + "Use the LinuxHardwareStats module instead.");
+        }
+
         // Send initial parameter value now that OSC is connected
         SendParameter(DesktopFPSParameter.FPS, -1);
 
@@ -120,17 +131,8 @@ public class DesktopFPSModule : Module
     // Public accessor methods for nodes
     public int GetFPS()
     {
-        var method = typeof(Module).GetMethod("GetVariableValue", 
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance,
-            null, 
-            new[] { typeof(Enum) }, 
-            null);
-        if (method != null)
-        {
-            var genericMethod = method.MakeGenericMethod(typeof(int));
-            return (int)(genericMethod.Invoke(this, new object[] { DesktopFPSVariable.FPS }) ?? -1);
-        }
-        return -1;
+        // GetVariableValue<T>(Enum) is protected in the SDK; ReflectionUtils owns that call.
+        return ReflectionUtils.GetModuleVariableValue(this, DesktopFPSVariable.FPS, -1);
     }
 
     public bool IsVRChatRunning()

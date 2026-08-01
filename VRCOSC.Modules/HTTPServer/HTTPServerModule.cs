@@ -1,11 +1,13 @@
 // Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 // See the LICENSE file in the repository root for full license text.
 
+using EmbedIO;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
@@ -14,18 +16,20 @@ using System.Threading.Tasks;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Parameters;
 using Bluscream;
+using Bluscream.Modules.HTTPServer;
 using Bluscream.Modules.HTTPServer.Endpoints;
+using Bluscream.Modules.HTTPServer.Mcp;
 using VRCOSCModule = VRCOSC.App.SDK.Modules.Module;
 
 namespace Bluscream.Modules;
 
-[ModuleTitle("HTTP Server")]
-[ModuleDescription("HTTP server to control OSC via HTTP requests")]
+[ModuleTitle("HTTP/MCP Server")]
+[ModuleDescription("HTTP/MCP server to control VRCOSC via HTTP Requests or from a AI Agent via MCP (optional)")]
 [ModuleType(ModuleType.Integrations)]
 [ModuleInfo("https://github.com/Bluscream/VRCOSC-Modules")]
 public class HTTPServerModule : VRCOSCModule
 {
-    private HttpListener? _httpListener;
+    private WebServer? _httpListener;
     private CancellationTokenSource? _cancellationTokenSource;
     private bool _isRunning = false;
     private int _requestCount = 0;
@@ -44,7 +48,8 @@ public class HTTPServerModule : VRCOSCModule
         EnableCORS,
         CORSOrigins,
         LogRequests,
-        AutoStart
+        AutoStart,
+        EnableMcpServer
     }
 
     private enum HTTPServerParameter
@@ -98,6 +103,12 @@ public class HTTPServerModule : VRCOSCModule
         CreateToggle(HTTPServerSetting.LogRequests, "Log Requests", "Log all HTTP requests to console", true);
         CreateToggle(HTTPServerSetting.AutoStart, "Auto Start", "Start server automatically when module loads", true);
 
+        // MCP (Model Context Protocol) - lets an AI agent drive VRCOSC. Optional, but on by
+        // default since it is additive: it only mounts extra endpoints under /mcp and does
+        // not change any existing HTTP behaviour. Read at server start, so toggling it
+        // requires a restart of the server (see StartServer).
+        CreateToggle(HTTPServerSetting.EnableMcpServer, "MCP Server", "Expose the MCP endpoints under /mcp so an AI agent can control VRCOSC. Restart the server to apply.", true);
+
         // OSC Parameters
         RegisterParameter<bool>(HTTPServerParameter.ServerRunning, "VRCOSC/HTTPServer/Running", ParameterMode.Write, "Running", "True when server is running");
         RegisterParameter<bool>(HTTPServerParameter.RequestReceived, "VRCOSC/HTTPServer/RequestReceived", ParameterMode.Write, "Request", "True for 1 second when request is received");
@@ -106,6 +117,7 @@ public class HTTPServerModule : VRCOSCModule
 
         // Groups
         CreateGroup("Server", "HTTP server settings", HTTPServerSetting.Port, HTTPServerSetting.AllowExternalConnections, HTTPServerSetting.AutoStart);
+        CreateGroup("MCP", "Model Context Protocol - lets an AI agent control VRCOSC", HTTPServerSetting.EnableMcpServer);
         CreateGroup("Security", "Authentication and CORS", HTTPServerSetting.RequireAuthentication, HTTPServerSetting.AuthenticationToken, HTTPServerSetting.EnableCORS, HTTPServerSetting.CORSOrigins);
         CreateGroup("Debug", "Debug settings", HTTPServerSetting.LogRequests);
 
@@ -123,11 +135,11 @@ public class HTTPServerModule : VRCOSCModule
         CreateVariable<int>(HTTPServerVariable.RequestCount, "Request Count");
 
         // States
-        CreateState(HTTPServerState.Stopped, "Stopped", "HTTP Server: Stopped");
-        CreateState(HTTPServerState.Starting, "Starting", "HTTP Server: Starting...");
-        CreateState(HTTPServerState.Running, "Running", "HTTP Server: Running\n{0}", urlRef != null ? new[] { urlRef } : null);
-        CreateState(HTTPServerState.Stopping, "Stopping", "HTTP Server: Stopping...");
-        CreateState(HTTPServerState.Error, "Error", "HTTP Server: Error\n{0}", statusRef != null ? new[] { statusRef } : null);
+        CreateState(HTTPServerState.Stopped, "Stopped", "HTTP/MCP Server: Stopped");
+        CreateState(HTTPServerState.Starting, "Starting", "HTTP/MCP Server: Starting...");
+        CreateState(HTTPServerState.Running, "Running", "HTTP/MCP Server: Running\n{0}", urlRef != null ? new[] { urlRef } : null);
+        CreateState(HTTPServerState.Stopping, "Stopping", "HTTP/MCP Server: Stopping...");
+        CreateState(HTTPServerState.Error, "Error", "HTTP/MCP Server: Error\n{0}", statusRef != null ? new[] { statusRef } : null);
 
         // Events
         CreateEvent(HTTPServerEvent.OnServerStarted, "On Server Started");
@@ -215,29 +227,35 @@ public class HTTPServerModule : VRCOSCModule
             var allowExternal = GetSettingValue<bool>(HTTPServerSetting.AllowExternalConnections);
             _authToken = GetSettingValue<string>(HTTPServerSetting.AuthenticationToken);
             
-            _httpListener = new HttpListener();
-            
-            // Add prefixes
-            // Note: + is a wildcard that covers localhost, 127.0.0.1, and machine name
-            // For security, only use + when external connections are explicitly allowed
-            if (allowExternal)
+            var prefix = allowExternal ? $"http://+:{port}/" : $"http://127.0.0.1:{port}/";
+            _serverUrl = allowExternal ? $"http://+:{port}" : $"http://localhost:{port}";
+            Log(allowExternal
+                ? "External connections enabled - server accessible from network"
+                : "Localhost only - server NOT accessible from network");
+
+            // HttpListenerMode.EmbedIO is load-bearing, not a default: EmbedIO's other
+            // mode delegates to System.Net.HttpListener, which needs the http.sys API
+            // that Wine stubs out — and EmbedIO picks that mode by default on Windows,
+            // which is what Wine reports as. Leaving this unset fails under Proton with
+            // "Call not implemented".
+            _httpListener = new WebServer(o => o
+                .WithUrlPrefix(prefix)
+                .WithMode(HttpListenerMode.EmbedIO));
+
+            // MCP is opt-out. Mount it before the REST module: RestWebModule is registered
+            // at "/" and would otherwise swallow /mcp requests.
+            if (GetSettingValue<bool>(HTTPServerSetting.EnableMcpServer))
             {
-                _httpListener.Prefixes.Add($"http://+:{port}/");
-                _serverUrl = $"http://+:{port}"; // Show that it's accessible externally
-                Log($"External connections enabled - server accessible from network");
+                _httpListener.WithModule(new McpWebModule("/mcp"));
+                Log("MCP server enabled at /mcp");
             }
             else
             {
-                // Add both localhost and 127.0.0.1 to handle different ways of accessing loopback
-                // HttpListener is strict about hostname matching, so we need both
-                // This still only binds to loopback interface (127.0.0.1) for security
-                _httpListener.Prefixes.Add($"http://localhost:{port}/");
-                _httpListener.Prefixes.Add($"http://127.0.0.1:{port}/");
-                _serverUrl = $"http://localhost:{port}";
-                Log($"Localhost only - server NOT accessible from network (accepts localhost and 127.0.0.1)");
+                Log("MCP server disabled");
             }
 
-            _httpListener.Start();
+            _httpListener.WithModule(new RestWebModule("/", this));
+
             _isRunning = true;
             _serverStartTime = DateTime.UtcNow;
 
@@ -248,31 +266,28 @@ public class HTTPServerModule : VRCOSCModule
             ChangeState(HTTPServerState.Running);
             TriggerEvent(HTTPServerEvent.OnServerStarted);
             
-            Log($"HTTP Server started on {_serverUrl}");
+            Log($"HTTP/MCP Server started on {_serverUrl}");
             Log($"API documentation at {_serverUrl}/docs");
 
-            // Start listening for requests
+            // EmbedIO owns the accept loop; RunAsync returns immediately.
             _cancellationTokenSource = new CancellationTokenSource();
-            _ = Task.Run(() => ListenForRequests(_cancellationTokenSource.Token));
+            _ = _httpListener.RunAsync(_cancellationTokenSource.Token);
 
             return Task.FromResult(true);
         }
-        catch (HttpListenerException ex) when (ex.ErrorCode == 5) // Access Denied
+        catch (SocketException ex)
         {
             var port = GetSettingValue<string>(HTTPServerSetting.Port);
-            var allowExternal = GetSettingValue<bool>(HTTPServerSetting.AllowExternalConnections);
-            
-            Log($"Access denied: HttpListener requires administrator privileges or URL reservation.");
-            if (allowExternal)
+
+            var reason = ex.SocketErrorCode switch
             {
-                Log($"Run this as admin or run: netsh http add urlacl url=http://+:{port}/ user=Everyone");
-            }
-            else
-            {
-                Log($"Run this as admin or run: netsh http add urlacl url=http://localhost:{port}/ user=Everyone");
-                Log($"Or use: netsh http add urlacl url=http://+:{port}/ user=Everyone (works for both localhost and external)");
-            }
-            SetVariableValue(HTTPServerVariable.ServerStatus, "Error: Access Denied");
+                SocketError.AddressAlreadyInUse => $"Port {port} is already in use by another process.",
+                SocketError.AccessDenied => $"Access denied binding port {port}. Ports below 1024 need elevation.",
+                _ => $"Socket error binding port {port}: {ex.SocketErrorCode}"
+            };
+
+            Log($"Failed to start HTTP server: {reason}");
+            SetVariableValue(HTTPServerVariable.ServerStatus, $"Error: {ex.SocketErrorCode}");
             ChangeState(HTTPServerState.Error);
             TriggerEvent(HTTPServerEvent.OnError);
             _isRunning = false;
@@ -289,42 +304,7 @@ public class HTTPServerModule : VRCOSCModule
         }
     }
 
-    private async Task ListenForRequests(CancellationToken cancellationToken)
-    {
-        while (!cancellationToken.IsCancellationRequested && _httpListener != null && _httpListener.IsListening)
-        {
-            try
-            {
-                var context = await _httpListener.GetContextAsync();
-                _ = Task.Run(() => HandleRequest(context), cancellationToken);
-            }
-            catch (HttpListenerException)
-            {
-                // Expected when stopping
-                break;
-            }
-            catch (ObjectDisposedException)
-            {
-                // Expected when HttpListener is disposed during shutdown
-                break;
-            }
-            catch (InvalidOperationException)
-            {
-                // Expected when HttpListener is stopped or closed
-                break;
-            }
-            catch (Exception ex)
-            {
-                // Only log unexpected errors (not during normal shutdown)
-                if (!cancellationToken.IsCancellationRequested && _httpListener != null && _httpListener.IsListening)
-                {
-                    Log($"Error in request listener: {ex.Message}");
-                }
-            }
-        }
-    }
-
-    private async Task HandleRequest(HttpListenerContext context)
+    internal async Task HandleRequest(IHttpContext context)
     {
         try
         {
@@ -341,9 +321,9 @@ public class HTTPServerModule : VRCOSCModule
             if (GetSettingValue<bool>(HTTPServerSetting.EnableCORS))
             {
                 var origins = GetSettingValue<string>(HTTPServerSetting.CORSOrigins);
-                response.AddHeader("Access-Control-Allow-Origin", origins);
-                response.AddHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-                response.AddHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+                response.Headers.Add("Access-Control-Allow-Origin", origins);
+                response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
                 
                 if (request.HttpMethod == "OPTIONS")
                 {
@@ -379,7 +359,7 @@ public class HTTPServerModule : VRCOSCModule
         }
     }
 
-    private bool CheckAuthentication(HttpListenerRequest request, HttpListenerResponse response)
+    private bool CheckAuthentication(IHttpRequest request, IHttpResponse response)
     {
         var requiresAuth = GetSettingValue<bool>(HTTPServerSetting.RequireAuthentication) && !_authToken.IsNullOrEmpty();
         var path = request.Url?.AbsolutePath ?? "/";
@@ -403,7 +383,7 @@ public class HTTPServerModule : VRCOSCModule
         return true;
     }
 
-    private async Task RouteRequest(HttpListenerContext context, string method, string path)
+    private async Task RouteRequest(IHttpContext context, string method, string path)
     {
         var response = context.Response;
 
@@ -529,14 +509,15 @@ public class HTTPServerModule : VRCOSCModule
                 "GET /api/chatbox - Get current chatbox text (plain text)",
                 "POST /api/chatbox - Send chatbox message",
                 "GET /docs - Swagger UI documentation",
-                "GET /openapi.json - OpenAPI specification"
+                "GET /openapi.json - OpenAPI specification",
+                "POST /mcp - Model Context Protocol endpoint (JSON-RPC 2.0)"
             };
         }
 
         return endpoints;
     }
 
-    public void SendJsonResponse(HttpListenerResponse response, int statusCode, object data)
+    internal void SendJsonResponse(IHttpResponse response, int statusCode, object data)
     {
         try
         {
@@ -575,19 +556,11 @@ public class HTTPServerModule : VRCOSCModule
             _cancellationTokenSource?.Cancel();
             
             // Stop the listener (this will cause GetContextAsync to throw)
+            // EmbedIO's WebServer has no Stop/Close — cancelling the token passed to
+            // RunAsync ends the accept loop, and Dispose releases the socket.
             try
             {
-                _httpListener?.Stop();
-            }
-            catch (ObjectDisposedException)
-            {
-                // Already disposed, ignore
-            }
-            
-            // Close and dispose the listener
-            try
-            {
-                _httpListener?.Close();
+                _httpListener?.Dispose();
             }
             catch (ObjectDisposedException)
             {
@@ -601,7 +574,7 @@ public class HTTPServerModule : VRCOSCModule
             ChangeState(HTTPServerState.Stopped);
             TriggerEvent(HTTPServerEvent.OnServerStopped);
             
-            Log("HTTP Server stopped");
+            Log("HTTP/MCP Server stopped");
         }
         catch (Exception ex)
         {

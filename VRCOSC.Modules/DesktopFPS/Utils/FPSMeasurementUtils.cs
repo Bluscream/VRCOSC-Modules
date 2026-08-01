@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using PresentMonFps;
+using Bluscream.Modules.Utilities;
 
 namespace Bluscream.Modules.DesktopFPS.Utils;
 
@@ -33,6 +34,33 @@ public static class FPSMeasurementUtils
             return null;
         }
     }
+
+    /// <summary>
+    /// True when VRChat is running, checking the Linux host as well as this prefix.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="FindVRChatProcess"/> only ever sees processes inside VRCOSC's OWN Wine
+    /// prefix. On Linux, VRChat runs in a separate Proton prefix (Steam appid 438100), so
+    /// that lookup always returned null and the module silently reported nothing.
+    ///
+    /// The host check matches the full command line, because a Proton-launched game
+    /// appears as a wine loader process rather than a bare "VRChat" - the same reason
+    /// LinuxHardwareStats' helper script uses `pgrep -f "VRChat.exe"`.
+    /// </remarks>
+    public static bool IsVRChatRunning()
+        => FindVRChatProcess() is not null
+           || (LinuxUtils.IsLinux && LinuxUtils.IsHostProcessRunning("VRChat.exe", matchFullCommandLine: true));
+
+    /// <summary>
+    /// Whether per-process FPS measurement can work on this platform.
+    /// </summary>
+    /// <remarks>
+    /// PresentMon is ETW-based, i.e. Windows-kernel tracing. It cannot see a Proton game
+    /// from inside a Wine prefix, so on Linux this returns false and callers should fall
+    /// back to LinuxHardwareStats, which reads FPS from the host and publishes it to
+    /// VRCOSC/VR/FPS/Value.
+    /// </remarks>
+    public static bool IsFpsMeasurementSupported => !LinuxUtils.IsLinux;
 
     /// <summary>
     /// Gets the FPS for a process using PresentMon ETW

@@ -112,6 +112,48 @@ The module provides ChatBox states and variables:
 - **Variables**: Server Status, Last Request, Last Response, Request Count, Server URL
 - **Events**: On Server Started, On Server Stopped, On Request Received, On Request Processed, On Error
 
+## MCP (Model Context Protocol)
+
+`POST /mcp` exposes this instance to AI agents over the streamable-HTTP MCP
+transport. It speaks JSON-RPC 2.0 and supports `initialize`, `ping`,
+`tools/list`, and `tools/call`; notifications get `202` with no body.
+
+Every tool runs in-process against the live engine via `ReflectionUtils`, so
+there is no config-file scraping and no restart needed for changes to apply.
+
+Register with an MCP client (adjust the port to match the module setting):
+
+```json
+{
+  "mcpServers": {
+    "vrcosc": { "type": "http", "url": "http://127.0.0.1:11370/mcp" }
+  }
+}
+```
+
+If "Require Authentication" is enabled, add the bearer token:
+
+```json
+{ "headers": { "Authorization": "Bearer <token>" } }
+```
+
+### Tools
+
+| Tool | Purpose |
+| --- | --- |
+| `vrcosc_status` | App manager state, active profile, avatar, chatbox text, module count |
+| `vrcosc_get_modules` | All loaded modules with id, enabled flag, running state |
+| `vrcosc_start_modules` / `vrcosc_stop_modules` | Play/stop the engine (`force` skips the VRChat check) |
+| `vrcosc_get_osc_parameters` | All OSC parameters with values and types (optional `filter`) |
+| `vrcosc_get_osc_parameter` / `vrcosc_set_osc_parameter` | Read/write a single parameter, live |
+| `vrcosc_send_raw_osc` | Send an arbitrary OSC address through VRCOSC's own client |
+| `vrcosc_get_chatbox` / `vrcosc_send_chatbox` | Read or write the VRChat chatbox |
+| `vrcosc_get_avatar` | Current avatar id and name |
+| `vrcosc_persist` | Flush module state to disk or reload it |
+
+The module must be **enabled and running** for `/mcp` to answer — an MCP client
+cannot start VRCOSC, only talk to it once it is up.
+
 ## Security Notes
 
 - By default, the server only accepts connections from localhost

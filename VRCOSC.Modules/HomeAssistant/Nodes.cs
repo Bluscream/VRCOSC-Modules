@@ -13,7 +13,7 @@ using Bluscream;
 namespace Bluscream.Modules;
 
 [Node("Call Service", "HomeAssistant")]
-public sealed class HACallServiceNode : ModuleNode<HomeAssistantModule>, IFlowInput
+public sealed class HACallServiceNode : FlowModuleNode<HomeAssistantModule>
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
@@ -26,7 +26,7 @@ public sealed class HACallServiceNode : ModuleNode<HomeAssistantModule>, IFlowIn
 
     public ValueOutput<bool> Success = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -75,7 +75,7 @@ public sealed class HACallServiceNode : ModuleNode<HomeAssistantModule>, IFlowIn
 }
 
 [Node("Get Entity State", "HomeAssistant")]
-public sealed class HAGetStateNode : ModuleNode<HomeAssistantModule>, IFlowInput
+public sealed class HAGetStateNode : FlowModuleNode<HomeAssistantModule>
 {
     public FlowContinuation Next = new("Next");
 
@@ -86,7 +86,7 @@ public sealed class HAGetStateNode : ModuleNode<HomeAssistantModule>, IFlowInput
     public ValueOutput<Dictionary<string, object>> Attributes = new("Attributes");
     public ValueOutput<string> AttributesJson = new("Attributes (JSON)");
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -123,7 +123,7 @@ public sealed class HAGetStateNode : ModuleNode<HomeAssistantModule>, IFlowInput
 }
 
 [Node("Render Template", "HomeAssistant")]
-public sealed class HARenderTemplateNode : ModuleNode<HomeAssistantModule>, IFlowInput
+public sealed class HARenderTemplateNode : FlowModuleNode<HomeAssistantModule>
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
@@ -132,7 +132,7 @@ public sealed class HARenderTemplateNode : ModuleNode<HomeAssistantModule>, IFlo
 
     public ValueOutput<string> Result = new("Rendered Result");
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {

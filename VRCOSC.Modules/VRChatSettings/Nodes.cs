@@ -10,7 +10,7 @@ namespace Bluscream.Modules;
 // Registry Get Generic Node
 [Node("Get VRChat Registry Setting")]
 [NodeGenericTypeFilter([typeof(string), typeof(int), typeof(float), typeof(bool)])]
-public sealed class GetRegistryValueNode<T> : ModuleNode<VRChatSettingsModule>, IFlowInput
+public sealed class GetRegistryValueNode<T> : FlowModuleNode<VRChatSettingsModule>
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
@@ -21,7 +21,7 @@ public sealed class GetRegistryValueNode<T> : ModuleNode<VRChatSettingsModule>, 
     public ValueOutput<T> Value = new();
     public ValueOutput<string> Error = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -60,7 +60,7 @@ public sealed class GetRegistryValueNode<T> : ModuleNode<VRChatSettingsModule>, 
 // Config Get Generic Node
 [Node("Get VRChat Config Setting")]
 [NodeGenericTypeFilter([typeof(string), typeof(int), typeof(float), typeof(bool)])]
-public sealed class GetConfigValueNode<T> : ModuleNode<VRChatSettingsModule>, IFlowInput
+public sealed class GetConfigValueNode<T> : FlowModuleNode<VRChatSettingsModule>
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
@@ -70,7 +70,7 @@ public sealed class GetConfigValueNode<T> : ModuleNode<VRChatSettingsModule>, IF
     public ValueOutput<T> Value = new();
     public ValueOutput<string> Error = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -107,7 +107,7 @@ public sealed class GetConfigValueNode<T> : ModuleNode<VRChatSettingsModule>, IF
 
 // List All Settings Nodes
 [Node("Get All VRChat Registry Settings")]
-public sealed class ListAllRegistrySettingsNode : ModuleNode<VRChatSettingsModule>, IFlowInput
+public sealed class ListAllRegistrySettingsNode : FlowModuleNode<VRChatSettingsModule>
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
@@ -116,7 +116,7 @@ public sealed class ListAllRegistrySettingsNode : ModuleNode<VRChatSettingsModul
     public ValueOutput<int> Count = new("Settings Count");
     public ValueOutput<string> Error = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -146,7 +146,7 @@ public sealed class ListAllRegistrySettingsNode : ModuleNode<VRChatSettingsModul
 }
 
 [Node("Get All VRChat Config Settings")]
-public sealed class ListAllConfigSettingsNode : ModuleNode<VRChatSettingsModule>, IFlowInput
+public sealed class ListAllConfigSettingsNode : FlowModuleNode<VRChatSettingsModule>
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
@@ -155,7 +155,7 @@ public sealed class ListAllConfigSettingsNode : ModuleNode<VRChatSettingsModule>
     public ValueOutput<int> Count = new("Settings Count");
     public ValueOutput<string> Error = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -195,7 +195,7 @@ public sealed class ObjectToJsonNode<T> : ModuleNode<VRChatSettingsModule>
     public ValueOutput<string> Json = new("JSON String");
     public ValueOutput<int> Length = new("Length");
 
-    protected override Task Process(PulseContext c)
+    protected override Task Process(PulseCtx c)
     {
         try
         {
@@ -231,7 +231,7 @@ public sealed class ObjectToJsonNode<T> : ModuleNode<VRChatSettingsModule>
 // Generic/Multi-type nodes (leveraging <T> pattern)
 [Node("Set VRChat Registry Setting")]
 [NodeGenericTypeFilter([typeof(string), typeof(int), typeof(float), typeof(bool), typeof(double)])]
-public sealed class SetRegistryValueNode<T> : ModuleNode<VRChatSettingsModule>, IFlowInput
+public sealed class SetRegistryValueNode<T> : FlowModuleNode<VRChatSettingsModule>
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
@@ -242,7 +242,7 @@ public sealed class SetRegistryValueNode<T> : ModuleNode<VRChatSettingsModule>, 
     
     public ValueOutput<string> Error = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {
@@ -280,7 +280,7 @@ public sealed class SetRegistryValueNode<T> : ModuleNode<VRChatSettingsModule>, 
 
 [Node("Set VRChat Config Setting")]
 [NodeGenericTypeFilter([typeof(string), typeof(int), typeof(float), typeof(bool), typeof(double)])]
-public sealed class SetConfigValueNode<T> : ModuleNode<VRChatSettingsModule>, IFlowInput
+public sealed class SetConfigValueNode<T> : FlowModuleNode<VRChatSettingsModule>
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
@@ -290,7 +290,7 @@ public sealed class SetConfigValueNode<T> : ModuleNode<VRChatSettingsModule>, IF
     
     public ValueOutput<string> Error = new();
 
-    protected override async Task Process(PulseContext c)
+    protected override async Task Process(PulseCtx c)
     {
         try
         {

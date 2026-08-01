@@ -134,18 +134,8 @@ public class OpenXRHapticControlModule : Module
     {
         if (_xr is null) return false;
 
-        var appInfo = new ApplicationInfo();
-        OpenXRHelper.FillApplicationInfo(ref appInfo, "VRCOSC OpenXR Haptics");
-        appInfo.ApplicationVersion = 1;
-        appInfo.ApiVersion = OpenXRHelper.XrVersion10;
-
-        var instCI = new InstanceCreateInfo { Type = StructureType.InstanceCreateInfo, ApplicationInfo = appInfo };
-        if (_xr.CreateInstance(in instCI, ref _instance) != Result.Success)
-        { Log("xrCreateInstance failed — is an OpenXR runtime installed?"); return false; }
-
-        var sysInfo = new SystemGetInfo { Type = StructureType.SystemGetInfo, FormFactor = FormFactor.HeadMountedDisplay };
-        if (_xr.GetSystem(_instance, in sysInfo, ref _systemId) != Result.Success)
-        { Log("xrGetSystem failed — no HMD connected?"); return false; }
+        if (!OpenXRHelper.CreateInstanceAndSystem(_xr, "VRCOSC OpenXR Haptics", Log, ref _instance, ref _systemId))
+            return false;
 
         var sessionCI = new SessionCreateInfo { Type = StructureType.SessionCreateInfo, SystemId = _systemId };
         if (_xr.CreateSession(_instance, in sessionCI, ref _session) != Result.Success)
@@ -174,12 +164,14 @@ public class OpenXRHapticControlModule : Module
     private void TearDownOpenXR()
     {
         if (_xr is null) return;
+
+        // Children before the instance — OpenXR requires it.
         if (_hapticLeft.Handle  != 0) { _xr.DestroyAction(_hapticLeft);   _hapticLeft  = default; }
         if (_hapticRight.Handle != 0) { _xr.DestroyAction(_hapticRight);  _hapticRight = default; }
         if (_actionSet.Handle   != 0) { _xr.DestroyActionSet(_actionSet); _actionSet   = default; }
-        if (_session.Handle     != 0) { _xr.DestroySession(_session);     _session     = default; }
-        if (_instance.Handle    != 0) { _xr.DestroyInstance(_instance);   _instance    = default; }
-        _xr.Dispose(); _xr = null; _xrReady = false;
+
+        OpenXRHelper.DestroySessionAndInstance(ref _xr, ref _session, ref _instance);
+        _xrReady = false;
     }
 
     private static float ConvertFrequency(float v) => Math.Clamp(v, 0, 1) * 300f;

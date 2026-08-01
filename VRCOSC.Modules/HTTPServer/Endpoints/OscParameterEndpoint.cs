@@ -1,3 +1,4 @@
+using EmbedIO;
 using System;
 using System.IO;
 using System.Net;
@@ -12,9 +13,9 @@ namespace Bluscream.Modules.HTTPServer.Endpoints;
 /// GET /api/osc/parameter - Get all parameters as dict
 /// GET/POST /api/osc/parameter/{name} - Get/Set specific parameter
 /// </summary>
-public static class OscParameterEndpoint
+internal static class OscParameterEndpoint
 {
-    public static async Task HandleGetAll(HttpListenerContext context, HTTPServerModule module)
+    internal static async Task HandleGetAll(IHttpContext context, HTTPServerModule module)
     {
         try
         {
@@ -33,9 +34,9 @@ public static class OscParameterEndpoint
                     foreach (var kvp in incoming)
                     {
                         // Extract just the value from the ParameterData
-                        var paramData = kvp.Value;
-                        var valueProperty = paramData.GetType().GetProperty("Value");
-                        parametersDict[kvp.Key] = valueProperty?.GetValue(paramData) ?? null!;
+                        // GetMemberValue, not GetProperty: ParameterData's Value is a
+                        // field on some VRCOSC versions and a property on others.
+                        parametersDict[kvp.Key] = ReflectionUtils.GetMemberValue(kvp.Value, "Value") ?? null!;
                     }
                 }
                 
@@ -45,9 +46,7 @@ public static class OscParameterEndpoint
                     {
                         if (!parametersDict.ContainsKey(kvp.Key))
                         {
-                            var paramData = kvp.Value;
-                            var valueProperty = paramData.GetType().GetProperty("Value");
-                            parametersDict[kvp.Key] = valueProperty?.GetValue(paramData) ?? null!;
+                            parametersDict[kvp.Key] = ReflectionUtils.GetMemberValue(kvp.Value, "Value") ?? null!;
                         }
                     }
                 }
@@ -75,7 +74,7 @@ public static class OscParameterEndpoint
         await Task.CompletedTask;
     }
 
-    public static async Task HandleGet(HttpListenerContext context, HTTPServerModule module, string parameterName)
+    internal static async Task HandleGet(IHttpContext context, HTTPServerModule module, string parameterName)
     {
         try
         {
@@ -109,7 +108,7 @@ public static class OscParameterEndpoint
         }
     }
 
-    public static async Task HandleSet(HttpListenerContext context, HTTPServerModule module, string parameterName)
+    internal static async Task HandleSet(IHttpContext context, HTTPServerModule module, string parameterName)
     {
         try
         {
