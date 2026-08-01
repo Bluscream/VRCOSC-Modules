@@ -143,3 +143,76 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 |---|---|---|---|
 | **Get HTTP Server Status** | `Flow trigger` | `Is Running (bool), Port (int), Requests (int)` | `Returns HTTP server state` |
 <!-- AUTOGEN:NODES:END -->
+
+## Module Settings
+
+<!-- SETTINGS_TABLE_START -->
+| Setting Name | Type | Description | Default |
+|---|---|---|---|
+| **Port** | `TextBox` | `HTTP server port (1024-65535)` | `"8080"` |
+| **Allow External Connections** | `Toggle` | `Allow connections from other devices on network` | `false` |
+| **Require Authentication** | `Toggle` | `Require bearer token authentication` | `false` |
+| **Authentication Token** | `TextBox` | `Bearer token for authentication (leave empty to generate)` | `empty` |
+| **Enable CORS** | `Toggle` | `Enable Cross-Origin Resource Sharing` | `true` |
+| **CORS Origins** | `TextBox` | `Allowed CORS origins (comma-separated, * for all)` | `"*"` |
+| **Log Requests** | `Toggle` | `Log all HTTP requests to console` | `true` |
+| **Auto Start** | `Toggle` | `Start server automatically when module loads` | `true` |
+| **MCP Server** | `Toggle` | `Expose the MCP endpoints under /mcp so an AI agent can control VRCOSC. Restart the server to apply.` | `true` |
+<!-- SETTINGS_TABLE_END -->
+
+## ChatBox Variables
+
+<!-- VARIABLES_TABLE_START -->
+| Variable Name | Lookup Key | Type | Description |
+|---|---|---|---|
+| **Server Status** | `serverstatus` | `string` | `ChatBox variable Server Status` |
+| **Server URL** | `serverurl` | `string` | `ChatBox variable Server URL` |
+| **Last Request** | `lastrequest` | `string` | `ChatBox variable Last Request` |
+| **Last Response** | `lastresponse` | `string` | `ChatBox variable Last Response` |
+| **Request Count** | `requestcount` | `int` | `ChatBox variable Request Count` |
+<!-- VARIABLES_TABLE_END -->
+
+## ChatBox States
+
+<!-- STATES_TABLE_START -->
+| State Name | Lookup Key | Format | Description |
+|---|---|---|---|
+| **Stopped** | `stopped` | `HTTP/MCP Server: Stopped` | `Stopped state` |
+| **Starting** | `starting` | `HTTP/MCP Server: Starting...` | `Starting state` |
+| **Running** | `running` | `HTTP/MCP Server: Running\n{0}` | `Running state` |
+| **Stopping** | `stopping` | `HTTP/MCP Server: Stopping...` | `Stopping state` |
+| **Error** | `error` | `HTTP/MCP Server: Error\n{0}` | `Error state` |
+<!-- STATES_TABLE_END -->
+
+## ChatBox Events
+
+<!-- EVENTS_TABLE_START -->
+| Event Name | Lookup Key | Title | Trigger Condition |
+|---|---|---|---|
+| **On Server Started** | `onserverstarted` | `On Server Started` | `Triggered on On Server Started` |
+| **On Server Stopped** | `onserverstopped` | `On Server Stopped` | `Triggered on On Server Stopped` |
+| **On Request Received** | `onrequestreceived` | `On Request Received` | `Triggered on On Request Received` |
+| **On Request Processed** | `onrequestprocessed` | `On Request Processed` | `Triggered on On Request Processed` |
+| **On Error** | `onerror` | `On Error` | `Triggered on On Error` |
+<!-- EVENTS_TABLE_END -->
+
+## Avatar OSC Parameters
+
+<!-- OSC_PARAMETERS_TABLE_START -->
+| OSC Parameter Path | Type | Direction | Description |
+|---|---|---|---|
+| **VRCOSC/HTTPServer/Running** | `bool` | `Write` | `True when server is running` |
+| **VRCOSC/HTTPServer/RequestReceived** | `bool` | `Write` | `True for 1 second when request is received` |
+| **VRCOSC/HTTPServer/RequestCount** | `int` | `Write` | `Total number of requests processed` |
+| **VRCOSC/HTTPServer/StatusCode** | `int` | `Write` | `Last response status code` |
+<!-- OSC_PARAMETERS_TABLE_END -->
+
+## Nodes Overview
+
+<!-- NODES_TABLE_START -->
+| Node Name | Inputs | Outputs | Description |
+|---|---|---|---|
+| **Start H T T P Server** | `Flow trigger` | `Output` | `Node node for Start H T T P Server` |
+| **Stop H T T P Server** | `Flow trigger` | `Output` | `Node node for Stop H T T P Server` |
+| **Get H T T P Server Status** | `Flow trigger` | `Output` | `Node node for Get H T T P Server Status` |
+<!-- NODES_TABLE_END -->

@@ -141,3 +141,70 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | **Send OVRToolkit Notification** | `Title (string), Message (string)` | `Success (bool)` | `Sends OVRToolkit WebSocket notification` |
 | **Send Notification (All Enabled)** | `Title (string), Message (string), TimeoutMs (int)` | `WebhookSuccess (bool)` | `Dispatches to all enabled targets` |
 <!-- AUTOGEN:NODES:END -->
+
+## Module Settings
+
+<!-- SETTINGS_TABLE_START -->
+| Setting Name | Type | Description | Default |
+|---|---|---|---|
+| **Title** | `TextBox` | `Default notification title (used if input is empty)` | `"VRCOSC"` |
+| **Message** | `TextBox` | `Default notification message (used if input is empty)` | `""` |
+| **Timeout (ms)** | `Slider` | `Default notification display duration in milliseconds` | `5000, 1000, 30000, 1000` |
+| **Opacity (%)** | `Slider` | `Default notification opacity percentage (0-100)` | `100, 0, 95, 5` |
+| **Enable Desktop Notifications** | `Toggle` | `Show Windows desktop notifications` | `true` |
+| **Enable XSOverlay Notifications** | `Toggle` | `Send notifications to XSOverlay` | `false` |
+| **Enable OVRToolkit Notifications** | `Toggle` | `Send notifications to OVRToolkit` | `false` |
+| **Enable Webhook Notifications** | `Toggle` | `Send notifications to webhook URL` | `false` |
+| **Webhook URL** | `TextBox` | `HTTP(S) URL to send notifications to` | `empty` |
+| **Webhook Method** | `Dropdown` | `HTTP method for webhook requests` | `WebhookMethod.POST` |
+| **Log Notifications** | `Toggle` | `Log all notification sends to console` | `false` |
+<!-- SETTINGS_TABLE_END -->
+
+## ChatBox Variables
+
+<!-- VARIABLES_TABLE_START -->
+| Variable Name | Lookup Key | Type | Description |
+|---|---|---|---|
+| **Last Title** | `lasttitle` | `string` | `ChatBox variable Last Title` |
+| **Last Message** | `lastmessage` | `string` | `ChatBox variable Last Message` |
+| **Notification Count** | `notificationcount` | `int` | `ChatBox variable Notification Count` |
+| **Last Target** | `lasttarget` | `string` | `ChatBox variable Last Target` |
+<!-- VARIABLES_TABLE_END -->
+
+## ChatBox States
+
+<!-- STATES_TABLE_START -->
+| State Name | Lookup Key | Format | Description |
+|---|---|---|---|
+| _None_ | — | — | — |
+<!-- STATES_TABLE_END -->
+
+## ChatBox Events
+
+<!-- EVENTS_TABLE_START -->
+| Event Name | Lookup Key | Title | Trigger Condition |
+|---|---|---|---|
+| **On Notification Sent** | `onnotificationsent` | `On Notification Sent` | `Triggered on On Notification Sent` |
+| **On Notification Failed** | `onnotificationfailed` | `On Notification Failed` | `Triggered on On Notification Failed` |
+<!-- EVENTS_TABLE_END -->
+
+## Avatar OSC Parameters
+
+<!-- OSC_PARAMETERS_TABLE_START -->
+| OSC Parameter Path | Type | Direction | Description |
+|---|---|---|---|
+| **VRCOSC/Notifications/Sent** | `bool` | `Write` | `True for 1 second when notification is sent` |
+| **VRCOSC/Notifications/Failed** | `bool` | `Write` | `True for 1 second when notification fails` |
+| **VRCOSC/Notifications/Count** | `int` | `Write` | `Total number of notifications sent` |
+<!-- OSC_PARAMETERS_TABLE_END -->
+
+## Nodes Overview
+
+<!-- NODES_TABLE_START -->
+| Node Name | Inputs | Outputs | Description |
+|---|---|---|---|
+| **Send Desktop Notification** | `Flow trigger` | `Output` | `Node node for Send Desktop Notification` |
+| **Send X S Overlay Notification** | `Flow trigger` | `Output` | `Node node for Send X S Overlay Notification` |
+| **Send O V R Toolkit Notification** | `Flow trigger` | `Output` | `Node node for Send O V R Toolkit Notification` |
+| **Send Notification All** | `Flow trigger` | `Output` | `Node node for Send Notification All` |
+<!-- NODES_TABLE_END -->

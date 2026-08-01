@@ -132,3 +132,65 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | **VRCX Show Toast** | `Title (string), Message (string)` | `Success (bool)` | `Displays toast notification inside VRCX` |
 | **VRCX Connection Status** | `Flow trigger` | `Is Connected (bool)` | `Checks VRCX pipe connection` |
 <!-- AUTOGEN:NODES:END -->
+
+## Module Settings
+
+<!-- SETTINGS_TABLE_START -->
+| Setting Name | Type | Description | Default |
+|---|---|---|---|
+| **Enabled** | `Toggle` | `Enable VRCX bridge` | `true` |
+| **Auto Reconnect** | `Toggle` | `Automatically reconnect if connection lost` | `true` |
+| **Reconnect Delay (ms)** | `TextBox` | `Delay before reconnect attempt` | `5000` |
+| **Batch Interval (ms)** | `TextBox` | `Collect events and send in bulk every X ms` | `2000` |
+| **Deduplicate Events** | `Toggle` | `Only send latest value per parameter (discard intermediate values)` | `true` |
+| **Only Changed Values** | `Toggle` | `Only send parameters when their value actually changes` | `true` |
+| **IPC Message Type** | `TextBox` | `Type wrapper for OSC bulk events (Event7List=silent, VrcxMessage=verbose)` | `"Event7List"` |
+| **Log OSC Parameters** | `Toggle` | `Log OSC parameter changes to console` | `false` |
+| **Log VRCX Commands** | `Toggle` | `Log commands to/from VRCX` | `false` |
+| **Log Raw IPC** | `Toggle` | `Log raw IPC message traffic (very verbose)` | `false` |
+<!-- SETTINGS_TABLE_END -->
+
+## ChatBox Variables
+
+<!-- VARIABLES_TABLE_START -->
+| Variable Name | Lookup Key | Type | Description |
+|---|---|---|---|
+| _None_ | — | — | — |
+<!-- VARIABLES_TABLE_END -->
+
+## ChatBox States
+
+<!-- STATES_TABLE_START -->
+| State Name | Lookup Key | Format | Description |
+|---|---|---|---|
+| _None_ | — | — | — |
+<!-- STATES_TABLE_END -->
+
+## ChatBox Events
+
+<!-- EVENTS_TABLE_START -->
+| Event Name | Lookup Key | Title | Trigger Condition |
+|---|---|---|---|
+| _None_ | — | — | — |
+<!-- EVENTS_TABLE_END -->
+
+## Avatar OSC Parameters
+
+<!-- OSC_PARAMETERS_TABLE_START -->
+| OSC Parameter Path | Type | Direction | Description |
+|---|---|---|---|
+| **VRCOSC/VRCXBridge/Connected** | `bool` | `Write` | `True when connected to VRCX` |
+<!-- OSC_PARAMETERS_TABLE_END -->
+
+## Nodes Overview
+
+<!-- NODES_TABLE_START -->
+| Node Name | Inputs | Outputs | Description |
+|---|---|---|---|
+| **V R C X Get Online Friends** | `Flow trigger` | `Output` | `Node node for V R C X Get Online Friends` |
+| **V R C X Send Invite** | `Flow trigger` | `Output` | `Node node for V R C X Send Invite` |
+| **V R C X Get User Info** | `Flow trigger` | `Output` | `Node node for V R C X Get User Info` |
+| **V R C X Get Current Location** | `Flow trigger` | `Output` | `Node node for V R C X Get Current Location` |
+| **V R C X Show Toast** | `Flow trigger` | `Output` | `Node node for V R C X Show Toast` |
+| **V R C X Connection Status** | `Flow trigger` | `Output` | `Node node for V R C X Connection Status` |
+<!-- NODES_TABLE_END -->

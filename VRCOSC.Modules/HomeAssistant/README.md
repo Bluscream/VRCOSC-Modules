@@ -148,3 +148,72 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | **Get Entity Attribute** | `Entity ID (string), Attribute Name (string)` | `Attribute Value (object), Exists (bool)` | `Returns specific attribute of an HA entity` |
 | **Render Jinja Template** | `Jinja Template (string)` | `Rendered Output (string), Error (string)` | `Renders a Jinja template string on Home Assistant` |
 <!-- AUTOGEN:NODES:END -->
+
+## Module Settings
+
+<!-- SETTINGS_TABLE_START -->
+| Setting Name | Type | Description | Default |
+|---|---|---|---|
+| **Server URL** | `TextBox` | `Home Assistant base URL (e.g. http://192.168.1.100:8123)` | `"http://homeassistant.local:8123"` |
+| **Access Token** | `TextBox` | `Long-Lived Access Token generated in Home Assistant profile` | `empty` |
+| **OSC Prefix** | `TextBox` | `Prefix for Home Assistant avatar parameters (e.g. HomeAssistant/)` | `"HomeAssistant/"` |
+| **Match OSC Prefix Anywhere** | `Toggle` | `Allow matching the OSC prefix anywhere in parameter paths to support generator prefixes (e.g. VRCFury's VF52_..._OSC/HomeAssistant/). If disabled, parameters must start with the exact prefix.` | `true` |
+| **Enable Realtime WebSocket** | `Toggle` | `Enable real-time state change updates via WebSocket API` | `true` |
+| **Log Debug** | `Toggle` | `Log detailed Home Assistant debug messages to console` | `false` |
+| **Log OSC Parameters** | `Toggle` | `Log incoming/outgoing Home Assistant OSC parameters to console` | `false` |
+| **Entity Filter** | `TextBox` | `Comma-separated list of entity IDs or domains to track (leave empty for all)` | `empty` |
+| **Register All Entity Variables** | `Toggle` | `Register every HA entity state as an individual ChatBox variable (HAState.{entity_id}). Disabled by default to prevent cluttering.` | `false` |
+| **Custom ChatBox Template Variables** | `KeyValuePairList` | `Configure custom ChatBox variables mapped to Jinja templates or entity states.\nKey: Variable Name (e.g. LivingRoomTemp)\nValue: Jinja Template (e.g. {{ states('sensor.living_room_temp') }}°C)` | `Array.Empty<MutableKeyValuePair>(` |
+<!-- SETTINGS_TABLE_END -->
+
+## ChatBox Variables
+
+<!-- VARIABLES_TABLE_START -->
+| Variable Name | Lookup Key | Type | Description |
+|---|---|---|---|
+| **Connected** | `connected` | `bool` | `ChatBox variable Connected` |
+| **Last Entity** | `lastentity` | `string` | `ChatBox variable Last Entity` |
+| **Last State** | `laststate` | `string` | `ChatBox variable Last State` |
+| **States Count** | `statescount` | `int` | `ChatBox variable States Count` |
+<!-- VARIABLES_TABLE_END -->
+
+## ChatBox States
+
+<!-- STATES_TABLE_START -->
+| State Name | Lookup Key | Format | Description |
+|---|---|---|---|
+| **Disconnected** | `disconnected` | `HA Disconnected` | `Disconnected state` |
+| **Connecting** | `connecting` | `HA Connecting...` | `Connecting state` |
+| **Connected** | `connected` | `HA Connected ({0})` | `Connected state` |
+| **Error** | `error` | `HA Error` | `Error state` |
+<!-- STATES_TABLE_END -->
+
+## ChatBox Events
+
+<!-- EVENTS_TABLE_START -->
+| Event Name | Lookup Key | Title | Trigger Condition |
+|---|---|---|---|
+| **On State Changed** | `onstatechanged` | `HA {0} = {1}` | `Triggered on On State Changed` |
+| **On Service Executed** | `onserviceexecuted` | `On Service Executed` | `Triggered on On Service Executed` |
+| **On Error** | `onerror` | `On Error` | `Triggered on On Error` |
+<!-- EVENTS_TABLE_END -->
+
+## Avatar OSC Parameters
+
+<!-- OSC_PARAMETERS_TABLE_START -->
+| OSC Parameter Path | Type | Direction | Description |
+|---|---|---|---|
+| **VRCOSC/HomeAssistant/Connected** | `bool` | `Write` | `True when connected to Home Assistant` |
+| **VRCOSC/HomeAssistant/EventReceived** | `bool` | `Write` | `True for 1 second when a state change event is received` |
+| **VRCOSC/HomeAssistant/Failed** | `bool` | `Write` | `True for 1 second when a request or connection fails` |
+<!-- OSC_PARAMETERS_TABLE_END -->
+
+## Nodes Overview
+
+<!-- NODES_TABLE_START -->
+| Node Name | Inputs | Outputs | Description |
+|---|---|---|---|
+| **H A Call Service** | `Flow trigger` | `Output` | `Node node for H A Call Service` |
+| **H A Get State** | `Flow trigger` | `Output` | `Node node for H A Get State` |
+| **H A Render Template** | `Flow trigger` | `Output` | `Node node for H A Render Template` |
+<!-- NODES_TABLE_END -->

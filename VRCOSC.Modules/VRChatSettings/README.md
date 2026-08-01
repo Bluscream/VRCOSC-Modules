@@ -140,3 +140,67 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | **Get All VRChat Config Settings** | `Flow trigger` | `Settings (Dict)` | `Returns dictionary of all config.json settings` |
 | **Object To JSON String<T>** | `Value (T), Formatted (bool)` | `JSON String (string)` | `Serializes object/collection to JSON` |
 <!-- AUTOGEN:NODES:END -->
+
+## Module Settings
+
+<!-- SETTINGS_TABLE_START -->
+| Setting Name | Type | Description | Default |
+|---|---|---|---|
+| **VRChat User ID** | `TextBox` | `Your VRChat user ID (usr_xxx...) - Required for user-specific settings. Find it at vrchat.com/home/user/{userId}` | `empty` |
+| **Allow Unknown Settings** | `Toggle` | `Allow reading/writing settings not in the known list` | `false` |
+| **Allow Outside Known Limits** | `Toggle` | `Allow setting values outside known safe limits` | `false` |
+| **Allow Remote Definitions** | `Toggle` | `Try to load definitions from GitHub Gist (fallback to embedded)` | `true` |
+| **Log Operations** | `Toggle` | `Log all get/set operations to console` | `false` |
+| **Auto Backup** | `Toggle` | `Automatically backup settings before writing` | `true` |
+| **Backup Directory** | `TextBox` | `Directory to store backups (leave empty for default)` | `empty` |
+<!-- SETTINGS_TABLE_END -->
+
+## ChatBox Variables
+
+<!-- VARIABLES_TABLE_START -->
+| Variable Name | Lookup Key | Type | Description |
+|---|---|---|---|
+| **Last Key** | `lastkey` | `string` | `ChatBox variable Last Key` |
+| **Last Value** | `lastvalue` | `string` | `ChatBox variable Last Value` |
+| **Settings Loaded** | `settingsloaded` | `int` | `ChatBox variable Settings Loaded` |
+| **Operations Count** | `operationscount` | `int` | `ChatBox variable Operations Count` |
+<!-- VARIABLES_TABLE_END -->
+
+## ChatBox States
+
+<!-- STATES_TABLE_START -->
+| State Name | Lookup Key | Format | Description |
+|---|---|---|---|
+| **Idle** | `idle` | `VRChat Settings\nReady` | `Idle state` |
+| **Reading** | `reading` | `Reading: {0}` | `Reading state` |
+| **Writing** | `writing` | `Writing: {0}\n= {1}` | `Writing state` |
+<!-- STATES_TABLE_END -->
+
+## ChatBox Events
+
+<!-- EVENTS_TABLE_START -->
+| Event Name | Lookup Key | Title | Trigger Condition |
+|---|---|---|---|
+| **On Setting Read** | `onsettingread` | `Read: {0} = {1}` | `Triggered on On Setting Read` |
+| **On Setting Write** | `onsettingwrite` | `Wrote: {0} = {1}` | `Triggered on On Setting Write` |
+| **On Error** | `onerror` | `Error: {0}` | `Triggered on On Error` |
+<!-- EVENTS_TABLE_END -->
+
+## Avatar OSC Parameters
+
+<!-- OSC_PARAMETERS_TABLE_START -->
+| OSC Parameter Path | Type | Direction | Description |
+|---|---|---|---|
+| **VRCOSC/VRChatSettings/Success** | `bool` | `Write` | `True for 1 second when operation succeeds` |
+| **VRCOSC/VRChatSettings/Failed** | `bool` | `Write` | `True for 1 second when operation fails` |
+| **VRCOSC/VRChatSettings/OperationsCount** | `int` | `Write` | `Total number of successful operations` |
+<!-- OSC_PARAMETERS_TABLE_END -->
+
+## Nodes Overview
+
+<!-- NODES_TABLE_START -->
+| Node Name | Inputs | Outputs | Description |
+|---|---|---|---|
+| **List All Registry Settings** | `Flow trigger` | `Output` | `Node node for List All Registry Settings` |
+| **List All Config Settings** | `Flow trigger` | `Output` | `Node node for List All Config Settings` |
+<!-- NODES_TABLE_END -->

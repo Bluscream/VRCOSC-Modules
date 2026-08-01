@@ -86,3 +86,23 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | **VRCX Bridge Module** | `[VRCOSC.Modules/VRCXBridge/README.md](VRCOSC.Modules/VRCXBridge/README.md)` | `4` | `8` | 2 | 1 | Bidirectional bridge between VRCOSC and VRCX for OSC + VRChat API integration via Windows Named Pipes (\\.\pipe\vrcx-ipc). |
 | **VRChat Settings Module** | `[VRCOSC.Modules/VRChatSettings/README.md](VRCOSC.Modules/VRChatSettings/README.md)` | `6` | `4` | 3 | 3 | Read and write 746+ VRChat registry settings and config file values with provider architecture, JSON schema validation, and user ID templates. |
 <!-- AUTOGEN:SUBMODULES:END -->
+
+## Submodules Index
+
+<!-- SUBMODULES_TABLE_START -->
+| Module Name | Folder / Docs | Settings | Variables | States | Events | Description |
+|---|---|---|---|---|---|---|
+| **Debug** | `[VRCOSC.Modules/Debug/README.md](VRCOSC.Modules/Debug/README.md)` | `13` | `4` | 2 | 2 | Debug tools for tracking and exporting OSC parameters |
+| **Desktop FPS** | `[VRCOSC.Modules/DesktopFPS/README.md](VRCOSC.Modules/DesktopFPS/README.md)` | `0` | `1` | 0 | 0 | Monitors VRChat FPS using Windows Performance Counters |
+| **HTTP** | `[VRCOSC.Modules/HTTP/README.md](VRCOSC.Modules/HTTP/README.md)` | `2` | `4` | 4 | 2 | Send HTTP requests and receive responses for automation |
+| **HTTP/MCP Server** | `[VRCOSC.Modules/HTTPServer/README.md](VRCOSC.Modules/HTTPServer/README.md)` | `9` | `5` | 5 | 5 | HTTP/MCP server to control VRCOSC via HTTP Requests or from a AI Agent via MCP (optional) |
+| **HomeAssistant** | `[VRCOSC.Modules/HomeAssistant/README.md](VRCOSC.Modules/HomeAssistant/README.md)` | `10` | `4` | 4 | 3 | Integrate Home Assistant entity states, Jinja templates, avatar parameters, and flow nodes |
+| **IRC Bridge** | `[VRCOSC.Modules/IRCBridge/README.md](VRCOSC.Modules/IRCBridge/README.md)` | `16` | `9` | 6 | 9 | Connect to IRC servers and receive events for channel activity |
+| **Linux Hardware Stats** | `[VRCOSC.Modules/LinuxHardwareStats/README.md](VRCOSC.Modules/LinuxHardwareStats/README.md)` | `6` | `30` | 1 | 0 | Sends hardware stats as avatar parameters and allows for displaying them in the ChatBox on Linux hosts |
+| **Linux Media** | `[VRCOSC.Modules/LinuxMedia/README.md](VRCOSC.Modules/LinuxMedia/README.md)` | `0` | `8` | 3 | 3 | Integration with Linux MPRIS Media Players (via D-Bus) |
+| **Linux Process Manager** | `[VRCOSC.Modules/LinuxProcessManager/README.md](VRCOSC.Modules/LinuxProcessManager/README.md)` | `0` | `0` | 0 | 0 | Allows for starting and stopping Linux host processes from avatar parameters |
+| **Notifications** | `[VRCOSC.Modules/Notifications/README.md](VRCOSC.Modules/Notifications/README.md)` | `11` | `4` | 0 | 2 | Send notifications to Desktop, XSOverlay, and OVRToolkit |
+| **OpenXR Haptic Control** | `[VRCOSC.Modules/OpenXR/README.md](VRCOSC.Modules/OpenXR/README.md)` | `1` | `7` | 3 | 0 | Trigger haptic feedback on OpenXR controllers (SteamVR, Monado, etc.) |
+| **VRCX Bridge** | `[VRCOSC.Modules/VRCXBridge/README.md](VRCOSC.Modules/VRCXBridge/README.md)` | `10` | `0` | 0 | 0 | Bidirectional bridge between VRCOSC and VRCX for OSC + VRChat API integration |
+| **VRChat Settings** | `[VRCOSC.Modules/VRChatSettings/README.md](VRCOSC.Modules/VRChatSettings/README.md)` | `7` | `4` | 3 | 3 | Read and write VRChat registry settings and config file values |
+<!-- SUBMODULES_TABLE_END -->

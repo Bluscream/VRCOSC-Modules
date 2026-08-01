@@ -138,3 +138,66 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | **Linux Media Previous** | `Flow trigger` | `Success (bool)` | `Skips to previous track` |
 | **Linux Media Stop** | `Flow trigger` | `Success (bool)` | `Stops playback` |
 <!-- AUTOGEN:NODES:END -->
+
+## Module Settings
+
+<!-- SETTINGS_TABLE_START -->
+| Setting Name | Type | Description | Default |
+|---|---|---|---|
+| _None_ | — | — | — |
+<!-- SETTINGS_TABLE_END -->
+
+## ChatBox Variables
+
+<!-- VARIABLES_TABLE_START -->
+| Variable Name | Lookup Key | Type | Description |
+|---|---|---|---|
+| **Title** | `title` | `string` | `ChatBox variable Title` |
+| **Artist** | `artist` | `string` | `ChatBox variable Artist` |
+| **Artist + Title** | `artisttitle` | `string` | `ChatBox variable Artist + Title` |
+| **Current Time** | `time` | `TimeSpan` | `ChatBox variable Current Time` |
+| **Time Remaining** | `timeremaining` | `TimeSpan` | `ChatBox variable Time Remaining` |
+| **Duration** | `duration` | `TimeSpan` | `ChatBox variable Duration` |
+| **Progress Visual** | `progressvisual` | `float` | `ChatBox variable Progress Visual` |
+| **Volume** | `volume` | `int` | `ChatBox variable Volume` |
+<!-- VARIABLES_TABLE_END -->
+
+## ChatBox States
+
+<!-- STATES_TABLE_START -->
+| State Name | Lookup Key | Format | Description |
+|---|---|---|---|
+| **Playing** | `playing` | `[{0}/{1}]\n{2} - {3}\n{4}` | `Playing state` |
+| **Paused** | `paused` | `[Paused]\n{0} - {1}` | `Paused state` |
+| **Stopped** | `stopped` | `[No Source]` | `Stopped state` |
+<!-- STATES_TABLE_END -->
+
+## ChatBox Events
+
+<!-- EVENTS_TABLE_START -->
+| Event Name | Lookup Key | Title | Trigger Condition |
+|---|---|---|---|
+| **On Track Change** | `ontrackchange` | `Now Playing\n{0} - {1}` | `Triggered on On Track Change` |
+| **On Play** | `onplay` | `[Playing]\n{0} - {1}` | `Triggered on On Play` |
+| **On Pause** | `onpause` | `[Paused]\n{0} - {1}` | `Triggered on On Pause` |
+<!-- EVENTS_TABLE_END -->
+
+## Avatar OSC Parameters
+
+<!-- OSC_PARAMETERS_TABLE_START -->
+| OSC Parameter Path | Type | Direction | Description |
+|---|---|---|---|
+| **VRCOSC/Media/Play** | `bool` | `ReadWrite` | `True for playing. False for paused` |
+| **VRCOSC/Media/Next** | `bool` | `Read` | `Becoming true causes the next track to play` |
+| **VRCOSC/Media/Previous** | `bool` | `Read` | `Becoming true causes the previous track to play` |
+| **VRCOSC/Media/Position** | `float` | `ReadWrite` | `The position of the song as a percentage` |
+| **VRCOSC/Media/Volume** | `float` | `ReadWrite` | `The player volume as a percentage` |
+<!-- OSC_PARAMETERS_TABLE_END -->
+
+## Nodes Overview
+
+<!-- NODES_TABLE_START -->
+| Node Name | Inputs | Outputs | Description |
+|---|---|---|---|
+| _None_ | — | — | — |
+<!-- NODES_TABLE_END -->
