@@ -1,203 +1,78 @@
-# HomeAssistant Module for VRCOSC
+# Home Assistant Module
 
-Integrate **Home Assistant** directly into **VRChat** through VRCOSC! Control smart home devices (lights, switches, covers, media players, locks, fans, scripts, scenes, and automations) directly using VRChat Avatar OSC parameters, render real-time Jinja templates in your ChatBox, and build custom automation flows with VRCOSC Flow Nodes.
+Integrate Home Assistant entity states, Jinja templates, avatar parameters, custom HomeAssistantEntityClipVariable, and flow nodes via REST & WebSocket APIs.
 
----
-
-## 📑 Table of Contents
-1. [Features](#-features)
-2. [Prerequisites & Setup](#-prerequisites--setup)
-3. [Module Settings](#-module-settings)
-4. [Unity Avatar Parameter Setup (Manual & VRCFury)](#-unity-avatar-parameter-setup-manual--vrcfury)
-    - [Parameter Naming Conventions](#1-parameter-naming-conventions)
-    - [Supported Domains & Types](#2-supported-domains--types)
-    - [Manual Setup Step-by-Step](#3-manual-setup-step-by-step)
-    - [VRCFury Setup Step-by-Step](#4-vrcfury-setup-step-by-step)
-5. [ChatBox Integration & Jinja Templates](#-chatbox-integration--jinja-templates)
-6. [VRCOSC Flow Nodes](#-vrcosc-flow-nodes)
-7. [Module Events, Variables & System Parameters](#-module-events-variables--system-parameters)
+**Repository**: https://github.com/Bluscream/VRCOSC-Modules
 
 ---
 
-## ✨ Features
+## Setup & Requirements
 
-- **Bi-Directional Synchronization**: State changes in Home Assistant instantly update avatar parameters over WebSocket. Changes made to avatar parameters in VRChat trigger Home Assistant services.
-- **Support for All Standard HA Domains**: `light`, `switch`, `cover`, `climate`, `media_player`, `lock`, `fan`, `scene`, `script`, `automation`, `button`, `input_boolean`, `input_number`, `select`, `input_select`, `number`, `sensor`, `binary_sensor`.
-- **Custom Jinja Template ChatBox Variables**: Live-evaluated Jinja templates push formatted text into VRCOSC ChatBox clips (e.g. room temperatures, media state, or battery levels).
-- **Flow Nodes**: Includes visual logic nodes (`Call Service`, `Get Entity State`, `Render Template`) for custom node graphs.
-- **Configurable Entity Filtering**: Limit synchronization to specific entity IDs or whole domains to keep OSC traffic minimal.
+- Home Assistant instance URL (e.g. `http://192.168.1.100:8123`).
+- Long-Lived Access Token generated from your Home Assistant profile page.
 
----
+## Module Settings
 
-## ⚙️ Prerequisites & Setup
-
-1. **Long-Lived Access Token**:
-   - In Home Assistant, click on your Profile (bottom left).
-   - Scroll down to **Long-Lived Access Tokens** and click **Create Token**.
-   - Copy the token.
-
-2. **VRCOSC Module Settings**:
-   - **Server URL**: Your Home Assistant base URL (e.g. `http://homeassistant.local:8123` or `http://192.168.1.100:8123`).
-   - **Access Token**: Paste your Long-Lived Access Token.
-   - **OSC Prefix**: Default is `HomeAssistant/`. (Must match what you put on your avatar parameters).
-   - **Enable Realtime WebSocket**: `True` (recommended for instant updates).
-
----
-
-## ⚙️ Module Settings
-
-| Setting | Type | Default | Description |
+| Setting Name | Type | Description | Default |
 |---|---|---|---|
-| **Server URL** | Text | `http://homeassistant.local:8123` | Base HTTP/WS address of your HA instance |
-| **Access Token** | Text | `""` | Long-Lived Access Token generated in HA profile |
-| **OSC Prefix** | Text | `HomeAssistant/` | Prefix added to avatar parameters (e.g. `HomeAssistant/`) |
-| **Match OSC Prefix Anywhere** | Toggle | `true` | Matches OSC prefix anywhere in parameter paths to support generator prefixes (e.g. VRCFury `VF52_..._OSC/`) |
-| **Enable Realtime WebSocket** | Toggle | `true` | Real-time bi-directional streaming via HA WebSocket API |
-| **Log Debug** | Toggle | `false` | Enables verbose diagnostic console logging |
-| **Log OSC Parameters** | Toggle | `false` | Logs all incoming & outgoing OSC messages |
-| **Entity Filter** | Text | `""` | Comma-separated entity IDs or domains to sync (e.g. `light.living_room, switch`) |
-| **Register All Entity Variables**| Toggle | `false` | Exposes every entity state as a ChatBox variable (`HAState.{entity_id}`) |
-| **Custom ChatBox Template Variables** | Key-Value List | `[]` | Mapped custom Jinja templates to ChatBox variables |
+| **ServerUrl** | `TextBox` | Home Assistant base URL | `http://homeassistant.local:8123` |
+| **AccessToken** | `TextBox` | Long-Lived Access Token | `empty` |
+| **OscPrefix** | `TextBox` | OSC parameter prefix for HA entities | `HomeAssistant/` |
+| **AllowAnywhereOscPrefix** | `Toggle` | Match OSC prefix anywhere in parameter path (e.g. for VRCFury prefixes) | `true` |
+| **EnableWebSocket** | `Toggle` | Enable real-time state change updates via WebSocket API | `true` |
+| **LogDebug** | `Toggle` | Log detailed Home Assistant debug messages | `false` |
+| **LogOscParams** | `Toggle` | Log incoming/outgoing OSC parameters | `false` |
+| **EntityFilter** | `TextBox` | Comma-separated list of entity IDs or domains to track (empty = all) | `empty` |
+| **RegisterAllEntityVariables** | `Toggle` | Register every HA entity state as an individual ChatBox variable (HAState.{entity_id}) | `false` |
+| **TemplateVariables** | `KeyValuePairList` | Configure custom ChatBox variables mapped to Jinja templates | `empty` |
+
+## ChatBox Variables
+
+| Variable Name | Lookup Key | Type | Description |
+|---|---|---|---|
+| **Connected** | `connected` | `bool` | True if connected to Home Assistant REST/WebSocket API |
+| **Last Entity** | `lastentity` | `string` | Entity ID of the last updated entity |
+| **Last State** | `laststate` | `string` | State string of the last updated entity |
+| **States Count** | `statescount` | `int` | Total entities tracked in state cache |
+| **Entity State / Attribute** | `entitystate` | `HomeAssistantEntityClipVariable` | Generic clip variable with EntityID, Attribute, RoundDecimals, TitleCase, AppendUnit, FormatString options |
+| **HATemplate.<Name>** | `HATemplate.<Name>` | `string` | Custom Jinja template variables configured in module settings |
+
+## ChatBox States
+
+| State Name | Lookup Key | Format | Description |
+|---|---|---|---|
+| **Disconnected** | `disconnected` | `HA Disconnected` | Disconnected from Home Assistant |
+| **Connecting** | `connecting` | `HA Connecting...` | Connecting to REST/WebSocket API |
+| **Connected** | `connected` | `HA Connected ({0})` | Connected and receiving updates |
+| **Error** | `error` | `HA Error: {0}` | Connection or authentication error |
+
+## ChatBox Events
+
+| Event Name | Lookup Key | Title | Trigger Condition |
+|---|---|---|---|
+| **On State Changed** | `onstatechanged` | `HA {0} = {1}` | Triggered when any entity state updates |
+| **On Service Executed** | `onserviceexecuted` | `HA Service: {0}.{1}` | Triggered when an HA service is executed |
+| **On Error** | `onerror` | `HA Error: {0}` | Triggered on API or Jinja template rendering error |
+
+## Avatar OSC Parameters
+
+| OSC Parameter Path | Type | Direction | Description |
+|---|---|---|---|
+| `VRCOSC/HomeAssistant/Connected` | `bool` | `Write` | True if Home Assistant is connected |
+| `VRCOSC/HomeAssistant/EventReceived` | `bool` | `Write` | Flashes true on state change event |
+| `VRCOSC/HomeAssistant/Failed` | `bool` | `Write` | True if connection/auth failed |
+
+## Nodes Overview
+
+| Node Name | Inputs | Outputs | Description |
+|---|---|---|---|
+| **Call Home Assistant Service** | Domain (string), Service (string), Service Data (Dict) | Success (bool), Error (string) | Executes an HA service call (e.g. light.turn_on) |
+| **Get Entity State** | Entity ID (string) | State (string), Exists (bool) | Returns current state of an HA entity |
+| **Get Entity Attribute** | Entity ID (string), Attribute Name (string) | Attribute Value (object), Exists (bool) | Returns specific attribute of an HA entity |
+| **Render Jinja Template** | Jinja Template (string) | Rendered Output (string), Error (string) | Renders a Jinja template string on Home Assistant |
 
 ---
 
-## 🎮 Unity Avatar Parameter Setup (Manual & VRCFury)
+## License
 
-You can send OSC parameters from VRChat to trigger Home Assistant services, and receive HA updates to drive avatar animations/toggles!
-
-### 1. Parameter Naming Conventions
-
-VRCOSC maps VRChat OSC parameters to Home Assistant entities based on the **OSC Prefix** (default: `HomeAssistant/`).
-
-- Standard formats supported for bi-directional synchronization:
-  - Slash format: `{OSC_Prefix}{domain}/{object_id}` (e.g. `HomeAssistant/switch/esphome_blus_room_flood_light_relais`)
-  - Underscore format: `{OSC_Prefix}{domain}_{object_id}` (e.g. `HomeAssistant/switch_esphome_blus_room_flood_light_relais`)
-  - Dot format: `{OSC_Prefix}{domain}.{object_id}` (e.g. `HomeAssistant/switch.esphome_blus_room_flood_light_relais`)
-
-#### Examples:
-- Entity ID: `light.desk_lamp` $\rightarrow$ Parameter: `HomeAssistant/light/desk_lamp` or `HomeAssistant/light_desk_lamp`
-- Entity ID: `switch.pc_power` $\rightarrow$ Parameter: `HomeAssistant/switch/pc_power` or `HomeAssistant/switch_pc_power`
-- Entity ID: `cover.garage_door` $\rightarrow$ Parameter: `HomeAssistant/cover/garage_door` or `HomeAssistant/cover_garage_door`
-- Sub-attributes (e.g. Brightness): `HomeAssistant/light/desk_lamp/brightness` or `HomeAssistant/light_desk_lamp/brightness`
-
----
-
-### 2. Supported Domains & Types
-
-#### **Toggle / On-Off Controls (`bool`)**
-Assign a `bool` parameter on your avatar expressions menu to turn entities on/off or activate actions:
-- **`light` / `switch` / `fan` / `input_boolean`**: `true` = `turn_on`, `false` = `turn_off`.
-- **`lock`**: `true` = `lock`, `false` = `unlock`.
-- **`cover`**: `true` = `open_cover`, `false` = `close_cover`.
-- **`scene` / `script` / `automation` / `button`**: Sending `true` triggers/executes the action.
-
-#### **Analog Controls (`float` or `int`)**
-Assign a `float` radial puppet or slider parameter:
-- **`light` (`float` 0.0 to 1.0)**: Setting `0.0` turns the light off; values `> 0.0` scale brightness from `1` to `255`.
-- **`light/brightness` (`float` 0.0 to 1.0 or `int` 0 to 255)**: Direct brightness parameter control.
-- **`cover` (`float` 0.0 to 1.0)**: Controls position from 0% (closed) to 100% (open).
-- **`media_player` (`float` 0.0 to 1.0)**: Sets volume level from 0% to 100%.
-
----
-
-### 3. Manual Setup Step-by-Step
-
-1. Open your Avatar Project in Unity.
-2. Select your avatar's **Expression Parameters** asset.
-3. Add a new parameter:
-   - **Name**: `HomeAssistant/light/desk_lamp` (matching your HA entity `light.desk_lamp`)
-   - **Type**: `Bool`
-   - **Saved**: Optional (enables saving state across world changes)
-   - **Synced**: `True`
-4. Open your **VRC Expressions Menu** asset.
-5. Add a Control:
-   - **Name**: Desk Lamp
-   - **Type**: `Toggle`
-   - **Parameter**: `HomeAssistant/light/desk_lamp`
-6. Upload your avatar! When you toggle this button in VRChat, VRCOSC sends the command to Home Assistant. Likewise, when you turn the lamp on/off in Home Assistant, the menu toggle updates live in VRCOSC/VRChat.
-
----
-
-### 4. VRCFury Setup Step-by-Step
-
-Using **VRCFury** is the easiest non-destructive way to add Home Assistant controls without manually editing your avatar's Animator Controllers or Expression Parameters!
-
-#### A. Basic Toggle (e.g. Desk Lamp)
-1. Select your avatar root in the Hierarchy.
-2. In the Inspector, click **Add Component** $\rightarrow$ **VRCFury**.
-3. Click **Add Option** $\rightarrow$ **Toggle**.
-4. Set the Toggle settings:
-   - **Menu Path**: `Home Assistant/Desk Lamp` (or any sub-menu layout you want)
-   - **Saved**: Optional
-5. Under **Global Parameter Name**, enter the full OSC parameter:
-   - `HomeAssistant/light/desk_lamp`
-
-#### B. Radial Puppet / Slider (e.g. Lamp Brightness or Cover Position)
-1. In your **VRCFury** component, click **Add Option** $\rightarrow$ **Slider**.
-2. Set the Slider settings:
-   - **Menu Path**: `Home Assistant/Desk Brightness`
-   - **Parameter**: `HomeAssistant/light/desk_lamp/brightness` (or `HomeAssistant/cover/garage_door`)
-
-#### C. Custom OSC Raw Parameter (For indicator animations)
-If you want Home Assistant to drive avatar animations (like lighting up an LED prop on your avatar when a light turns on in real life):
-1. In **VRCFury**, click **Add Option** $\rightarrow$ **Toggle**.
-2. Add an Action: **Game Object Toggle** (select your prop/LED object).
-3. Enable **Use Global Parameter** and enter `HomeAssistant/light/desk_lamp`.
-4. VRCFury will automatically generate all necessary animator layers, synced parameter entries, and menu items upon avatar build!
-
----
-
-## 💬 ChatBox Integration & Jinja Templates
-
-You can display Home Assistant states and custom formatted messages in your VRChat ChatBox.
-
-### Using Built-in Dynamic Variables
-Enable **Register All Entity Variables** in settings, or use dynamic variables in your ChatBox clips:
-- `{HAState.light.desk_lamp}`
-- `{HAState.sensor.bedroom_temperature}`
-
-### Custom Jinja Template Variables
-In the VRCOSC Module Settings under **Custom ChatBox Template Variables**, click **Add Item**:
-- **Key (Variable Name)**: `LivingRoomTemp`
-- **Value (Jinja Template)**: `{{ states('sensor.living_room_temperature') }}°C`
-
-You can then reference `{HATemplate.LivingRoomTemp}` in any ChatBox clip!
-
-#### Advanced Jinja Template Examples:
-- **Now Playing**:
-  `🎵 {{ state_attr('media_player.spotify', 'media_title') }} - {{ state_attr('media_player.spotify', 'media_artist') }}`
-- **System Status**:
-  `🏠 House Temp: {{ states('sensor.house_temp') }}°C | CPU: {{ states('sensor.processor_use') }}%`
-
----
-
-## 🧩 VRCOSC Flow Nodes
-
-The module adds custom visual programming nodes under the **HomeAssistant** category:
-
-1. **Call Service**:
-   - Executable node to trigger any service in Home Assistant with optional JSON or Map payload data.
-2. **Get Entity State**:
-   - Fetches current state, boolean state, and attribute dictionary/JSON for any entity ID.
-3. **Render Template**:
-   - Evaluates arbitrary Jinja template expressions on demand.
-
----
-
-## 📊 Module Events, Variables & System Parameters
-
-### System Parameters (VRCOSC -> VRChat Avatar)
-- `VRCOSC/HomeAssistant/Connected` (`bool`): `True` when VRCOSC is actively connected to Home Assistant.
-- `VRCOSC/HomeAssistant/EventReceived` (`bool`): Pulsed `True` for 1s when an event is received.
-- `VRCOSC/HomeAssistant/Failed` (`bool`): Pulsed `True` for 1s when an error occurs.
-
-### Internal Variables
-- `Connected` (`bool`)
-- `LastEntity` (`string`)
-- `LastState` (`string`)
-- `StatesCount` (`int`)
-
-### Module Events
-- `OnStateChanged`: Triggered whenever any tracked HA entity changes state.
-- `OnServiceExecuted`: Triggered when a service call succeeds.
-- `OnError`: Triggered when an error occurs.
+Copyright (c) Bluscream. Licensed under the GPL-3.0 License.

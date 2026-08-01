@@ -1,270 +1,67 @@
 # Bluscream's VRCOSC Modules
 
-Custom modules for VRCOSC including VRChat Settings, VRCX Bridge, and HTTP utilities.
+Custom modules for VRCOSC including Home Assistant integration, Linux hardware stats, VRChat settings, VRCX bridge, HTTP server, notifications, and more.
 
 **Repository**: https://github.com/Bluscream/VRCOSC-Modules
 
-## Modules
+## Submodules Index
 
-### Linux Hardware Stats
-
-Linux-native replacement for VRCOSC's official **Hardware Stats** module. Reads CPU, GPU, RAM, VRAM, network, temperatures, active window info, and VR compositor state directly from the Linux host via a bash script — no Windows performance APIs needed.
-
-**See**: [LinuxHardwareStats/README.md](VRCOSC.Modules/LinuxHardwareStats/README.md) for full documentation including OSC paths, conflict notes, and FPS detection chain.
-
----
-
-### VRChat Settings
-
-Comprehensive VRChat settings management with pulse nodes for registry and config file access.
-
-**Features:**
-
-- 746+ registry settings (audio, safety, avatar, network, etc.)
-- Config file settings (cache, resolution, performance, etc.)
-- Provider-based architecture (remote + embedded definitions)
-- User ID template support (`{userId}_settingName`) with module setting or optional node input
-- Type-safe operations with validation
-- Automatic backups before writes
-- ChatBox integration (variables, states, events)
-- Generic `<T>` nodes for flexible type handling (with `NodeGenericTypeFilter`)
-
-**Core Nodes:**
-
-- `Get VRChat Registry Value<T>` - Read registry value (supports optional `User ID` input)
-- `Get VRChat Config Value<T>` - Read config value
-- `Set VRChat Registry Value<T>` - Write registry value (supports optional `User ID` input)
-- `Set VRChat Config Value<T>` - Write config value
-- `Get All VRChat Registry Settings` - Outputs `Dictionary<string, object>`
-- `Get All VRChat Config Settings` - Outputs `Dictionary<string, object>`
-- `Object To JSON String<T>` - Serialize any object/collection to JSON (Formatted option)
-
-Obsolete multi-output "Setting" getter nodes were removed in favor of generic getters.
-
-**See**: [VRChatSettings/README.md](VRCOSC.Modules/VRChatSettings/README.md) for full documentation.
+| Module Name | Folder / Docs | Settings | Variables | States | Events | Description |
+|---|---|---|---|---|---|---|
+| **Debug Module** | [VRCOSC.Modules/Debug/README.md](VRCOSC.Modules/Debug/README.md) | 8 | 4 | 2 | 2 | Debug tools for tracking and exporting OSC parameters with CSV exports, Harmony patches for Linux/Wine connection log spam, WinRT file picker fixes, and ChatBox validation protection. |
+| **Desktop FPS Module** | [VRCOSC.Modules/DesktopFPS/README.md](VRCOSC.Modules/DesktopFPS/README.md) | 0 | 1 | 0 | 0 | Monitors VRChat desktop / window FPS using high-precision process frame timing and performance counters. |
+| **HTTP Module** | [VRCOSC.Modules/HTTP/README.md](VRCOSC.Modules/HTTP/README.md) | 3 | 4 | 4 | 2 | Send HTTP requests (GET, POST, PUT, DELETE) and receive responses for web automation and API integration. |
+| **HTTP / MCP Server Module** | [VRCOSC.Modules/HTTPServer/README.md](VRCOSC.Modules/HTTPServer/README.md) | 7 | 5 | 5 | 5 | Embedded REST API & Model Context Protocol (MCP) server allowing external web applications, local scripts, or AI Agents to query and control VRCOSC. |
+| **Home Assistant Module** | [VRCOSC.Modules/HomeAssistant/README.md](VRCOSC.Modules/HomeAssistant/README.md) | 10 | 6 | 4 | 3 | Integrate Home Assistant entity states, Jinja templates, avatar parameters, custom HomeAssistantEntityClipVariable, and flow nodes via REST & WebSocket APIs. |
+| **IRC Bridge Module** | [VRCOSC.Modules/IRCBridge/README.md](VRCOSC.Modules/IRCBridge/README.md) | 10 | 9 | 6 | 9 | Connect to IRC networks and Twitch IRC for chat integration, channel tracking, and pulse nodes. |
+| **Linux Hardware Stats Module** | [VRCOSC.Modules/LinuxHardwareStats/README.md](VRCOSC.Modules/LinuxHardwareStats/README.md) | 6 | 27 | 1 | 0 | Linux-native hardware monitoring module. Reads CPU, GPU, RAM, VRAM, network speeds, temperatures, active window title/FPS (via MangoHud / xdotool / kdotool), and VR compositor mode (SteamVR / Monado / WiVRn) directly from host via embedded vrcosc_hwstats.sh script. |
+| **Linux Media Module** | [VRCOSC.Modules/LinuxMedia/README.md](VRCOSC.Modules/LinuxMedia/README.md) | 0 | 8 | 3 | 3 | Integrates with Linux MPRIS Media Players via D-Bus and vrcosc_mpris_query.sh script for player control and track info in ChatBox clips. |
+| **Linux Process Manager Module** | [VRCOSC.Modules/LinuxProcessManager/README.md](VRCOSC.Modules/LinuxProcessManager/README.md) | 0 | 0 | 0 | 0 | Allows starting, stopping, and restarting Linux host processes directly from avatar OSC parameters and flow nodes. |
+| **Notifications Module** | [VRCOSC.Modules/Notifications/README.md](VRCOSC.Modules/Notifications/README.md) | 11 | 4 | 2 | 2 | Send notifications to Windows Desktop toasts, XSOverlay (UDP 42010), OVRToolkit (WebSocket 15000), and Webhooks. |
+| **OpenXR Modules** | [VRCOSC.Modules/OpenXR/README.md](VRCOSC.Modules/OpenXR/README.md) | 1 | 7 | 3 | 0 | Cross-platform OpenXR integration providing runtime statistics (FPS, frame timing, VRAM), hand tracking gestures (XR_EXT_hand_tracking), and haptic controller feedback via native openxr_loader.dll. |
+| **VRCX Bridge Module** | [VRCOSC.Modules/VRCXBridge/README.md](VRCOSC.Modules/VRCXBridge/README.md) | 4 | 8 | 2 | 1 | Bidirectional bridge between VRCOSC and VRCX for OSC + VRChat API integration via Windows Named Pipes (\\.\pipe\vrcx-ipc). |
+| **VRChat Settings Module** | [VRCOSC.Modules/VRChatSettings/README.md](VRCOSC.Modules/VRChatSettings/README.md) | 6 | 4 | 3 | 3 | Read and write 746+ VRChat registry settings and config file values with provider architecture, JSON schema validation, and user ID templates. |
 
 ---
 
-### VRCX Bridge
+## Codebase Map & Documentation
 
-Bidirectional bridge between VRCOSC and VRCX for OSC + VRChat API integration.
+The [`docs/`](docs/) directory contains generated reference maps of all symbols, classes, methods, properties, and events across the entire repository:
 
-**Features:**
-
-- IPC communication with VRCX via Named Pipes
-- Send OSC messages to VRChat from VRCX
-- Forward OSC parameters from VRChat to VRCX
-- Execute VRCX commands from VRCOSC nodes
-- Auto-reconnection support
-- Event batching and deduplication
-- ChatBox variable management
-
-**Nodes:**
-
-- `VRCX Get Online Friends` - Get list of online friends
-- `VRCX Send Invite` - Send world invite
-- `VRCX Get User Info` - Get user information
-- `VRCX Get Current Location` - Get current world/instance
-- `VRCX Show Toast` - Show VRCX notification
-- `VRCX Connection Status` - Check connection status
+- 📐 [Classes Map](docs/classes.md) — Map of all classes, structs, interfaces, and enums.
+- ⚙️ [Methods Map](docs/methods.md) — Map of all methods and constructors.
+- 🔧 [Properties Map](docs/properties.md) — Map of all properties.
+- 📌 [Fields Map](docs/fields.md) — Map of all fields and node pins.
+- 💬 [ChatBox Events Map](docs/chatbox-events.md) — Map of all ChatBox events.
+- ⚡ [Code Events Map](docs/events.md) — Map of all C# events, delegates, and callbacks.
 
 ---
 
-### HTTP
+## Building & Deploying
 
-HTTP request automation with response handling.
+### Linux Container Pipeline (`update.sh`)
 
-**Features:**
+```bash
+cd tools && ./update.sh
+```
 
-- GET, POST, PUT, DELETE support
-- Custom headers and body
-- Response parsing
-- Status code tracking
-- Request counter
-- ChatBox integration (states, events, variables)
-- Success/failure events
+The `update.sh` script automates the full workflow:
+- Stops running VRCOSC instance
+- Auto-bumps build version in `AssemblyInfo.cs`
+- Builds Release DLL in Arch container (`distrobox-enter -n arch -- dotnet build ...`)
+- Deploys DLL + dependencies (`Silk.NET.*`) to active target roaming directory
+- Deploys native `openxr_loader.dll` from SteamVR to VRCOSC app dir
+- Regenerates code map docs (`python3 tools/gen-docs.py`)
+- Commits, tags, and creates GitHub Release (`gh release create`)
 
-**Nodes:**
-
-- `HTTP GET Request`
-- `HTTP POST Request`
-- `HTTP Request` (custom method)
-
-**ChatBox Integration:**
-
-- Variables: Last URL, Status Code, Response, Request Count
-- States: Idle, Requesting, Success, Failed
-- Events: OnSuccess, OnFailed
+### Target Channel Switches:
+- `./update.sh` — Target **Stable** VRCOSC (`2026.501.0`)
+- `./update.sh --beta` — Target **Beta** VRCOSC (`2026.702.0`, published as Pre-Release)
+- `./update.sh --dev` — Target **Dev** VRCOSC (local build deploy only)
+- Add `-r / --skip-release` to skip GitHub release upload.
 
 ---
-
-### Notifications
-
-Send notifications to Desktop, XSOverlay, OVRToolkit, and Webhooks.
-
-**Features:**
-
-- Desktop (Windows toast), XSOverlay (UDP), OVRToolkit (WebSocket)
-- Webhook support with configurable URL and HTTP method (GET, POST, PUT, PATCH, DELETE)
-- Parameters are sent as query params for all methods; POST also includes JSON body
-- Defaults group: Title, Message, Timeout (ms), Opacity (%) used when inputs are empty
-- ChatBox variables, states (Idle/Sending), events (OnNotificationSent/OnNotificationFailed)
-- Hardcoded base64 icon from VRCOSC logo (no user-configurable icon path)
-
-**Settings:**
-
-- Enable Desktop / XSOverlay / OVRToolkit / Webhook
-- Webhook URL
-- Webhook Method (dropdown)
-- Defaults: Title, Message, Timeout (ms), Opacity (%)
-- Debug logging toggle
-
-**Nodes:**
-
-- `Send Desktop Notification`
-- `Send XSOverlay Notification`
-- `Send OVRToolkit Notification`
-- `Send Notification (All Enabled)` with `WebhookSuccess` output
-
-All nodes have flow input (trigger) and use defaults when inputs are null/empty.
-
----
-
-### Debug
-
-Debug tools for tracking and exporting OSC parameters.
-
-**Features:**
-
-- Real-time tracking of all incoming and outgoing OSC parameters
-- CSV export with customizable format (basic or with timestamps)
-- Avatar-only filter to ignore system OSC messages
-- Flexible dumps: all, incoming-only, or outgoing-only
-- Memory management with configurable max parameter limit
-- OSC parameter triggers for dump and clear operations
-- ChatBox variables, states (Idle/Dumping), events (OnDumpComplete/OnTrackingCleared)
-- Dictionary output nodes for programmatic access to tracked parameters
-
-**Settings:**
-
-- Dump Directory (custom export location)
-- Include Timestamps (add First Seen, Last Update, Update Count to CSV)
-- Avatar Parameters Only (filter out system messages)
-- Auto-Track Incoming / Outgoing
-- Max Parameters (0 = unlimited)
-- Debug logging toggle
-
-**Nodes:**
-
-- `Dump All Parameters` - Export all to CSV
-- `Dump Incoming Parameters` - Export incoming only
-- `Dump Outgoing Parameters` - Export outgoing only
-- `Clear Parameter Tracking` - Clear all tracked data
-- `Get Parameter Counts` - Get current counts
-- `Get Incoming Parameters` - Dictionary of incoming params
-- `Get Outgoing Parameters` - Dictionary of outgoing params
-- `Get All Parameters` - Dictionary of all params (with IN:/OUT: prefixes)
-
-**CSV Format:** `Direction;Parameter Path;Type;Value[;First Seen;Last Update;Update Count]`
-
-**File Naming:** `params_DDMMYYYY-HH-mm-ss.csv`
-
-**See**: [Debug/README.md](VRCOSC.Modules/Debug/README.md) for full documentation.
-
----
-
-## Building
-
-### Quick Build (Debug)
-
-```powershell
-cd VRCOSC.Modules
-dotnet build -c Debug
-```
-
-### Release Build
-
-```powershell
-cd VRCOSC.Modules
-dotnet build -c Release
-```
-
-### Full Release Pipeline
-
-```powershell
-.\update.ps1
-```
-
-The `update.ps1` script will:
-
-1. ✅ Bump version in `AssemblyInfo.cs` (auto-increments build number)
-2. ✅ Build in Release mode
-3. ✅ Commit and push changes
-4. ✅ Create GitHub **pre-release (Beta)** with DLL attached (using version as tag)
-5. ✅ Build in Debug mode (for local testing)
-
-**Script Options:**
-
-```powershell
-.\update.ps1 -CommitMessage "Your message"  # Custom commit message
-.\update.ps1 -SkipCommit                    # Don't commit/push
-.\update.ps1 -SkipRelease                   # Don't create release
-.\update.ps1 -NoPush                        # Commit but don't push
-```
-
-## Installation
-
-### Automatic (PostBuild)
-
-The DLL is automatically copied to:
-
-```
-%APPDATA%\VRCOSC\packages\local\Bluscream.Modules.dll
-```
-
-### Manual
-
-Copy `bin/Release/net8.0-windows10.0.26100.0/Bluscream.Modules.dll` to `%APPDATA%\VRCOSC\packages\local\`
-
-Restart VRCOSC to load the updated module.
-
-## Requirements
-
-- .NET 8.0 SDK
-- VRCOSC 2025.1015.0 or later
-- Windows 10.0.26100.0 or later
-- VRChat installed (for VRChatSettings)
-- VRCX installed (for VRCXBridge, optional)
-- GitHub CLI (`gh`) for releases (optional)
-
-## Architecture
-
-### Provider Pattern
-
-VRChatSettings uses a provider-based architecture:
-
-- **Registry Provider**: Loads 746+ settings from CSV (remote + embedded)
-- **Config Provider**: Loads settings from JSON schema (remote + embedded)
-- **Remote-first**: Tries GitHub Gist, falls back to embedded resources
-
-### Generic Nodes
-
-Modules leverage VRCOSC's generic `<T>` pattern for flexible, type-safe nodes that automatically create variants for different types (int, float, bool, string, etc.).
-
-### ChatBox Integration
-
-All modules include:
-
-- **Variables**: Expose data to ChatBox clips
-- **States**: Show module status in ChatBox
-- **Events**: Trigger ChatBox clips on actions
 
 ## License
 
-GPL-3.0 License
-
-## Credits
-
-- Built on [VRCOSC SDK](https://github.com/VolcanicArts/VRCOSC) by VolcanicArts
-- VRChat Registry definitions curated from community documentation
-- Config schema based on VRChat's config.json structure
+Copyright (c) Bluscream. Licensed under the GPL-3.0 License.

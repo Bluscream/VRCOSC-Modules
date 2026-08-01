@@ -1,189 +1,100 @@
-# Linux Hardware Stats
+# Linux Hardware Stats Module
 
-A Linux-native replacement for VRCOSC's official **Hardware Stats** module.
-Instead of Windows performance APIs, it runs a lightweight bash script on the host
-that reads directly from `/sys`, `procfs`, and standard Linux tools, then writes
-the results to a file that the C# module parses every tick.
+Linux-native hardware monitoring module. Reads CPU, GPU, RAM, VRAM, network speeds, temperatures, active window title/FPS (via MangoHud / xdotool / kdotool), and VR compositor mode (SteamVR / Monado / WiVRn) directly from host via embedded vrcosc_hwstats.sh script.
 
----
-
-## Requirements
-
-| Tool | Purpose | Install |
-|---|---|---|
-| `bash` | Script runtime | pre-installed |
-| `sensors` / `hwmon` | CPU / GPU / system temps | `lm-sensors` package |
-| `xdotool` | Active window title & PID | `xdotool` package |
-| `xrandr` | Display refresh rate | `xorg-xrandr` package |
-| `ss` | WiVRn session detection | `iproute2` (pre-installed) |
-| `pgrep` | VR compositor detection | `procps` (pre-installed) |
-| `nvidia-smi` | NVIDIA GPU stats | `nvidia-utils` package |
-
-Optional for real game FPS (instead of display refresh rate):
-
-| Tool | Config needed |
-|---|---|
-| **MangoHud** | Set `output_folder = ~/.cache/MangoHud` in `MangoHud.conf` |
+**Repository**: https://github.com/Bluscream/VRCOSC-Modules
 
 ---
 
-## Settings
+## Setup & Requirements
 
-| Setting | Description |
-|---|---|
-| **Selected CPU** | 0-based index of the CPU package (most systems: `0`). *Requires restart.* |
-| **Selected GPU** | 0-based index of the GPU (useful for iGPU + dGPU setups). *Requires restart.* |
-| **Network Interface** | Interface to monitor (e.g. `enp6s0`). Leave empty to combine all non-loopback. *Requires restart.* |
-| **Redacted Window Title Pattern** | Regex — if the active window title matches, it shows **Redacted Text** instead. |
-| **Redacted Process Name Pattern** | Regex — same for active process name. |
-| **Redacted Text** | Replacement text when a redaction pattern matches (default: `[REDACTED]`). |
+- Linux host running VRCOSC (under Proton/Wine or native container).
+- Automatically deploys `vrcosc_hwstats.sh` to `~/.local/bin/`.
+- Optional: MangoHud configured with `~/.config/MangoHud/MangoHud.conf` (`autostart_log=1`) for real-time process FPS tracking.
+- Optional: `xdotool` or `kdotool` installed for active window title detection.
 
-> Changing CPU, GPU, or Network Interface settings requires a module restart to apply (values are baked into the deployed script at startup).
+## Module Settings
 
----
-
-## OSC Parameters
-
-### CPU
-
-| Path | Type | Value |
-|---|---|---|
-| `VRCOSC/Hardware/CPU/Usage` | `float` | CPU usage (0–1) |
-| `VRCOSC/Hardware/CPU/Power` | `int` | CPU power draw (W) |
-| `VRCOSC/Hardware/CPU/Temp` | `int` | CPU temperature (°C) |
-
-### GPU
-
-| Path | Type | Value |
-|---|---|---|
-| `VRCOSC/Hardware/GPU/Usage` | `float` | GPU usage (0–1) |
-| `VRCOSC/Hardware/GPU/Power` | `int` | GPU power draw (W) |
-| `VRCOSC/Hardware/GPU/Temp` | `int` | GPU junction temperature (°C) |
-
-### RAM
-
-| Path | Type | Value |
-|---|---|---|
-| `VRCOSC/Hardware/RAM/Usage` | `float` | RAM usage (0–1) |
-| `VRCOSC/Hardware/RAM/Total` | `int` | Total RAM (GB) |
-| `VRCOSC/Hardware/RAM/Used` | `int` | Used RAM (GB) |
-| `VRCOSC/Hardware/RAM/Free` | `int` | Free/available RAM (GB) |
-
-### VRAM
-
-| Path | Type | Value |
-|---|---|---|
-| `VRCOSC/Hardware/VRAM/Usage` | `float` | VRAM usage (0–1) |
-| `VRCOSC/Hardware/VRAM/Total` | `int` | Total VRAM (GB) |
-| `VRCOSC/Hardware/VRAM/Used` | `int` | Used VRAM (GB) |
-| `VRCOSC/Hardware/VRAM/Free` | `int` | Free VRAM (GB) |
-
-### Network
-
-| Path | Type | Value |
-|---|---|---|
-| `VRCOSC/Hardware/Network/Download` | `int` | Download speed (KB/s) |
-| `VRCOSC/Hardware/Network/Upload` | `int` | Upload speed (KB/s) |
-
-### Temperature
-
-| Path | Type | Value |
-|---|---|---|
-| `VRCOSC/Hardware/System/Temp` | `int` | ACPI / motherboard temp (°C) |
-| `VRCOSC/Hardware/Max/Temp` | `int` | Highest reading across all hwmon sensors (°C) |
-
-### Active Window
-
-| Path | Type | Value |
-|---|---|---|
-| `VRCOSC/ClientInfo/Info/FPS` | `int` | Active window FPS — MangoHud log if fresh, otherwise display refresh rate of the window's monitor |
-| `VRCOSC/Hardware/Window/FPS/Normalised` | `float` | Same FPS normalised 0–240 → 0–1 (matches the VR FPS scale) |
-
-> **Why `ClientInfo/Info/FPS`?** On Linux the `ClientInfo` module always writes `0` there — VRChat doesn't report FPS over OSC on this platform. This module overwrites it with a real value, so avatars already built around the standard path work with no changes.
->
-> ⚠️ If you run `ClientInfo` simultaneously it will race-write `0` to that path every tick. Disable it on Linux, or accept occasional `0` flicker.
-
-> **VR FPS lives elsewhere.** `VRCOSC/VR/FPS/Value` and `/Normalised` are *headset compositor* FPS, not window FPS, and this module deliberately leaves them alone:
-> - **SteamVR** → handled by the stock `SteamVRStatisticsModule`.
-> - **Monado / WiVRn** → handled by our `OpenXRStatisticsModule`, which only writes while an OpenXR session is actually live, so the two never fight.
-
-### Game / VR State
-
-| Path | Type | Value |
-|---|---|---|
-| `VRCOSC/Hardware/Game/Running` | `bool` | `true` when `VRChat.exe` is running via Wine/Proton |
-| `VRCOSC/Hardware/Game/SteamVR` | `bool` | `true` when `vrserver` (SteamVR) is running |
-| `VRCOSC/Hardware/Game/OpenXR` | `bool` | `true` when Monado or WiVRn has an active session |
-| `VRCOSC/Hardware/Game/Desktop` | `bool` | `true` when no VR compositor is active |
-
-> WiVRn is only counted as active when its `comp_ipc` socket has an established client
-> connection — i.e. a headset is streaming, not just when the daemon is idling.
-
----
+| Setting Name | Type | Description | Default |
+|---|---|---|---|
+| **RefreshIntervalMs** | `Slider` | Script sampling interval in milliseconds | `1000` |
+| **GpuIndex** | `TextBox` | 0-based index of GPU package to monitor | `0` |
+| **CpuIndex** | `TextBox` | 0-based index of CPU package to monitor | `0` |
+| **NetIface** | `TextBox` | Network interface to monitor (empty = combine all non-loopback) | `empty` |
+| **EnableOsc** | `Toggle` | Publish hardware stats to avatar OSC parameters | `true` |
+| **LogDebug** | `Toggle` | Log script output details to console | `false` |
 
 ## ChatBox Variables
 
-All parameters are also available as ChatBox variables, plus additional string/float variants:
+| Variable Name | Lookup Key | Type | Description |
+|---|---|---|---|
+| **CPU Usage** | `cpuusage` | `int` | CPU load percentage (0-100%) |
+| **CPU Power** | `cpupower` | `float` | CPU package power draw in Watts |
+| **CPU Temp** | `cputemp` | `int` | CPU package temperature in °C |
+| **GPU Usage** | `gpuusage` | `int` | GPU core load percentage (0-100%) |
+| **GPU Power** | `gpupower` | `float` | GPU power draw in Watts |
+| **GPU Temp** | `gputemp` | `int` | GPU core temperature in °C |
+| **RAM Usage** | `ramusage` | `int` | System RAM load percentage (0-100%) |
+| **RAM Total** | `ramtotal` | `int` | Total system RAM in MB |
+| **RAM Used** | `ramused` | `int` | Used system RAM in MB |
+| **RAM Free** | `ramfree` | `int` | Free system RAM in MB |
+| **VRAM Usage** | `vramusage` | `int` | GPU VRAM load percentage (0-100%) |
+| **VRAM Total** | `vramtotal` | `int` | Total VRAM in MB |
+| **VRAM Used** | `vramused` | `int` | Used VRAM in MB |
+| **VRAM Free** | `vramfree` | `int` | Free VRAM in MB |
+| **CPU Name** | `cpuname` | `string` | CPU model name string |
+| **GPU Name** | `gpuname` | `string` | GPU model name string |
+| **Net Rx KiB/s** | `netrxkibps` | `float` | Network download speed in KiB/s |
+| **Net Tx KiB/s** | `nettxkibps` | `float` | Network upload speed in KiB/s |
+| **Net Rx Total MB** | `netrxtotalmb` | `float` | Total downloaded MB |
+| **Net Tx Total MB** | `nettxtotalmb` | `float` | Total uploaded MB |
+| **System Temp** | `systemtemp` | `int` | Motherboard / ACPI system temperature in °C |
+| **Max Temp** | `maxtemp` | `int` | Highest temperature across all hwmon sensors in °C |
+| **Window Title** | `windowtitle` | `string` | Title of the currently active desktop window |
+| **Process Name** | `processname` | `string` | Process executable name of active window |
+| **Window FPS** | `windowfps` | `int` | Active window FPS (MangoHud CSV log or monitor refresh rate) |
+| **VR Mode** | `vrmode` | `string` | Active VR compositor mode: Desktop, SteamVR, or OpenXR |
+| **VRChat Running** | `vrchatrunning` | `bool` | True if VRChat.exe process is detected |
 
-**CPU:** Name, Manufacturer, Model, Usage (%), Power (W), Temp (°C)  
-**GPU:** Name, Manufacturer, Model, Usage (%), Power (W), Temp (°C)  
-**RAM/VRAM:** Usage (%), Total (GB), Used (GB), Free (GB)  
-**Network:** Download (KB/s), Upload (KB/s), Rx Total (MB), Tx Total (MB)  
-**Temp:** System Temp (°C), Max Temp (°C)  
-**Window:** Active Window Title, Active Process Name, Active Window FPS  
-**VR:** VR Mode (`Desktop` / `SteamVR` / `OpenXR`)
+## ChatBox States
+
+| State Name | Lookup Key | Format | Description |
+|---|---|---|---|
+| **Default** | `default` | `CPU: {0}% | GPU: {3}% | RAM: {6}%` | Default hardware monitoring state |
+
+## ChatBox Events
+
+| Event Name | Lookup Key | Title | Trigger Condition |
+|---|---|---|---|
+| _None_ | — | — | No ChatBox events provided. |
+
+## Avatar OSC Parameters
+
+| OSC Parameter Path | Type | Direction | Description |
+|---|---|---|---|
+| `VRCOSC/Hardware/CPU/Usage` | `int` | `Write` | CPU load percentage |
+| `VRCOSC/Hardware/CPU/Temp` | `int` | `Write` | CPU temperature in °C |
+| `VRCOSC/Hardware/CPU/Power` | `float` | `Write` | CPU power draw in W |
+| `VRCOSC/Hardware/GPU/Usage` | `int` | `Write` | GPU load percentage |
+| `VRCOSC/Hardware/GPU/Temp` | `int` | `Write` | GPU temperature in °C |
+| `VRCOSC/Hardware/GPU/Power` | `float` | `Write` | GPU power draw in W |
+| `VRCOSC/Hardware/RAM/Usage` | `int` | `Write` | RAM usage percentage |
+| `VRCOSC/Hardware/VRAM/Usage` | `int` | `Write` | VRAM usage percentage |
+| `VRCOSC/Hardware/Network/RxKiBps` | `float` | `Write` | Network download speed (KiB/s) |
+| `VRCOSC/Hardware/Network/TxKiBps` | `float` | `Write` | Network upload speed (KiB/s) |
+| `VRCOSC/Hardware/Window/FPS` | `int` | `Write` | Active window rendering FPS |
+| `VRCOSC/Hardware/VR/Mode` | `string` | `Write` | VR Compositor state (Desktop/SteamVR/OpenXR) |
+
+## Nodes Overview
+
+| Node Name | Inputs | Outputs | Description |
+|---|---|---|---|
+| **Get Linux Hardware Stats** | Flow trigger | CPU Usage (int), GPU Usage (int), RAM Usage (int), VRAM Usage (int) | Returns main hardware metrics |
+| **Get Active Window Info** | Flow trigger | Window Title (string), Process Name (string), FPS (int) | Returns active desktop window details |
+| **Get Linux VR Mode** | Flow trigger | VR Mode (string), VRChat Running (bool) | Returns current VR compositor mode |
 
 ---
 
-## ⚠️ Parameter Path Conflict Warning
+## License
 
-The following paths are **identical** to those used by the official VRCOSC
-**Hardware Stats** module (Windows):
-
-```
-VRCOSC/Hardware/CPU/Usage    VRCOSC/Hardware/GPU/Usage
-VRCOSC/Hardware/CPU/Power    VRCOSC/Hardware/GPU/Power
-VRCOSC/Hardware/CPU/Temp     VRCOSC/Hardware/GPU/Temp
-VRCOSC/Hardware/RAM/Usage    VRCOSC/Hardware/VRAM/Usage
-VRCOSC/Hardware/RAM/Total    VRCOSC/Hardware/VRAM/Total
-VRCOSC/Hardware/RAM/Used     VRCOSC/Hardware/VRAM/Used
-VRCOSC/Hardware/RAM/Free     VRCOSC/Hardware/VRAM/Free
-```
-
-This is **intentional** — Linux Hardware Stats is designed as a drop-in replacement
-for the official module on Linux hosts. Avatar parameters set up for the official
-module will work without modification.
-
-> **Do not run both modules simultaneously.** VRCOSC does not detect duplicate OSC
-> paths across modules. Both will silently write to the same avatar parameter every
-> tick and the last-writer-wins, producing unpredictable flickering values.
-
-The following paths are **unique to this module** and have no conflicts:
-
-```
-VRCOSC/Hardware/Network/*    VRCOSC/Hardware/System/Temp
-VRCOSC/Hardware/Max/Temp     VRCOSC/Hardware/Window/FPS/Normalised
-VRCOSC/Hardware/Game/*
-```
-
-`VRCOSC/ClientInfo/Info/FPS` is also an **intentional** overlap — see the Active
-Window section above. Disable the `ClientInfo` module on Linux.
-
----
-
-## Active Window FPS — Priority Chain
-
-1. **MangoHud CSV log** — looks for `~/.cache/MangoHud/<process>*.csv` (or `~/MangoHud/`, `/tmp/MangoHud/`) updated within the last 30 seconds. Reads the last line's FPS column.
-   - Requires MangoHud configured with `output_folder` in `MangoHud.conf`.
-2. **Window's monitor refresh rate** — gets the active window's bounding box via `xdotool`, computes its center, matches against each xrandr monitor rectangle, returns that monitor's current refresh rate.
-3. **Primary display fallback** — first `*`-marked rate from `xrandr` if window geometry is unavailable.
-
----
-
-## VR Mode Detection
-
-| Mode | Trigger |
-|---|---|
-| `SteamVR` | `vrserver` process is running |
-| `OpenXR` | `monado-service` / `monado` process running **or** `wivrn-server` with an established client on `comp_ipc` |
-| `Desktop` | None of the above |
+Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
