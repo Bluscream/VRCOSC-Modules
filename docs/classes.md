@@ -378,17 +378,17 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [17](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L17) | public | `public sealed class LinuxHardwareStatsModule : Module` |
-| [502](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L502) | private | `private enum HardwareStatsSetting` |
-| [512](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L512) | private | `private enum HardwareStatsParameter` |
-| [540](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L540) | private | `private enum HardwareStatsState` |
-| [545](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L545) | private | `private enum HardwareStatsVariable` |
-| [584](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L584) | public | `public class LinuxCPU` |
-| [594](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L594) | public | `public class LinuxGPU` |
-| [608](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L608) | public | `public class LinuxRAM` |
-| [616](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L616) | public | `public class LinuxNetwork` |
-| [632](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L632) | public | `public static class HardwareNameParser` |
-| [634](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L634) | public | `public record CpuInfo(string Manufacturer, string Model, string FullName);` |
-| [635](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L635) | public | `public record GpuInfo(string Manufacturer, string Model, string FullName);` |
+| [511](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L511) | private | `private enum HardwareStatsSetting` |
+| [521](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L521) | private | `private enum HardwareStatsParameter` |
+| [549](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L549) | private | `private enum HardwareStatsState` |
+| [554](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L554) | private | `private enum HardwareStatsVariable` |
+| [593](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L593) | public | `public class LinuxCPU` |
+| [603](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L603) | public | `public class LinuxGPU` |
+| [617](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L617) | public | `public class LinuxRAM` |
+| [625](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L625) | public | `public class LinuxNetwork` |
+| [641](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L641) | public | `public static class HardwareNameParser` |
+| [643](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L643) | public | `public record CpuInfo(string Manufacturer, string Model, string FullName);` |
+| [644](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L644) | public | `public record GpuInfo(string Manufacturer, string Model, string FullName);` |
 
 ### `LinuxHardwareStats/Nodes.cs`
 
@@ -584,7 +584,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [25](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L25) | public | `public static class LinuxUtils` |
-| [157](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L157) | public | `public sealed class UPowerDevice` |
+| [167](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L167) | public | `public sealed class UPowerDevice` |
 
 ### `Utilities/LogSpamFix.cs`
 

@@ -508,13 +508,13 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [176](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L176) | `LinuxHardwareStatsModule` | public | `public LinuxRAM GetRAM() => _ram;` |
 | [177](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L177) | `LinuxHardwareStatsModule` | public | `public LinuxNetwork GetNetwork() => _network;` |
 | [180](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L180) | `LinuxHardwareStatsModule` | private | `private void UpdateParameters()` |
-| [391](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L391) | `LinuxHardwareStatsModule` | protected | `protected override Task OnModuleStop()` |
-| [396](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L396) | `LinuxHardwareStatsModule` | private | `private static string FormatBytes(float mb)` |
-| [418](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L418) | `LinuxHardwareStatsModule` | private | `private static string FormatBytesPerSecond(float kb)` |
-| [440](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L440) | `LinuxHardwareStatsModule` | private | `private static string ApplyRedaction(string value, string pattern, string redactedText)` |
-| [451](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L451) | `LinuxHardwareStatsModule` | private | `private void LogDiagnostics(int lineCount, int systemTemp)` |
-| [656](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L656) | `HardwareNameParser` | public | `public static CpuInfo ParseCpu(string fullName)` |
-| [702](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L702) | `HardwareNameParser` | public | `public static GpuInfo ParseGpu(string fullName)` |
+| [400](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L400) | `LinuxHardwareStatsModule` | protected | `protected override Task OnModuleStop()` |
+| [405](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L405) | `LinuxHardwareStatsModule` | private | `private static string FormatBytes(float mb)` |
+| [427](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L427) | `LinuxHardwareStatsModule` | private | `private static string FormatBytesPerSecond(float kb)` |
+| [449](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L449) | `LinuxHardwareStatsModule` | private | `private static string ApplyRedaction(string value, string pattern, string redactedText)` |
+| [460](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L460) | `LinuxHardwareStatsModule` | private | `private void LogDiagnostics(int lineCount, int systemTemp)` |
+| [665](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L665) | `HardwareNameParser` | public | `public static CpuInfo ParseCpu(string fullName)` |
+| [711](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L711) | `HardwareNameParser` | public | `public static GpuInfo ParseGpu(string fullName)` |
 
 ### `LinuxHardwareStats/Nodes.cs`
 
@@ -850,21 +850,21 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [45](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L45) | `LinuxUtils` | public | `public static string GetWineHomeDir()` |
-| [65](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L65) | `LinuxUtils` | public | `public static void RunWine(string command, Action<Exception>? onError = null)` |
-| [90](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L90) | `LinuxUtils` | public | `public static string WrapHostCommand(string command)` |
-| [98](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L98) | `LinuxUtils` | public | `public static void RunHost(string command, Action<Exception>? onError = null)` |
-| [109](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L109) | `LinuxUtils` | public | `public static void RunHostScript(string scriptName, string? arguments = null, Action<Exception>? onError = null)` |
-| [123](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L123) | `LinuxUtils` | public | `public static string RunShell(string command, int timeoutMs = 5000)` |
-| [149](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L149) | `LinuxUtils` | public | `public static string RunShellHost(string command, int timeoutMs = 5000)` |
-| [211](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L211) | `LinuxUtils` | private | `private static UPowerDevice ParseUPowerInfo(string path, string info)` |
-| [251](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L251) | `LinuxUtils` | public | `public static void StartHostProcess(string processName, Action<Exception>? onError = null)` |
-| [257](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L257) | `LinuxUtils` | public | `public static void StopHostProcess(string processName, Action<Exception>? onError = null)` |
-| [271](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L271) | `LinuxUtils` | public | `public static bool IsHostProcessRunning(string processName, bool matchFullCommandLine = false)` |
-| [279](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L279) | `LinuxUtils` | public | `public static string? GetHostProcessId(string processName, bool matchFullCommandLine = false)` |
-| [293](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L293) | `LinuxUtils` | public | `public static string ReadHostFile(string path, int timeoutMs = 5000)` |
-| [319](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L319) | `LinuxUtils` | private | `private static string RunShellViaWine(string command, int timeoutMs = 5000)` |
-| [345](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L345) | `LinuxUtils` | private | `private static string EscapeQuotes(string s) => s.Replace("\"", "\\\"");` |
-| [352](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L352) | `LinuxUtils` | public | `public static void ChmodPlusX(string hostPath, Action<Exception>? onError = null)` |
+| [75](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L75) | `LinuxUtils` | public | `public static void RunWine(string command, Action<Exception>? onError = null)` |
+| [100](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L100) | `LinuxUtils` | public | `public static string WrapHostCommand(string command)` |
+| [108](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L108) | `LinuxUtils` | public | `public static void RunHost(string command, Action<Exception>? onError = null)` |
+| [119](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L119) | `LinuxUtils` | public | `public static void RunHostScript(string scriptName, string? arguments = null, Action<Exception>? onError = null)` |
+| [133](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L133) | `LinuxUtils` | public | `public static string RunShell(string command, int timeoutMs = 5000)` |
+| [159](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L159) | `LinuxUtils` | public | `public static string RunShellHost(string command, int timeoutMs = 5000)` |
+| [221](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L221) | `LinuxUtils` | private | `private static UPowerDevice ParseUPowerInfo(string path, string info)` |
+| [261](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L261) | `LinuxUtils` | public | `public static void StartHostProcess(string processName, Action<Exception>? onError = null)` |
+| [267](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L267) | `LinuxUtils` | public | `public static void StopHostProcess(string processName, Action<Exception>? onError = null)` |
+| [281](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L281) | `LinuxUtils` | public | `public static bool IsHostProcessRunning(string processName, bool matchFullCommandLine = false)` |
+| [289](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L289) | `LinuxUtils` | public | `public static string? GetHostProcessId(string processName, bool matchFullCommandLine = false)` |
+| [303](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L303) | `LinuxUtils` | public | `public static string ReadHostFile(string path, int timeoutMs = 5000)` |
+| [329](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L329) | `LinuxUtils` | private | `private static string RunShellViaWine(string command, int timeoutMs = 5000)` |
+| [355](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L355) | `LinuxUtils` | private | `private static string EscapeQuotes(string s) => s.Replace("\"", "\\\"");` |
+| [362](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L362) | `LinuxUtils` | public | `public static void ChmodPlusX(string hostPath, Action<Exception>? onError = null)` |
 
 ### `Utilities/LogSpamFix.cs`
 

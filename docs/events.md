@@ -76,7 +76,7 @@ Not `event`-qualified, but the same idea in practice: a slot a caller plugs a ha
 
 | Line | Owner | Name | Type |
 |---|---|---|---|
-| [304](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L304) | `LinuxUtils` | `onError` | `Action<Exception>?` |
+| [314](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L314) | `LinuxUtils` | `onError` | `Action<Exception>?` |
 | [315](../VRCOSC.Modules/Utilities/ReflectionUtils.cs#L315) | `ReflectionUtils` | `Logger` | `Action<string>?` |
 | [808](../VRCOSC.Modules/Utilities/ReflectionUtils.cs#L808) | `ReflectionUtils` | `forceStartAction` | `Action` |
 

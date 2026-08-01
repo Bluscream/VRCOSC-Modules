@@ -50,6 +50,16 @@ public static class LinuxUtils
         if (!string.IsNullOrEmpty(home) && home.StartsWith('/'))
             return "Z:" + home.Replace('/', '\\');
 
+        if (System.IO.Directory.Exists(@"Z:\home"))
+        {
+            try
+            {
+                var dirs = System.IO.Directory.GetDirectories(@"Z:\home");
+                if (dirs.Length > 0) return dirs[0];
+            }
+            catch { }
+        }
+
         return Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
     }
 

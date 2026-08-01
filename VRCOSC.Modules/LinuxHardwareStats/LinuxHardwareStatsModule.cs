@@ -191,7 +191,16 @@ public sealed class LinuxHardwareStatsModule : Module
 
             if (!File.Exists(tempFile))
             {
-                return;
+                var fallbackUser = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                var altPath = Path.Combine(fallbackUser, ".vrcosc_hwstats.txt");
+                if (File.Exists(altPath))
+                {
+                    tempFile = altPath;
+                }
+                else
+                {
+                    return;
+                }
             }
 
             string[] lines = File.ReadAllLines(tempFile);

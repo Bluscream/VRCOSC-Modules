@@ -398,13 +398,13 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [21](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L21) | `LinuxHardwareStatsModule` | private | `private readonly LinuxRAM _ram = new();` |
 | [22](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L22) | `LinuxHardwareStatsModule` | private | `private readonly LinuxNetwork _network = new();` |
 | [23](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L23) | `LinuxHardwareStatsModule` | private | `private bool _firstUpdateDone = false;` |
-| [638](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L638) | `HardwareNameParser` | private | `private static readonly Regex CpuNoisyTokens = new(@"\(R\)|\(TM\)", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [639](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L639) | `HardwareNameParser` | private | `private static readonly Regex CpuGenPrefix = new(@"^\d+\w*\s+Gen\s+", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [640](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L640) | `HardwareNameParser` | private | `private static readonly Regex CpuAtFreqSuffix = new(@"\s+CPU\s*@.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [641](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L641) | `HardwareNameParser` | private | `private static readonly Regex CpuCoresSuffix = new(@"\s+\d+-Core.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [643](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L643) | `HardwareNameParser` | private | `private static readonly Regex IntelModelRegex = new(@"\b([im][0-9]-[0-9]+[A-Z0-9]*(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [644](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L644) | `HardwareNameParser` | private | `private static readonly Regex IntelXeonRegex = new(@"\b(Xeon\s+[A-Z0-9\-]+(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [646](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L646) | `HardwareNameParser` | private | `private static readonly Regex GpuVramRegex = new(@"\b(\d+\s*GB)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [647](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L647) | `HardwareNameParser` | private | `private static readonly Regex CpuNoisyTokens = new(@"\(R\)|\(TM\)", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [648](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L648) | `HardwareNameParser` | private | `private static readonly Regex CpuGenPrefix = new(@"^\d+\w*\s+Gen\s+", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [649](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L649) | `HardwareNameParser` | private | `private static readonly Regex CpuAtFreqSuffix = new(@"\s+CPU\s*@.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [650](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L650) | `HardwareNameParser` | private | `private static readonly Regex CpuCoresSuffix = new(@"\s+\d+-Core.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [652](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L652) | `HardwareNameParser` | private | `private static readonly Regex IntelModelRegex = new(@"\b([im][0-9]-[0-9]+[A-Z0-9]*(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [653](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L653) | `HardwareNameParser` | private | `private static readonly Regex IntelXeonRegex = new(@"\b(Xeon\s+[A-Z0-9\-]+(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [655](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L655) | `HardwareNameParser` | private | `private static readonly Regex GpuVramRegex = new(@"\b(\d+\s*GB)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
 
 ### `LinuxHardwareStats/Nodes.cs`
 
@@ -584,7 +584,7 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [86](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L86) | `LinuxUtils` | private | `private static bool? isFlatpak;` |
+| [96](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L96) | `LinuxUtils` | private | `private static bool? isFlatpak;` |
 
 ### `Utilities/LogSpamFix.cs`
 
