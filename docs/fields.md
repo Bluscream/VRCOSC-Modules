@@ -4,7 +4,7 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**459** total across **14** modules.
+**460** total across **14** modules.
 
 | Module | Count |
 |---|---|
@@ -13,7 +13,7 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [DesktopFPS](#desktopfps) | 10 |
 | [HTTP](#http) | 24 |
 | [HTTPServer](#httpserver) | 20 |
-| [HomeAssistant](#homeassistant) | 33 |
+| [HomeAssistant](#homeassistant) | 34 |
 | [IRCBridge](#ircbridge) | 109 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 30 |
 | [LinuxMedia](#linuxmedia) | 7 |
@@ -225,6 +225,7 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [23](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L23) | `HomeAssistantModule` | private | `private HomeAssistantClient? _client;` |
 | [24](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L24) | `HomeAssistantModule` | private | `private readonly HashSet<string> _registeredDynamicVars = new();` |
 | [25](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L25) | `HomeAssistantModule` | private | `private readonly Dictionary<int, string> _wsTemplateVarMap = new();` |
+| [37](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L37) | `HomeAssistantModule` | private | `private readonly Dictionary<string, HomeAssistant.HAEntityStateSnapshot> _entityStatesSnapshot = new(StringComparer.OrdinalIgnoreCase);` |
 
 ### `HomeAssistant/Nodes.cs`
 

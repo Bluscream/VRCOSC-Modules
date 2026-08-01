@@ -4,7 +4,7 @@
 
 Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
-**221** total across **15** modules.
+**223** total across **15** modules.
 
 | Module | Count |
 |---|---|
@@ -13,7 +13,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [DesktopFPS](#desktopfps) | 8 |
 | [HTTP](#http) | 11 |
 | [HTTPServer](#httpserver) | 17 |
-| [HomeAssistant](#homeassistant) | 10 |
+| [HomeAssistant](#homeassistant) | 12 |
 | [IRCBridge](#ircbridge) | 39 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 17 |
 | [LinuxMedia](#linuxmedia) | 5 |
@@ -220,14 +220,21 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [6](../VRCOSC.Modules/HomeAssistant/Enums.cs#L6) | public | `public enum HomeAssistantSetting` |
 | [20](../VRCOSC.Modules/HomeAssistant/Enums.cs#L20) | public | `public enum HomeAssistantParameter` |
 | [27](../VRCOSC.Modules/HomeAssistant/Enums.cs#L27) | public | `public enum HomeAssistantVariable` |
-| [35](../VRCOSC.Modules/HomeAssistant/Enums.cs#L35) | public | `public enum HomeAssistantState` |
-| [43](../VRCOSC.Modules/HomeAssistant/Enums.cs#L43) | public | `public enum HomeAssistantEvent` |
+| [36](../VRCOSC.Modules/HomeAssistant/Enums.cs#L36) | public | `public enum HomeAssistantState` |
+| [44](../VRCOSC.Modules/HomeAssistant/Enums.cs#L44) | public | `public enum HomeAssistantEvent` |
 
 ### `HomeAssistant/HomeAssistantClient.cs`
 
 | Line | Visibility | Declaration |
 |---|---|---|
 | [19](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L19) | public | `public class HomeAssistantClient` |
+
+### `HomeAssistant/HomeAssistantEntityClipVariable.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [9](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L9) | public | `public class HomeAssistantEntityClipVariable : ClipVariable` |
+| [78](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L78) | public | `public class HAEntityStateSnapshot` |
 
 ### `HomeAssistant/HomeAssistantModule.cs`
 

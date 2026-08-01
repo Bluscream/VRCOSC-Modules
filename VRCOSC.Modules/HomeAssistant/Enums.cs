@@ -29,7 +29,8 @@ public enum HomeAssistantVariable
     Connected,
     LastEntity,
     LastState,
-    StatesCount
+    StatesCount,
+    EntityState
 }
 
 public enum HomeAssistantState

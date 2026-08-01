@@ -34,6 +34,28 @@ public class HomeAssistantModule : Module
     [ModulePersistent("ha_states_cache")]
     public Dictionary<string, string> CachedStates { get; set; } = new();
 
+    private readonly Dictionary<string, HomeAssistant.HAEntityStateSnapshot> _entityStatesSnapshot = new(StringComparer.OrdinalIgnoreCase);
+
+    private void UpdateEntityStateSnapshot(string entityId, string state, Dictionary<string, object?>? attributes = null)
+    {
+        if (string.IsNullOrWhiteSpace(entityId)) return;
+        var key = entityId.Trim().ToLowerInvariant();
+        if (!_entityStatesSnapshot.TryGetValue(key, out var snapshot))
+        {
+            snapshot = new HomeAssistant.HAEntityStateSnapshot();
+            _entityStatesSnapshot[key] = snapshot;
+        }
+        snapshot.State = state;
+        if (attributes != null)
+        {
+            foreach (var pair in attributes)
+            {
+                snapshot.Attributes[pair.Key] = pair.Value;
+            }
+        }
+        SetVariableValue(HomeAssistantVariable.EntityState, _entityStatesSnapshot);
+    }
+
     protected override void OnPreLoad()
     {
         // Settings
@@ -78,6 +100,7 @@ public class HomeAssistantModule : Module
         CreateVariable<string>(HomeAssistantVariable.LastEntity, "Last Entity");
         CreateVariable<string>(HomeAssistantVariable.LastState, "Last State");
         CreateVariable<int>(HomeAssistantVariable.StatesCount, "States Count");
+        CreateVariable<object>(HomeAssistantVariable.EntityState, "Entity State / Attribute", typeof(HomeAssistant.HomeAssistantEntityClipVariable));
 
         // Register Template Variables so ChatBoxManager recognizes them before loading timeline clips
         var templateVars = GetSettingValue<List<MutableKeyValuePair>>(HomeAssistantSetting.TemplateVariables);
@@ -160,6 +183,7 @@ public class HomeAssistantModule : Module
                 if (state != null && !state.EntityId.IsNullOrEmpty())
                 {
                     CachedStates[state.EntityId] = state.State ?? string.Empty;
+                    UpdateEntityStateSnapshot(state.EntityId, state.State ?? string.Empty, state.Attributes);
                     if (registerAll)
                     {
                         EnsureDynamicVariable(state.EntityId, state.State ?? string.Empty);
@@ -264,6 +288,17 @@ public class HomeAssistantModule : Module
 
         SetVariableValue(HomeAssistantVariable.LastEntity, entityId);
         SetVariableValue(HomeAssistantVariable.LastState, newState);
+
+        Dictionary<string, object?>? attrDict = null;
+        if (attributes.ValueKind == System.Text.Json.JsonValueKind.Object)
+        {
+            attrDict = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+            foreach (var prop in attributes.EnumerateObject())
+            {
+                attrDict[prop.Name] = prop.Value.ToString();
+            }
+        }
+        UpdateEntityStateSnapshot(entityId, newState, attrDict);
 
         if (GetSettingValue<bool>(HomeAssistantSetting.RegisterAllEntityVariables))
         {

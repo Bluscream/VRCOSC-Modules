@@ -4,7 +4,7 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**705** total across **15** modules.
+**711** total across **15** modules.
 
 | Module | Count |
 |---|---|
@@ -13,7 +13,7 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [DesktopFPS](#desktopfps) | 18 |
 | [HTTP](#http) | 9 |
 | [HTTPServer](#httpserver) | 41 |
-| [HomeAssistant](#homeassistant) | 36 |
+| [HomeAssistant](#homeassistant) | 42 |
 | [IRCBridge](#ircbridge) | 103 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 26 |
 | [LinuxMedia](#linuxmedia) | 8 |
@@ -277,26 +277,37 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [363](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L363) | `HomeAssistantClient` | private | `private static string GetStringSafe(JsonElement element)` |
 | [376](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L376) | `HomeAssistantClient` | private | `private async Task<byte[]?> ReceiveFullMessageAsync(byte[] buffer, CancellationToken ct)` |
 
+### `HomeAssistant/HomeAssistantEntityClipVariable.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [11](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L11) | `HomeAssistantEntityClipVariable` | private | `public HomeAssistantEntityClipVariable()` |
+| [15](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L15) | `HomeAssistantEntityClipVariable` | private | `public HomeAssistantEntityClipVariable(ClipVariableReference reference)` |
+| [29](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L29) | `HomeAssistantEntityClipVariable` | public | `public override bool IsDefault() => base.IsDefault() && EntityID == string.Empty && Attribute == string.Empty && FormatString == "{0}";` |
+| [31](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L31) | `HomeAssistantEntityClipVariable` | public | `public override HomeAssistantEntityClipVariable Clone()` |
+| [40](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L40) | `HomeAssistantEntityClipVariable` | protected | `protected override string Format(object value)` |
+
 ### `HomeAssistant/HomeAssistantModule.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [37](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L37) | `HomeAssistantModule` | protected | `protected override void OnPreLoad()` |
-| [74](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L74) | `HomeAssistantModule` | protected | `protected override void OnPostLoad()` |
-| [123](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L123) | `HomeAssistantModule` | protected | `protected override async Task<bool> OnModuleStart()` |
-| [188](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L188) | `HomeAssistantModule` | protected | `protected override Task OnModuleStop()` |
-| [207](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L207) | `HomeAssistantModule` | private | `private async Task InitializeTemplateVariables()` |
-| [242](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L242) | `HomeAssistantModule` | private | `private void HandleConnectionStatusChanged(bool connected)` |
-| [259](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L259) | `HomeAssistantModule` | private | `private void HandleStateChanged(string entityId, string newState, JsonElement attributes)` |
-| [279](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L279) | `HomeAssistantModule` | private | `private void HandleTemplateRendered(int subId, string renderedText)` |
-| [288](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L288) | `HomeAssistantModule` | private | `private void PushEntityToOscParameter(string entityId, string state, JsonElement attributes)` |
-| [330](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L330) | `HomeAssistantModule` | protected | `protected override void OnAnyParameterReceived(VRChatParameter parameter)` |
-| [379](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L379) | `HomeAssistantModule` | private | `private async Task ProcessOscParameterInput(string path, VRChatParameter parameter)` |
-| [562](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L562) | `HomeAssistantModule` | private | `private void EnsureDynamicVariable(string entityId, string stateValue)` |
-| [568](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L568) | `HomeAssistantModule` | private | `private void EnsureCustomVariable(string varKey, string displayName, string initialValue)` |
-| [578](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L578) | `HomeAssistantModule` | private | `private bool IsEntityAllowed(string entityId)` |
-| [589](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L589) | `HomeAssistantModule` | public | `public async Task<bool> CallService(string domain, string service, string? entityId = null, object? serviceData = null)` |
-| [616](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L616) | `HomeAssistantModule` | public | `public async Task<string> RenderTemplate(string template)` |
+| [39](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L39) | `HomeAssistantModule` | private | `private void UpdateEntityStateSnapshot(string entityId, string state, Dictionary<string, object?>? attributes = null)` |
+| [59](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L59) | `HomeAssistantModule` | protected | `protected override void OnPreLoad()` |
+| [96](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L96) | `HomeAssistantModule` | protected | `protected override void OnPostLoad()` |
+| [146](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L146) | `HomeAssistantModule` | protected | `protected override async Task<bool> OnModuleStart()` |
+| [212](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L212) | `HomeAssistantModule` | protected | `protected override Task OnModuleStop()` |
+| [231](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L231) | `HomeAssistantModule` | private | `private async Task InitializeTemplateVariables()` |
+| [266](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L266) | `HomeAssistantModule` | private | `private void HandleConnectionStatusChanged(bool connected)` |
+| [283](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L283) | `HomeAssistantModule` | private | `private void HandleStateChanged(string entityId, string newState, JsonElement attributes)` |
+| [314](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L314) | `HomeAssistantModule` | private | `private void HandleTemplateRendered(int subId, string renderedText)` |
+| [323](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L323) | `HomeAssistantModule` | private | `private void PushEntityToOscParameter(string entityId, string state, JsonElement attributes)` |
+| [365](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L365) | `HomeAssistantModule` | protected | `protected override void OnAnyParameterReceived(VRChatParameter parameter)` |
+| [414](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L414) | `HomeAssistantModule` | private | `private async Task ProcessOscParameterInput(string path, VRChatParameter parameter)` |
+| [597](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L597) | `HomeAssistantModule` | private | `private void EnsureDynamicVariable(string entityId, string stateValue)` |
+| [603](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L603) | `HomeAssistantModule` | private | `private void EnsureCustomVariable(string varKey, string displayName, string initialValue)` |
+| [613](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L613) | `HomeAssistantModule` | private | `private bool IsEntityAllowed(string entityId)` |
+| [624](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L624) | `HomeAssistantModule` | public | `public async Task<bool> CallService(string domain, string service, string? entityId = null, object? serviceData = null)` |
+| [651](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L651) | `HomeAssistantModule` | public | `public async Task<string> RenderTemplate(string template)` |
 
 ### `HomeAssistant/Nodes.cs`
 
