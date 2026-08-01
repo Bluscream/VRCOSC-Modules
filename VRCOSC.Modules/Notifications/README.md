@@ -73,3 +73,71 @@ Send notifications to Windows Desktop toasts, XSOverlay (UDP 42010), OVRToolkit 
 ## License
 
 Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
+
+## Module Settings
+
+<!-- AUTOGEN:SETTINGS:START -->
+| Setting Name | Type | Description | Default |
+|---|---|---|---|
+| **EnableDesktop** | `Toggle` | `Send Windows desktop toast notifications` | `true` |
+| **EnableXSOverlay** | `Toggle` | `Send XSOverlay notifications via UDP 42010` | `true` |
+| **EnableOVRToolkit** | `Toggle` | `Send OVRToolkit notifications via WebSocket 15000` | `false` |
+| **EnableWebhook** | `Toggle` | `Send webhook HTTP notifications` | `false` |
+| **WebhookUrl** | `TextBox` | `Target Webhook endpoint URL` | `empty` |
+| **WebhookMethod** | `Dropdown` | `HTTP method for webhook (POST, GET, PUT)` | `POST` |
+| **DefaultTitle** | `TextBox` | `Default notification title` | `VRCOSC` |
+| **DefaultMessage** | `TextBox` | `Default notification message body` | `empty` |
+| **DefaultTimeoutMs** | `Slider` | `Default notification display duration (ms)` | `3000` |
+| **DefaultOpacity** | `Slider` | `Default notification opacity (0.0 to 1.0)` | `1.0` |
+| **LogDebug** | `Toggle` | `Log notification dispatch details to console` | `false` |
+<!-- AUTOGEN:SETTINGS:END -->
+
+## ChatBox Variables
+
+<!-- AUTOGEN:VARIABLES:START -->
+| Variable Name | Lookup Key | Type | Description |
+|---|---|---|---|
+| **Last Title** | `lasttitle` | `string` | `Title of last sent notification` |
+| **Last Message** | `lastmessage` | `string` | `Message body of last sent notification` |
+| **Notification Count** | `notificationcount` | `int` | `Total notifications dispatched` |
+| **Last Target** | `lasttarget` | `string` | `Target system of last notification (Desktop, XSOverlay, etc.)` |
+<!-- AUTOGEN:VARIABLES:END -->
+
+## ChatBox States
+
+<!-- AUTOGEN:STATES:START -->
+| State Name | Lookup Key | Format | Description |
+|---|---|---|---|
+| **Idle** | `idle` | `Notifications Idle` | `Module ready` |
+| **Sending** | `sending` | `Sending: {0}` | `Dispatching notification` |
+<!-- AUTOGEN:STATES:END -->
+
+## ChatBox Events
+
+<!-- AUTOGEN:EVENTS:START -->
+| Event Name | Lookup Key | Title | Trigger Condition |
+|---|---|---|---|
+| **On Notification Sent** | `onnotificationsent` | `Notification Sent: {0}` | `Triggered when notification succeeds` |
+| **On Notification Failed** | `onnotificationfailed` | `Notification Failed: {0}` | `Triggered when notification fails` |
+<!-- AUTOGEN:EVENTS:END -->
+
+## Avatar OSC Parameters
+
+<!-- AUTOGEN:OSC_PARAMS:START -->
+| OSC Parameter Path | Type | Direction | Description |
+|---|---|---|---|
+| **VRCOSC/Notifications/Send** | `bool` | `Read` | `Set to true to dispatch default notification` |
+| **VRCOSC/Notifications/SentCount** | `int` | `Write` | `Total notifications successfully sent` |
+| **VRCOSC/Notifications/FailedCount** | `int` | `Write` | `Total failed notification attempts` |
+<!-- AUTOGEN:OSC_PARAMS:END -->
+
+## Nodes Overview
+
+<!-- AUTOGEN:NODES:START -->
+| Node Name | Inputs | Outputs | Description |
+|---|---|---|---|
+| **Send Desktop Notification** | `Title (string), Message (string), TimeoutMs (int)` | `Success (bool)` | `Sends Windows desktop toast` |
+| **Send XSOverlay Notification** | `Title (string), Message (string), TimeoutMs (int), Opacity (float)` | `Success (bool)` | `Sends XSOverlay UDP notification` |
+| **Send OVRToolkit Notification** | `Title (string), Message (string)` | `Success (bool)` | `Sends OVRToolkit WebSocket notification` |
+| **Send Notification (All Enabled)** | `Title (string), Message (string), TimeoutMs (int)` | `WebhookSuccess (bool)` | `Dispatches to all enabled targets` |
+<!-- AUTOGEN:NODES:END -->
