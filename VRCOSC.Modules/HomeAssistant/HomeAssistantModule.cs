@@ -93,6 +93,21 @@ public class HomeAssistantModule : Module
             }
         }
 
+        // Pre-register HAState entity variables so ChatBoxManager recognizes them before timeline clips deserialize
+        string[] preRegisterEntities = new[]
+        {
+            "sensor.room_temperature",
+            "sensor.room_humidity",
+            "weather.home",
+            "sensor.home_temperature",
+            "sensor.home_humidity",
+            "sensor.toy"
+        };
+        foreach (var entityId in preRegisterEntities)
+        {
+            EnsureDynamicVariable(entityId, string.Empty);
+        }
+
         // Module States
         CreateState(HomeAssistantState.Disconnected, "Disconnected", "HA Disconnected");
         CreateState(HomeAssistantState.Connecting, "Connecting", "HA Connecting...");

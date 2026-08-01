@@ -283,20 +283,20 @@ Every method and constructor, grouped by module and file. The Owner column is th
 |---|---|---|---|
 | [37](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L37) | `HomeAssistantModule` | protected | `protected override void OnPreLoad()` |
 | [74](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L74) | `HomeAssistantModule` | protected | `protected override void OnPostLoad()` |
-| [108](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L108) | `HomeAssistantModule` | protected | `protected override async Task<bool> OnModuleStart()` |
-| [173](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L173) | `HomeAssistantModule` | protected | `protected override Task OnModuleStop()` |
-| [192](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L192) | `HomeAssistantModule` | private | `private async Task InitializeTemplateVariables()` |
-| [227](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L227) | `HomeAssistantModule` | private | `private void HandleConnectionStatusChanged(bool connected)` |
-| [244](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L244) | `HomeAssistantModule` | private | `private void HandleStateChanged(string entityId, string newState, JsonElement attributes)` |
-| [264](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L264) | `HomeAssistantModule` | private | `private void HandleTemplateRendered(int subId, string renderedText)` |
-| [273](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L273) | `HomeAssistantModule` | private | `private void PushEntityToOscParameter(string entityId, string state, JsonElement attributes)` |
-| [315](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L315) | `HomeAssistantModule` | protected | `protected override void OnAnyParameterReceived(VRChatParameter parameter)` |
-| [364](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L364) | `HomeAssistantModule` | private | `private async Task ProcessOscParameterInput(string path, VRChatParameter parameter)` |
-| [547](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L547) | `HomeAssistantModule` | private | `private void EnsureDynamicVariable(string entityId, string stateValue)` |
-| [553](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L553) | `HomeAssistantModule` | private | `private void EnsureCustomVariable(string varKey, string displayName, string initialValue)` |
-| [563](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L563) | `HomeAssistantModule` | private | `private bool IsEntityAllowed(string entityId)` |
-| [574](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L574) | `HomeAssistantModule` | public | `public async Task<bool> CallService(string domain, string service, string? entityId = null, object? serviceData = null)` |
-| [601](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L601) | `HomeAssistantModule` | public | `public async Task<string> RenderTemplate(string template)` |
+| [123](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L123) | `HomeAssistantModule` | protected | `protected override async Task<bool> OnModuleStart()` |
+| [188](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L188) | `HomeAssistantModule` | protected | `protected override Task OnModuleStop()` |
+| [207](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L207) | `HomeAssistantModule` | private | `private async Task InitializeTemplateVariables()` |
+| [242](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L242) | `HomeAssistantModule` | private | `private void HandleConnectionStatusChanged(bool connected)` |
+| [259](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L259) | `HomeAssistantModule` | private | `private void HandleStateChanged(string entityId, string newState, JsonElement attributes)` |
+| [279](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L279) | `HomeAssistantModule` | private | `private void HandleTemplateRendered(int subId, string renderedText)` |
+| [288](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L288) | `HomeAssistantModule` | private | `private void PushEntityToOscParameter(string entityId, string state, JsonElement attributes)` |
+| [330](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L330) | `HomeAssistantModule` | protected | `protected override void OnAnyParameterReceived(VRChatParameter parameter)` |
+| [379](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L379) | `HomeAssistantModule` | private | `private async Task ProcessOscParameterInput(string path, VRChatParameter parameter)` |
+| [562](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L562) | `HomeAssistantModule` | private | `private void EnsureDynamicVariable(string entityId, string stateValue)` |
+| [568](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L568) | `HomeAssistantModule` | private | `private void EnsureCustomVariable(string varKey, string displayName, string initialValue)` |
+| [578](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L578) | `HomeAssistantModule` | private | `private bool IsEntityAllowed(string entityId)` |
+| [589](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L589) | `HomeAssistantModule` | public | `public async Task<bool> CallService(string domain, string service, string? entityId = null, object? serviceData = null)` |
+| [616](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L616) | `HomeAssistantModule` | public | `public async Task<string> RenderTemplate(string template)` |
 
 ### `HomeAssistant/Nodes.cs`
 
