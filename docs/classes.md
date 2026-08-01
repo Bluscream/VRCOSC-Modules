@@ -234,7 +234,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [9](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L9) | public | `public class HomeAssistantEntityClipVariable : ClipVariable` |
-| [129](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L129) | public | `public class HAEntityStateSnapshot` |
+| [118](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L118) | public | `public class HAEntityStateSnapshot` |
 
 ### `HomeAssistant/HomeAssistantModule.cs`
 

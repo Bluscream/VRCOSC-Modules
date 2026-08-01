@@ -26,8 +26,8 @@ public class HomeAssistantEntityClipVariable : ClipVariable
     [ClipVariableOption("round_decimals", "Round Decimals", "Number of decimal places to round numeric values (-1 to disable, 0 for integers)")]
     public int RoundDecimals { get; set; } = 0;
 
-    [ClipVariableOption("capitalization", "Capitalization", "Capitalization mode: TitleCase, Upper, Lower, None")]
-    public string Capitalization { get; set; } = "TitleCase";
+    [ClipVariableOption("title_case", "Title Case", "Convert text to Title Case (e.g. 'cloudy' -> 'Cloudy'). Use built-in Case Mode for Upper/Lower.")]
+    public bool TitleCase { get; set; } = true;
 
     [ClipVariableOption("append_unit", "Append Unit of Measurement", "Automatically append HomeAssistant's unit_of_measurement attribute (e.g. °C, %, W)")]
     public bool AppendUnit { get; set; } = true;
@@ -35,7 +35,7 @@ public class HomeAssistantEntityClipVariable : ClipVariable
     [ClipVariableOption("unit", "Format / Suffix", "Optional custom format string or suffix (e.g. '{0}°C', 'W'). Use {0} as value placeholder.")]
     public string FormatString { get; set; } = "{0}";
 
-    public override bool IsDefault() => base.IsDefault() && EntityID == string.Empty && Attribute == string.Empty && RoundDecimals == 0 && Capitalization == "TitleCase" && AppendUnit == true && FormatString == "{0}";
+    public override bool IsDefault() => base.IsDefault() && EntityID == string.Empty && Attribute == string.Empty && RoundDecimals == 0 && TitleCase == true && AppendUnit == true && FormatString == "{0}";
 
     public override HomeAssistantEntityClipVariable Clone()
     {
@@ -43,7 +43,7 @@ public class HomeAssistantEntityClipVariable : ClipVariable
         clone.EntityID = EntityID;
         clone.Attribute = Attribute;
         clone.RoundDecimals = RoundDecimals;
-        clone.Capitalization = Capitalization;
+        clone.TitleCase = TitleCase;
         clone.AppendUnit = AppendUnit;
         clone.FormatString = FormatString;
         return clone;
@@ -78,21 +78,10 @@ public class HomeAssistantEntityClipVariable : ClipVariable
             valStr = Math.Round(doubleVal, RoundDecimals).ToString(System.Globalization.CultureInfo.InvariantCulture);
         }
 
-        // Apply Capitalization
-        if (!string.IsNullOrWhiteSpace(Capitalization) && !string.Equals(Capitalization, "None", StringComparison.OrdinalIgnoreCase))
+        // Apply Title Case if enabled
+        if (TitleCase && !string.IsNullOrWhiteSpace(valStr))
         {
-            if (string.Equals(Capitalization, "TitleCase", StringComparison.OrdinalIgnoreCase))
-            {
-                valStr = System.Globalization.CultureInfo.InvariantCulture.TextInfo.ToTitleCase(valStr.ToLower());
-            }
-            else if (string.Equals(Capitalization, "Upper", StringComparison.OrdinalIgnoreCase))
-            {
-                valStr = valStr.ToUpper();
-            }
-            else if (string.Equals(Capitalization, "Lower", StringComparison.OrdinalIgnoreCase))
-            {
-                valStr = valStr.ToLower();
-            }
+            valStr = System.Globalization.CultureInfo.InvariantCulture.TextInfo.ToTitleCase(valStr.ToLower());
         }
 
         // Append HomeAssistant unit_of_measurement attribute if AppendUnit is true

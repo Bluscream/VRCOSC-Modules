@@ -113,11 +113,11 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | [21](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L21) | `HomeAssistantEntityClipVariable` | public | `public string EntityID { get; set; } = string.Empty;` |
 | [24](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L24) | `HomeAssistantEntityClipVariable` | public | `public string Attribute { get; set; } = string.Empty;` |
 | [27](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L27) | `HomeAssistantEntityClipVariable` | public | `public int RoundDecimals { get; set; } = 0;` |
-| [30](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L30) | `HomeAssistantEntityClipVariable` | public | `public string Capitalization { get; set; } = "TitleCase";` |
+| [30](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L30) | `HomeAssistantEntityClipVariable` | public | `public bool TitleCase { get; set; } = true;` |
 | [33](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L33) | `HomeAssistantEntityClipVariable` | public | `public bool AppendUnit { get; set; } = true;` |
 | [36](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L36) | `HomeAssistantEntityClipVariable` | public | `public string FormatString { get; set; } = "{0}";` |
-| [131](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L131) | `HAEntityStateSnapshot` | public | `public string State { get; set; } = string.Empty;` |
-| [132](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L132) | `HAEntityStateSnapshot` | public | `public Dictionary<string, object?> Attributes { get; set; } = new(StringComparer.OrdinalIgnoreCase);` |
+| [120](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L120) | `HAEntityStateSnapshot` | public | `public string State { get; set; } = string.Empty;` |
+| [121](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L121) | `HAEntityStateSnapshot` | public | `public Dictionary<string, object?> Attributes { get; set; } = new(StringComparer.OrdinalIgnoreCase);` |
 
 ### `HomeAssistant/HomeAssistantModule.cs`
 
