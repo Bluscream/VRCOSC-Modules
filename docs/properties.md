@@ -4,7 +4,7 @@
 
 Every property (including expression-bodied and auto-properties), grouped by module and file.
 
-**127** total across **13** modules.
+**128** total across **13** modules.
 
 | Module | Count |
 |---|---|
@@ -13,7 +13,7 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | [DesktopFPS](#desktopfps) | 2 |
 | [HTTP](#http) | 4 |
 | [HTTPServer](#httpserver) | 3 |
-| [HomeAssistant](#homeassistant) | 7 |
+| [HomeAssistant](#homeassistant) | 8 |
 | [IRCBridge](#ircbridge) | 14 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 29 |
 | [Notifications](#notifications) | 16 |
@@ -112,9 +112,10 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 |---|---|---|---|
 | [21](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L21) | `HomeAssistantEntityClipVariable` | public | `public string EntityID { get; set; } = string.Empty;` |
 | [24](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L24) | `HomeAssistantEntityClipVariable` | public | `public string Attribute { get; set; } = string.Empty;` |
-| [27](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L27) | `HomeAssistantEntityClipVariable` | public | `public string FormatString { get; set; } = "{0}";` |
-| [80](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L80) | `HAEntityStateSnapshot` | public | `public string State { get; set; } = string.Empty;` |
-| [81](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L81) | `HAEntityStateSnapshot` | public | `public Dictionary<string, object?> Attributes { get; set; } = new(StringComparer.OrdinalIgnoreCase);` |
+| [27](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L27) | `HomeAssistantEntityClipVariable` | public | `public bool AppendUnit { get; set; } = true;` |
+| [30](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L30) | `HomeAssistantEntityClipVariable` | public | `public string FormatString { get; set; } = "{0}";` |
+| [99](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L99) | `HAEntityStateSnapshot` | public | `public string State { get; set; } = string.Empty;` |
+| [100](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L100) | `HAEntityStateSnapshot` | public | `public Dictionary<string, object?> Attributes { get; set; } = new(StringComparer.OrdinalIgnoreCase);` |
 
 ### `HomeAssistant/HomeAssistantModule.cs`
 

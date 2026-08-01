@@ -23,16 +23,20 @@ public class HomeAssistantEntityClipVariable : ClipVariable
     [ClipVariableOption("attribute", "Attribute", "Optional attribute name (e.g. temperature, brightness). Leave empty for main state.")]
     public string Attribute { get; set; } = string.Empty;
 
-    [ClipVariableOption("unit", "Format / Suffix", "Format string or suffix (e.g. '{0}°C', '{0}%', 'W'). Use {0} as value placeholder.")]
+    [ClipVariableOption("append_unit", "Append Unit of Measurement", "Automatically append HomeAssistant's unit_of_measurement attribute (e.g. °C, %, W)")]
+    public bool AppendUnit { get; set; } = true;
+
+    [ClipVariableOption("unit", "Format / Suffix", "Optional custom format string or suffix (e.g. '{0}°C', 'W'). Use {0} as value placeholder.")]
     public string FormatString { get; set; } = "{0}";
 
-    public override bool IsDefault() => base.IsDefault() && EntityID == string.Empty && Attribute == string.Empty && FormatString == "{0}";
+    public override bool IsDefault() => base.IsDefault() && EntityID == string.Empty && Attribute == string.Empty && AppendUnit == true && FormatString == "{0}";
 
     public override HomeAssistantEntityClipVariable Clone()
     {
         var clone = (HomeAssistantEntityClipVariable)base.Clone();
         clone.EntityID = EntityID;
         clone.Attribute = Attribute;
+        clone.AppendUnit = AppendUnit;
         clone.FormatString = FormatString;
         return clone;
     }
@@ -59,6 +63,21 @@ public class HomeAssistantEntityClipVariable : ClipVariable
         }
 
         if (valStr is null) return string.Empty;
+
+        if (AppendUnit && snapshot.Attributes != null)
+        {
+            string? unit = null;
+            if (snapshot.Attributes.TryGetValue("unit_of_measurement", out var uObj) && uObj != null)
+                unit = uObj.ToString();
+            else if (snapshot.Attributes.TryGetValue("unit", out var uObj2) && uObj2 != null)
+                unit = uObj2.ToString();
+
+            if (!string.IsNullOrEmpty(unit))
+            {
+                valStr = $"{valStr}{unit}";
+            }
+        }
+
         if (string.IsNullOrEmpty(FormatString)) return valStr;
 
         try

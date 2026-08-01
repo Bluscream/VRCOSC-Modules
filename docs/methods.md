@@ -283,9 +283,9 @@ Every method and constructor, grouped by module and file. The Owner column is th
 |---|---|---|---|
 | [11](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L11) | `HomeAssistantEntityClipVariable` | private | `public HomeAssistantEntityClipVariable()` |
 | [15](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L15) | `HomeAssistantEntityClipVariable` | private | `public HomeAssistantEntityClipVariable(ClipVariableReference reference)` |
-| [29](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L29) | `HomeAssistantEntityClipVariable` | public | `public override bool IsDefault() => base.IsDefault() && EntityID == string.Empty && Attribute == string.Empty && FormatString == "{0}";` |
-| [31](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L31) | `HomeAssistantEntityClipVariable` | public | `public override HomeAssistantEntityClipVariable Clone()` |
-| [40](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L40) | `HomeAssistantEntityClipVariable` | protected | `protected override string Format(object value)` |
+| [32](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L32) | `HomeAssistantEntityClipVariable` | public | `public override bool IsDefault() => base.IsDefault() && EntityID == string.Empty && Attribute == string.Empty && AppendUnit == true && FormatString == "{0}";` |
+| [34](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L34) | `HomeAssistantEntityClipVariable` | public | `public override HomeAssistantEntityClipVariable Clone()` |
+| [44](../VRCOSC.Modules/HomeAssistant/HomeAssistantEntityClipVariable.cs#L44) | `HomeAssistantEntityClipVariable` | protected | `protected override string Format(object value)` |
 
 ### `HomeAssistant/HomeAssistantModule.cs`
 
