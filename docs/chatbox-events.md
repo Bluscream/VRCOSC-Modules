@@ -44,15 +44,15 @@ The Fired column lists every `TriggerEvent` call site; an event with **never** t
 
 | Line | Owner | Lookup | Title | Fired |
 |---|---|---|---|---|
-| [121](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L121) | `IRCBridgeModule` | `IRCBridgeEvent.OnConnected` | On Connected | [IRCBridgeModule.Connection.cs:208](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Connection.cs#L208) |
-| [122](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L122) | `IRCBridgeModule` | `IRCBridgeEvent.OnDisconnected` | On Disconnected | [IRCBridgeModule.Connection.cs:297](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Connection.cs#L297) |
-| [123](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L123) | `IRCBridgeModule` | `IRCBridgeEvent.OnChannelJoined` | On Channel Joined | [IRCBridgeModule.Events.cs:27](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Events.cs#L27) |
-| [124](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L124) | `IRCBridgeModule` | `IRCBridgeEvent.OnChannelLeft` | On Channel Left | [IRCBridgeModule.Events.cs:52](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Events.cs#L52) |
-| [125](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L125) | `IRCBridgeModule` | `IRCBridgeEvent.OnUserJoined` | On User Joined | [IRCBridgeModule.Events.cs:75](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Events.cs#L75) |
-| [126](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L126) | `IRCBridgeModule` | `IRCBridgeEvent.OnUserLeft` | On User Left | [IRCBridgeModule.Events.cs:110](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Events.cs#L110) |
-| [127](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L127) | `IRCBridgeModule` | `IRCBridgeEvent.OnMessageReceived` | On Message Received | [IRCBridgeModule.Events.cs:146](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Events.cs#L146) |
-| [128](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L128) | `IRCBridgeModule` | `IRCBridgeEvent.OnError` | On Error | [IRCBridgeModule.Connection.cs:320](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Connection.cs#L320), [IRCBridgeModule.Connection.cs:418](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Connection.cs#L418) |
-| [129](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L129) | `IRCBridgeModule` | `IRCBridgeEvent.OnReady` | On Ready | [IRCBridgeModule.Hashing.cs:74](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Hashing.cs#L74) |
+| [122](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L122) | `IRCBridgeModule` | `IRCBridgeEvent.OnConnected` | On Connected | [IRCBridgeModule.Connection.cs:208](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Connection.cs#L208) |
+| [123](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L123) | `IRCBridgeModule` | `IRCBridgeEvent.OnDisconnected` | On Disconnected | [IRCBridgeModule.Connection.cs:297](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Connection.cs#L297) |
+| [124](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L124) | `IRCBridgeModule` | `IRCBridgeEvent.OnChannelJoined` | On Channel Joined | [IRCBridgeModule.Events.cs:27](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Events.cs#L27) |
+| [125](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L125) | `IRCBridgeModule` | `IRCBridgeEvent.OnChannelLeft` | On Channel Left | [IRCBridgeModule.Events.cs:52](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Events.cs#L52) |
+| [126](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L126) | `IRCBridgeModule` | `IRCBridgeEvent.OnUserJoined` | On User Joined | [IRCBridgeModule.Events.cs:75](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Events.cs#L75) |
+| [127](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L127) | `IRCBridgeModule` | `IRCBridgeEvent.OnUserLeft` | On User Left | [IRCBridgeModule.Events.cs:110](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Events.cs#L110) |
+| [128](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L128) | `IRCBridgeModule` | `IRCBridgeEvent.OnMessageReceived` | On Message Received | [IRCBridgeModule.Events.cs:146](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Events.cs#L146) |
+| [129](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L129) | `IRCBridgeModule` | `IRCBridgeEvent.OnError` | On Error | [IRCBridgeModule.Connection.cs:320](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Connection.cs#L320), [IRCBridgeModule.Connection.cs:418](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Connection.cs#L418) |
+| [130](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L130) | `IRCBridgeModule` | `IRCBridgeEvent.OnReady` | On Ready | [IRCBridgeModule.Hashing.cs:74](../VRCOSC.Modules/IRCBridge/IRC/IRCBridgeModule.Hashing.cs#L74) |
 
 ## LinuxMedia
 

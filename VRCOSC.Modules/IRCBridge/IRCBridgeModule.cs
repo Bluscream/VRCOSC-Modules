@@ -63,6 +63,7 @@ public partial class IRCBridgeModule : Module, IVRCClientEventHandler
         
         // User configuration
         CreateTextBox(IRCBridgeSetting.Nickname, "Nickname", "Your IRC nickname (leave empty to use VRC display name)", string.Empty);
+        CreateTextBox(IRCBridgeSetting.Username, "Username", "Your IRC username / ident (leave empty to use nickname)", string.Empty);
         
         // Authentication
         CreateTextBox(IRCBridgeSetting.Password, "Server Password", "IRC server password (if required, leave empty if not)", string.Empty);

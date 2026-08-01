@@ -403,14 +403,14 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [54](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L54) | `IRCBridgeModule` | protected | `protected override void OnPreLoad()` |
-| [99](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L99) | `IRCBridgeModule` | protected | `protected override void OnPostLoad()` |
-| [132](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L132) | `IRCBridgeModule` | protected | `protected override async Task<bool> OnModuleStart()` |
-| [161](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L161) | `IRCBridgeModule` | protected | `protected override async Task OnModuleStop()` |
-| [185](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L185) | `IRCBridgeModule` | private | `private async void OnVRChatUsernameChanged(string? oldUsername, string? newUsername)` |
-| [216](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L216) | `IRCBridgeModule` | private | `private async void OnVRChatUserIdChanged(string? oldUserId, string? newUserId)` |
-| [226](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L226) | `IRCBridgeModule` | private | `private async void OnExternalIpChanged(System.Net.IPAddress? oldIp, System.Net.IPAddress? newIp)` |
-| [236](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L236) | `IRCBridgeModule` | private | `private async void OnPcHashChanged(string? oldHash, string? newHash)` |
-| [248](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L248) | `IRCBridgeModule` | public | `public void HandleClientEvent(IVRChatClientEvent @event)` |
+| [100](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L100) | `IRCBridgeModule` | protected | `protected override void OnPostLoad()` |
+| [133](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L133) | `IRCBridgeModule` | protected | `protected override async Task<bool> OnModuleStart()` |
+| [162](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L162) | `IRCBridgeModule` | protected | `protected override async Task OnModuleStop()` |
+| [186](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L186) | `IRCBridgeModule` | private | `private async void OnVRChatUsernameChanged(string? oldUsername, string? newUsername)` |
+| [217](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L217) | `IRCBridgeModule` | private | `private async void OnVRChatUserIdChanged(string? oldUserId, string? newUserId)` |
+| [227](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L227) | `IRCBridgeModule` | private | `private async void OnExternalIpChanged(System.Net.IPAddress? oldIp, System.Net.IPAddress? newIp)` |
+| [237](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L237) | `IRCBridgeModule` | private | `private async void OnPcHashChanged(string? oldHash, string? newHash)` |
+| [249](../VRCOSC.Modules/IRCBridge/IRCBridgeModule.cs#L249) | `IRCBridgeModule` | public | `public void HandleClientEvent(IVRChatClientEvent @event)` |
 
 ### `IRCBridge/IRCClient.cs`
 
