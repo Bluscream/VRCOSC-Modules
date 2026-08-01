@@ -23,19 +23,27 @@ public class HomeAssistantEntityClipVariable : ClipVariable
     [ClipVariableOption("attribute", "Attribute", "Optional attribute name (e.g. temperature, brightness). Leave empty for main state.")]
     public string Attribute { get; set; } = string.Empty;
 
+    [ClipVariableOption("round_decimals", "Round Decimals", "Number of decimal places to round numeric values (-1 to disable, 0 for integers)")]
+    public int RoundDecimals { get; set; } = 0;
+
+    [ClipVariableOption("capitalization", "Capitalization", "Capitalization mode: TitleCase, Upper, Lower, None")]
+    public string Capitalization { get; set; } = "TitleCase";
+
     [ClipVariableOption("append_unit", "Append Unit of Measurement", "Automatically append HomeAssistant's unit_of_measurement attribute (e.g. °C, %, W)")]
     public bool AppendUnit { get; set; } = true;
 
     [ClipVariableOption("unit", "Format / Suffix", "Optional custom format string or suffix (e.g. '{0}°C', 'W'). Use {0} as value placeholder.")]
     public string FormatString { get; set; } = "{0}";
 
-    public override bool IsDefault() => base.IsDefault() && EntityID == string.Empty && Attribute == string.Empty && AppendUnit == true && FormatString == "{0}";
+    public override bool IsDefault() => base.IsDefault() && EntityID == string.Empty && Attribute == string.Empty && RoundDecimals == 0 && Capitalization == "TitleCase" && AppendUnit == true && FormatString == "{0}";
 
     public override HomeAssistantEntityClipVariable Clone()
     {
         var clone = (HomeAssistantEntityClipVariable)base.Clone();
         clone.EntityID = EntityID;
         clone.Attribute = Attribute;
+        clone.RoundDecimals = RoundDecimals;
+        clone.Capitalization = Capitalization;
         clone.AppendUnit = AppendUnit;
         clone.FormatString = FormatString;
         return clone;
@@ -64,6 +72,30 @@ public class HomeAssistantEntityClipVariable : ClipVariable
 
         if (valStr is null) return string.Empty;
 
+        // Apply Rounding if value is numeric and RoundDecimals >= 0
+        if (RoundDecimals >= 0 && double.TryParse(valStr, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var doubleVal))
+        {
+            valStr = Math.Round(doubleVal, RoundDecimals).ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        // Apply Capitalization
+        if (!string.IsNullOrWhiteSpace(Capitalization) && !string.Equals(Capitalization, "None", StringComparison.OrdinalIgnoreCase))
+        {
+            if (string.Equals(Capitalization, "TitleCase", StringComparison.OrdinalIgnoreCase))
+            {
+                valStr = System.Globalization.CultureInfo.InvariantCulture.TextInfo.ToTitleCase(valStr.ToLower());
+            }
+            else if (string.Equals(Capitalization, "Upper", StringComparison.OrdinalIgnoreCase))
+            {
+                valStr = valStr.ToUpper();
+            }
+            else if (string.Equals(Capitalization, "Lower", StringComparison.OrdinalIgnoreCase))
+            {
+                valStr = valStr.ToLower();
+            }
+        }
+
+        // Append HomeAssistant unit_of_measurement attribute if AppendUnit is true
         if (AppendUnit && snapshot.Attributes != null)
         {
             string? unit = null;
