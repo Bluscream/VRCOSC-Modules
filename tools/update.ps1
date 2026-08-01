@@ -116,6 +116,15 @@ if (-not (Test-Path $dllPath)) {
 
 Write-Host "Found DLL: $dllPath" -ForegroundColor Green
 
+# Regenerate Documentation & READMEs
+Write-Host "Regenerating documentation maps and submodule READMEs..." -ForegroundColor Cyan
+try {
+    python tools/gen-docs.py
+    python tools/gen-readmes.py
+} catch {
+    Write-Host "[WARN] Python docs regeneration skipped or failed" -ForegroundColor Yellow
+}
+
 # Commit changes
 if (-not $SkipCommit) {
     Write-Host "Committing changes..." -ForegroundColor Cyan

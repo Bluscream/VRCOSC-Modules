@@ -52,6 +52,7 @@ The `update.sh` script automates the full workflow:
 - Deploys DLL + dependencies (`Silk.NET.*`) to active target roaming directory
 - Deploys native `openxr_loader.dll` from SteamVR to VRCOSC app dir
 - Regenerates code map docs (`python3 tools/gen-docs.py`)
+- Regenerates module READMEs (`python3 tools/gen-readmes.py`)
 - Commits, tags, and creates GitHub Release (`gh release create`)
 
 ### Target Channel Switches:

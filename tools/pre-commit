@@ -21,18 +21,23 @@ if ! command -v python3 >/dev/null 2>&1; then
     exit 0
 fi
 
-echo "pre-commit: regenerating docs/ ..."
+echo "pre-commit: regenerating docs/ and READMEs ..."
 if ! python3 tools/gen-docs.py; then
     echo "pre-commit: gen-docs.py failed — commit aborted." >&2
     echo "            Fix it, or bypass once with 'git commit --no-verify'." >&2
     exit 1
 fi
+if ! python3 tools/gen-readmes.py; then
+    echo "pre-commit: gen-readmes.py failed — commit aborted." >&2
+    echo "            Fix it, or bypass once with 'git commit --no-verify'." >&2
+    exit 1
+fi
 
-# Stage whatever changed. Deliberately limited to docs/ so the hook can never sweep up
+# Stage whatever changed. Deliberately limited to docs/ and READMEs so the hook can never sweep up
 # unrelated working-tree edits into the commit.
-if ! git diff --quiet -- docs/; then
-    git add docs/
-    echo "pre-commit: docs/ updated and staged."
+if ! git diff --quiet -- docs/ VRCOSC.Modules/ README.md; then
+    git add docs/ VRCOSC.Modules/*/README.md README.md
+    echo "pre-commit: docs/ and READMEs updated and staged."
 else
-    echo "pre-commit: docs/ already up to date."
+    echo "pre-commit: docs/ and READMEs already up to date."
 fi

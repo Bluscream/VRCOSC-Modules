@@ -1,0 +1,795 @@
+#!/usr/bin/env python3
+"""
+Generate VRCOSC.Modules/*/README.md and update top-level README.md from module definitions.
+
+Regenerate with:  python3 tools/gen-readmes.py
+"""
+
+from __future__ import annotations
+
+import os
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent  # tools/ -> repo root
+BASE_DIR = ROOT / "VRCOSC.Modules"
+MAIN_README_PATH = ROOT / "README.md"
+
+# Data for all 13 submodules
+modules = {
+    "Debug": {
+        "title": "Debug Module",
+        "desc": "Debug tools for tracking and exporting OSC parameters with CSV exports, Harmony patches for Linux/Wine connection log spam, WinRT file picker fixes, and ChatBox validation protection.",
+        "requirements": [
+            "VRCOSC 2026.501.0 or later",
+            "Harmony patches automatically apply on module load to suppress repeated OSC disconnection stack traces and fix Wine WinRT file picker dialog crashes."
+        ],
+        "settings": [
+            ("DumpDirectory", "TextBox", "Custom directory for CSV parameter exports (default: dumps folder)", "empty"),
+            ("SortBy", "Dropdown", "Column to sort CSV parameter dumps by", "ParameterPath"),
+            ("SortDirection", "Dropdown", "Sort direction for CSV parameter dumps", "Ascending"),
+            ("LogParameterUpdates", "Toggle", "Log all parameter updates to console", "false"),
+            ("AutoStartModules", "Toggle", "Automatically start VRCOSC on load (equivalent to Play button)", "false"),
+            ("SuppressConnectAsyncLogSpam", "Toggle", "Intercept and suppress repeating 'Please call ConnectAsync first' stack traces", "true"),
+            ("FixWinRTFilePickerException", "Toggle", "Patch PickFileAsync with WPF OpenFileDialog fallback for Linux/Wine", "true"),
+            ("BypassChatBoxValidation", "Toggle", "Prevent VRCOSC from wiping ChatBox timeline clips when dynamic variables unregister", "true")
+        ],
+        "variables": [
+            ("Incoming Count", "incomingcount", "int", "Number of unique incoming OSC parameters tracked"),
+            ("Outgoing Count", "outgoingcount", "int", "Number of unique outgoing OSC parameters tracked"),
+            ("Total Count", "totalcount", "int", "Total unique OSC parameters tracked (incoming + outgoing)"),
+            ("Last Dump Path", "lastdumppath", "string", "Absolute filepath of the last created CSV dump file")
+        ],
+        "states": [
+            ("Idle", "idle", "Debug\\nTracking: {0} params", "Module active and tracking parameters in memory"),
+            ("Dumping", "dumping", "Dumping {0} params...", "CSV parameter dump in progress")
+        ],
+        "events": [
+            ("On Dump Complete", "ondumpcomplete", "Dumped to: {0}", "Triggered after a CSV parameter dump completes"),
+            ("On Tracking Cleared", "ontrackingcleared", "Cleared all tracked parameters", "Triggered when parameter tracking cache is cleared")
+        ],
+        "osc_params": [
+            ("VRCOSC/Debug/DumpNow", "bool", "Read", "Set to true to trigger a CSV parameter dump"),
+            ("VRCOSC/Debug/Clear", "bool", "Read", "Set to true to clear parameter tracking cache"),
+            ("VRCOSC/Debug/IncomingCount", "int", "Write", "Number of unique incoming parameters"),
+            ("VRCOSC/Debug/OutgoingCount", "int", "Write", "Number of unique outgoing parameters"),
+            ("VRCOSC/Debug/TotalCount", "int", "Write", "Total unique parameters tracked")
+        ],
+        "nodes": [
+            ("Dump All Parameters", "Flow trigger", "File Path, Total Parameters, Error", "Exports all tracked parameters to CSV"),
+            ("Dump Incoming Parameters", "Flow trigger", "File Path, Parameter Count, Error", "Exports only incoming parameters to CSV"),
+            ("Dump Outgoing Parameters", "Flow trigger", "File Path, Parameter Count, Error", "Exports only outgoing parameters to CSV"),
+            ("Clear Parameter Tracking", "Flow trigger", "None", "Clears parameter tracking memory cache"),
+            ("Get Parameter Counts", "Flow trigger", "Incoming Count, Outgoing Count, Total Count", "Returns current parameter counts"),
+            ("Get Incoming Parameters", "Flow trigger", "Parameters (Dict), Count", "Returns dictionary of incoming parameters"),
+            ("Get Outgoing Parameters", "Flow trigger", "Parameters (Dict), Count", "Returns dictionary of outgoing parameters"),
+            ("Get All Parameters", "Flow trigger", "Parameters (Dict), Incoming Count, Outgoing Count, Total Count", "Returns dictionary of all parameters")
+        ]
+    },
+
+    "DesktopFPS": {
+        "title": "Desktop FPS Module",
+        "desc": "Monitors VRChat desktop / window FPS using high-precision process frame timing and performance counters.",
+        "requirements": [
+            "VRCOSC 2026.501.0 or later",
+            "Windows host or Wine/Proton environment running VRChat."
+        ],
+        "settings": [],
+        "variables": [
+            ("FPS", "fps", "int", "Current VRChat process rendering FPS")
+        ],
+        "states": [],
+        "events": [],
+        "osc_params": [
+            ("VRCOSC/Desktop/FPS", "int", "Write", "Current VRChat process frame rate")
+        ],
+        "nodes": [
+            ("Get Desktop FPS", "Flow trigger", "FPS (int)", "Returns current desktop rendering FPS")
+        ]
+    },
+
+    "HTTP": {
+        "title": "HTTP Module",
+        "desc": "Send HTTP requests (GET, POST, PUT, DELETE) and receive responses for web automation and API integration.",
+        "requirements": [
+            "Network connection to target HTTP/HTTPS endpoints."
+        ],
+        "settings": [
+            ("DefaultUrl", "TextBox", "Default target URL for HTTP requests", "empty"),
+            ("TimeoutMs", "Slider", "Request timeout in milliseconds", "5000"),
+            ("LogDebug", "Toggle", "Log detailed HTTP request/response debug info", "false")
+        ],
+        "variables": [
+            ("Last URL", "lasturl", "string", "URL of the most recent HTTP request"),
+            ("Status Code", "statuscode", "int", "HTTP status code of the last response (e.g. 200, 404)"),
+            ("Last Response", "lastresponse", "string", "Body text of the most recent HTTP response"),
+            ("Request Count", "requestcount", "int", "Total number of HTTP requests executed")
+        ],
+        "states": [
+            ("Idle", "idle", "HTTP Idle", "Module ready"),
+            ("Requesting", "requesting", "Requesting {0}...", "HTTP request in progress"),
+            ("Success", "success", "HTTP {0} OK", "Request succeeded (2xx status)"),
+            ("Failed", "failed", "HTTP Error {0}", "Request failed or returned error status")
+        ],
+        "events": [
+            ("On Success", "onsuccess", "HTTP Success: {0}", "Triggered on successful HTTP response"),
+            ("On Failed", "onfailed", "HTTP Failed: {0}", "Triggered on request failure or non-2xx status")
+        ],
+        "osc_params": [
+            ("VRCOSC/HTTP/Send", "bool", "Read", "Set to true to execute default HTTP request"),
+            ("VRCOSC/HTTP/Success", "bool", "Write", "True if last request succeeded"),
+            ("VRCOSC/HTTP/StatusCode", "int", "Write", "Last HTTP status code"),
+            ("VRCOSC/HTTP/RequestCount", "int", "Write", "Total HTTP requests executed")
+        ],
+        "nodes": [
+            ("HTTP GET Request", "URL (string), Headers (Dict)", "Response (string), Status Code (int), Success (bool)", "Executes HTTP GET request"),
+            ("HTTP POST Request", "URL (string), Body (string), Headers (Dict)", "Response (string), Status Code (int), Success (bool)", "Executes HTTP POST request"),
+            ("HTTP Request", "Method (string), URL (string), Body (string), Headers (Dict)", "Response (string), Status Code (int), Success (bool)", "Executes custom HTTP request")
+        ]
+    },
+
+    "HTTPServer": {
+        "title": "HTTP / MCP Server Module",
+        "desc": "Embedded REST API & Model Context Protocol (MCP) server allowing external web applications, local scripts, or AI Agents to query and control VRCOSC.",
+        "requirements": [
+            "Open port 8080 (or custom configured port).",
+            "OpenAPI / Swagger UI available at `http://localhost:8080/docs`.",
+            "MCP Endpoint available at `http://localhost:8080/mcp` for AI agent tools."
+        ],
+        "settings": [
+            ("Port", "TextBox", "TCP port for HTTP/MCP server", "8080"),
+            ("EnableRestApi", "Toggle", "Enable REST API endpoints (/api/v1/...)", "true"),
+            ("EnableMcpServer", "Toggle", "Enable Model Context Protocol (MCP) server (/mcp)", "true"),
+            ("EnableSwaggerUi", "Toggle", "Enable Swagger UI documentation (/docs)", "true"),
+            ("AuthToken", "TextBox", "Optional bearer authentication token (empty = no auth)", "empty"),
+            ("CorsAllowedOrigins", "TextBox", "CORS allowed origins (comma-separated or '*' for all)", "*"),
+            ("LogRequests", "Toggle", "Log HTTP request details to console", "false")
+        ],
+        "variables": [
+            ("Port", "port", "int", "Active server TCP port"),
+            ("Connected Clients", "connectedclients", "int", "Active client connections"),
+            ("Total Requests", "totalrequests", "int", "Total HTTP/MCP requests processed"),
+            ("Server Status", "serverstatus", "string", "Current server state (Running, Stopped, Error)"),
+            ("Swagger URL", "swaggerurl", "string", "Local URL to Swagger UI documentation")
+        ],
+        "states": [
+            ("Stopped", "stopped", "HTTP Server Stopped", "Server offline"),
+            ("Starting", "starting", "HTTP Server Starting...", "Server initializing"),
+            ("Running", "running", "HTTP Server on port {0}", "Server active and listening"),
+            ("Error", "error", "HTTP Server Error: {0}", "Server error state"),
+            ("Stopping", "stopping", "HTTP Server Stopping...", "Server shutting down")
+        ],
+        "events": [
+            ("On Server Started", "onserverstarted", "Server started on port {0}", "Triggered when server starts listening"),
+            ("On Server Stopped", "onserverstopped", "Server stopped", "Triggered when server stops"),
+            ("On Request Received", "onrequestreceived", "Request: {0} {1}", "Triggered on incoming HTTP request"),
+            ("On MCP Tool Executed", "onmcptoolexecuted", "MCP Tool: {0}", "Triggered when an AI Agent invokes an MCP tool"),
+            ("On Error", "onerror", "Server Error: {0}", "Triggered on server exception")
+        ],
+        "osc_params": [
+            ("VRCOSC/HTTPServer/Running", "bool", "Write", "True if HTTP server is running"),
+            ("VRCOSC/HTTPServer/Port", "int", "Write", "Active HTTP server port"),
+            ("VRCOSC/HTTPServer/Requests", "int", "Write", "Total processed request count"),
+            ("VRCOSC/HTTPServer/Error", "bool", "Write", "True if server is in error state")
+        ],
+        "nodes": [
+            ("Get HTTP Server Status", "Flow trigger", "Is Running (bool), Port (int), Requests (int)", "Returns HTTP server state")
+        ]
+    },
+
+    "HomeAssistant": {
+        "title": "Home Assistant Module",
+        "desc": "Integrate Home Assistant entity states, Jinja templates, avatar parameters, custom HomeAssistantEntityClipVariable, and flow nodes via REST & WebSocket APIs.",
+        "requirements": [
+            "Home Assistant instance URL (e.g. `http://192.168.1.100:8123`).",
+            "Long-Lived Access Token generated from your Home Assistant profile page."
+        ],
+        "settings": [
+            ("ServerUrl", "TextBox", "Home Assistant base URL", "http://homeassistant.local:8123"),
+            ("AccessToken", "TextBox", "Long-Lived Access Token", "empty"),
+            ("OscPrefix", "TextBox", "OSC parameter prefix for HA entities", "HomeAssistant/"),
+            ("AllowAnywhereOscPrefix", "Toggle", "Match OSC prefix anywhere in parameter path (e.g. for VRCFury prefixes)", "true"),
+            ("EnableWebSocket", "Toggle", "Enable real-time state change updates via WebSocket API", "true"),
+            ("LogDebug", "Toggle", "Log detailed Home Assistant debug messages", "false"),
+            ("LogOscParams", "Toggle", "Log incoming/outgoing OSC parameters", "false"),
+            ("EntityFilter", "TextBox", "Comma-separated list of entity IDs or domains to track (empty = all)", "empty"),
+            ("RegisterAllEntityVariables", "Toggle", "Register every HA entity state as an individual ChatBox variable (HAState.{entity_id})", "false"),
+            ("TemplateVariables", "KeyValuePairList", "Configure custom ChatBox variables mapped to Jinja templates", "empty")
+        ],
+        "variables": [
+            ("Connected", "connected", "bool", "True if connected to Home Assistant REST/WebSocket API"),
+            ("Last Entity", "lastentity", "string", "Entity ID of the last updated entity"),
+            ("Last State", "laststate", "string", "State string of the last updated entity"),
+            ("States Count", "statescount", "int", "Total entities tracked in state cache"),
+            ("Entity State / Attribute", "entitystate", "HomeAssistantEntityClipVariable", "Generic clip variable with EntityID, Attribute, RoundDecimals, TitleCase, AppendUnit, FormatString options"),
+            ("HATemplate.<Name>", "HATemplate.<Name>", "string", "Custom Jinja template variables configured in module settings")
+        ],
+        "states": [
+            ("Disconnected", "disconnected", "HA Disconnected", "Disconnected from Home Assistant"),
+            ("Connecting", "connecting", "HA Connecting...", "Connecting to REST/WebSocket API"),
+            ("Connected", "connected", "HA Connected ({0})", "Connected and receiving updates"),
+            ("Error", "error", "HA Error: {0}", "Connection or authentication error")
+        ],
+        "events": [
+            ("On State Changed", "onstatechanged", "HA {0} = {1}", "Triggered when any entity state updates"),
+            ("On Service Executed", "onserviceexecuted", "HA Service: {0}.{1}", "Triggered when an HA service is executed"),
+            ("On Error", "onerror", "HA Error: {0}", "Triggered on API or Jinja template rendering error")
+        ],
+        "osc_params": [
+            ("VRCOSC/HomeAssistant/Connected", "bool", "Write", "True if Home Assistant is connected"),
+            ("VRCOSC/HomeAssistant/EventReceived", "bool", "Write", "Flashes true on state change event"),
+            ("VRCOSC/HomeAssistant/Failed", "bool", "Write", "True if connection/auth failed")
+        ],
+        "nodes": [
+            ("Call Home Assistant Service", "Domain (string), Service (string), Service Data (Dict)", "Success (bool), Error (string)", "Executes an HA service call (e.g. light.turn_on)"),
+            ("Get Entity State", "Entity ID (string)", "State (string), Exists (bool)", "Returns current state of an HA entity"),
+            ("Get Entity Attribute", "Entity ID (string), Attribute Name (string)", "Attribute Value (object), Exists (bool)", "Returns specific attribute of an HA entity"),
+            ("Render Jinja Template", "Jinja Template (string)", "Rendered Output (string), Error (string)", "Renders a Jinja template string on Home Assistant")
+        ]
+    },
+
+    "IRCBridge": {
+        "title": "IRC Bridge Module",
+        "desc": "Connect to IRC networks and Twitch IRC for chat integration, channel tracking, and pulse nodes.",
+        "requirements": [
+            "IRC server address (e.g. `irc.libera.chat`, `irc.chat.twitch.tv`).",
+            "IRC nickname and optional server password / OAuth token."
+        ],
+        "settings": [
+            ("Server", "TextBox", "IRC server hostname or IP", "irc.libera.chat"),
+            ("Port", "TextBox", "IRC server port", "6697"),
+            ("UseSSL", "Toggle", "Use TLS/SSL connection", "true"),
+            ("Nickname", "TextBox", "IRC nickname", "VRCOSC_User"),
+            ("Username", "TextBox", "IRC username / ident", "vrcosc"),
+            ("RealName", "TextBox", "IRC real name", "VRCOSC IRC Bridge"),
+            ("Password", "TextBox", "Server password / OAuth token", "empty"),
+            ("Channels", "TextBox", "Comma-separated channels to join on connect", "#vrcosc"),
+            ("AutoConnect", "Toggle", "Automatically connect on module load", "true"),
+            ("LogDebug", "Toggle", "Log detailed IRC messages to console", "false")
+        ],
+        "variables": [
+            ("Connected", "connected", "bool", "True if connected to IRC server"),
+            ("Server", "server", "string", "Current IRC server address"),
+            ("Nickname", "nickname", "string", "Active IRC nickname"),
+            ("Current Channel", "currentchannel", "string", "Most recently active channel"),
+            ("Last Message", "lastmessage", "string", "Text of last received chat message"),
+            ("Last Sender", "lastsender", "string", "Nickname of last message sender"),
+            ("Message Count", "messagecount", "int", "Total IRC messages received"),
+            ("Channel Count", "channelcount", "int", "Number of joined IRC channels"),
+            ("User Count", "usercount", "int", "Tracked users in active channel")
+        ],
+        "states": [
+            ("Disconnected", "disconnected", "IRC Disconnected", "Disconnected from server"),
+            ("Connecting", "connecting", "IRC Connecting to {0}...", "Connecting to IRC server"),
+            ("Connected", "connected", "IRC Connected to {0}", "Connected to server"),
+            ("JoinedChannel", "joinedchannel", "IRC Joined {0}", "Joined target channel"),
+            ("Reconnecting", "reconnecting", "IRC Reconnecting...", "Attempting auto-reconnect"),
+            ("Error", "error", "IRC Error: {0}", "Connection error")
+        ],
+        "events": [
+            ("On Connected", "onconnected", "Connected to {0}", "Triggered on successful server connection"),
+            ("On Disconnected", "ondisconnected", "Disconnected", "Triggered on disconnect"),
+            ("On Message Received", "onmessagereceived", "<{0}> {1}", "Triggered on incoming IRC chat message"),
+            ("On Channel Joined", "onchanneljoined", "Joined {0}", "Triggered when joining a channel"),
+            ("On Channel Parted", "onchannelparted", "Parted {0}", "Triggered when leaving a channel"),
+            ("On User Joined", "onuserjoined", "{0} joined {1}", "Triggered when a user joins channel"),
+            ("On User Parted", "onuserparted", "{0} left {1}", "Triggered when a user leaves channel"),
+            ("On Nick Changed", "onnickchanged", "Nick changed to {0}", "Triggered when nickname changes"),
+            ("On Error", "onerror", "IRC Error: {0}", "Triggered on IRC protocol or socket error")
+        ],
+        "osc_params": [
+            ("VRCOSC/IRC/Connected", "bool", "Write", "True if connected to IRC server"),
+            ("VRCOSC/IRC/MessageReceived", "bool", "Write", "Flashes true on incoming chat message"),
+            ("VRCOSC/IRC/MessageCount", "int", "Write", "Total IRC messages received"),
+            ("VRCOSC/IRC/ChannelCount", "int", "Write", "Number of joined channels"),
+            ("VRCOSC/IRC/Error", "bool", "Write", "True if IRC is in error state")
+        ],
+        "nodes": [
+            ("Join IRC Channel", "Channel (string)", "Success (bool)", "Joins specified IRC channel"),
+            ("Part IRC Channel", "Channel (string), Reason (string)", "Success (bool)", "Leaves specified IRC channel"),
+            ("Send IRC Message", "Target (string), Message (string)", "Success (bool)", "Sends chat message to channel or user"),
+            ("Send Raw IRC Command", "Raw Command (string)", "Success (bool)", "Sends raw IRC command line")
+        ]
+    },
+
+    "LinuxHardwareStats": {
+        "title": "Linux Hardware Stats Module",
+        "desc": "Linux-native hardware monitoring module. Reads CPU, GPU, RAM, VRAM, network speeds, temperatures, active window title/FPS (via MangoHud / xdotool / kdotool), and VR compositor mode (SteamVR / Monado / WiVRn) directly from host via embedded vrcosc_hwstats.sh script.",
+        "requirements": [
+            "Linux host running VRCOSC (under Proton/Wine or native container).",
+            "Automatically deploys `vrcosc_hwstats.sh` to `~/.local/bin/`.",
+            "Optional: MangoHud configured with `~/.config/MangoHud/MangoHud.conf` (`autostart_log=1`) for real-time process FPS tracking.",
+            "Optional: `xdotool` or `kdotool` installed for active window title detection."
+        ],
+        "settings": [
+            ("RefreshIntervalMs", "Slider", "Script sampling interval in milliseconds", "1000"),
+            ("GpuIndex", "TextBox", "0-based index of GPU package to monitor", "0"),
+            ("CpuIndex", "TextBox", "0-based index of CPU package to monitor", "0"),
+            ("NetIface", "TextBox", "Network interface to monitor (empty = combine all non-loopback)", "empty"),
+            ("EnableOsc", "Toggle", "Publish hardware stats to avatar OSC parameters", "true"),
+            ("LogDebug", "Toggle", "Log script output details to console", "false")
+        ],
+        "variables": [
+            ("CPU Usage", "cpuusage", "int", "CPU load percentage (0-100%)"),
+            ("CPU Power", "cpupower", "float", "CPU package power draw in Watts"),
+            ("CPU Temp", "cputemp", "int", "CPU package temperature in °C"),
+            ("GPU Usage", "gpuusage", "int", "GPU core load percentage (0-100%)"),
+            ("GPU Power", "gpupower", "float", "GPU power draw in Watts"),
+            ("GPU Temp", "gputemp", "int", "GPU core temperature in °C"),
+            ("RAM Usage", "ramusage", "int", "System RAM load percentage (0-100%)"),
+            ("RAM Total", "ramtotal", "int", "Total system RAM in MB"),
+            ("RAM Used", "ramused", "int", "Used system RAM in MB"),
+            ("RAM Free", "ramfree", "int", "Free system RAM in MB"),
+            ("VRAM Usage", "vramusage", "int", "GPU VRAM load percentage (0-100%)"),
+            ("VRAM Total", "vramtotal", "int", "Total VRAM in MB"),
+            ("VRAM Used", "vramused", "int", "Used VRAM in MB"),
+            ("VRAM Free", "vramfree", "int", "Free VRAM in MB"),
+            ("CPU Name", "cpuname", "string", "CPU model name string"),
+            ("GPU Name", "gpuname", "string", "GPU model name string"),
+            ("Net Rx KiB/s", "netrxkibps", "float", "Network download speed in KiB/s"),
+            ("Net Tx KiB/s", "nettxkibps", "float", "Network upload speed in KiB/s"),
+            ("Net Rx Total MB", "netrxtotalmb", "float", "Total downloaded MB"),
+            ("Net Tx Total MB", "nettxtotalmb", "float", "Total uploaded MB"),
+            ("System Temp", "systemtemp", "int", "Motherboard / ACPI system temperature in °C"),
+            ("Max Temp", "maxtemp", "int", "Highest temperature across all hwmon sensors in °C"),
+            ("Window Title", "windowtitle", "string", "Title of the currently active desktop window"),
+            ("Process Name", "processname", "string", "Process executable name of active window"),
+            ("Window FPS", "windowfps", "int", "Active window FPS (MangoHud CSV log or monitor refresh rate)"),
+            ("VR Mode", "vrmode", "string", "Active VR compositor mode: Desktop, SteamVR, or OpenXR"),
+            ("VRChat Running", "vrchatrunning", "bool", "True if VRChat.exe process is detected")
+        ],
+        "states": [
+            ("Default", "default", "CPU: {0}% | GPU: {3}% | RAM: {6}%", "Default hardware monitoring state")
+        ],
+        "events": [],
+        "osc_params": [
+            ("VRCOSC/Hardware/CPU/Usage", "int", "Write", "CPU load percentage"),
+            ("VRCOSC/Hardware/CPU/Temp", "int", "Write", "CPU temperature in °C"),
+            ("VRCOSC/Hardware/CPU/Power", "float", "Write", "CPU power draw in W"),
+            ("VRCOSC/Hardware/GPU/Usage", "int", "Write", "GPU load percentage"),
+            ("VRCOSC/Hardware/GPU/Temp", "int", "Write", "GPU temperature in °C"),
+            ("VRCOSC/Hardware/GPU/Power", "float", "Write", "GPU power draw in W"),
+            ("VRCOSC/Hardware/RAM/Usage", "int", "Write", "RAM usage percentage"),
+            ("VRCOSC/Hardware/VRAM/Usage", "int", "Write", "VRAM usage percentage"),
+            ("VRCOSC/Hardware/Network/RxKiBps", "float", "Write", "Network download speed (KiB/s)"),
+            ("VRCOSC/Hardware/Network/TxKiBps", "float", "Write", "Network upload speed (KiB/s)"),
+            ("VRCOSC/Hardware/Window/FPS", "int", "Write", "Active window rendering FPS"),
+            ("VRCOSC/Hardware/VR/Mode", "string", "Write", "VR Compositor state (Desktop/SteamVR/OpenXR)")
+        ],
+        "nodes": [
+            ("Get Linux Hardware Stats", "Flow trigger", "CPU Usage (int), GPU Usage (int), RAM Usage (int), VRAM Usage (int)", "Returns main hardware metrics"),
+            ("Get Active Window Info", "Flow trigger", "Window Title (string), Process Name (string), FPS (int)", "Returns active desktop window details"),
+            ("Get Linux VR Mode", "Flow trigger", "VR Mode (string), VRChat Running (bool)", "Returns current VR compositor mode")
+        ]
+    },
+
+    "LinuxMedia": {
+        "title": "Linux Media Module",
+        "desc": "Integrates with Linux MPRIS Media Players via D-Bus and vrcosc_mpris_query.sh script for player control and track info in ChatBox clips.",
+        "requirements": [
+            "Linux host with D-Bus session bus.",
+            "MPRIS-compliant media player running (Spotify, VLC, Firefox, Rhythmbox, MPV)."
+        ],
+        "settings": [],
+        "variables": [
+            ("Title", "title", "string", "Currently playing track title"),
+            ("Artist", "artist", "string", "Currently playing artist name"),
+            ("Album", "album", "string", "Currently playing album title"),
+            ("Player", "player", "string", "Active media player name"),
+            ("Status", "status", "string", "Playback status (Playing, Paused, Stopped)"),
+            ("Position", "position", "float", "Track position in seconds"),
+            ("Duration", "duration", "float", "Track duration in seconds"),
+            ("Progress Visual", "progressvisual", "ProgressClipVariable", "Visual progress bar variable for ChatBox clips")
+        ],
+        "states": [
+            ("Playing", "playing", "🎵 {0} - {1}", "Media playing"),
+            ("Paused", "paused", "⏸️ {0} - {1}", "Media paused"),
+            ("Stopped", "stopped", "⏹️ Media Stopped", "Media stopped")
+        ],
+        "events": [
+            ("On Media Changed", "onmediachanged", "Now Playing: {0} - {1}", "Triggered when active track changes"),
+            ("On Playback State Changed", "onplaybackstatechanged", "Media State: {0}", "Triggered when play/pause state changes"),
+            ("On Progress Updated", "onprogressupdated", "Progress: {0}", "Triggered periodically as track progresses")
+        ],
+        "osc_params": [
+            ("VRCOSC/Media/Playing", "bool", "Write", "True if media is actively playing"),
+            ("VRCOSC/Media/Title", "string", "Write", "Current track title"),
+            ("VRCOSC/Media/Artist", "string", "Write", "Current track artist"),
+            ("VRCOSC/Media/Progress", "float", "Write", "Normalized track progress (0.0 to 1.0)"),
+            ("VRCOSC/Media/Volume", "float", "Write", "Current player volume level")
+        ],
+        "nodes": [
+            ("Linux Media Play", "Flow trigger", "Success (bool)", "Starts or resumes playback"),
+            ("Linux Media Pause", "Flow trigger", "Success (bool)", "Pauses playback"),
+            ("Linux Media Next", "Flow trigger", "Success (bool)", "Skips to next track"),
+            ("Linux Media Previous", "Flow trigger", "Success (bool)", "Skips to previous track"),
+            ("Linux Media Stop", "Flow trigger", "Success (bool)", "Stops playback")
+        ]
+    },
+
+    "LinuxProcessManager": {
+        "title": "Linux Process Manager Module",
+        "desc": "Allows starting, stopping, and restarting Linux host processes directly from avatar OSC parameters and flow nodes.",
+        "requirements": [
+            "Linux host environment.",
+            "Process executable must be accessible in user PATH or absolute path."
+        ],
+        "settings": [],
+        "variables": [],
+        "states": [],
+        "events": [],
+        "osc_params": [
+            ("VRCOSC/Process/Start", "bool", "Read", "Set to true to launch process"),
+            ("VRCOSC/Process/Stop", "bool", "Read", "Set to true to terminate process")
+        ],
+        "nodes": [
+            ("Start Linux Process", "Process Path (string), Arguments (string)", "PID (int), Success (bool)", "Launches executable on Linux host"),
+            ("Stop Linux Process", "Process Name or PID (string)", "Success (bool)", "Terminates matching process on Linux host"),
+            ("Is Process Running", "Process Name (string)", "Is Running (bool)", "Checks if matching process exists")
+        ]
+    },
+
+    "Notifications": {
+        "title": "Notifications Module",
+        "desc": "Send notifications to Windows Desktop toasts, XSOverlay (UDP 42010), OVRToolkit (WebSocket 15000), and Webhooks.",
+        "requirements": [
+            "XSOverlay UDP port 42010 enabled (if using XSOverlay).",
+            "OVRToolkit WebSocket port 15000 enabled (if using OVRToolkit).",
+            "Target Webhook server URL (if using Webhook notifications)."
+        ],
+        "settings": [
+            ("EnableDesktop", "Toggle", "Send Windows desktop toast notifications", "true"),
+            ("EnableXSOverlay", "Toggle", "Send XSOverlay notifications via UDP 42010", "true"),
+            ("EnableOVRToolkit", "Toggle", "Send OVRToolkit notifications via WebSocket 15000", "false"),
+            ("EnableWebhook", "Toggle", "Send webhook HTTP notifications", "false"),
+            ("WebhookUrl", "TextBox", "Target Webhook endpoint URL", "empty"),
+            ("WebhookMethod", "Dropdown", "HTTP method for webhook (POST, GET, PUT)", "POST"),
+            ("DefaultTitle", "TextBox", "Default notification title", "VRCOSC"),
+            ("DefaultMessage", "TextBox", "Default notification message body", "empty"),
+            ("DefaultTimeoutMs", "Slider", "Default notification display duration (ms)", "3000"),
+            ("DefaultOpacity", "Slider", "Default notification opacity (0.0 to 1.0)", "1.0"),
+            ("LogDebug", "Toggle", "Log notification dispatch details to console", "false")
+        ],
+        "variables": [
+            ("Last Title", "lasttitle", "string", "Title of last sent notification"),
+            ("Last Message", "lastmessage", "string", "Message body of last sent notification"),
+            ("Notification Count", "notificationcount", "int", "Total notifications dispatched"),
+            ("Last Target", "lasttarget", "string", "Target system of last notification (Desktop, XSOverlay, etc.)")
+        ],
+        "states": [
+            ("Idle", "idle", "Notifications Idle", "Module ready"),
+            ("Sending", "sending", "Sending: {0}", "Dispatching notification")
+        ],
+        "events": [
+            ("On Notification Sent", "onnotificationsent", "Notification Sent: {0}", "Triggered when notification succeeds"),
+            ("On Notification Failed", "onnotificationfailed", "Notification Failed: {0}", "Triggered when notification fails")
+        ],
+        "osc_params": [
+            ("VRCOSC/Notifications/Send", "bool", "Read", "Set to true to dispatch default notification"),
+            ("VRCOSC/Notifications/SentCount", "int", "Write", "Total notifications successfully sent"),
+            ("VRCOSC/Notifications/FailedCount", "int", "Write", "Total failed notification attempts")
+        ],
+        "nodes": [
+            ("Send Desktop Notification", "Title (string), Message (string), TimeoutMs (int)", "Success (bool)", "Sends Windows desktop toast"),
+            ("Send XSOverlay Notification", "Title (string), Message (string), TimeoutMs (int), Opacity (float)", "Success (bool)", "Sends XSOverlay UDP notification"),
+            ("Send OVRToolkit Notification", "Title (string), Message (string)", "Success (bool)", "Sends OVRToolkit WebSocket notification"),
+            ("Send Notification (All Enabled)", "Title (string), Message (string), TimeoutMs (int)", "WebhookSuccess (bool)", "Dispatches to all enabled targets")
+        ]
+    },
+
+    "OpenXR": {
+        "title": "OpenXR Modules",
+        "desc": "Cross-platform OpenXR integration providing runtime statistics (FPS, frame timing, VRAM), hand tracking gestures (XR_EXT_hand_tracking), and haptic controller feedback via native openxr_loader.dll.",
+        "requirements": [
+            "OpenXR runtime active (SteamVR, Monado, WiVRn, Oculus).",
+            "Native `openxr_loader.dll` deployed next to VRCOSC executable (automatically handled by `update.sh`)."
+        ],
+        "settings": [
+            ("EnableHaptics", "Toggle", "Enable haptic feedback on OpenXR controllers", "true")
+        ],
+        "variables": [
+            ("Runtime Name", "runtimename", "string", "Active OpenXR runtime name (e.g. SteamVR, Monado)"),
+            ("Frame Rate", "framerate", "float", "OpenXR compositor frame rate"),
+            ("Frame Time Ms", "frametimems", "float", "OpenXR compositor frame time in ms"),
+            ("System Name", "systemname", "string", "VR Headset system name"),
+            ("Headpose Valid", "headposevalid", "bool", "True if HMD pose tracking is valid"),
+            ("Left Hand Valid", "lefthandvalid", "bool", "True if left hand controller/tracking is valid"),
+            ("Right Hand Valid", "righthandvalid", "bool", "True if right hand controller/tracking is valid")
+        ],
+        "states": [
+            ("Disabled", "disabled", "OpenXR Disabled", "OpenXR inactive"),
+            ("Searching", "searching", "OpenXR Searching...", "Connecting to OpenXR instance"),
+            ("Active", "active", "OpenXR Active ({0} FPS)", "OpenXR session active")
+        ],
+        "events": [],
+        "osc_params": [
+            ("VRCOSC/OpenXR/FrameRate", "float", "Write", "OpenXR compositor FPS"),
+            ("VRCOSC/OpenXR/FrameTimeMs", "float", "Write", "OpenXR compositor frame time (ms)"),
+            ("VRCOSC/OpenXR/Gestures/Pinch/Left", "float", "Write", "Left hand pinch gesture strength (0.0 - 1.0)"),
+            ("VRCOSC/OpenXR/Gestures/Pinch/Right", "float", "Write", "Right hand pinch gesture strength (0.0 - 1.0)"),
+            ("VRCOSC/OpenXR/Haptics/Left", "float", "Read", "Trigger left controller vibration (amplitude)"),
+            ("VRCOSC/OpenXR/Haptics/Right", "float", "Read", "Trigger right controller vibration (amplitude)")
+        ],
+        "nodes": [
+            ("OpenXR Haptic Pulse", "Hand (Left/Right), DurationMs (int), Amplitude (float), Frequency (float)", "Success (bool)", "Triggers haptic vibration on controller"),
+            ("Get OpenXR Runtime Info", "Flow trigger", "Runtime Name (string), System Name (string), FPS (float)", "Returns OpenXR session metadata"),
+            ("Get Hand Pose", "Hand (Left/Right)", "Is Valid (bool), Position (Vector3), Rotation (Quaternion)", "Returns hand/controller tracking pose")
+        ]
+    },
+
+    "VRCXBridge": {
+        "title": "VRCX Bridge Module",
+        "desc": "Bidirectional bridge between VRCOSC and VRCX for OSC + VRChat API integration via Windows Named Pipes (\\\\.\\pipe\\vrcx-ipc).",
+        "requirements": [
+            "VRCX running on the system with IPC enabled.",
+            "Windows Named Pipe access (`\\\\.\\pipe\\vrcx-ipc`)."
+        ],
+        "settings": [
+            ("PipeName", "TextBox", "Named Pipe name for VRCX IPC", "vrcx-ipc"),
+            ("AutoReconnect", "Toggle", "Automatically reconnect if VRCX closes", "true"),
+            ("LogDebug", "Toggle", "Log VRCX IPC messages to console", "false"),
+            ("SyncAvatarParameters", "Toggle", "Sync avatar parameters to VRCX", "true")
+        ],
+        "variables": [
+            ("Connected", "connected", "bool", "True if connected to VRCX Named Pipe"),
+            ("Current World Name", "currentworldname", "string", "Name of current VRChat world"),
+            ("Current World ID", "currentworldid", "string", "World ID of current VRChat world"),
+            ("Online Friends Count", "onlinefriendscount", "int", "Number of online VRChat friends in VRCX"),
+            ("Last Friend Name", "lastfriendname", "string", "Name of last friend event"),
+            ("Last Friend ID", "lastfriendid", "string", "User ID of last friend event"),
+            ("Last Toast Text", "lasttoasttext", "string", "Text of last toast sent to VRCX"),
+            ("IPC Message Count", "ipcmessagecount", "int", "Total VRCX IPC messages processed")
+        ],
+        "states": [
+            ("Disconnected", "disconnected", "VRCX Disconnected", "Disconnected from VRCX IPC"),
+            ("Connected", "connected", "VRCX Connected ({0} Friends)", "Connected to VRCX IPC")
+        ],
+        "events": [
+            ("On IPC Connected", "onipcconnected", "VRCX IPC Connected", "Triggered on successful pipe connection")
+        ],
+        "osc_params": [
+            ("VRCOSC/VRCX/Connected", "bool", "Write", "True if connected to VRCX")
+        ],
+        "nodes": [
+            ("VRCX Get Online Friends", "Flow trigger", "Friends (List), Count (int)", "Returns list of online VRChat friends from VRCX"),
+            ("VRCX Send Invite", "User ID (string), World ID (string), Instance ID (string)", "Success (bool)", "Sends world invite to user via VRCX"),
+            ("VRCX Get User Info", "User ID (string)", "User Name (string), Bio (string), Status (string)", "Fetches user info from VRCX API cache"),
+            ("VRCX Get Current Location", "Flow trigger", "World ID (string), World Name (string), Instance ID (string)", "Returns current world location"),
+            ("VRCX Show Toast", "Title (string), Message (string)", "Success (bool)", "Displays toast notification inside VRCX"),
+            ("VRCX Connection Status", "Flow trigger", "Is Connected (bool)", "Checks VRCX pipe connection")
+        ]
+    },
+
+    "VRChatSettings": {
+        "title": "VRChat Settings Module",
+        "desc": "Read and write 746+ VRChat registry settings and config file values with provider architecture, JSON schema validation, and user ID templates.",
+        "requirements": [
+            "VRChat installed.",
+            "Windows Registry access (`HKCU\\Software\\VRChat\\vrchat`) or Proton/Wine registry (`system.reg` / `user.reg`)."
+        ],
+        "settings": [
+            ("AutoBackup", "Toggle", "Automatically back up settings before writing", "true"),
+            ("BackupDirectory", "TextBox", "Directory for settings backups", "empty"),
+            ("EnableRegistryAccess", "Toggle", "Enable VRChat registry settings provider", "true"),
+            ("EnableConfigAccess", "Toggle", "Enable VRChat config.json settings provider", "true"),
+            ("RemoteFirstProvider", "Toggle", "Try fetching definitions from GitHub Gist before embedded fallbacks", "true"),
+            ("LogDebug", "Toggle", "Log settings read/write operations to console", "false")
+        ],
+        "variables": [
+            ("Registry Count", "registrycount", "int", "Total registry settings available (746+)"),
+            ("Config Count", "configcount", "int", "Total config file settings available"),
+            ("Last Setting Modified", "lastsettingmodified", "string", "Name of last modified setting"),
+            ("Backups Count", "backupscount", "int", "Number of backups created")
+        ],
+        "states": [
+            ("Idle", "idle", "VRChat Settings Idle", "Module ready"),
+            ("Reading", "reading", "Reading {0}...", "Reading setting value"),
+            ("Writing", "writing", "Writing {0}...", "Writing setting value")
+        ],
+        "events": [
+            ("On Setting Read", "onsettingread", "Read: {0} = {1}", "Triggered when setting is read"),
+            ("On Setting Written", "onsettingwritten", "Wrote: {0} = {1}", "Triggered when setting is modified"),
+            ("On Backup Created", "onbackupcreated", "Backup Created: {0}", "Triggered when backup file is created")
+        ],
+        "osc_params": [
+            ("VRCOSC/VRChatSettings/Read", "bool", "Read", "Trigger setting read"),
+            ("VRCOSC/VRChatSettings/Write", "bool", "Read", "Trigger setting write"),
+            ("VRCOSC/VRChatSettings/Success", "bool", "Write", "True if last operation succeeded")
+        ],
+        "nodes": [
+            ("Get VRChat Registry Value<T>", "Setting Name (string), User ID (string)", "Value (T), Exists (bool)", "Reads VRChat registry setting"),
+            ("Get VRChat Config Value<T>", "Setting Name (string)", "Value (T), Exists (bool)", "Reads VRChat config.json setting"),
+            ("Set VRChat Registry Value<T>", "Setting Name (string), Value (T), User ID (string)", "Success (bool)", "Writes VRChat registry setting"),
+            ("Set VRChat Config Value<T>", "Setting Name (string), Value (T)", "Success (bool)", "Writes VRChat config.json setting"),
+            ("Get All VRChat Registry Settings", "Flow trigger", "Settings (Dict)", "Returns dictionary of all 746+ registry settings"),
+            ("Get All VRChat Config Settings", "Flow trigger", "Settings (Dict)", "Returns dictionary of all config.json settings"),
+            ("Object To JSON String<T>", "Value (T), Formatted (bool)", "JSON String (string)", "Serializes object/collection to JSON")
+        ]
+    }
+}
+
+def generate_readmes() -> int:
+    written_count = 0
+    for mod_name, data in modules.items():
+        mod_dir = BASE_DIR / mod_name
+        mod_dir.mkdir(parents=True, exist_ok=True)
+        readme_file = mod_dir / "README.md"
+        
+        lines = [
+            f"# {data['title']}",
+            "",
+            data['desc'],
+            "",
+            "**Repository**: https://github.com/Bluscream/VRCOSC-Modules",
+            "",
+            "---",
+            "",
+            "## Setup & Requirements",
+            ""
+        ]
+        
+        for req in data["requirements"]:
+            lines.append(f"- {req}")
+        lines.append("")
+        
+        lines += [
+            "## Module Settings",
+            "",
+            "| Setting Name | Type | Description | Default |",
+            "|---|---|---|---|"
+        ]
+        if data["settings"]:
+            for name, stype, desc, default in data["settings"]:
+                lines.append(f"| **{name}** | `{stype}` | {desc} | `{default}` |")
+        else:
+            lines.append("| _None_ | — | No configurable settings for this module. | — |")
+        lines.append("")
+        
+        lines += [
+            "## ChatBox Variables",
+            "",
+            "| Variable Name | Lookup Key | Type | Description |",
+            "|---|---|---|---|"
+        ]
+        if data["variables"]:
+            for name, key, vtype, desc in data["variables"]:
+                lines.append(f"| **{name}** | `{key}` | `{vtype}` | {desc} |")
+        else:
+            lines.append("| _None_ | — | — | No ChatBox variables provided. |")
+        lines.append("")
+        
+        lines += [
+            "## ChatBox States",
+            "",
+            "| State Name | Lookup Key | Format | Description |",
+            "|---|---|---|---|"
+        ]
+        if data["states"]:
+            for name, key, fmt, desc in data["states"]:
+                lines.append(f"| **{name}** | `{key}` | `{fmt}` | {desc} |")
+        else:
+            lines.append("| _None_ | — | — | No ChatBox states provided. |")
+        lines.append("")
+        
+        lines += [
+            "## ChatBox Events",
+            "",
+            "| Event Name | Lookup Key | Title | Trigger Condition |",
+            "|---|---|---|---|"
+        ]
+        if data["events"]:
+            for name, key, title, desc in data["events"]:
+                lines.append(f"| **{name}** | `{key}` | `{title}` | {desc} |")
+        else:
+            lines.append("| _None_ | — | — | No ChatBox events provided. |")
+        lines.append("")
+        
+        lines += [
+            "## Avatar OSC Parameters",
+            "",
+            "| OSC Parameter Path | Type | Direction | Description |",
+            "|---|---|---|---|"
+        ]
+        if data["osc_params"]:
+            for path, ptype, direction, desc in data["osc_params"]:
+                lines.append(f"| `{path}` | `{ptype}` | `{direction}` | {desc} |")
+        else:
+            lines.append("| _None_ | — | — | No avatar OSC parameters registered. |")
+        lines.append("")
+        
+        lines += [
+            "## Nodes Overview",
+            "",
+            "| Node Name | Inputs | Outputs | Description |",
+            "|---|---|---|---|"
+        ]
+        if data["nodes"]:
+            for name, inp, outp, desc in data["nodes"]:
+                lines.append(f"| **{name}** | {inp} | {outp} | {desc} |")
+        else:
+            lines.append("| _None_ | — | — | No pulse or graph nodes provided. |")
+        lines.append("")
+        
+        lines += [
+            "---",
+            "",
+            "## License",
+            "",
+            "Copyright (c) Bluscream. Licensed under the GPL-3.0 License."
+        ]
+        
+        readme_file.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        written_count += 1
+
+    main_lines = [
+        "# Bluscream's VRCOSC Modules",
+        "",
+        "Custom modules for VRCOSC including Home Assistant integration, Linux hardware stats, VRChat settings, VRCX bridge, HTTP server, notifications, and more.",
+        "",
+        "**Repository**: https://github.com/Bluscream/VRCOSC-Modules",
+        "",
+        "## Submodules Index",
+        "",
+        "| Module Name | Folder / Docs | Settings | Variables | States | Events | Description |",
+        "|---|---|---|---|---|---|---|"
+    ]
+
+    for mod_name, data in sorted(modules.items()):
+        rel_link = f"[VRCOSC.Modules/{mod_name}/README.md](VRCOSC.Modules/{mod_name}/README.md)"
+        s_cnt = len(data["settings"])
+        v_cnt = len(data["variables"])
+        st_cnt = len(data["states"])
+        e_cnt = len(data["events"])
+        main_lines.append(f"| **{data['title']}** | {rel_link} | {s_cnt} | {v_cnt} | {st_cnt} | {e_cnt} | {data['desc']} |")
+
+    main_lines += [
+        "",
+        "---",
+        "",
+        "## Codebase Map & Documentation",
+        "",
+        "The [`docs/`](docs/) directory contains generated reference maps of all symbols, classes, methods, properties, and events across the entire repository:",
+        "",
+        "- 📐 [Classes Map](docs/classes.md) — Map of all classes, structs, interfaces, and enums.",
+        "- ⚙️ [Methods Map](docs/methods.md) — Map of all methods and constructors.",
+        "- 🔧 [Properties Map](docs/properties.md) — Map of all properties.",
+        "- 📌 [Fields Map](docs/fields.md) — Map of all fields and node pins.",
+        "- 💬 [ChatBox Events Map](docs/chatbox-events.md) — Map of all ChatBox events.",
+        "- ⚡ [Code Events Map](docs/events.md) — Map of all C# events, delegates, and callbacks.",
+        "",
+        "---",
+        "",
+        "## Building & Deploying",
+        "",
+        "### Linux Container Pipeline (`update.sh`)",
+        "",
+        "```bash\ncd tools && ./update.sh\n```",
+        "",
+        "The `update.sh` script automates the full workflow:",
+        "- Stops running VRCOSC instance",
+        "- Auto-bumps build version in `AssemblyInfo.cs`",
+        "- Builds Release DLL in Arch container (`distrobox-enter -n arch -- dotnet build ...`)",
+        "- Deploys DLL + dependencies (`Silk.NET.*`) to active target roaming directory",
+        "- Deploys native `openxr_loader.dll` from SteamVR to VRCOSC app dir",
+        "- Regenerates code map docs (`python3 tools/gen-docs.py`)",
+        "- Regenerates module READMEs (`python3 tools/gen-readmes.py`)",
+        "- Commits, tags, and creates GitHub Release (`gh release create`)",
+        "",
+        "### Target Channel Switches:",
+        "- `./update.sh` — Target **Stable** VRCOSC (`2026.501.0`)",
+        "- `./update.sh --beta` — Target **Beta** VRCOSC (`2026.702.0`, published as Pre-Release)",
+        "- `./update.sh --dev` — Target **Dev** VRCOSC (local build deploy only)",
+        "- Add `-r / --skip-release` to skip GitHub release upload.",
+        "",
+        "---",
+        "",
+        "## License",
+        "",
+        "Copyright (c) Bluscream. Licensed under the GPL-3.0 License."
+    ]
+
+    MAIN_README_PATH.write_text("\n".join(main_lines) + "\n", encoding="utf-8")
+    return written_count
+
+if __name__ == "__main__":
+    count = generate_readmes()
+    print(f"Generated README.md for {count} submodules and updated main README.md.")
