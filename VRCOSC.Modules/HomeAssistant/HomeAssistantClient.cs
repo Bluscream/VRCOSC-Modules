@@ -95,7 +95,7 @@ public class HomeAssistantClient
         }
     }
 
-    public async Task<string?> RenderTemplateAsync(string template)
+    public async Task<string?> RenderTemplateAsync(string template, string? name = null)
     {
         try
         {
@@ -104,8 +104,10 @@ public class HomeAssistantClient
         }
         catch (Exception ex)
         {
-            var snippet = template.Length > 60 ? template[..60] + "..." : template;
-            _logger($"Failed to render template \"{snippet}\": {ex.Message}");
+            var label = !string.IsNullOrWhiteSpace(name)
+                ? $"'{name}'"
+                : (template.Length > 60 ? $"\"{template[..60]}...\"" : $"\"{template}\"");
+            _logger($"Failed to render template {label}: {ex.Message}");
             return null;
         }
     }

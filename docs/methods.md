@@ -263,19 +263,19 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [43](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L43) | `HomeAssistantClient` | public | `public bool Initialize(string serverUrl, string accessToken)` |
 | [70](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L70) | `HomeAssistantClient` | public | `public async Task<IEnumerable<StateObject>?> GetStatesAsync()` |
 | [84](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L84) | `HomeAssistantClient` | public | `public async Task<StateObject?> GetStateAsync(string entityId)` |
-| [98](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L98) | `HomeAssistantClient` | public | `public async Task<string?> RenderTemplateAsync(string template)` |
-| [113](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L113) | `HomeAssistantClient` | public | `public async Task<bool> CallServiceAsync(string domain, string service, string? entityId = null, object? serviceData = null)` |
-| [146](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L146) | `HomeAssistantClient` | public | `public async Task StartWebSocketAsync(string serverUrl, string accessToken)` |
-| [169](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L169) | `HomeAssistantClient` | public | `public async Task StopWebSocket()` |
-| [202](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L202) | `HomeAssistantClient` | private | `private Uri ConvertToWebSocketUri(string httpUrl)` |
-| [209](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L209) | `HomeAssistantClient` | private | `private async Task ReceiveLoopAsync(string token, CancellationToken ct)` |
-| [269](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L269) | `HomeAssistantClient` | private | `private async Task SendAuthAsync(string token, CancellationToken ct)` |
-| [282](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L282) | `HomeAssistantClient` | private | `private async Task SubscribeStateChangesAsync(CancellationToken ct)` |
-| [298](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L298) | `HomeAssistantClient` | public | `public async Task<int> SubscribeRenderTemplateAsync(string template)` |
-| [316](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L316) | `HomeAssistantClient` | private | `private void HandleEventMessage(JsonElement root)` |
-| [342](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L342) | `HomeAssistantClient` | private | `private void HandleResultMessage(JsonElement root)` |
-| [361](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L361) | `HomeAssistantClient` | private | `private static string GetStringSafe(JsonElement element)` |
-| [374](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L374) | `HomeAssistantClient` | private | `private async Task<byte[]?> ReceiveFullMessageAsync(byte[] buffer, CancellationToken ct)` |
+| [98](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L98) | `HomeAssistantClient` | public | `public async Task<string?> RenderTemplateAsync(string template, string? name = null)` |
+| [115](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L115) | `HomeAssistantClient` | public | `public async Task<bool> CallServiceAsync(string domain, string service, string? entityId = null, object? serviceData = null)` |
+| [148](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L148) | `HomeAssistantClient` | public | `public async Task StartWebSocketAsync(string serverUrl, string accessToken)` |
+| [171](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L171) | `HomeAssistantClient` | public | `public async Task StopWebSocket()` |
+| [204](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L204) | `HomeAssistantClient` | private | `private Uri ConvertToWebSocketUri(string httpUrl)` |
+| [211](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L211) | `HomeAssistantClient` | private | `private async Task ReceiveLoopAsync(string token, CancellationToken ct)` |
+| [271](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L271) | `HomeAssistantClient` | private | `private async Task SendAuthAsync(string token, CancellationToken ct)` |
+| [284](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L284) | `HomeAssistantClient` | private | `private async Task SubscribeStateChangesAsync(CancellationToken ct)` |
+| [300](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L300) | `HomeAssistantClient` | public | `public async Task<int> SubscribeRenderTemplateAsync(string template)` |
+| [318](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L318) | `HomeAssistantClient` | private | `private void HandleEventMessage(JsonElement root)` |
+| [344](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L344) | `HomeAssistantClient` | private | `private void HandleResultMessage(JsonElement root)` |
+| [363](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L363) | `HomeAssistantClient` | private | `private static string GetStringSafe(JsonElement element)` |
+| [376](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L376) | `HomeAssistantClient` | private | `private async Task<byte[]?> ReceiveFullMessageAsync(byte[] buffer, CancellationToken ct)` |
 
 ### `HomeAssistant/HomeAssistantModule.cs`
 

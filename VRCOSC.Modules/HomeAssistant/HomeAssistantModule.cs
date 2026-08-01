@@ -223,7 +223,7 @@ public class HomeAssistantModule : Module
             EnsureCustomVariable(varKey, varName, string.Empty);
 
             // Initial REST render
-            var initialRender = await _client.RenderTemplateAsync(template);
+            var initialRender = await _client.RenderTemplateAsync(template, varName);
             SetVariableValue(varKey, initialRender ?? string.Empty);
 
             // Subscribe live WebSocket render if WebSocket is active
