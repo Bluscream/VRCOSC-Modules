@@ -104,7 +104,8 @@ public class HomeAssistantClient
         }
         catch (Exception ex)
         {
-            _logger($"Failed to render template: {ex.Message}");
+            var snippet = template.Length > 60 ? template[..60] + "..." : template;
+            _logger($"Failed to render template \"{snippet}\": {ex.Message}");
             return null;
         }
     }
