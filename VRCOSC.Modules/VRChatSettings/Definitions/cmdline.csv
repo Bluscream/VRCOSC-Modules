@@ -1,12 +1,21 @@
-CommandLine,ValueType,Description,DefaultValue,Pattern
---enable-sdk-vrc-unlocked,bool,Unlocks SDK debug features and experimental developer tools in-game,false,
---enable-avpro-in-editor,bool,Enables AVPro video player playback inside editor/debug modes,false,
---enable-debug-gui,bool,Displays debug GUI overlay with performance and network stats,false,
---enable-hud-message-debug,bool,Displays verbose HUD debug notification messages,false,
---enable-[category]-debug-logging,bool,Enables detailed debug log outputs for specific system categories,false,
---fps=FPS,int,Locks in-game target frame rate limit to specified FPS value,90,^(30|60|72|80|90|120|144|240)$
---profile=NAME,string,Launches VRChat using a separate isolated user settings profile,default,^[A-Za-z0-9_\-]+$
---watch-config,bool,Auto-reloads config.json dynamically when modified on disk,true,
---disable-avatar-copying,bool,Disables avatar cloning/copying feature for all avatars,false,
---no-sandbox,bool,Disables Unity process sandboxing features,false,
---ignore-certificate-errors,bool,Ignores SSL/TLS certificate errors for network requests,false,
+CommandLine,ValueType,Description,DefaultValue,Min,Max,PossibleValues,Notes
+--enable-debug-gui,bool,Enables the developer debug GUI overlay with verbose stats and panels,false,,,,Confirmed in VRChat docs and VRCX-0 source
+--enable-sdk-log-levels,bool,Enables SDK debug log level filtering — required for SDK/Udon log visibility,false,,,,Confirmed in VRChat docs and VRCX-0 localization
+--enable-udon-debug-logging,bool,Enables full verbose debug logging for UdonSharp/Udon programs,false,,,,Confirmed in VRChat docs and VRCX-0 localization
+--enable-av-pro-in-proton,bool,Fixes AVPro video player compatibility under Wine/Proton on Linux,false,,,,Linux/Proton-specific; use this on Steam Deck and Linux
+--enable-hw-video-decoding,bool,Enables hardware-accelerated video decoding for video players (GPU decode),false,,,,Improves performance on supported GPU; common on Linux
+--osc=PORTS,string,"Configures OSC ports: inPort:senderIP:outPort format",9000:127.0.0.1:9001,,,,"e.g. --osc=9000:127.0.0.1:9001. Required for VRCOSC and other OSC tools"
+--fps=FPS,int,Sets the target frame rate cap for VRChat rendering,90,15,360,,Unity engine cap; higher = more CPU/GPU load
+--affinity=MASK,string,Sets CPU thread affinity hex bitmask for the VRChat process — for AMD CPU optimization,,,,FFFF=16 threads; wrong value causes crashes. Advanced/AMD only
+--process-priority=LEVEL,int,Sets the OS process priority level for VRChat,-1,-2,2,"-2=Idle,-1=Below Normal,0=Normal,1=Above Normal,2=High",High priority can cause system instability
+--no-steam,bool,Bypasses Steam client requirement when launching via launch.exe directly,false,,,,Only works with the launcher.exe direct launch method
+--profile=NAME,string,Launches with a separate isolated settings profile directory,default,,,,Creates a subfolder in AppData for isolated settings
+--watch-world=ID,string,"Loads a specific world by ID on startup (e.g. wrld_...)",,,,,Useful for testing — skips startup world loading
+--join-or-create=LOCATION,string,Joins or creates a specific instance from launch,,,,,"e.g. wrld_abc:12345~region(us)"
+--desktop,bool,Forces VRChat to launch in Desktop (non-VR) mode,false,,,,Overrides HMD auto-detection
+-screen-width N,int,Sets window/render width in pixels (Unity standard arg),1920,640,7680,,Standard Unity standalone player argument
+-screen-height N,int,Sets window/render height in pixels (Unity standard arg),1080,360,4320,,Standard Unity standalone player argument
+-screen-fullscreen N,int,Sets fullscreen mode — 0=windowed 1=fullscreen (Unity standard arg),1,,,"0=Windowed,1=Fullscreen",Standard Unity standalone player argument
+-monitor N,int,Selects which monitor to launch on (1-based index) (Unity standard arg),1,1,,,Standard Unity standalone player argument
+-screen-quality NAME,string,"Sets the initial Unity quality preset to use (Unity standard arg)",,,,"Fastest,Fast,Simple,Good,Beautiful,Fantastic",Standard Unity standalone player argument
+-logFile PATH,string,Redirects Unity output log to specified file path (Unity standard arg),,,,,"Default: %APPDATA%/LocalLow/VRChat/VRChat/output_log.txt"
