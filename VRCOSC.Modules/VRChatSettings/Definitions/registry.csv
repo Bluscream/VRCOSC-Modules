@@ -1,28 +1,28 @@
 KeyName,ValueType,Description,DefaultValue,Pattern
-AUDIO_GAME_AVATARS,REG_QWORD,Audio volume level for avatar sounds (0.0-1.0 as float),"hex(4): 00,00,00,40,33,33,d3,3f",^(0|0\.\d+|1|1\.0)$
+AUDIO_GAME_AVATARS,REG_QWORD,Audio volume level for avatar sounds (0.0-1.0 as float),"hex(4): 00,00,00,40,33,33,d3,3f","^(0|0\.\d+|1|1\.0)$"
 AUDIO_GAME_AVATARS_ENABLED,REG_DWORD,Enable/disable avatar sounds,0x1,
 AUDIO_GAME_AVATARS_STEAMAUDIO,REG_BINARY,Audio: AUDIO_GAME_AVATARS_STEAMAUDIO setting,,
-AUDIO_GAME_PROPS,REG_QWORD,Audio volume level for prop sounds (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f",^(0|0\.\d+|1|1\.0)$
+AUDIO_GAME_PROPS,REG_QWORD,Audio volume level for prop sounds (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f","^(0|0\.\d+|1|1\.0)$"
 AUDIO_GAME_PROPS_ENABLED,REG_DWORD,Enable/disable prop sounds,0x1,
 AUDIO_GAME_PROPS_STEAMAUDIO,REG_BINARY,Audio: AUDIO_GAME_PROPS_STEAMAUDIO setting,,
-AUDIO_GAME_SFX,REG_QWORD,Audio volume level for sound effects (0.0-1.0 as float),"hex(4): 00,00,00,a0,99,99,d9,3f",^(0|0\.\d+|1|1\.0)$
+AUDIO_GAME_SFX,REG_QWORD,Audio volume level for sound effects (0.0-1.0 as float),"hex(4): 00,00,00,a0,99,99,d9,3f","^(0|0\.\d+|1|1\.0)$"
 AUDIO_GAME_SFX_ENABLED,REG_DWORD,Enable/disable sound effects,0x1,
 AUDIO_GAME_SFX_STEAMAUDIO,REG_BINARY,Audio: AUDIO_GAME_SFX_STEAMAUDIO setting,,
-AUDIO_GAME_VOICE,REG_QWORD,Audio volume level for player voice chat (0.0-1.0 as float),"hex(4): 00,00,00,40,33,33,e3,3f",^(0|0\.\d+|1|1\.0)$
+AUDIO_GAME_VOICE,REG_QWORD,Audio volume level for player voice chat (0.0-1.0 as float),"hex(4): 00,00,00,40,33,33,e3,3f","^(0|0\.\d+|1|1\.0)$"
 AUDIO_GAME_VOICE_ENABLED,REG_DWORD,Enable/disable voice chat audio,0x1,
 AUDIO_GAME_VOICE_STEAMAUDIO,REG_BINARY,Audio: AUDIO_GAME_VOICE_STEAMAUDIO setting,,
-AUDIO_MASTER,REG_QWORD,Master audio volume level (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f",^(0|0\.\d+|1|1\.0)$
+AUDIO_MASTER,REG_QWORD,Master audio volume level (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f","^(0|0\.\d+|1|1\.0)$"
 AUDIO_MASTER_ENABLED,REG_DWORD,Enable/disable all audio (master mute),0x1,
 AUDIO_MASTER_STEAMAUDIO,REG_BINARY,Audio: AUDIO_MASTER_STEAMAUDIO setting,,
-AUDIO_UI,REG_QWORD,Audio volume level for UI sounds (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f",^(0|0\.\d+|1|1\.0)$
+AUDIO_UI,REG_QWORD,Audio volume level for UI sounds (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f","^(0|0\.\d+|1|1\.0)$"
 AUDIO_UI_ENABLED,REG_DWORD,Enable/disable UI sounds,0x1,
 AUDIO_UI_STEAMAUDIO,REG_BINARY,Audio: AUDIO_UI_STEAMAUDIO setting,,
-AVATAR_WORN_HISTORY_{userId},REG_BINARY,JSON history of avatars worn by user with timestamps,,^(\{.*\}|\[.*\])$
+AVATAR_WORN_HISTORY_{userId},REG_BINARY,JSON history of avatars worn by user with timestamps,,"^(\{.*\}|\[.*\])$"
 BACKGROUND_DEBUG_LOG_COLLECTION,REG_DWORD,VRChat setting: BACKGROUND_DEBUG_LOG_COLLECTION,,
 BACKGROUND_MATERIAL_,REG_BINARY,Default background material/theme ID (can be empty),,
 BACKGROUND_MATERIAL_{userId},REG_BINARY,Custom background material/theme ID for specific user (can be empty),hex: 00,
 BestRegionCache,REG_DWORD,Cached best network region for connection,0x2,
-COLOR_PALETTES_CURRENT_{userId},REG_BINARY,"Currently selected color palette for user (JSON object, can be empty)",,^(\{.*\}|\[.*\])$
+COLOR_PALETTES_CURRENT_{userId},REG_BINARY,"Currently selected color palette for user (JSON object, can be empty)",,"^(\{.*\}|\[.*\])$"
 COLOR_PALETTES_{userId},REG_BINARY,Custom color palettes saved by user (JSON array),,
 COLOR_PALETTE_EVENT_{userId},REG_DWORD,Last color palette event state for user,,
 CosmeticsSectionRedirect_Settings,REG_DWORD,VRChat setting: CosmeticsSectionRedirect_Settings,,
@@ -34,7 +34,7 @@ CustomTrustLevel_AdvancedTrustLevel1_CanUseCustomAnimations,REG_DWORD,Safety: Al
 CustomTrustLevel_AdvancedTrustLevel1_CanUseCustomAvatar,REG_DWORD,Safety: Show Advanced Trust Level 1 custom avatars,0x1,
 CustomTrustLevel_AdvancedTrustLevel1_CanUseCustomShaders,REG_DWORD,Safety: Allow Advanced Trust Level 1 custom avatar shaders,0x1,
 CustomTrustLevel_AdvancedTrustLevel1_CanUseDrone,REG_DWORD,Safety: Allow Advanced Trust Level 1 users to see drones,0x1,
-CustomTrustLevel_AdvancedTrustLevel1_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Advanced Trust Level 1 emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
+CustomTrustLevel_AdvancedTrustLevel1_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Advanced Trust Level 1 emoji/sticker sharing,0x1,"^(\{.*\}|\[.*\]|)$"
 CustomTrustLevel_AdvancedTrustLevel1_CanUseParticleSystems,REG_DWORD,Safety: Allow Advanced Trust Level 1 avatar particle systems,0x1,
 CustomTrustLevel_AdvancedTrustLevel1_CanUseTriggers,REG_DWORD,Safety: Allow Advanced Trust Level 1 avatar triggers,0x1,
 CustomTrustLevel_AdvancedTrustLevel1_CanUseUserIcons,REG_DWORD,Safety: Show Advanced Trust Level 1 user icons,0x1,
@@ -45,7 +45,7 @@ CustomTrustLevel_AdvancedTrustLevel2_CanUseCustomAnimations,REG_DWORD,Safety: Al
 CustomTrustLevel_AdvancedTrustLevel2_CanUseCustomAvatar,REG_DWORD,Safety: Show Advanced Trust Level 2 custom avatars,0x1,
 CustomTrustLevel_AdvancedTrustLevel2_CanUseCustomShaders,REG_DWORD,Safety: Allow Advanced Trust Level 2 custom avatar shaders,0x1,
 CustomTrustLevel_AdvancedTrustLevel2_CanUseDrone,REG_DWORD,Safety: Allow Advanced Trust Level 2 users to see drones,0x1,
-CustomTrustLevel_AdvancedTrustLevel2_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Advanced Trust Level 2 emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
+CustomTrustLevel_AdvancedTrustLevel2_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Advanced Trust Level 2 emoji/sticker sharing,0x1,"^(\{.*\}|\[.*\]|)$"
 CustomTrustLevel_AdvancedTrustLevel2_CanUseParticleSystems,REG_DWORD,Safety: Allow Advanced Trust Level 2 avatar particle systems,0x1,
 CustomTrustLevel_AdvancedTrustLevel2_CanUseTriggers,REG_DWORD,Safety: Allow Advanced Trust Level 2 avatar triggers,0x1,
 CustomTrustLevel_AdvancedTrustLevel2_CanUseUserIcons,REG_DWORD,Safety: Show Advanced Trust Level 2 user icons,0x1,
@@ -56,7 +56,7 @@ CustomTrustLevel_BasicTrustLevel1_CanUseCustomAnimations,REG_DWORD,Safety: Allow
 CustomTrustLevel_BasicTrustLevel1_CanUseCustomAvatar,REG_DWORD,Safety: Show New User 1 custom avatars,0x1,
 CustomTrustLevel_BasicTrustLevel1_CanUseCustomShaders,REG_DWORD,Safety: Allow New User 1 custom avatar shaders,0x0,
 CustomTrustLevel_BasicTrustLevel1_CanUseDrone,REG_DWORD,Safety: Allow New User 1 users to see drones,0x1,
-CustomTrustLevel_BasicTrustLevel1_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow New User 1 emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
+CustomTrustLevel_BasicTrustLevel1_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow New User 1 emoji/sticker sharing,0x1,"^(\{.*\}|\[.*\]|)$"
 CustomTrustLevel_BasicTrustLevel1_CanUseParticleSystems,REG_DWORD,Safety: Allow New User 1 avatar particle systems,0x0,
 CustomTrustLevel_BasicTrustLevel1_CanUseTriggers,REG_DWORD,Safety: Allow New User 1 avatar triggers,0x0,
 CustomTrustLevel_BasicTrustLevel1_CanUseUserIcons,REG_DWORD,Safety: Show New User 1 user icons,0x1,
@@ -67,7 +67,7 @@ CustomTrustLevel_BasicTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allow 
 CustomTrustLevel_BasicTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show New User custom avatars,0x1,
 CustomTrustLevel_BasicTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow New User custom avatar shaders,0x0,
 CustomTrustLevel_BasicTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow New User users to see drones,0x1,
-CustomTrustLevel_BasicTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow New User emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
+CustomTrustLevel_BasicTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow New User emoji/sticker sharing,0x1,"^(\{.*\}|\[.*\]|)$"
 CustomTrustLevel_BasicTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow New User avatar particle systems,0x0,
 CustomTrustLevel_BasicTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow New User avatar triggers,0x0,
 CustomTrustLevel_BasicTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show New User user icons,0x1,
@@ -78,7 +78,7 @@ CustomTrustLevel_DeveloperTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Al
 CustomTrustLevel_DeveloperTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show Developer Trust Level custom avatars,0x1,
 CustomTrustLevel_DeveloperTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow Developer Trust Level custom avatar shaders,0x1,
 CustomTrustLevel_DeveloperTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow Developer Trust Level users to see drones,0x1,
-CustomTrustLevel_DeveloperTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Developer Trust Level emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
+CustomTrustLevel_DeveloperTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Developer Trust Level emoji/sticker sharing,0x1,"^(\{.*\}|\[.*\]|)$"
 CustomTrustLevel_DeveloperTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow Developer Trust Level avatar particle systems,0x1,
 CustomTrustLevel_DeveloperTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow Developer Trust Level avatar triggers,0x1,
 CustomTrustLevel_DeveloperTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show Developer Trust Level user icons,0x1,
@@ -89,7 +89,7 @@ CustomTrustLevel_Friend_CanUseCustomAnimations,REG_DWORD,Safety: Allow Friends c
 CustomTrustLevel_Friend_CanUseCustomAvatar,REG_DWORD,Safety: Show Friends custom avatars,0x1,
 CustomTrustLevel_Friend_CanUseCustomShaders,REG_DWORD,Safety: Allow Friends custom avatar shaders,0x1,
 CustomTrustLevel_Friend_CanUseDrone,REG_DWORD,Safety: Allow Friends to see drones,0x1,
-CustomTrustLevel_Friend_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Friends emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
+CustomTrustLevel_Friend_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Friends emoji/sticker sharing,0x1,"^(\{.*\}|\[.*\]|)$"
 CustomTrustLevel_Friend_CanUseParticleSystems,REG_DWORD,Safety: Allow Friends avatar particle systems,0x1,
 CustomTrustLevel_Friend_CanUseTriggers,REG_DWORD,Safety: Allow Friends avatar triggers,0x1,
 CustomTrustLevel_Friend_CanUseUserIcons,REG_DWORD,Safety: Show Friends user icons,0x1,
@@ -100,7 +100,7 @@ CustomTrustLevel_IntermediateTrustLevel1_CanUseCustomAnimations,REG_DWORD,Safety
 CustomTrustLevel_IntermediateTrustLevel1_CanUseCustomAvatar,REG_DWORD,Safety: Show Intermediate Trust Level 1 custom avatars,0x1,
 CustomTrustLevel_IntermediateTrustLevel1_CanUseCustomShaders,REG_DWORD,Safety: Allow Intermediate Trust Level 1 custom avatar shaders,0x0,
 CustomTrustLevel_IntermediateTrustLevel1_CanUseDrone,REG_DWORD,Safety: Allow Intermediate Trust Level 1 users to see drones,0x1,
-CustomTrustLevel_IntermediateTrustLevel1_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Intermediate Trust Level 1 emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
+CustomTrustLevel_IntermediateTrustLevel1_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Intermediate Trust Level 1 emoji/sticker sharing,0x1,"^(\{.*\}|\[.*\]|)$"
 CustomTrustLevel_IntermediateTrustLevel1_CanUseParticleSystems,REG_DWORD,Safety: Allow Intermediate Trust Level 1 avatar particle systems,0x0,
 CustomTrustLevel_IntermediateTrustLevel1_CanUseTriggers,REG_DWORD,Safety: Allow Intermediate Trust Level 1 avatar triggers,0x1,
 CustomTrustLevel_IntermediateTrustLevel1_CanUseUserIcons,REG_DWORD,Safety: Show Intermediate Trust Level 1 user icons,0x1,
@@ -111,7 +111,7 @@ CustomTrustLevel_IntermediateTrustLevel2_CanUseCustomAnimations,REG_DWORD,Safety
 CustomTrustLevel_IntermediateTrustLevel2_CanUseCustomAvatar,REG_DWORD,Safety: Show Intermediate Trust Level 2 custom avatars,0x1,
 CustomTrustLevel_IntermediateTrustLevel2_CanUseCustomShaders,REG_DWORD,Safety: Allow Intermediate Trust Level 2 custom avatar shaders,0x0,
 CustomTrustLevel_IntermediateTrustLevel2_CanUseDrone,REG_DWORD,Safety: Allow Intermediate Trust Level 2 users to see drones,0x1,
-CustomTrustLevel_IntermediateTrustLevel2_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Intermediate Trust Level 2 emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
+CustomTrustLevel_IntermediateTrustLevel2_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Intermediate Trust Level 2 emoji/sticker sharing,0x1,"^(\{.*\}|\[.*\]|)$"
 CustomTrustLevel_IntermediateTrustLevel2_CanUseParticleSystems,REG_DWORD,Safety: Allow Intermediate Trust Level 2 avatar particle systems,0x0,
 CustomTrustLevel_IntermediateTrustLevel2_CanUseTriggers,REG_DWORD,Safety: Allow Intermediate Trust Level 2 avatar triggers,0x1,
 CustomTrustLevel_IntermediateTrustLevel2_CanUseUserIcons,REG_DWORD,Safety: Show Intermediate Trust Level 2 user icons,0x1,
@@ -122,7 +122,7 @@ CustomTrustLevel_KnownTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allow 
 CustomTrustLevel_KnownTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show User custom avatars,0x1,
 CustomTrustLevel_KnownTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow User custom avatar shaders,0x0,
 CustomTrustLevel_KnownTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow User users to see drones,0x1,
-CustomTrustLevel_KnownTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow User emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
+CustomTrustLevel_KnownTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow User emoji/sticker sharing,0x1,"^(\{.*\}|\[.*\]|)$"
 CustomTrustLevel_KnownTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow User avatar particle systems,0x0,
 CustomTrustLevel_KnownTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow User avatar triggers,0x1,
 CustomTrustLevel_KnownTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show User user icons,0x1,
@@ -133,7 +133,7 @@ CustomTrustLevel_LegendTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allow
 CustomTrustLevel_LegendTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show Legend Trust Level custom avatars,0x1,
 CustomTrustLevel_LegendTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow Legend Trust Level custom avatar shaders,0x1,
 CustomTrustLevel_LegendTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow Legend Trust Level users to see drones,0x1,
-CustomTrustLevel_LegendTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Legend Trust Level emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
+CustomTrustLevel_LegendTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Legend Trust Level emoji/sticker sharing,0x1,"^(\{.*\}|\[.*\]|)$"
 CustomTrustLevel_LegendTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow Legend Trust Level avatar particle systems,0x1,
 CustomTrustLevel_LegendTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow Legend Trust Level avatar triggers,0x1,
 CustomTrustLevel_LegendTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show Legend Trust Level user icons,0x1,
@@ -144,7 +144,7 @@ CustomTrustLevel_LocalPlayer_CanUseCustomAnimations,REG_DWORD,Safety: Allow Loca
 CustomTrustLevel_LocalPlayer_CanUseCustomAvatar,REG_DWORD,Safety: Show Local Player custom avatars,0x1,
 CustomTrustLevel_LocalPlayer_CanUseCustomShaders,REG_DWORD,Safety: Allow Local Player custom avatar shaders,0x1,
 CustomTrustLevel_LocalPlayer_CanUseDrone,REG_DWORD,Safety: Allow Local Player to see drones,0x1,
-CustomTrustLevel_LocalPlayer_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Local Player emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
+CustomTrustLevel_LocalPlayer_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Local Player emoji/sticker sharing,0x1,"^(\{.*\}|\[.*\]|)$"
 CustomTrustLevel_LocalPlayer_CanUseParticleSystems,REG_DWORD,Safety: Allow Local Player avatar particle systems,0x1,
 CustomTrustLevel_LocalPlayer_CanUseTriggers,REG_DWORD,Safety: Allow Local Player avatar triggers,0x1,
 CustomTrustLevel_LocalPlayer_CanUseUserIcons,REG_DWORD,Safety: Show Local Player user icons,0x1,
@@ -155,7 +155,7 @@ CustomTrustLevel_NegativeTrustLevel1_CanUseCustomAnimations,REG_DWORD,Safety: Al
 CustomTrustLevel_NegativeTrustLevel1_CanUseCustomAvatar,REG_DWORD,Safety: Show Negative Trust Level 1 custom avatars,0x0,
 CustomTrustLevel_NegativeTrustLevel1_CanUseCustomShaders,REG_DWORD,Safety: Allow Negative Trust Level 1 custom avatar shaders,0x0,
 CustomTrustLevel_NegativeTrustLevel1_CanUseDrone,REG_DWORD,Safety: Allow Negative Trust Level 1 users to see drones,0x0,
-CustomTrustLevel_NegativeTrustLevel1_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Negative Trust Level 1 emoji/sticker sharing,0x0,^(\{.*\}|\[.*\]|)$
+CustomTrustLevel_NegativeTrustLevel1_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Negative Trust Level 1 emoji/sticker sharing,0x0,"^(\{.*\}|\[.*\]|)$"
 CustomTrustLevel_NegativeTrustLevel1_CanUseParticleSystems,REG_DWORD,Safety: Allow Negative Trust Level 1 avatar particle systems,0x0,
 CustomTrustLevel_NegativeTrustLevel1_CanUseTriggers,REG_DWORD,Safety: Allow Negative Trust Level 1 avatar triggers,0x0,
 CustomTrustLevel_NegativeTrustLevel1_CanUseUserIcons,REG_DWORD,Safety: Show Negative Trust Level 1 user icons,0x0,
@@ -166,7 +166,7 @@ CustomTrustLevel_NegativeTrustLevel2_CanUseCustomAnimations,REG_DWORD,Safety: Al
 CustomTrustLevel_NegativeTrustLevel2_CanUseCustomAvatar,REG_DWORD,Safety: Show Negative Trust Level 2 custom avatars,0x0,
 CustomTrustLevel_NegativeTrustLevel2_CanUseCustomShaders,REG_DWORD,Safety: Allow Negative Trust Level 2 custom avatar shaders,0x0,
 CustomTrustLevel_NegativeTrustLevel2_CanUseDrone,REG_DWORD,Safety: Allow Negative Trust Level 2 users to see drones,0x0,
-CustomTrustLevel_NegativeTrustLevel2_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Negative Trust Level 2 emoji/sticker sharing,0x0,^(\{.*\}|\[.*\]|)$
+CustomTrustLevel_NegativeTrustLevel2_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Negative Trust Level 2 emoji/sticker sharing,0x0,"^(\{.*\}|\[.*\]|)$"
 CustomTrustLevel_NegativeTrustLevel2_CanUseParticleSystems,REG_DWORD,Safety: Allow Negative Trust Level 2 avatar particle systems,0x0,
 CustomTrustLevel_NegativeTrustLevel2_CanUseTriggers,REG_DWORD,Safety: Allow Negative Trust Level 2 avatar triggers,0x0,
 CustomTrustLevel_NegativeTrustLevel2_CanUseUserIcons,REG_DWORD,Safety: Show Negative Trust Level 2 user icons,0x0,
@@ -177,7 +177,7 @@ CustomTrustLevel_NegativeTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: All
 CustomTrustLevel_NegativeTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show Negative Trust Level custom avatars,0x0,
 CustomTrustLevel_NegativeTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow Negative Trust Level custom avatar shaders,0x0,
 CustomTrustLevel_NegativeTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow Negative Trust Level users to see drones,0x0,
-CustomTrustLevel_NegativeTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Negative Trust Level emoji/sticker sharing,0x0,^(\{.*\}|\[.*\]|)$
+CustomTrustLevel_NegativeTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Negative Trust Level emoji/sticker sharing,0x0,"^(\{.*\}|\[.*\]|)$"
 CustomTrustLevel_NegativeTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow Negative Trust Level avatar particle systems,0x0,
 CustomTrustLevel_NegativeTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow Negative Trust Level avatar triggers,0x0,
 CustomTrustLevel_NegativeTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show Negative Trust Level user icons,0x0,
@@ -188,7 +188,7 @@ CustomTrustLevel_TrustedTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allo
 CustomTrustLevel_TrustedTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show Known User custom avatars,0x1,
 CustomTrustLevel_TrustedTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow Known User custom avatar shaders,0x0,
 CustomTrustLevel_TrustedTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow Known User users to see drones,0x1,
-CustomTrustLevel_TrustedTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Known User emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
+CustomTrustLevel_TrustedTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Known User emoji/sticker sharing,0x1,"^(\{.*\}|\[.*\]|)$"
 CustomTrustLevel_TrustedTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow Known User avatar particle systems,0x0,
 CustomTrustLevel_TrustedTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow Known User avatar triggers,0x1,
 CustomTrustLevel_TrustedTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show Known User user icons,0x1,
@@ -199,7 +199,7 @@ CustomTrustLevel_Untrusted_CanUseCustomAnimations,REG_DWORD,Safety: Allow Visito
 CustomTrustLevel_Untrusted_CanUseCustomAvatar,REG_DWORD,Safety: Show Visitor custom avatars,0x1,
 CustomTrustLevel_Untrusted_CanUseCustomShaders,REG_DWORD,Safety: Allow Visitor custom avatar shaders,0x0,
 CustomTrustLevel_Untrusted_CanUseDrone,REG_DWORD,Safety: Allow Visitor users to see drones,0x1,
-CustomTrustLevel_Untrusted_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Visitor emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
+CustomTrustLevel_Untrusted_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Visitor emoji/sticker sharing,0x1,"^(\{.*\}|\[.*\]|)$"
 CustomTrustLevel_Untrusted_CanUseParticleSystems,REG_DWORD,Safety: Allow Visitor avatar particle systems,0x0,
 CustomTrustLevel_Untrusted_CanUseTriggers,REG_DWORD,Safety: Allow Visitor avatar triggers,0x0,
 CustomTrustLevel_Untrusted_CanUseUserIcons,REG_DWORD,Safety: Show Visitor user icons,0x1,
@@ -210,7 +210,7 @@ CustomTrustLevel_VeryNegativeTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety:
 CustomTrustLevel_VeryNegativeTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show Very Negative Trust Level custom avatars,0x0,
 CustomTrustLevel_VeryNegativeTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow Very Negative Trust Level custom avatar shaders,0x0,
 CustomTrustLevel_VeryNegativeTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow Very Negative Trust Level users to see drones,0x0,
-CustomTrustLevel_VeryNegativeTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Very Negative Trust Level emoji/sticker sharing,0x0,^(\{.*\}|\[.*\]|)$
+CustomTrustLevel_VeryNegativeTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Very Negative Trust Level emoji/sticker sharing,0x0,"^(\{.*\}|\[.*\]|)$"
 CustomTrustLevel_VeryNegativeTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow Very Negative Trust Level avatar particle systems,0x0,
 CustomTrustLevel_VeryNegativeTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow Very Negative Trust Level avatar triggers,0x0,
 CustomTrustLevel_VeryNegativeTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show Very Negative Trust Level user icons,0x0,
@@ -221,20 +221,20 @@ CustomTrustLevel_VeteranTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allo
 CustomTrustLevel_VeteranTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show Trusted User custom avatars,0x1,
 CustomTrustLevel_VeteranTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow Trusted User custom avatar shaders,0x1,
 CustomTrustLevel_VeteranTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow Trusted User users to see drones,0x1,
-CustomTrustLevel_VeteranTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Trusted User emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
+CustomTrustLevel_VeteranTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Trusted User emoji/sticker sharing,0x1,"^(\{.*\}|\[.*\]|)$"
 CustomTrustLevel_VeteranTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow Trusted User avatar particle systems,0x1,
 CustomTrustLevel_VeteranTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow Trusted User avatar triggers,0x1,
 CustomTrustLevel_VeteranTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show Trusted User user icons,0x1,
-DEFAULT_GROUP,REG_BINARY,VRChat setting: DEFAULT_GROUP,,^(| )$
-DEFAULT_GROUP_{userId},REG_BINARY,"Default group configuration for user (JSON object, can be empty)",,^(\{.*\}|\[.*\])$
-DroneControllerSettings,REG_BINARY,Drone camera controller settings (global),hex: 00,^(| )$
-DroneFlightPresetValues,REG_BINARY,Saved drone flight preset values (global),hex: 00,^(| )$
+DEFAULT_GROUP,REG_BINARY,VRChat setting: DEFAULT_GROUP,,"^(| )$"
+DEFAULT_GROUP_{userId},REG_BINARY,"Default group configuration for user (JSON object, can be empty)",,"^(\{.*\}|\[.*\])$"
+DroneControllerSettings,REG_BINARY,Drone camera controller settings (global),hex: 00,"^(| )$"
+DroneFlightPresetValues,REG_BINARY,Saved drone flight preset values (global),hex: 00,"^(| )$"
 FIELD_OF_VIEW,REG_QWORD,Field of view angle for camera (degrees as float),"hex(4): 00,00,00,00,00,00,4e,40",
 FOLDOUT_STATES,REG_BINARY,UI fold-out/collapse states for menu sections,hex: 00,"^(844677190,1242245536|675102555,-1009450350|1242245536| |675102555,1975159648|844677190|675102555|675102555 |675102555,1242245536|675102555,1242245536 )$"
 FPSCapType,REG_DWORD,FPS cap type (none/vsync/custom),0x0,
 FPSType,REG_DWORD,FPS display type (off/simple/advanced),0x2,
-FPS_LIMIT,REG_DWORD,FPS limit value (frames per second),0x3c,^(180|60)$
-FRIEND_LAST_VISIT_HISTORY_{userId},REG_BINARY,History of friend's last visit times for user (JSON object with user IDs and timestamps),,^(\{.*\}|\[.*\])$
+FPS_LIMIT,REG_DWORD,FPS limit value (frames per second),0x3c,"^(180|60)$"
+FRIEND_LAST_VISIT_HISTORY_{userId},REG_BINARY,History of friend's last visit times for user (JSON object with user IDs and timestamps),,"^(\{.*\}|\[.*\])$"
 FaceMirrorOwner,REG_DWORD,Face mirror ownership setting,0x0,
 FirstTimeEvent_First_Action_Menu_Open_{userId},REG_DWORD,Setting per user (FirstTimeEvent_First_Action_Menu_Open_{userId}),,
 FirstTimeEvent_First_Avatar_Change_{userId},REG_DWORD,Setting per user (FirstTimeEvent_First_Avatar_Change_{userId}),,
@@ -287,13 +287,13 @@ HasSeeninv_ea37db04-85d5-4566-8c4f-e0e7afcbcca7QMCallout{userId},REG_DWORD,Setti
 HasSeeninv_{uuid}QMCallout{userId},REG_DWORD,Has seen specific inventory item Quick Menu callout for user,,
 HasSeenresubReminderPopup{userId},REG_DWORD,Has seen resubscribe reminder popup for user,,
 I2 Language,REG_BINARY,"I2 Localization language name (e.g., 'English', 'Japanese' as string)",,"^([A-Za-z]{2,})$"
-INSTANCE_RENAME_HISTORY_{userId},REG_BINARY,History of renamed world instances for user (JSON object),,^(\{.*\}|\[.*\])$
+INSTANCE_RENAME_HISTORY_{userId},REG_BINARY,History of renamed world instances for user (JSON object),,"^(\{.*\}|\[.*\])$"
 InPageCallout_Drone,REG_DWORD,Has seen drone in-page callout (global),,
 InQueueWidgetInfoShowcaseID,REG_DWORD,In-queue widget info showcase ID counter,0x0,
-LOD_QUALITY,REG_DWORD,Level of Detail quality setting (0-3),0x1,^(2|0|1)$
+LOD_QUALITY,REG_DWORD,Level of Detail quality setting (0-3),0x1,"^(2|0|1)$"
 LOGGING_ENABLED,REG_DWORD,Enable/disable debug logging,0x1,
-LocationContext,REG_DWORD,Current location context (home/world/etc),0x0,^(2|0)$
-LocationContext_World,REG_BINARY,"World ID for current location context (wrld_xxx string, can be empty)",hex: 00,^(wrld_[0-9a-f-]+|avtr_[0-9a-f-]+|mat_[0-9a-f-]+)?$
+LocationContext,REG_DWORD,Current location context (home/world/etc),0x0,"^(2|0)$"
+LocationContext_World,REG_BINARY,"World ID for current location context (wrld_xxx string, can be empty)",hex: 00,"^(wrld_[0-9a-f-]+|avtr_[0-9a-f-]+|mat_[0-9a-f-]+)?$"
 MM.Dashboard.RecentWorlds,REG_DWORD,Main Menu: Dashboard recent worlds section collapsed state,,
 MM.Dashboard.RecentlyUpdatedFavoriteAvatars,REG_DWORD,Main Menu: Dashboard recently updated favorite avatars section collapsed state,,
 MM.Dashboard.RecentlyUpdatedFavoriteWorlds,REG_DWORD,Main Menu: Dashboard recently updated favorite worlds section collapsed state,,
@@ -326,8 +326,8 @@ MM.Settings.UserInterface.Visuals,REG_DWORD,Main Menu: Settings > User Interface
 MM.Settings.UserInterface.Visuals.BAckgroundOptions,REG_DWORD,Main Menu: Settings > User Interface > Visuals > Background Options section collapsed state,,
 MM.Worlds.MyWorlds,REG_DWORD,Main Menu: Worlds > My Worlds section collapsed state,,
 MostRecentSubId{userId},REG_BINARY,Most recent subscription ID for user,,
-PARTICLE_PHYSICS_QUALITY,REG_DWORD,Particle system physics quality level (0-3),0x2,^(2|0)$
-PIXEL_LIGHT_COUNT,REG_DWORD,Maximum number of pixel lights per object,0x3,^(3|1)$
+PARTICLE_PHYSICS_QUALITY,REG_DWORD,Particle system physics quality level (0-3),0x2,"^(2|0)$"
+PIXEL_LIGHT_COUNT,REG_DWORD,Maximum number of pixel lights per object,0x3,"^(3|1)$"
 PREF_HAND_TRACKING_TUTORIAL_COMPLETED,REG_DWORD,Has completed hand tracking tutorial,0x0,
 PersonalMirror.FaceMirrorOpacity,REG_QWORD,Personal mirror: Face mirror opacity in VR (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f",
 PersonalMirror.FaceMirrorOpacityDesktop,REG_QWORD,Personal mirror: Face mirror opacity on desktop (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,\f0,3f",
@@ -375,29 +375,29 @@ QM.Settings.Display,REG_DWORD,Quick Menu: Settings > Display section collapsed s
 QM.Settings.Performance,REG_DWORD,Quick Menu: Settings > Performance section collapsed state,,
 QM.Settings.TrackingAndIK,REG_DWORD,Quick Menu: Settings > Tracking & IK section collapsed state,,
 QM.Settings.UIElements,REG_DWORD,Quick Menu: Settings > UI Elements section collapsed state,,
-RANDOM_POOL_BLACKLIST_droneskin,REG_BINARY,VRChat setting: RANDOM_POOL_BLACKLIST_droneskin,,^( )$
-RANDOM_POOL_BLACKLIST_loadingscreen,REG_BINARY,VRChat setting: RANDOM_POOL_BLACKLIST_loadingscreen,,^( )$
-RANDOM_POOL_BLACKLIST_portalskin,REG_BINARY,VRChat setting: RANDOM_POOL_BLACKLIST_portalskin,,^( )$
-RANDOM_POOL_BLACKLIST_warpeffect,REG_BINARY,VRChat setting: RANDOM_POOL_BLACKLIST_warpeffect,,^( )$
-RECENTLY_VISITED_HISTORY_{userId},REG_BINARY,Recently visited worlds history for user (JSON object),,^(\{.*\}|\[.*\])$
-SHADOW_QUALITY,REG_DWORD,"Shadow quality level (0=off, 1=low, 2=medium, 3=high)",0x2,^(2|0)$
+RANDOM_POOL_BLACKLIST_droneskin,REG_BINARY,VRChat setting: RANDOM_POOL_BLACKLIST_droneskin,,"^( )$"
+RANDOM_POOL_BLACKLIST_loadingscreen,REG_BINARY,VRChat setting: RANDOM_POOL_BLACKLIST_loadingscreen,,"^( )$"
+RANDOM_POOL_BLACKLIST_portalskin,REG_BINARY,VRChat setting: RANDOM_POOL_BLACKLIST_portalskin,,"^( )$"
+RANDOM_POOL_BLACKLIST_warpeffect,REG_BINARY,VRChat setting: RANDOM_POOL_BLACKLIST_warpeffect,,"^( )$"
+RECENTLY_VISITED_HISTORY_{userId},REG_BINARY,Recently visited worlds history for user (JSON object),,"^(\{.*\}|\[.*\])$"
+SHADOW_QUALITY,REG_DWORD,"Shadow quality level (0=off, 1=low, 2=medium, 3=high)",0x2,"^(2|0)$"
 SHADOW_RESOLUTION_QUALITY,REG_DWORD,Shadow resolution quality level (0-3),,
 SavedWorldSearches{userId},REG_BINARY,"Saved world search queries for user (JSON object with Searches array, can be empty)",hex: 00,"^(\{.*\}|\[.*\]|"".*""|)$"
 Screenmanager Fullscreen mode,REG_DWORD,"Unity: Current fullscreen mode (0=windowed, 1=fullscreen, 2=borderless)",0x3,
 Screenmanager Fullscreen mode Default,REG_DWORD,"Unity: Default fullscreen mode (0=windowed, 1=fullscreen, 2=borderless)",0x3,
-Screenmanager Resolution Height,REG_DWORD,Unity: Current window height in pixels,0x300,^(938|1366|720|446|768|1006|1009|1000|1360|742|704)$
+Screenmanager Resolution Height,REG_DWORD,Unity: Current window height in pixels,0x300,"^(938|1366|720|446|768|1006|1009|1000|1360|742|704)$"
 Screenmanager Resolution Height Default,REG_DWORD,Unity: Default window height in pixels,0x300,
 Screenmanager Resolution Use Native,REG_DWORD,Unity: Use native display resolution,0x0,
 Screenmanager Resolution Use Native Default,REG_DWORD,Unity: Default use native resolution flag,0x1,
-Screenmanager Resolution Width,REG_DWORD,Unity: Current window width in pixels,0x400,^(504|1391|1080|1920|958|1718|1264|1024|1501)$
+Screenmanager Resolution Width,REG_DWORD,Unity: Current window width in pixels,0x400,"^(504|1391|1080|1920|958|1718|1264|1024|1501)$"
 Screenmanager Resolution Width Default,REG_DWORD,Unity: Default window width in pixels,0x400,
-Screenmanager Resolution Window Height,REG_DWORD,Unity: Windowed mode height in pixels,0x300,^(938|1366|720|446|768|1006|1009|1000|1360)$
-Screenmanager Resolution Window Width,REG_DWORD,Unity: Windowed mode width in pixels,0x400,^(504|1391|958|1080|1920|1718|1024|1501)$
+Screenmanager Resolution Window Height,REG_DWORD,Unity: Windowed mode height in pixels,0x300,"^(938|1366|720|446|768|1006|1009|1000|1360)$"
+Screenmanager Resolution Window Width,REG_DWORD,Unity: Windowed mode width in pixels,0x400,"^(504|1391|958|1080|1920|1718|1024|1501)$"
 Screenmanager Stereo 3D,REG_DWORD,Unity: Enable/disable stereo 3D rendering,0x1,
-Screenmanager Window Position X,REG_DWORD,Unity: Window X position on screen,0x1d4,^(1013|566|0|584|519|539|860|33|527)$
-Screenmanager Window Position Y,REG_DWORD,Unity: Window Y position on screen,0x85,^(0|263|93|-2|62|99|56|111|173)$
+Screenmanager Window Position X,REG_DWORD,Unity: Window X position on screen,0x1d4,"^(1013|566|0|584|519|539|860|33|527)$"
+Screenmanager Window Position Y,REG_DWORD,Unity: Window Y position on screen,0x85,"^(0|263|93|-2|62|99|56|111|173)$"
 SeatedPlayEnabled,REG_DWORD,Enable/disable seated play mode,,
-SeenIPS_SEEN_{userId},REG_BINARY,In-game Purchase Showcase items seen by user (JSON array of IDs),,^(\{.*\}|\[.*\])$
+SeenIPS_SEEN_{userId},REG_BINARY,In-game Purchase Showcase items seen by user (JSON array of IDs),,"^(\{.*\}|\[.*\])$"
 SortSelection_AllFriends,REG_DWORD,Sort order for All Friends list,,
 SortSelection_Authored,REG_DWORD,Sort order for Authored content list,,
 SortSelection_Blocked,REG_DWORD,Sort order for Blocked users list,,
@@ -416,16 +416,16 @@ SortSelection_Group3,REG_DWORD,Sort order for Group 3 list,,
 SortSelection_GroupActivity,REG_DWORD,Sort order for Group Activity list,0x0,
 SortSelection_GroupLocations,REG_DWORD,Sort order for Group Locations list,,
 SortSelection_InRoom,REG_DWORD,Sort order for In Room users list,,
-SortSelection_LaunchPadRecentlyPlayedWith,REG_DWORD,Sort order for LaunchPad Recently Played With list,,^(2|0)$
+SortSelection_LaunchPadRecentlyPlayedWith,REG_DWORD,Sort order for LaunchPad Recently Played With list,,"^(2|0)$"
 SortSelection_LaunchPadRecentlyVistedWorlds,REG_DWORD,Sort order for LaunchPad Recently Visited Worlds list,,
 SortSelection_Licensed,REG_DWORD,Sort order for Licensed content list,,
 SortSelection_Offline,REG_DWORD,Sort order for Offline friends list,,
 SortSelection_OnlineFriends,REG_DWORD,Sort order for Online Friends list,,
 SortSelection_Other,REG_DWORD,Sort order for Other category list,,
 SortSelection_PurchasesFilter,REG_DWORD,Sort order for Purchases filter list,,
-SortSelection_Recent,REG_DWORD,Sort order for Recent list,,^(3|0)$
+SortSelection_Recent,REG_DWORD,Sort order for Recent list,,"^(3|0)$"
 SortSelection_Recent_Avatars,REG_DWORD,Sort order for Recent Avatars list,,
-SortSelection_RecentlySeen,REG_DWORD,VRChat setting: SortSelection_RecentlySeen,,^(2)$
+SortSelection_RecentlySeen,REG_DWORD,VRChat setting: SortSelection_RecentlySeen,,"^(2)$"
 SortSelection_Sdk,REG_DWORD,Sort order for SDK content list,,
 SortSelection_UGCAvatars,REG_DWORD,Sort order for User Generated Content Avatars list,0x0,
 SortSelection_UGCPlaylist1,REG_DWORD,Sort order for UGC Playlist 1 list,0x0,
@@ -440,44 +440,44 @@ SortSelection_VRCPlus4,REG_DWORD,Sort order for VRC+ favorite group 4 list,,
 SortSelection_VRCPlus5,REG_DWORD,Sort order for VRC+ favorite group 5 list,,
 SortSelection_WorldInstances,REG_DWORD,Sort order for World Instances list,0x0,
 SortSelection_Worlds_Playlist1,REG_DWORD,Sort order for Worlds Playlist 1 list,,
-SortSelection_Worlds_Playlist2,REG_DWORD,Sort order for Worlds Playlist 2 list,,^(3|0)$
+SortSelection_Worlds_Playlist2,REG_DWORD,Sort order for Worlds Playlist 2 list,,"^(3|0)$"
 SortSelection_Worlds_Playlist3,REG_DWORD,Sort order for Worlds Playlist 3 list,,
 SortSelection_Worlds_Playlist4,REG_DWORD,Sort order for Worlds Playlist 4 list,,
 SortSelection_Worlds_Uploaded,REG_DWORD,Sort order for Uploaded Worlds list,,
 SortSelection_avatar-legacy,REG_DWORD,Sort order for Legacy avatar list,,
 SortSelection_avatar-public,REG_DWORD,Sort order for Public avatar list,,
 SortSelection_ips_af72a5e7-fa6e-4caa-a9f6-a1fbb550baea,REG_DWORD,Sort order for specific in-game purchase showcase list,,
-StartupLoadingScreenID,REG_BINARY,VRChat setting: StartupLoadingScreenID,,^( )$
-TEST_KEY,REG_DWORD,VRChat setting: TEST_KEY,,^(123)$
-UI.Emojis.CustomGroup0,REG_BINARY,UI emoji custom group 0 configuration (global),hex: 00,^(\{.*\}|\[.*\]|)$
-UI.Emojis.CustomGroup1,REG_BINARY,UI emoji custom group 1 configuration (global),hex: 00,^(\{.*\}|\[.*\]|)$
-UI.Emojis.CustomGroup2,REG_BINARY,UI emoji custom group 2 configuration (global),hex: 00,^(\{.*\}|\[.*\]|)$
+StartupLoadingScreenID,REG_BINARY,VRChat setting: StartupLoadingScreenID,,"^( )$"
+TEST_KEY,REG_DWORD,VRChat setting: TEST_KEY,,"^(123)$"
+UI.Emojis.CustomGroup0,REG_BINARY,UI emoji custom group 0 configuration (global),hex: 00,"^(\{.*\}|\[.*\]|)$"
+UI.Emojis.CustomGroup1,REG_BINARY,UI emoji custom group 1 configuration (global),hex: 00,"^(\{.*\}|\[.*\]|)$"
+UI.Emojis.CustomGroup2,REG_BINARY,UI emoji custom group 2 configuration (global),hex: 00,"^(\{.*\}|\[.*\]|)$"
 UI.MainMenuSocialPage.BlockedByUsers,REG_DWORD,Main Menu social page: Blocked By Users section collapsed state,,
 UI.MainMenuSocialPage.BlockedUsers,REG_DWORD,Main Menu social page: Blocked Users section collapsed state,,
 UI.MenuPlacementZDepthVR,REG_QWORD,Menu placement Z depth distance in VR (as float),"hex(4): 00,00,00,40,33,33,eb,3f",
 UI.MotionSmoothingEnabled,REG_DWORD,Enable/disable UI motion smoothing,0x1,
-UI.Props.CustomGroup0,REG_BINARY,UI props custom group 0 configuration (global),hex: 00,^(\{.*\}|\[.*\]|)$
+UI.Props.CustomGroup0,REG_BINARY,UI props custom group 0 configuration (global),hex: 00,"^(\{.*\}|\[.*\]|)$"
 UI.RecentlyUsedEmojiNames,REG_BINARY,Recently used emoji names list (global),,
 UI.RecentlyUsedEmojiNames.Count,REG_DWORD,Count of recently used emoji names (global),,
 UI.RecentlyUsedEmojiNames0,REG_BINARY,Recently used emoji names list 0 (global),,"^([A-Za-z]{2,})$"
-UI.RecentlyUsedEmojis,REG_BINARY,Recently used emojis list (global),hex: 00,^(\{.*\}|\[.*\]|)$
-UI.RecentlyUsedStickers,REG_BINARY,Recently used stickers list (global),hex: 00,^(\{.*\}|\[.*\]|)$
+UI.RecentlyUsedEmojis,REG_BINARY,Recently used emojis list (global),hex: 00,"^(\{.*\}|\[.*\]|)$"
+UI.RecentlyUsedStickers,REG_BINARY,Recently used stickers list (global),hex: 00,"^(\{.*\}|\[.*\]|)$"
 UI.SelectedUser.DevTools,REG_DWORD,UI Selected User: Dev Tools section collapsed state,,
 UI.SelectedUser.InstanceModeratorActions,REG_DWORD,UI Selected User: Instance Moderator Actions section collapsed state,,
 UI.SelectedUser.PerUserInteraction,REG_DWORD,UI Selected User: Per User Interaction section collapsed state,,
 UI.SelectedUser.UserActions,REG_DWORD,UI Selected User: User Actions section collapsed state,,
 UI.Settings.Osc,REG_DWORD,UI Settings: OSC section collapsed state,0x0,
-UI.Stickers.CustomGroup0,REG_BINARY,UI stickers custom group 0 configuration (global),hex: 00,^(\{.*\}|\[.*\]|)$
-UI.Stickers.CustomGroup1,REG_BINARY,UI stickers custom group 1 configuration (global),hex: 00,^(\{.*\}|\[.*\]|)$
-UI.Stickers.CustomGroup2,REG_BINARY,UI stickers custom group 2 configuration (global),hex: 00,^(\{.*\}|\[.*\]|)$
-UI.{userId}.WingState,REG_BINARY,UI wing menu state for user (open/closed),,^.+$
-USER_CAMERA_RESOLUTION,REG_BINARY,"User camera photo resolution (string value, e.g., 'ConfigFile')",hex: 00,^(ConfigFile||Res_2160|Res_1080 | |Res_1080|Res_1440)$
+UI.Stickers.CustomGroup0,REG_BINARY,UI stickers custom group 0 configuration (global),hex: 00,"^(\{.*\}|\[.*\]|)$"
+UI.Stickers.CustomGroup1,REG_BINARY,UI stickers custom group 1 configuration (global),hex: 00,"^(\{.*\}|\[.*\]|)$"
+UI.Stickers.CustomGroup2,REG_BINARY,UI stickers custom group 2 configuration (global),hex: 00,"^(\{.*\}|\[.*\]|)$"
+UI.{userId}.WingState,REG_BINARY,UI wing menu state for user (open/closed),,"^.+$"
+USER_CAMERA_RESOLUTION,REG_BINARY,"User camera photo resolution (string value, e.g., 'ConfigFile')",hex: 00,"^(ConfigFile||Res_2160|Res_1080 | |Res_1080|Res_1440)$"
 USER_CAMERA_ROLL_WHILE_FLYING,REG_DWORD,User camera: Enable/disable roll while flying with drone,0x1,
 USER_CAMERA_SAVE_METADATA,REG_DWORD,User camera: Save metadata with photos,0x1,
-USER_CAMERA_STREAM_RESOLUTION,REG_DWORD,User camera: Stream resolution quality level,0x1,^(5|1)$
-UnityGraphicsQuality,REG_DWORD,Unity graphics quality preset level (0-5),0x2,^(2|0)$
+USER_CAMERA_STREAM_RESOLUTION,REG_DWORD,User camera: Stream resolution quality level,0x1,"^(5|1)$"
+UnityGraphicsQuality,REG_DWORD,Unity graphics quality preset level (0-5),0x2,"^(2|0)$"
 UnitySelectMonitor,REG_DWORD,Unity selected monitor for display output,0x0,
-UserId,REG_BINARY,Current logged-in user ID (numeric ID as string),,^(\d+)$
+UserId,REG_BINARY,Current logged-in user ID (numeric ID as string),,"^(\d+)$"
 VRC.Modal.ArchiveItem,REG_BINARY,UI: Archive item modal state/data,,
 VRC.UI.QuickMenu.ShowQMDebugInfo,REG_DWORD,Debug: Show Quick Menu debug information,0x0,
 VRC_ACTION_MENU_FLICK_SELECT,REG_DWORD,Action Menu: Enable/disable flick to select items,0x1,
@@ -494,8 +494,8 @@ VRC_ACTION_MENU_R_MENU_OPACITY,REG_QWORD,Action Menu: Right hand menu opacity (0
 VRC_ACTION_MENU_R_MENU_SIZE,REG_DWORD,Action Menu: Right hand menu size preset (0-2),,
 VRC_ACTION_MENU_R_MENU_SIZE_PERCENTAGE,REG_QWORD,Action Menu: Right hand menu size percentage (0.0-1.0 as float),,
 VRC_ACTION_MENU_R_SHOW_ON_HUD,REG_DWORD,Action Menu: Show right hand menu on HUD,,
-VRC_ADVANCED_GRAPHICS_ANTIALIASING,REG_DWORD,"Advanced Graphics: Antialiasing level (0=off, 2=2x, 4=4x, 8=8x)",0x4,^(4|2|1)$
-VRC_ADVANCED_GRAPHICS_QUALITY,REG_BINARY,Advanced Graphics: Quality preset name (Low/Medium/High/Ultra as string),"""High""",^(Low|High |High)$
+VRC_ADVANCED_GRAPHICS_ANTIALIASING,REG_DWORD,"Advanced Graphics: Antialiasing level (0=off, 2=2x, 4=4x, 8=8x)",0x4,"^(4|2|1)$"
+VRC_ADVANCED_GRAPHICS_QUALITY,REG_BINARY,Advanced Graphics: Quality preset name (Low/Medium/High/Ultra as string),"""High""","^(Low|High |High)$"
 VRC_AFK_ENABLED,REG_DWORD,Enable/disable AFK (away from keyboard) detection,0x0,
 VRC_ALLOW_AVATAR_COPYING,REG_DWORD,Privacy: Allow others to clone your avatar,0x1,
 VRC_ALLOW_DIRECT_SHARES,REG_DWORD,Privacy: Allow direct avatar sharing with you,0x1,
@@ -504,17 +504,17 @@ VRC_ALLOW_FOCUS_VIEW,REG_DWORD,Privacy: Allow others to focus view you,0x1,
 VRC_ALLOW_PEDESTAL_SHARES,REG_DWORD,Privacy: Allow avatar sharing via pedestals,0x1,
 VRC_ALLOW_PRINTS,REG_DWORD,Privacy: Allow others to see your Prints/photos,0x1,
 VRC_ALLOW_SHARED_CONNECTIONS,REG_DWORD,VRChat setting: VRC_ALLOW_SHARED_CONNECTIONS,,
-VRC_ALLOW_UNTRUSTED_URL,REG_BINARY,Safety: Allow untrusted URLs in world (0/1 as string),0x0,^(0|1)$
+VRC_ALLOW_UNTRUSTED_URL,REG_BINARY,Safety: Allow untrusted URLs in world (0/1 as string),0x0,"^(0|1)$"
 VRC_ANDROID_MIC_MODE,REG_DWORD,Android: Microphone mode setting,0x0,
 VRC_ASK_TO_PORTAL,REG_DWORD,Safety: Ask before dropping portal to you,0x0,
 VRC_AVATAR_FALLBACK_HIDDEN,REG_DWORD,Performance: Hide fallback avatars when blocked,0x0,
 VRC_AVATAR_HAPTICS_ENABLED,REG_DWORD,Avatar Interactions: Enable/disable avatar haptics feedback,0x0,
-VRC_AVATAR_MAXIMUM_UNCOMPRESSED_SIZE,REG_DWORD,Performance: Maximum avatar uncompressed size in MB,0x1f400000,^(-1|524288000)$
+VRC_AVATAR_MAXIMUM_UNCOMPRESSED_SIZE,REG_DWORD,Performance: Maximum avatar uncompressed size in MB,0x1f400000,"^(-1|524288000)$"
 VRC_AVATAR_PERFORMANCE_RATING_MINIMUM_TO_DISPLAY,REG_DWORD,Performance: Minimum avatar performance rating to show (0-4),0x5,
 VRC_AV_INTERACT_LEVEL,REG_DWORD,Safety: Avatar interaction permission level for others,0x1,
 VRC_AV_INTERACT_SELF,REG_DWORD,Safety: Allow self avatar interactions,0x1,
-VRC_BACKGROUND_GRADIENT_BOTTOM,REG_BINARY,VRChat setting: VRC_BACKGROUND_GRADIENT_BOTTOM,,^(#21385A )$
-VRC_BACKGROUND_GRADIENT_TOP,REG_BINARY,VRChat setting: VRC_BACKGROUND_GRADIENT_TOP,,^(#5D3F86 )$
+VRC_BACKGROUND_GRADIENT_BOTTOM,REG_BINARY,VRChat setting: VRC_BACKGROUND_GRADIENT_BOTTOM,,"^(#21385A )$"
+VRC_BACKGROUND_GRADIENT_TOP,REG_BINARY,VRChat setting: VRC_BACKGROUND_GRADIENT_TOP,,"^(#5D3F86 )$"
 VRC_BINDING_STEAMVR_TOUCH_HOLD_QM,REG_DWORD,Input Binding: SteamVR Touch controller hold for Quick Menu action,,
 VRC_BINDING_STEAMVR_TOUCH_LT_GRAB,REG_DWORD,Input Binding: SteamVR Touch left trigger grab action,,
 VRC_BINDING_STEAMVR_TOUCH_L_ABUTTON_PRESS,REG_DWORD,Input Binding: SteamVR Touch left A button press action,,
@@ -523,7 +523,7 @@ VRC_BINDING_STEAMVR_TOUCH_R_ABUTTON_PRESS,REG_DWORD,Input Binding: SteamVR Touch
 VRC_BINDING_STEAMVR_TOUCH_R_JOY_PRESS,REG_DWORD,Input Binding: SteamVR Touch right joystick press action,,
 VRC_BLOOM_INTENSITY,REG_QWORD,Graphics: Bloom post-processing intensity (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f",
 VRC_BOOP_EMOJI_EFFECT_ENABLED,REG_DWORD,VRChat setting: VRC_BOOP_EMOJI_EFFECT_ENABLED,,
-VRC_CAMERA_NEAR_CLIP_OVERRIDE_MODE,REG_DWORD,"Camera: Near clip plane override mode (0=default, 1=custom)",0x0,^(2|0|1)$
+VRC_CAMERA_NEAR_CLIP_OVERRIDE_MODE,REG_DWORD,"Camera: Near clip plane override mode (0=default, 1=custom)",0x0,"^(2|0|1)$"
 VRC_CAMERA_THIRD_PERSON_VIEW,REG_DWORD,VRChat setting: VRC_CAMERA_THIRD_PERSON_VIEW,,
 VRC_CAMERA_THIRD_PERSON_VIEW_DISTANCE,REG_BINARY,VRChat setting: VRC_CAMERA_THIRD_PERSON_VIEW_DISTANCE,,
 VRC_CAMERA_THIRD_PERSON_VIEW_HORIZONTAL,REG_BINARY,VRChat setting: VRC_CAMERA_THIRD_PERSON_VIEW_HORIZONTAL,,
@@ -532,21 +532,21 @@ VRC_CAMERA_THIRD_PERSON_VIEW_VERTICAL_1,REG_BINARY,VRChat setting: VRC_CAMERA_TH
 VRC_CHAT_BUBBLE_ABOVE_HEAD,REG_DWORD,Chatbox: Show chat bubbles above player heads (legacy),,
 VRC_CHAT_BUBBLE_ABOVE_HEAD_V2,REG_DWORD,Chatbox: Show chat bubbles above player heads,0x0,
 VRC_CHAT_BUBBLE_AUDIO_ENABLED,REG_DWORD,Chatbox: Enable/disable chat bubble audio feedback,0x0,
-VRC_CHAT_BUBBLE_AUDIO_VOLUME,REG_QWORD,Chatbox: Chat bubble audio volume (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f",^(0|0\.\d+|1|1\.0)$
+VRC_CHAT_BUBBLE_AUDIO_VOLUME,REG_QWORD,Chatbox: Chat bubble audio volume (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f","^(0|0\.\d+|1|1\.0)$"
 VRC_CHAT_BUBBLE_AUTO_SEND,REG_DWORD,Chatbox: Auto-send messages on enter/timeout,0x1,
 VRC_CHAT_BUBBLE_OPACITY,REG_QWORD,Chatbox: Chat bubble opacity (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f",
 VRC_CHAT_BUBBLE_POS_HEIGHT,REG_QWORD,Chatbox: Chat bubble position height offset (as float),"hex(4): 00,00,00,00,00,00,e0,3f",
 VRC_CHAT_BUBBLE_SCALE,REG_QWORD,Chatbox: Chat bubble scale size (as float),"hex(4): 00,00,00,00,00,00,f8,3f",
 VRC_CHAT_BUBBLE_SHOW_OWN,REG_DWORD,Chatbox: Show your own chat bubbles,0x1,
 VRC_CHAT_BUBBLE_TIMEOUT,REG_QWORD,Chatbox: Chat bubble display timeout in seconds (as float),"hex(4): 00,00,00,00,00,00,3e,40",
-VRC_CHAT_BUBBLE_VISIBILITY,REG_DWORD,"Chatbox: Chat bubble visibility mode (0=off, 1=on, 2=friends only)",0x2,^(2|1)$
+VRC_CHAT_BUBBLE_VISIBILITY,REG_DWORD,"Chatbox: Chat bubble visibility mode (0=off, 1=on, 2=friends only)",0x2,"^(2|1)$"
 VRC_CLEAR_CACHE_ON_START,REG_DWORD,Performance: Clear cache on game start,0x0,
 VRC_CLOCK_HOUR_MODE,REG_DWORD,"HUD: Clock hour mode (0=24hr, 1=12hr)",,
 VRC_CLOCK_TIMEZONE_MODE,REG_DWORD,"HUD: Clock timezone mode (0=local, 1=UTC, 2=custom)",,
-VRC_CLOCK_VARIANT,REG_DWORD,HUD: Clock visual variant style,0x0,^(450|1000|999999|0)$
+VRC_CLOCK_VARIANT,REG_DWORD,HUD: Clock visual variant style,0x0,"^(450|1000|999999|0)$"
 VRC_COLOR_BLINDNESS_SIMULATE,REG_DWORD,Accessibility: Simulate color blindness for testing,0x0,
 VRC_COLOR_FILTER_INTENSITY,REG_QWORD,Accessibility: Color filter intensity (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,d0,3f",
-VRC_COLOR_FILTER_SELECTION,REG_DWORD,Accessibility: Color filter type selection (protanopia/deuteranopia/tritanopia/etc),0x0,^(4|0|Off)$
+VRC_COLOR_FILTER_SELECTION,REG_DWORD,Accessibility: Color filter type selection (protanopia/deuteranopia/tritanopia/etc),0x0,"^(4|0|Off)$"
 VRC_COLOR_FILTER_TO_WORLD,REG_DWORD,Accessibility: Apply color filter to world (not just UI),0x0,
 VRC_COMFORT_MODE,REG_DWORD,"Comfort: Comfort turning mode in VR (0=off, 1=snap, 2=smooth)",,
 VRC_COMFORT_MODE_DESKTOP,REG_DWORD,Comfort: Comfort turning mode on desktop,,
@@ -554,7 +554,7 @@ VRC_COMFORT_MODE_DESKTOP_PRE_HOLOPORT,REG_DWORD,Comfort: Desktop comfort mode be
 VRC_COMFORT_MODE_PRE_HOLOPORT,REG_DWORD,Comfort: VR comfort mode before Holoport update (migration),,
 VRC_CONVERT_ALL_DYNAMIC_BONES,REG_DWORD,Performance: Convert all dynamic bones to PhysBones system,,
 VRC_CURRENT_LANGUAGE,REG_BINARY,"Current language code for VRChat UI (e.g., 'en', 'ja', 'es' as string)","""en""","^[A-Za-z]{2,}$"
-VRC_DEFAULT_DRONE_SKIN_PALETTE,REG_BINARY,Default drone camera skin color palette (JSON with color hex codes),,^(\{.*\}|\[.*\])$
+VRC_DEFAULT_DRONE_SKIN_PALETTE,REG_BINARY,Default drone camera skin color palette (JSON with color hex codes),,"^(\{.*\}|\[.*\])$"
 VRC_DESKTOP_RETICLE,REG_DWORD,Desktop: Show/hide crosshair reticle,0x1,
 VRC_DIRECT_SHARING_VISIBILITY,REG_DWORD,Privacy: Direct avatar sharing visibility setting,0x1,
 VRC_DISABLE_AVATAR_CLONING_ON_ENTER_WORLD,REG_DWORD,Performance: Disable avatar cloning when entering worlds,0x0,
@@ -580,13 +580,13 @@ VRC_FINGER_HAPTIC_STRENGTH,REG_QWORD,Input: Finger tracking haptic feedback stre
 VRC_FINGER_JUMP_ENABLED,REG_DWORD,Input: Enable/disable finger gesture jump,0x1,
 VRC_FINGER_WALK_SETTING,REG_DWORD,Input: Finger tracking walk gesture setting,0x3,
 VRC_GESTURE_BAR_ENABLED,REG_DWORD,UI: Enable/disable gesture indicator bar,0x0,
-VRC_GROUP_ON_NAMEPLATE,REG_BINARY,UI: Group ID to display on nameplate (grp_xxx string),,^(grp_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})?$
-VRC_GROUP_ORDER_{userId},REG_BINARY,User's group display order/priority (JSON array of group IDs),,^(\{.*\}|\[.*\])$
+VRC_GROUP_ON_NAMEPLATE,REG_BINARY,UI: Group ID to display on nameplate (grp_xxx string),,"^(grp_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})?$"
+VRC_GROUP_ORDER_{userId},REG_BINARY,User's group display order/priority (JSON array of group IDs),,"^(\{.*\}|\[.*\])$"
 VRC_GUIDED_MODE_OPT_IN,REG_DWORD,New User: Opted in to guided mode tutorials,,
 VRC_GUIDED_MODE_STATE,REG_DWORD,New User: Current guided mode tutorial state,,
 VRC_HANDS_MENU_OPEN_MODE,REG_DWORD,Input: Hands menu opening gesture mode,0x1,
 VRC_HIDE_NOTIFICATION_PHOTOS,REG_DWORD,Privacy: Hide photos in notification toasts,0x0,
-VRC_HOME_ACCESS_TYPE,REG_DWORD,Home World: Access permission type (public/friends/invite),0x3,^(4|3|1)$
+VRC_HOME_ACCESS_TYPE,REG_DWORD,Home World: Access permission type (public/friends/invite),0x3,"^(4|3|1)$"
 VRC_HOME_REGION,REG_DWORD,Home World: Preferred region for home world instance,0xffffffff,
 VRC_HUD_ANCHOR,REG_DWORD,HUD: Anchor point for HUD elements,0x1,
 VRC_HUD_MIC_OPACITY,REG_QWORD,HUD: Microphone indicator opacity (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,e0,3f",
@@ -631,7 +631,7 @@ VRC_INPUT_MIC_LEVEL_VR,REG_QWORD,Audio: Microphone gain level for VR (0.0-1.0 as
 VRC_INPUT_MIC_MODE,REG_DWORD,"Audio: Microphone mode (0=push-to-talk, 1=toggle, 2=always on)",0x0,
 VRC_INPUT_MIC_NOISE_GATE,REG_QWORD,Audio: Microphone noise gate threshold (0.0-1.0 as float),"hex(4): 00,00,00,40,e1,7a,84,3f",
 VRC_INPUT_MIC_NOISE_SUPPRESSION,REG_DWORD,Audio: Microphone noise suppression level,0x0,
-VRC_INPUT_MIC_ON_JOIN,REG_DWORD,Audio: Default microphone state when joining world,0x1,^(2|1)$
+VRC_INPUT_MIC_ON_JOIN,REG_DWORD,Audio: Default microphone state when joining world,0x1,"^(2|1)$"
 VRC_INPUT_MOBILE_INTERACTION_MODE,REG_DWORD,Input: Mobile interaction mode type,0x0,
 VRC_INPUT_OPENXR,REG_DWORD,Input: OpenXR controller input enabled,0x0,
 VRC_INPUT_OSC,REG_DWORD,Input: OSC (Open Sound Control) input enabled,0x1,
@@ -685,11 +685,11 @@ VRC_PLAY_NOTIFICATION_AUDIO,REG_DWORD,Notifications: Play audio for notification
 VRC_PORTAL_MODE,REG_DWORD,Safety: Portal drop mode (legacy),,
 VRC_PORTAL_MODE_V2,REG_DWORD,"Safety: Portal drop mode (0=ask, 1=friends+, 2=anyone)",0x0,
 VRC_PORTRAIT_FOV,REG_QWORD,Camera: Field of view for portrait/vertical orientation (degrees as float),"hex(4): 00,00,00,00,00,00,54,40",
-VRC_PREFERRED_TIMEZONE_2,REG_BINARY,"Clock: Preferred timezone identifier (IANA timezone string, can be empty)",hex: 00,^(| )$
+VRC_PREFERRED_TIMEZONE_2,REG_BINARY,"Clock: Preferred timezone identifier (IANA timezone string, can be empty)",hex: 00,"^(| )$"
 VRC_PRINT_VISIBILITY,REG_DWORD,Privacy: Print/photo sharing visibility setting,0x0,
 VRC_PRIORITIZE_FRIEND_DOWNLOADS,REG_DWORD,Performance: Prioritize downloading friend avatars,0x0,
 VRC_PRIORITIZE_MANUAL_DOWNLOADS,REG_DWORD,Performance: Prioritize manually shown avatars for download,0x0,
-VRC_PROFILE_BANNER_COLOR,REG_BINARY,VRChat setting: VRC_PROFILE_BANNER_COLOR,,^( )$
+VRC_PROFILE_BANNER_COLOR,REG_BINARY,VRChat setting: VRC_PROFILE_BANNER_COLOR,,"^( )$"
 VRC_RANDOMIZE_DRONE,REG_DWORD,VRChat setting: VRC_RANDOMIZE_DRONE,,
 VRC_RANDOMIZE_LOADING_SCREEN,REG_DWORD,VRChat setting: VRC_RANDOMIZE_LOADING_SCREEN,,
 VRC_RANDOMIZE_PORTAL,REG_DWORD,VRChat setting: VRC_RANDOMIZE_PORTAL,,
@@ -699,7 +699,7 @@ VRC_SAFETY_LEVEL,REG_DWORD,Safety: Overall safety level preset (0-4),0x2,
 VRC_SCREEN_BRIGHTNESS,REG_QWORD,Display: Screen brightness adjustment (0.0-2.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f",
 VRC_SCREEN_CONTRAST,REG_QWORD,Display: Screen contrast adjustment (0.0-2.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f",
 VRC_SEARCH_SAVED_SEARCHES,REG_BINARY,Search: Saved search queries (can be empty),,
-VRC_SELECTED_NETWORK_REGION,REG_DWORD,Network: Manually selected network region,0x0,^(2|0)$
+VRC_SELECTED_NETWORK_REGION,REG_DWORD,Network: Manually selected network region,0x0,"^(2|0)$"
 VRC_SHOW_COMMUNITY_LABS,REG_DWORD,UI: Show Community Labs category,0x0,
 VRC_SHOW_COMMUNITY_LAB_WORLDS_IN_SEARCH,REG_DWORD,UI: Show Community Labs worlds in search results,0x0,
 VRC_SHOW_COMPATIBILITY_WARNINGS,REG_DWORD,UI: Show compatibility warnings for avatars/worlds,0x0,
@@ -715,8 +715,8 @@ VRC_SHOW_SOCIAL_RANK,REG_DWORD,Nameplates: Show trust rank badges on nameplates,
 VRC_SKIP_GO_BUTTON_IN_LOAD,REG_DWORD,UI: Skip showing Go button during world loading,,
 VRC_SLIDER_SNAPPING,REG_DWORD,UI: Enable/disable slider snapping to preset values,0x1,
 VRC_STREAMER_MODE_ENABLED,REG_DWORD,Privacy: Enable streamer mode (hide sensitive info),0x0,
-VRC_THIRD_PERSON_EXPERIMENT_APPLIED_DEFAULT_USER,REG_BINARY,VRChat setting: VRC_THIRD_PERSON_EXPERIMENT_APPLIED_DEFAULT_USER,,^(unset)$
-VRC_THIRD_PERSON_EXPERIMENT_APPLIED_DEFAULT_USER_1,REG_BINARY,VRChat setting: VRC_THIRD_PERSON_EXPERIMENT_APPLIED_DEFAULT_USER_1,,^(unset)$
+VRC_THIRD_PERSON_EXPERIMENT_APPLIED_DEFAULT_USER,REG_BINARY,VRChat setting: VRC_THIRD_PERSON_EXPERIMENT_APPLIED_DEFAULT_USER,,"^(unset)$"
+VRC_THIRD_PERSON_EXPERIMENT_APPLIED_DEFAULT_USER_1,REG_BINARY,VRChat setting: VRC_THIRD_PERSON_EXPERIMENT_APPLIED_DEFAULT_USER_1,,"^(unset)$"
 VRC_THIRD_PERSON_NUM_TIMES_DISMISSED_NOTIFICATION_1,REG_DWORD,VRChat setting: VRC_THIRD_PERSON_NUM_TIMES_DISMISSED_NOTIFICATION_1,,
 VRC_THIRD_PERSON_NUM_TIMES_DISMISSED_NOTIFICATION_2,REG_DWORD,VRChat setting: VRC_THIRD_PERSON_NUM_TIMES_DISMISSED_NOTIFICATION_2,,
 VRC_TIME_FORMAT_MODE,REG_DWORD,Clock: Time format mode (12hr/24hr),0x0,
@@ -739,7 +739,7 @@ VRC_TRACKING_NUM_TIMES_ENABLED_SELFIE_FACE_TRACKING,REG_DWORD,Tracking: Counter 
 VRC_TRACKING_NUM_TIMES_REFUSED_SELFIE_FACE_TRACKING_POPUP,REG_DWORD,Tracking: Counter for times refused selfie face tracking popup,0x0,
 VRC_TRACKING_NUM_TIMES_REFUSED_SELFIE_FACE_TRACKING_POPUP_VRC_PLUS,REG_DWORD,Tracking: Counter for times refused VRC+ selfie face tracking popup,0x0,
 VRC_TRACKING_NUM_TIMES_SELFIE_FACE_TRACKING_POPUP_VRC_PLUS_CLICKED,REG_DWORD,Tracking: Counter for times clicked VRC+ selfie face tracking popup,0x0,
-VRC_TRACKING_SELFIE_FACE_TRACKING_QUALITY_LEVEL,REG_DWORD,Tracking: Selfie face tracking quality level (0-2),0x4,^(2|4)$
+VRC_TRACKING_SELFIE_FACE_TRACKING_QUALITY_LEVEL,REG_DWORD,Tracking: Selfie face tracking quality level (0-2),0x4,"^(2|4)$"
 VRC_TRACKING_SELFIE_FACE_TRACKING_RECENTER_SPEED,REG_QWORD,Tracking: Selfie face tracking recenter speed (as float),"hex(4): 00,00,00,\00,00,00,d0,3f",
 VRC_TRACKING_SEND_VR_SYSTEM_HEAD_AND_WRIST_OSC_DATA,REG_DWORD,Tracking: Send VR system head and wrist data via OSC,0x0,
 VRC_TRACKING_SHOULD_SHOW_OSC_TRACKING_DATA_REMINDER,REG_DWORD,Tracking: Should show OSC tracking data reminder popup,0x1,
@@ -756,26 +756,26 @@ VRC_WING_PERSISTENCE_ENABLED,REG_DWORD,UI: Remember wing menu state between sess
 VRC_WORLD_TOOLTIP_MODE,REG_DWORD,"UI: World tooltip display mode (0=off, 1=minimal, 2=full)",0x3,
 Wing_Left_Avatars_Category,REG_BINARY,"Wing Menu: Left wing avatars selected category name (e.g., 'Favorites', 'Recent' as string)",,"^([A-Za-z]{2,})$"
 Wing_Left_Avatars_SortBy,REG_BINARY,"Wing Menu: Left wing avatars sort by field (e.g., 'Name', 'Updated' as string)",,"^([A-Za-z]{2,})$"
-Wing_Left_Items_Category,REG_BINARY,Wing Menu: Wing_Left_Items_Category setting,,^(All)$
-Wing_Left_Stickers_Category,REG_BINARY,Wing Menu: Wing_Left_Stickers_Category setting,,^(All)$
+Wing_Left_Items_Category,REG_BINARY,Wing Menu: Wing_Left_Items_Category setting,,"^(All)$"
+Wing_Left_Stickers_Category,REG_BINARY,Wing Menu: Wing_Left_Stickers_Category setting,,"^(All)$"
 Wing_Left_Worlds_Category,REG_BINARY,"Wing Menu: Left wing worlds selected category name (e.g., 'Recent', 'Favorites' as string)",,"^([A-Za-z]{2,})$"
 Wing_Left_Worlds_SortBy,REG_BINARY,"Wing Menu: Left wing worlds sort by field (e.g., 'Title', 'Updated' as string)",,"^([A-Za-z]{2,})$"
-Wing_Right_Avatars_Category,REG_BINARY,Wing Menu: Wing_Right_Avatars_Category setting,,^(Recent)$
-Wing_Right_Avatars_SortBy,REG_BINARY,Wing Menu: Wing_Right_Avatars_SortBy setting,,^(Name)$
+Wing_Right_Avatars_Category,REG_BINARY,Wing Menu: Wing_Right_Avatars_Category setting,,"^(Recent)$"
+Wing_Right_Avatars_SortBy,REG_BINARY,Wing Menu: Wing_Right_Avatars_SortBy setting,,"^(Name)$"
 Wing_Right_Friends_Category,REG_BINARY,"Wing Menu: Right wing friends selected category name (e.g., 'Online', 'Offline' as string)",,"^([A-Za-z]{2,})$"
 Wing_Right_Friends_SortBy,REG_BINARY,"Wing Menu: Right wing friends sort by field (e.g., 'Location', 'Name' as string)",,"^([A-Za-z]{2,})$"
-Wing_Right_Items_Category,REG_BINARY,Wing Menu: Wing_Right_Items_Category setting,,^(All)$
+Wing_Right_Items_Category,REG_BINARY,Wing Menu: Wing_Right_Items_Category setting,,"^(All)$"
 Wings.Friends.Location.PrivateFriends,REG_DWORD,Wing Menu: Friends > Location > Private Friends section collapsed state,,
-_LastExpiredSubscription,REG_BINARY,Stores last expired VRC+ subscription data (can be empty),hex: 00,^(| )$
+_LastExpiredSubscription,REG_BINARY,Stores last expired VRC+ subscription data (can be empty),hex: 00,"^(| )$"
 announcementsSeen,REG_BINARY,List of announcement IDs that have been seen/dismissed,,
 avatarProxyAlwaysShowExplicit,REG_DWORD,Always show avatars marked explicit (global setting),0x1,
 avatarProxyAlwaysShowFriends,REG_DWORD,Always show friend avatars regardless of performance (global setting),0x1,
 avatarProxyShowAtRange,REG_QWORD,"Distance at which to show full avatars (meters, global setting)","hex(4): 00,00,00,00,00,00,59,40",
 avatarProxyShowAtRangeToggle,REG_DWORD,Enable/disable showing avatars at range (global setting),0x0,
-avatarProxyShowMaxNumber,REG_DWORD,Maximum number of avatars to show (global setting),0x50,^(-1|80|30)$
+avatarProxyShowMaxNumber,REG_DWORD,Maximum number of avatars to show (global setting),0x50,"^(-1|80|30)$"
 avatar_tab_start,REG_BINARY,Default starting avatar tab selection,,
 currentShowMaxNumberOfAvatarsEnabled,REG_DWORD,Enable/disable maximum avatar count limit (global setting),0x0,
-discordAuthWarningsShown,REG_DWORD,VRChat setting: discordAuthWarningsShown,,^(3|0|1)$
+discordAuthWarningsShown,REG_DWORD,VRChat setting: discordAuthWarningsShown,,"^(3|0|1)$"
 expiredSeenReminderPopup{userId},REG_BINARY,Has seen subscription expired reminder popup for user,,
 has_opened_live_now_page,REG_DWORD,VRChat setting: has_opened_live_now_page,,
 has_seen_avm-explore-to-cm-migration,REG_DWORD,VRChat setting: has_seen_avm-explore-to-cm-migration,,
@@ -787,27 +787,27 @@ migrated-local-pmods-{userId}-ShowDrone,REG_DWORD,Migrated per-user moderation: 
 timeFormatIs12hrs,REG_DWORD,"Use 12-hour time format (1=12hr, 0=24hr)",,
 timeFormatIs12hrs_migrated,REG_DWORD,Time format migration flag,,
 unity.cloud_userid,REG_BINARY,Unity Analytics cloud user ID (UUID string),,"^([0-9a-fA-F-]{32,36})$"
-unity.player_session_count,REG_BINARY,Unity Analytics player session count (numeric string),,^(\d+)$
-unity.player_sessionid,REG_BINARY,Unity Analytics player session ID (UUID string),,^(\d+)$
+unity.player_session_count,REG_BINARY,Unity Analytics player session count (numeric string),,"^(\d+)$"
+unity.player_sessionid,REG_BINARY,Unity Analytics player session ID (UUID string),,"^(\d+)$"
 {userId}_BACKGROUND_MATERIAL_{userId},REG_BINARY,Custom background material/theme per user,,"^([A-Za-z]{2,})$"
 {userId}_DEFAULT_GROUP,REG_BINARY,Setting per user ({userId}_DEFAULT_GROUP),,
-{userId}_DroneControllerSettings,REG_BINARY,Drone camera controller configuration per user,,^(\{.*\}|\[.*\])$
-{userId}_DroneFlightPresetValues,REG_BINARY,Saved drone flight preset values per user,,^(\{.*\}|\[.*\])$
+{userId}_DroneControllerSettings,REG_BINARY,Drone camera controller configuration per user,,"^(\{.*\}|\[.*\])$"
+{userId}_DroneFlightPresetValues,REG_BINARY,Saved drone flight preset values per user,,"^(\{.*\}|\[.*\])$"
 {userId}_GiftDropNoRefundAfterUsageAgreeToggle,REG_DWORD,User agreed to no refund policy for gift drops,,
 {userId}_InPageCallout_Drone,REG_DWORD,Has seen drone feature callout for this user,,
 {userId}_LastExpiredSubscription,REG_BINARY,Last expired subscription data for this user (can be empty),hex: 00,
 {userId}_OpenMenuHelpShownCount,REG_DWORD,Number of times menu help tooltip shown for this user,0x1,
 {userId}_OpenedQuickMenu,REG_DWORD,Has opened quick menu at least once for this user,0x3,
-{userId}_PromotionData,REG_BINARY,Promotion and offer data shown to this user,,^(\{.*\}|\[.*\])$
-{userId}_UI.Emojis.CustomGroup0,REG_BINARY,Custom emoji group 0 configuration for this user,,^(\{.*\}|\[.*\])$
+{userId}_PromotionData,REG_BINARY,Promotion and offer data shown to this user,,"^(\{.*\}|\[.*\])$"
+{userId}_UI.Emojis.CustomGroup0,REG_BINARY,Custom emoji group 0 configuration for this user,,"^(\{.*\}|\[.*\])$"
 {userId}_UI.Emojis.CustomGroup1,REG_BINARY,UI configuration for this user,,
 {userId}_UI.Emojis.CustomGroup2,REG_BINARY,UI configuration for this user,,
-{userId}_UI.Props.CustomGroup0,REG_BINARY,Custom prop group 0 configuration for this user,,^(\{.*\}|\[.*\])$
-{userId}_UI.RecentlyUsedEmojis,REG_BINARY,Recently used emojis list for this user,,^(\{.*\}|\[.*\])$
-{userId}_UI.RecentlyUsedStickers,REG_BINARY,Recently used stickers list for this user,,^(\{.*\}|\[.*\])$
-{userId}_UI.Stickers.CustomGroup0,REG_BINARY,Custom sticker group 0 for this user,,^(\{.*\}|\[.*\])$
-{userId}_UI.Stickers.CustomGroup1,REG_BINARY,Custom sticker group 1 for this user,,^(\{.*\}|\[.*\])$
-{userId}_UI.Stickers.CustomGroup2,REG_BINARY,Custom sticker group 2 for this user,,^(\{.*\}|\[.*\])$
+{userId}_UI.Props.CustomGroup0,REG_BINARY,Custom prop group 0 configuration for this user,,"^(\{.*\}|\[.*\])$"
+{userId}_UI.RecentlyUsedEmojis,REG_BINARY,Recently used emojis list for this user,,"^(\{.*\}|\[.*\])$"
+{userId}_UI.RecentlyUsedStickers,REG_BINARY,Recently used stickers list for this user,,"^(\{.*\}|\[.*\])$"
+{userId}_UI.Stickers.CustomGroup0,REG_BINARY,Custom sticker group 0 for this user,,"^(\{.*\}|\[.*\])$"
+{userId}_UI.Stickers.CustomGroup1,REG_BINARY,Custom sticker group 1 for this user,,"^(\{.*\}|\[.*\])$"
+{userId}_UI.Stickers.CustomGroup2,REG_BINARY,Custom sticker group 2 for this user,,"^(\{.*\}|\[.*\])$"
 {userId}_avatarProxyAlwaysShowExplicit,REG_DWORD,Always show avatars marked explicit for this user,,
 {userId}_avatarProxyAlwaysShowFriends,REG_DWORD,Always show friend avatars regardless of performance for this user,,
 {userId}_avatarProxyShowAtRange,REG_QWORD,Distance at which to show full avatars for this user (meters),,
