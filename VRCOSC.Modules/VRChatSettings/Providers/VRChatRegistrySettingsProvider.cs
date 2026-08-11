@@ -14,7 +14,7 @@ namespace Bluscream.Modules.Providers;
 /// </summary>
 public class VRChatRegistrySettingsProvider : VRChatSettingsProviderBase<VRChatRegistrySetting>
 {
-    private const string RemoteUrl = "https://gist.github.com/Bluscream/393a8a88b37486f67e9d12b4c615183a/raw/registry.csv";
+    private const string RemoteUrl = "https://raw.githubusercontent.com/Bluscream/vrchat-definitions/main/registry.csv";
     private const string EmbeddedResource = "Bluscream.Modules.Definitions.Registry.csv";
 
     public VRChatRegistrySettingsProvider(VRChatSettingsModule module) : base(module) { }

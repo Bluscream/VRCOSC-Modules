@@ -14,7 +14,7 @@ namespace Bluscream.Modules.Providers;
 /// </summary>
 public class VRChatConfigSettingsProvider : VRChatSettingsProviderBase<VRChatConfigSetting>
 {
-    private const string RemoteUrl = "https://gist.github.com/Bluscream/393a8a88b37486f67e9d12b4c615183a/raw/config.schema.json";
+    private const string RemoteUrl = "https://raw.githubusercontent.com/Bluscream/vrchat-definitions/main/config.schema.json";
     private const string EmbeddedResource = "Bluscream.Modules.Definitions.config.schema.json";
 
     public VRChatConfigSettingsProvider(VRChatSettingsModule module) : base(module) { }

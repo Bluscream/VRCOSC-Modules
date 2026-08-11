@@ -749,14 +749,14 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [17](../VRCOSC.Modules/VRChatSettings/Providers/VRChatConfigSettingsProvider.cs#L17) | `VRChatConfigSettingsProvider` | private | `private const string RemoteUrl = "https://gist.github.com/Bluscream/393a8a88b37486f67e9d12b4c615183a/raw/config.schema.json";` |
+| [17](../VRCOSC.Modules/VRChatSettings/Providers/VRChatConfigSettingsProvider.cs#L17) | `VRChatConfigSettingsProvider` | private | `private const string RemoteUrl = "https://raw.githubusercontent.com/Bluscream/vrchat-definitions/main/config.schema.json";` |
 | [18](../VRCOSC.Modules/VRChatSettings/Providers/VRChatConfigSettingsProvider.cs#L18) | `VRChatConfigSettingsProvider` | private | `private const string EmbeddedResource = "Bluscream.Modules.Definitions.config.schema.json";` |
 
 ### `VRChatSettings/Providers/VRChatRegistrySettingsProvider.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [17](../VRCOSC.Modules/VRChatSettings/Providers/VRChatRegistrySettingsProvider.cs#L17) | `VRChatRegistrySettingsProvider` | private | `private const string RemoteUrl = "https://gist.github.com/Bluscream/393a8a88b37486f67e9d12b4c615183a/raw/registry.csv";` |
+| [17](../VRCOSC.Modules/VRChatSettings/Providers/VRChatRegistrySettingsProvider.cs#L17) | `VRChatRegistrySettingsProvider` | private | `private const string RemoteUrl = "https://raw.githubusercontent.com/Bluscream/vrchat-definitions/main/registry.csv";` |
 | [18](../VRCOSC.Modules/VRChatSettings/Providers/VRChatRegistrySettingsProvider.cs#L18) | `VRChatRegistrySettingsProvider` | private | `private const string EmbeddedResource = "Bluscream.Modules.Definitions.Registry.csv";` |
 
 ### `VRChatSettings/VRChatSettings.cs`
