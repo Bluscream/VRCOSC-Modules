@@ -1,21 +1,21 @@
 KeyName,ValueType,Description,DefaultValue,Pattern
 AUDIO_GAME_AVATARS,REG_QWORD,Audio volume level for avatar sounds (0.0-1.0 as float),"hex(4): 00,00,00,40,33,33,d3,3f",^(0|0\.\d+|1|1\.0)$
-AUDIO_GAME_AVATARS_ENABLED,REG_DWORD,Enable/disable avatar sounds,0x1,^[01]$
+AUDIO_GAME_AVATARS_ENABLED,REG_DWORD,Enable/disable avatar sounds,0x1,
 AUDIO_GAME_AVATARS_STEAMAUDIO,REG_BINARY,Audio: AUDIO_GAME_AVATARS_STEAMAUDIO setting,,
 AUDIO_GAME_PROPS,REG_QWORD,Audio volume level for prop sounds (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f",^(0|0\.\d+|1|1\.0)$
-AUDIO_GAME_PROPS_ENABLED,REG_DWORD,Enable/disable prop sounds,0x1,^[01]$
+AUDIO_GAME_PROPS_ENABLED,REG_DWORD,Enable/disable prop sounds,0x1,
 AUDIO_GAME_PROPS_STEAMAUDIO,REG_BINARY,Audio: AUDIO_GAME_PROPS_STEAMAUDIO setting,,
 AUDIO_GAME_SFX,REG_QWORD,Audio volume level for sound effects (0.0-1.0 as float),"hex(4): 00,00,00,a0,99,99,d9,3f",^(0|0\.\d+|1|1\.0)$
-AUDIO_GAME_SFX_ENABLED,REG_DWORD,Enable/disable sound effects,0x1,^[01]$
+AUDIO_GAME_SFX_ENABLED,REG_DWORD,Enable/disable sound effects,0x1,
 AUDIO_GAME_SFX_STEAMAUDIO,REG_BINARY,Audio: AUDIO_GAME_SFX_STEAMAUDIO setting,,
 AUDIO_GAME_VOICE,REG_QWORD,Audio volume level for player voice chat (0.0-1.0 as float),"hex(4): 00,00,00,40,33,33,e3,3f",^(0|0\.\d+|1|1\.0)$
-AUDIO_GAME_VOICE_ENABLED,REG_DWORD,Enable/disable voice chat audio,0x1,^[01]$
+AUDIO_GAME_VOICE_ENABLED,REG_DWORD,Enable/disable voice chat audio,0x1,
 AUDIO_GAME_VOICE_STEAMAUDIO,REG_BINARY,Audio: AUDIO_GAME_VOICE_STEAMAUDIO setting,,
 AUDIO_MASTER,REG_QWORD,Master audio volume level (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f",^(0|0\.\d+|1|1\.0)$
-AUDIO_MASTER_ENABLED,REG_DWORD,Enable/disable all audio (master mute),0x1,^[01]$
+AUDIO_MASTER_ENABLED,REG_DWORD,Enable/disable all audio (master mute),0x1,
 AUDIO_MASTER_STEAMAUDIO,REG_BINARY,Audio: AUDIO_MASTER_STEAMAUDIO setting,,
 AUDIO_UI,REG_QWORD,Audio volume level for UI sounds (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f",^(0|0\.\d+|1|1\.0)$
-AUDIO_UI_ENABLED,REG_DWORD,Enable/disable UI sounds,0x1,^[01]$
+AUDIO_UI_ENABLED,REG_DWORD,Enable/disable UI sounds,0x1,
 AUDIO_UI_STEAMAUDIO,REG_BINARY,Audio: AUDIO_UI_STEAMAUDIO setting,,
 AVATAR_WORN_HISTORY_{userId},REG_BINARY,JSON history of avatars worn by user with timestamps,,^(\{.*\}|\[.*\])$
 BACKGROUND_DEBUG_LOG_COLLECTION,REG_DWORD,VRChat setting: BACKGROUND_DEBUG_LOG_COLLECTION,,
@@ -27,204 +27,204 @@ COLOR_PALETTES_{userId},REG_BINARY,Custom color palettes saved by user (JSON arr
 COLOR_PALETTE_EVENT_{userId},REG_DWORD,Last color palette event state for user,,
 CosmeticsSectionRedirect_Settings,REG_DWORD,VRChat setting: CosmeticsSectionRedirect_Settings,,
 CosmeticsSectionRedirect_VRCPlus,REG_DWORD,Has been redirected to VRC+ cosmetics section,,
-CustomTrustLevel_AdvancedTrustLevel1_CanSpeak,REG_DWORD,Safety: Allow Advanced Trust Level 1 users to speak,0x1,^[01]$
-CustomTrustLevel_AdvancedTrustLevel1_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Advanced Trust Level 1 users to use animated emojis,0x1,^[01]$
-CustomTrustLevel_AdvancedTrustLevel1_CanUseAvatarAudio,REG_DWORD,Safety: Allow Advanced Trust Level 1 avatar audio sources,0x1,^[01]$
-CustomTrustLevel_AdvancedTrustLevel1_CanUseCustomAnimations,REG_DWORD,Safety: Allow Advanced Trust Level 1 custom avatar animations,0x1,^[01]$
-CustomTrustLevel_AdvancedTrustLevel1_CanUseCustomAvatar,REG_DWORD,Safety: Show Advanced Trust Level 1 custom avatars,0x1,^[01]$
-CustomTrustLevel_AdvancedTrustLevel1_CanUseCustomShaders,REG_DWORD,Safety: Allow Advanced Trust Level 1 custom avatar shaders,0x1,^[01]$
-CustomTrustLevel_AdvancedTrustLevel1_CanUseDrone,REG_DWORD,Safety: Allow Advanced Trust Level 1 users to see drones,0x1,^[01]$
+CustomTrustLevel_AdvancedTrustLevel1_CanSpeak,REG_DWORD,Safety: Allow Advanced Trust Level 1 users to speak,0x1,
+CustomTrustLevel_AdvancedTrustLevel1_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Advanced Trust Level 1 users to use animated emojis,0x1,
+CustomTrustLevel_AdvancedTrustLevel1_CanUseAvatarAudio,REG_DWORD,Safety: Allow Advanced Trust Level 1 avatar audio sources,0x1,
+CustomTrustLevel_AdvancedTrustLevel1_CanUseCustomAnimations,REG_DWORD,Safety: Allow Advanced Trust Level 1 custom avatar animations,0x1,
+CustomTrustLevel_AdvancedTrustLevel1_CanUseCustomAvatar,REG_DWORD,Safety: Show Advanced Trust Level 1 custom avatars,0x1,
+CustomTrustLevel_AdvancedTrustLevel1_CanUseCustomShaders,REG_DWORD,Safety: Allow Advanced Trust Level 1 custom avatar shaders,0x1,
+CustomTrustLevel_AdvancedTrustLevel1_CanUseDrone,REG_DWORD,Safety: Allow Advanced Trust Level 1 users to see drones,0x1,
 CustomTrustLevel_AdvancedTrustLevel1_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Advanced Trust Level 1 emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
-CustomTrustLevel_AdvancedTrustLevel1_CanUseParticleSystems,REG_DWORD,Safety: Allow Advanced Trust Level 1 avatar particle systems,0x1,^[01]$
-CustomTrustLevel_AdvancedTrustLevel1_CanUseTriggers,REG_DWORD,Safety: Allow Advanced Trust Level 1 avatar triggers,0x1,^[01]$
-CustomTrustLevel_AdvancedTrustLevel1_CanUseUserIcons,REG_DWORD,Safety: Show Advanced Trust Level 1 user icons,0x1,^[01]$
-CustomTrustLevel_AdvancedTrustLevel2_CanSpeak,REG_DWORD,Safety: Allow Advanced Trust Level 2 users to speak,0x1,^[01]$
-CustomTrustLevel_AdvancedTrustLevel2_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Advanced Trust Level 2 users to use animated emojis,0x1,^[01]$
-CustomTrustLevel_AdvancedTrustLevel2_CanUseAvatarAudio,REG_DWORD,Safety: Allow Advanced Trust Level 2 avatar audio sources,0x1,^[01]$
-CustomTrustLevel_AdvancedTrustLevel2_CanUseCustomAnimations,REG_DWORD,Safety: Allow Advanced Trust Level 2 custom avatar animations,0x1,^[01]$
-CustomTrustLevel_AdvancedTrustLevel2_CanUseCustomAvatar,REG_DWORD,Safety: Show Advanced Trust Level 2 custom avatars,0x1,^[01]$
-CustomTrustLevel_AdvancedTrustLevel2_CanUseCustomShaders,REG_DWORD,Safety: Allow Advanced Trust Level 2 custom avatar shaders,0x1,^[01]$
-CustomTrustLevel_AdvancedTrustLevel2_CanUseDrone,REG_DWORD,Safety: Allow Advanced Trust Level 2 users to see drones,0x1,^[01]$
+CustomTrustLevel_AdvancedTrustLevel1_CanUseParticleSystems,REG_DWORD,Safety: Allow Advanced Trust Level 1 avatar particle systems,0x1,
+CustomTrustLevel_AdvancedTrustLevel1_CanUseTriggers,REG_DWORD,Safety: Allow Advanced Trust Level 1 avatar triggers,0x1,
+CustomTrustLevel_AdvancedTrustLevel1_CanUseUserIcons,REG_DWORD,Safety: Show Advanced Trust Level 1 user icons,0x1,
+CustomTrustLevel_AdvancedTrustLevel2_CanSpeak,REG_DWORD,Safety: Allow Advanced Trust Level 2 users to speak,0x1,
+CustomTrustLevel_AdvancedTrustLevel2_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Advanced Trust Level 2 users to use animated emojis,0x1,
+CustomTrustLevel_AdvancedTrustLevel2_CanUseAvatarAudio,REG_DWORD,Safety: Allow Advanced Trust Level 2 avatar audio sources,0x1,
+CustomTrustLevel_AdvancedTrustLevel2_CanUseCustomAnimations,REG_DWORD,Safety: Allow Advanced Trust Level 2 custom avatar animations,0x1,
+CustomTrustLevel_AdvancedTrustLevel2_CanUseCustomAvatar,REG_DWORD,Safety: Show Advanced Trust Level 2 custom avatars,0x1,
+CustomTrustLevel_AdvancedTrustLevel2_CanUseCustomShaders,REG_DWORD,Safety: Allow Advanced Trust Level 2 custom avatar shaders,0x1,
+CustomTrustLevel_AdvancedTrustLevel2_CanUseDrone,REG_DWORD,Safety: Allow Advanced Trust Level 2 users to see drones,0x1,
 CustomTrustLevel_AdvancedTrustLevel2_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Advanced Trust Level 2 emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
-CustomTrustLevel_AdvancedTrustLevel2_CanUseParticleSystems,REG_DWORD,Safety: Allow Advanced Trust Level 2 avatar particle systems,0x1,^[01]$
-CustomTrustLevel_AdvancedTrustLevel2_CanUseTriggers,REG_DWORD,Safety: Allow Advanced Trust Level 2 avatar triggers,0x1,^[01]$
-CustomTrustLevel_AdvancedTrustLevel2_CanUseUserIcons,REG_DWORD,Safety: Show Advanced Trust Level 2 user icons,0x1,^[01]$
-CustomTrustLevel_BasicTrustLevel1_CanSpeak,REG_DWORD,Safety: Allow New User 1 users to speak,0x1,^[01]$
-CustomTrustLevel_BasicTrustLevel1_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow New User 1 animated emojis,0x1,^[01]$
-CustomTrustLevel_BasicTrustLevel1_CanUseAvatarAudio,REG_DWORD,Safety: Allow New User 1 avatar audio sources,0x0,^[01]$
-CustomTrustLevel_BasicTrustLevel1_CanUseCustomAnimations,REG_DWORD,Safety: Allow New User 1 custom avatar animations,0x0,^[01]$
-CustomTrustLevel_BasicTrustLevel1_CanUseCustomAvatar,REG_DWORD,Safety: Show New User 1 custom avatars,0x1,^[01]$
-CustomTrustLevel_BasicTrustLevel1_CanUseCustomShaders,REG_DWORD,Safety: Allow New User 1 custom avatar shaders,0x0,^[01]$
-CustomTrustLevel_BasicTrustLevel1_CanUseDrone,REG_DWORD,Safety: Allow New User 1 users to see drones,0x1,^[01]$
+CustomTrustLevel_AdvancedTrustLevel2_CanUseParticleSystems,REG_DWORD,Safety: Allow Advanced Trust Level 2 avatar particle systems,0x1,
+CustomTrustLevel_AdvancedTrustLevel2_CanUseTriggers,REG_DWORD,Safety: Allow Advanced Trust Level 2 avatar triggers,0x1,
+CustomTrustLevel_AdvancedTrustLevel2_CanUseUserIcons,REG_DWORD,Safety: Show Advanced Trust Level 2 user icons,0x1,
+CustomTrustLevel_BasicTrustLevel1_CanSpeak,REG_DWORD,Safety: Allow New User 1 users to speak,0x1,
+CustomTrustLevel_BasicTrustLevel1_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow New User 1 animated emojis,0x1,
+CustomTrustLevel_BasicTrustLevel1_CanUseAvatarAudio,REG_DWORD,Safety: Allow New User 1 avatar audio sources,0x0,
+CustomTrustLevel_BasicTrustLevel1_CanUseCustomAnimations,REG_DWORD,Safety: Allow New User 1 custom avatar animations,0x0,
+CustomTrustLevel_BasicTrustLevel1_CanUseCustomAvatar,REG_DWORD,Safety: Show New User 1 custom avatars,0x1,
+CustomTrustLevel_BasicTrustLevel1_CanUseCustomShaders,REG_DWORD,Safety: Allow New User 1 custom avatar shaders,0x0,
+CustomTrustLevel_BasicTrustLevel1_CanUseDrone,REG_DWORD,Safety: Allow New User 1 users to see drones,0x1,
 CustomTrustLevel_BasicTrustLevel1_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow New User 1 emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
-CustomTrustLevel_BasicTrustLevel1_CanUseParticleSystems,REG_DWORD,Safety: Allow New User 1 avatar particle systems,0x0,^[01]$
-CustomTrustLevel_BasicTrustLevel1_CanUseTriggers,REG_DWORD,Safety: Allow New User 1 avatar triggers,0x0,^[01]$
-CustomTrustLevel_BasicTrustLevel1_CanUseUserIcons,REG_DWORD,Safety: Show New User 1 user icons,0x1,^[01]$
-CustomTrustLevel_BasicTrustLevel_CanSpeak,REG_DWORD,Safety: Allow New User to speak,0x1,^[01]$
-CustomTrustLevel_BasicTrustLevel_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow New User animated emojis,0x1,^[01]$
-CustomTrustLevel_BasicTrustLevel_CanUseAvatarAudio,REG_DWORD,Safety: Allow New User avatar audio sources,0x0,^[01]$
-CustomTrustLevel_BasicTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allow New User custom avatar animations,0x0,^[01]$
-CustomTrustLevel_BasicTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show New User custom avatars,0x1,^[01]$
-CustomTrustLevel_BasicTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow New User custom avatar shaders,0x0,^[01]$
-CustomTrustLevel_BasicTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow New User users to see drones,0x1,^[01]$
+CustomTrustLevel_BasicTrustLevel1_CanUseParticleSystems,REG_DWORD,Safety: Allow New User 1 avatar particle systems,0x0,
+CustomTrustLevel_BasicTrustLevel1_CanUseTriggers,REG_DWORD,Safety: Allow New User 1 avatar triggers,0x0,
+CustomTrustLevel_BasicTrustLevel1_CanUseUserIcons,REG_DWORD,Safety: Show New User 1 user icons,0x1,
+CustomTrustLevel_BasicTrustLevel_CanSpeak,REG_DWORD,Safety: Allow New User to speak,0x1,
+CustomTrustLevel_BasicTrustLevel_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow New User animated emojis,0x1,
+CustomTrustLevel_BasicTrustLevel_CanUseAvatarAudio,REG_DWORD,Safety: Allow New User avatar audio sources,0x0,
+CustomTrustLevel_BasicTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allow New User custom avatar animations,0x0,
+CustomTrustLevel_BasicTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show New User custom avatars,0x1,
+CustomTrustLevel_BasicTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow New User custom avatar shaders,0x0,
+CustomTrustLevel_BasicTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow New User users to see drones,0x1,
 CustomTrustLevel_BasicTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow New User emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
-CustomTrustLevel_BasicTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow New User avatar particle systems,0x0,^[01]$
-CustomTrustLevel_BasicTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow New User avatar triggers,0x0,^[01]$
-CustomTrustLevel_BasicTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show New User user icons,0x1,^[01]$
-CustomTrustLevel_DeveloperTrustLevel_CanSpeak,REG_DWORD,Safety: Allow Developer Trust Level users to speak,0x1,^[01]$
-CustomTrustLevel_DeveloperTrustLevel_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Developer Trust Level animated emojis,0x1,^[01]$
-CustomTrustLevel_DeveloperTrustLevel_CanUseAvatarAudio,REG_DWORD,Safety: Allow Developer Trust Level avatar audio sources,0x1,^[01]$
-CustomTrustLevel_DeveloperTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allow Developer Trust Level custom avatar animations,0x1,^[01]$
-CustomTrustLevel_DeveloperTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show Developer Trust Level custom avatars,0x1,^[01]$
-CustomTrustLevel_DeveloperTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow Developer Trust Level custom avatar shaders,0x1,^[01]$
-CustomTrustLevel_DeveloperTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow Developer Trust Level users to see drones,0x1,^[01]$
+CustomTrustLevel_BasicTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow New User avatar particle systems,0x0,
+CustomTrustLevel_BasicTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow New User avatar triggers,0x0,
+CustomTrustLevel_BasicTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show New User user icons,0x1,
+CustomTrustLevel_DeveloperTrustLevel_CanSpeak,REG_DWORD,Safety: Allow Developer Trust Level users to speak,0x1,
+CustomTrustLevel_DeveloperTrustLevel_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Developer Trust Level animated emojis,0x1,
+CustomTrustLevel_DeveloperTrustLevel_CanUseAvatarAudio,REG_DWORD,Safety: Allow Developer Trust Level avatar audio sources,0x1,
+CustomTrustLevel_DeveloperTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allow Developer Trust Level custom avatar animations,0x1,
+CustomTrustLevel_DeveloperTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show Developer Trust Level custom avatars,0x1,
+CustomTrustLevel_DeveloperTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow Developer Trust Level custom avatar shaders,0x1,
+CustomTrustLevel_DeveloperTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow Developer Trust Level users to see drones,0x1,
 CustomTrustLevel_DeveloperTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Developer Trust Level emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
-CustomTrustLevel_DeveloperTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow Developer Trust Level avatar particle systems,0x1,^[01]$
-CustomTrustLevel_DeveloperTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow Developer Trust Level avatar triggers,0x1,^[01]$
-CustomTrustLevel_DeveloperTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show Developer Trust Level user icons,0x1,^[01]$
-CustomTrustLevel_Friend_CanSpeak,REG_DWORD,Safety: Allow Friends to speak,0x1,^[01]$
-CustomTrustLevel_Friend_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Friends animated emojis,0x1,^[01]$
-CustomTrustLevel_Friend_CanUseAvatarAudio,REG_DWORD,Safety: Allow Friends avatar audio sources,0x1,^[01]$
-CustomTrustLevel_Friend_CanUseCustomAnimations,REG_DWORD,Safety: Allow Friends custom avatar animations,0x1,^[01]$
-CustomTrustLevel_Friend_CanUseCustomAvatar,REG_DWORD,Safety: Show Friends custom avatars,0x1,^[01]$
-CustomTrustLevel_Friend_CanUseCustomShaders,REG_DWORD,Safety: Allow Friends custom avatar shaders,0x1,^[01]$
-CustomTrustLevel_Friend_CanUseDrone,REG_DWORD,Safety: Allow Friends to see drones,0x1,^[01]$
+CustomTrustLevel_DeveloperTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow Developer Trust Level avatar particle systems,0x1,
+CustomTrustLevel_DeveloperTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow Developer Trust Level avatar triggers,0x1,
+CustomTrustLevel_DeveloperTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show Developer Trust Level user icons,0x1,
+CustomTrustLevel_Friend_CanSpeak,REG_DWORD,Safety: Allow Friends to speak,0x1,
+CustomTrustLevel_Friend_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Friends animated emojis,0x1,
+CustomTrustLevel_Friend_CanUseAvatarAudio,REG_DWORD,Safety: Allow Friends avatar audio sources,0x1,
+CustomTrustLevel_Friend_CanUseCustomAnimations,REG_DWORD,Safety: Allow Friends custom avatar animations,0x1,
+CustomTrustLevel_Friend_CanUseCustomAvatar,REG_DWORD,Safety: Show Friends custom avatars,0x1,
+CustomTrustLevel_Friend_CanUseCustomShaders,REG_DWORD,Safety: Allow Friends custom avatar shaders,0x1,
+CustomTrustLevel_Friend_CanUseDrone,REG_DWORD,Safety: Allow Friends to see drones,0x1,
 CustomTrustLevel_Friend_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Friends emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
-CustomTrustLevel_Friend_CanUseParticleSystems,REG_DWORD,Safety: Allow Friends avatar particle systems,0x1,^[01]$
-CustomTrustLevel_Friend_CanUseTriggers,REG_DWORD,Safety: Allow Friends avatar triggers,0x1,^[01]$
-CustomTrustLevel_Friend_CanUseUserIcons,REG_DWORD,Safety: Show Friends user icons,0x1,^[01]$
-CustomTrustLevel_IntermediateTrustLevel1_CanSpeak,REG_DWORD,Safety: Allow Intermediate Trust Level 1 (User) to speak,0x1,^[01]$
-CustomTrustLevel_IntermediateTrustLevel1_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Intermediate Trust Level 1 animated emojis,0x1,^[01]$
-CustomTrustLevel_IntermediateTrustLevel1_CanUseAvatarAudio,REG_DWORD,Safety: Allow Intermediate Trust Level 1 avatar audio sources,0x0,^[01]$
-CustomTrustLevel_IntermediateTrustLevel1_CanUseCustomAnimations,REG_DWORD,Safety: Allow Intermediate Trust Level 1 custom avatar animations,0x1,^[01]$
-CustomTrustLevel_IntermediateTrustLevel1_CanUseCustomAvatar,REG_DWORD,Safety: Show Intermediate Trust Level 1 custom avatars,0x1,^[01]$
-CustomTrustLevel_IntermediateTrustLevel1_CanUseCustomShaders,REG_DWORD,Safety: Allow Intermediate Trust Level 1 custom avatar shaders,0x0,^[01]$
-CustomTrustLevel_IntermediateTrustLevel1_CanUseDrone,REG_DWORD,Safety: Allow Intermediate Trust Level 1 users to see drones,0x1,^[01]$
+CustomTrustLevel_Friend_CanUseParticleSystems,REG_DWORD,Safety: Allow Friends avatar particle systems,0x1,
+CustomTrustLevel_Friend_CanUseTriggers,REG_DWORD,Safety: Allow Friends avatar triggers,0x1,
+CustomTrustLevel_Friend_CanUseUserIcons,REG_DWORD,Safety: Show Friends user icons,0x1,
+CustomTrustLevel_IntermediateTrustLevel1_CanSpeak,REG_DWORD,Safety: Allow Intermediate Trust Level 1 (User) to speak,0x1,
+CustomTrustLevel_IntermediateTrustLevel1_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Intermediate Trust Level 1 animated emojis,0x1,
+CustomTrustLevel_IntermediateTrustLevel1_CanUseAvatarAudio,REG_DWORD,Safety: Allow Intermediate Trust Level 1 avatar audio sources,0x0,
+CustomTrustLevel_IntermediateTrustLevel1_CanUseCustomAnimations,REG_DWORD,Safety: Allow Intermediate Trust Level 1 custom avatar animations,0x1,
+CustomTrustLevel_IntermediateTrustLevel1_CanUseCustomAvatar,REG_DWORD,Safety: Show Intermediate Trust Level 1 custom avatars,0x1,
+CustomTrustLevel_IntermediateTrustLevel1_CanUseCustomShaders,REG_DWORD,Safety: Allow Intermediate Trust Level 1 custom avatar shaders,0x0,
+CustomTrustLevel_IntermediateTrustLevel1_CanUseDrone,REG_DWORD,Safety: Allow Intermediate Trust Level 1 users to see drones,0x1,
 CustomTrustLevel_IntermediateTrustLevel1_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Intermediate Trust Level 1 emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
-CustomTrustLevel_IntermediateTrustLevel1_CanUseParticleSystems,REG_DWORD,Safety: Allow Intermediate Trust Level 1 avatar particle systems,0x0,^[01]$
-CustomTrustLevel_IntermediateTrustLevel1_CanUseTriggers,REG_DWORD,Safety: Allow Intermediate Trust Level 1 avatar triggers,0x1,^[01]$
-CustomTrustLevel_IntermediateTrustLevel1_CanUseUserIcons,REG_DWORD,Safety: Show Intermediate Trust Level 1 user icons,0x1,^[01]$
-CustomTrustLevel_IntermediateTrustLevel2_CanSpeak,REG_DWORD,Safety: Allow Intermediate Trust Level 2 users to speak,0x1,^[01]$
-CustomTrustLevel_IntermediateTrustLevel2_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Intermediate Trust Level 2 animated emojis,0x1,^[01]$
-CustomTrustLevel_IntermediateTrustLevel2_CanUseAvatarAudio,REG_DWORD,Safety: Allow Intermediate Trust Level 2 avatar audio sources,0x1,^[01]$
-CustomTrustLevel_IntermediateTrustLevel2_CanUseCustomAnimations,REG_DWORD,Safety: Allow Intermediate Trust Level 2 custom avatar animations,0x1,^[01]$
-CustomTrustLevel_IntermediateTrustLevel2_CanUseCustomAvatar,REG_DWORD,Safety: Show Intermediate Trust Level 2 custom avatars,0x1,^[01]$
-CustomTrustLevel_IntermediateTrustLevel2_CanUseCustomShaders,REG_DWORD,Safety: Allow Intermediate Trust Level 2 custom avatar shaders,0x0,^[01]$
-CustomTrustLevel_IntermediateTrustLevel2_CanUseDrone,REG_DWORD,Safety: Allow Intermediate Trust Level 2 users to see drones,0x1,^[01]$
+CustomTrustLevel_IntermediateTrustLevel1_CanUseParticleSystems,REG_DWORD,Safety: Allow Intermediate Trust Level 1 avatar particle systems,0x0,
+CustomTrustLevel_IntermediateTrustLevel1_CanUseTriggers,REG_DWORD,Safety: Allow Intermediate Trust Level 1 avatar triggers,0x1,
+CustomTrustLevel_IntermediateTrustLevel1_CanUseUserIcons,REG_DWORD,Safety: Show Intermediate Trust Level 1 user icons,0x1,
+CustomTrustLevel_IntermediateTrustLevel2_CanSpeak,REG_DWORD,Safety: Allow Intermediate Trust Level 2 users to speak,0x1,
+CustomTrustLevel_IntermediateTrustLevel2_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Intermediate Trust Level 2 animated emojis,0x1,
+CustomTrustLevel_IntermediateTrustLevel2_CanUseAvatarAudio,REG_DWORD,Safety: Allow Intermediate Trust Level 2 avatar audio sources,0x1,
+CustomTrustLevel_IntermediateTrustLevel2_CanUseCustomAnimations,REG_DWORD,Safety: Allow Intermediate Trust Level 2 custom avatar animations,0x1,
+CustomTrustLevel_IntermediateTrustLevel2_CanUseCustomAvatar,REG_DWORD,Safety: Show Intermediate Trust Level 2 custom avatars,0x1,
+CustomTrustLevel_IntermediateTrustLevel2_CanUseCustomShaders,REG_DWORD,Safety: Allow Intermediate Trust Level 2 custom avatar shaders,0x0,
+CustomTrustLevel_IntermediateTrustLevel2_CanUseDrone,REG_DWORD,Safety: Allow Intermediate Trust Level 2 users to see drones,0x1,
 CustomTrustLevel_IntermediateTrustLevel2_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Intermediate Trust Level 2 emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
-CustomTrustLevel_IntermediateTrustLevel2_CanUseParticleSystems,REG_DWORD,Safety: Allow Intermediate Trust Level 2 avatar particle systems,0x0,^[01]$
-CustomTrustLevel_IntermediateTrustLevel2_CanUseTriggers,REG_DWORD,Safety: Allow Intermediate Trust Level 2 avatar triggers,0x1,^[01]$
-CustomTrustLevel_IntermediateTrustLevel2_CanUseUserIcons,REG_DWORD,Safety: Show Intermediate Trust Level 2 user icons,0x1,^[01]$
-CustomTrustLevel_KnownTrustLevel_CanSpeak,REG_DWORD,Safety: Allow User users to speak,0x1,^[01]$
-CustomTrustLevel_KnownTrustLevel_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow User animated emojis,0x1,^[01]$
-CustomTrustLevel_KnownTrustLevel_CanUseAvatarAudio,REG_DWORD,Safety: Allow User avatar audio sources,0x0,^[01]$
-CustomTrustLevel_KnownTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allow User custom avatar animations,0x1,^[01]$
-CustomTrustLevel_KnownTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show User custom avatars,0x1,^[01]$
-CustomTrustLevel_KnownTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow User custom avatar shaders,0x0,^[01]$
-CustomTrustLevel_KnownTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow User users to see drones,0x1,^[01]$
+CustomTrustLevel_IntermediateTrustLevel2_CanUseParticleSystems,REG_DWORD,Safety: Allow Intermediate Trust Level 2 avatar particle systems,0x0,
+CustomTrustLevel_IntermediateTrustLevel2_CanUseTriggers,REG_DWORD,Safety: Allow Intermediate Trust Level 2 avatar triggers,0x1,
+CustomTrustLevel_IntermediateTrustLevel2_CanUseUserIcons,REG_DWORD,Safety: Show Intermediate Trust Level 2 user icons,0x1,
+CustomTrustLevel_KnownTrustLevel_CanSpeak,REG_DWORD,Safety: Allow User users to speak,0x1,
+CustomTrustLevel_KnownTrustLevel_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow User animated emojis,0x1,
+CustomTrustLevel_KnownTrustLevel_CanUseAvatarAudio,REG_DWORD,Safety: Allow User avatar audio sources,0x0,
+CustomTrustLevel_KnownTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allow User custom avatar animations,0x1,
+CustomTrustLevel_KnownTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show User custom avatars,0x1,
+CustomTrustLevel_KnownTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow User custom avatar shaders,0x0,
+CustomTrustLevel_KnownTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow User users to see drones,0x1,
 CustomTrustLevel_KnownTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow User emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
-CustomTrustLevel_KnownTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow User avatar particle systems,0x0,^[01]$
-CustomTrustLevel_KnownTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow User avatar triggers,0x1,^[01]$
-CustomTrustLevel_KnownTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show User user icons,0x1,^[01]$
-CustomTrustLevel_LegendTrustLevel_CanSpeak,REG_DWORD,Safety: Allow Legend Trust Level users to speak,0x1,^[01]$
-CustomTrustLevel_LegendTrustLevel_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Legend Trust Level animated emojis,0x1,^[01]$
-CustomTrustLevel_LegendTrustLevel_CanUseAvatarAudio,REG_DWORD,Safety: Allow Legend Trust Level avatar audio sources,0x1,^[01]$
-CustomTrustLevel_LegendTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allow Legend Trust Level custom avatar animations,0x1,^[01]$
-CustomTrustLevel_LegendTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show Legend Trust Level custom avatars,0x1,^[01]$
-CustomTrustLevel_LegendTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow Legend Trust Level custom avatar shaders,0x1,^[01]$
-CustomTrustLevel_LegendTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow Legend Trust Level users to see drones,0x1,^[01]$
+CustomTrustLevel_KnownTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow User avatar particle systems,0x0,
+CustomTrustLevel_KnownTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow User avatar triggers,0x1,
+CustomTrustLevel_KnownTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show User user icons,0x1,
+CustomTrustLevel_LegendTrustLevel_CanSpeak,REG_DWORD,Safety: Allow Legend Trust Level users to speak,0x1,
+CustomTrustLevel_LegendTrustLevel_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Legend Trust Level animated emojis,0x1,
+CustomTrustLevel_LegendTrustLevel_CanUseAvatarAudio,REG_DWORD,Safety: Allow Legend Trust Level avatar audio sources,0x1,
+CustomTrustLevel_LegendTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allow Legend Trust Level custom avatar animations,0x1,
+CustomTrustLevel_LegendTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show Legend Trust Level custom avatars,0x1,
+CustomTrustLevel_LegendTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow Legend Trust Level custom avatar shaders,0x1,
+CustomTrustLevel_LegendTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow Legend Trust Level users to see drones,0x1,
 CustomTrustLevel_LegendTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Legend Trust Level emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
-CustomTrustLevel_LegendTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow Legend Trust Level avatar particle systems,0x1,^[01]$
-CustomTrustLevel_LegendTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow Legend Trust Level avatar triggers,0x1,^[01]$
-CustomTrustLevel_LegendTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show Legend Trust Level user icons,0x1,^[01]$
-CustomTrustLevel_LocalPlayer_CanSpeak,REG_DWORD,Safety: Allow Local Player (Self) to speak,0x1,^[01]$
-CustomTrustLevel_LocalPlayer_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Local Player animated emojis,0x1,^[01]$
-CustomTrustLevel_LocalPlayer_CanUseAvatarAudio,REG_DWORD,Safety: Allow Local Player avatar audio sources,0x1,^[01]$
-CustomTrustLevel_LocalPlayer_CanUseCustomAnimations,REG_DWORD,Safety: Allow Local Player custom avatar animations,0x1,^[01]$
-CustomTrustLevel_LocalPlayer_CanUseCustomAvatar,REG_DWORD,Safety: Show Local Player custom avatars,0x1,^[01]$
-CustomTrustLevel_LocalPlayer_CanUseCustomShaders,REG_DWORD,Safety: Allow Local Player custom avatar shaders,0x1,^[01]$
-CustomTrustLevel_LocalPlayer_CanUseDrone,REG_DWORD,Safety: Allow Local Player to see drones,0x1,^[01]$
+CustomTrustLevel_LegendTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow Legend Trust Level avatar particle systems,0x1,
+CustomTrustLevel_LegendTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow Legend Trust Level avatar triggers,0x1,
+CustomTrustLevel_LegendTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show Legend Trust Level user icons,0x1,
+CustomTrustLevel_LocalPlayer_CanSpeak,REG_DWORD,Safety: Allow Local Player (Self) to speak,0x1,
+CustomTrustLevel_LocalPlayer_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Local Player animated emojis,0x1,
+CustomTrustLevel_LocalPlayer_CanUseAvatarAudio,REG_DWORD,Safety: Allow Local Player avatar audio sources,0x1,
+CustomTrustLevel_LocalPlayer_CanUseCustomAnimations,REG_DWORD,Safety: Allow Local Player custom avatar animations,0x1,
+CustomTrustLevel_LocalPlayer_CanUseCustomAvatar,REG_DWORD,Safety: Show Local Player custom avatars,0x1,
+CustomTrustLevel_LocalPlayer_CanUseCustomShaders,REG_DWORD,Safety: Allow Local Player custom avatar shaders,0x1,
+CustomTrustLevel_LocalPlayer_CanUseDrone,REG_DWORD,Safety: Allow Local Player to see drones,0x1,
 CustomTrustLevel_LocalPlayer_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Local Player emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
-CustomTrustLevel_LocalPlayer_CanUseParticleSystems,REG_DWORD,Safety: Allow Local Player avatar particle systems,0x1,^[01]$
-CustomTrustLevel_LocalPlayer_CanUseTriggers,REG_DWORD,Safety: Allow Local Player avatar triggers,0x1,^[01]$
-CustomTrustLevel_LocalPlayer_CanUseUserIcons,REG_DWORD,Safety: Show Local Player user icons,0x1,^[01]$
-CustomTrustLevel_NegativeTrustLevel1_CanSpeak,REG_DWORD,Safety: Allow Negative Trust Level 1 users to speak,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel1_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Negative Trust Level 1 animated emojis,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel1_CanUseAvatarAudio,REG_DWORD,Safety: Allow Negative Trust Level 1 avatar audio sources,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel1_CanUseCustomAnimations,REG_DWORD,Safety: Allow Negative Trust Level 1 custom avatar animations,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel1_CanUseCustomAvatar,REG_DWORD,Safety: Show Negative Trust Level 1 custom avatars,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel1_CanUseCustomShaders,REG_DWORD,Safety: Allow Negative Trust Level 1 custom avatar shaders,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel1_CanUseDrone,REG_DWORD,Safety: Allow Negative Trust Level 1 users to see drones,0x0,^[01]$
+CustomTrustLevel_LocalPlayer_CanUseParticleSystems,REG_DWORD,Safety: Allow Local Player avatar particle systems,0x1,
+CustomTrustLevel_LocalPlayer_CanUseTriggers,REG_DWORD,Safety: Allow Local Player avatar triggers,0x1,
+CustomTrustLevel_LocalPlayer_CanUseUserIcons,REG_DWORD,Safety: Show Local Player user icons,0x1,
+CustomTrustLevel_NegativeTrustLevel1_CanSpeak,REG_DWORD,Safety: Allow Negative Trust Level 1 users to speak,0x0,
+CustomTrustLevel_NegativeTrustLevel1_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Negative Trust Level 1 animated emojis,0x0,
+CustomTrustLevel_NegativeTrustLevel1_CanUseAvatarAudio,REG_DWORD,Safety: Allow Negative Trust Level 1 avatar audio sources,0x0,
+CustomTrustLevel_NegativeTrustLevel1_CanUseCustomAnimations,REG_DWORD,Safety: Allow Negative Trust Level 1 custom avatar animations,0x0,
+CustomTrustLevel_NegativeTrustLevel1_CanUseCustomAvatar,REG_DWORD,Safety: Show Negative Trust Level 1 custom avatars,0x0,
+CustomTrustLevel_NegativeTrustLevel1_CanUseCustomShaders,REG_DWORD,Safety: Allow Negative Trust Level 1 custom avatar shaders,0x0,
+CustomTrustLevel_NegativeTrustLevel1_CanUseDrone,REG_DWORD,Safety: Allow Negative Trust Level 1 users to see drones,0x0,
 CustomTrustLevel_NegativeTrustLevel1_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Negative Trust Level 1 emoji/sticker sharing,0x0,^(\{.*\}|\[.*\]|)$
-CustomTrustLevel_NegativeTrustLevel1_CanUseParticleSystems,REG_DWORD,Safety: Allow Negative Trust Level 1 avatar particle systems,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel1_CanUseTriggers,REG_DWORD,Safety: Allow Negative Trust Level 1 avatar triggers,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel1_CanUseUserIcons,REG_DWORD,Safety: Show Negative Trust Level 1 user icons,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel2_CanSpeak,REG_DWORD,Safety: Allow Negative Trust Level 2 users to speak,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel2_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Negative Trust Level 2 animated emojis,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel2_CanUseAvatarAudio,REG_DWORD,Safety: Allow Negative Trust Level 2 avatar audio sources,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel2_CanUseCustomAnimations,REG_DWORD,Safety: Allow Negative Trust Level 2 custom avatar animations,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel2_CanUseCustomAvatar,REG_DWORD,Safety: Show Negative Trust Level 2 custom avatars,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel2_CanUseCustomShaders,REG_DWORD,Safety: Allow Negative Trust Level 2 custom avatar shaders,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel2_CanUseDrone,REG_DWORD,Safety: Allow Negative Trust Level 2 users to see drones,0x0,^[01]$
+CustomTrustLevel_NegativeTrustLevel1_CanUseParticleSystems,REG_DWORD,Safety: Allow Negative Trust Level 1 avatar particle systems,0x0,
+CustomTrustLevel_NegativeTrustLevel1_CanUseTriggers,REG_DWORD,Safety: Allow Negative Trust Level 1 avatar triggers,0x0,
+CustomTrustLevel_NegativeTrustLevel1_CanUseUserIcons,REG_DWORD,Safety: Show Negative Trust Level 1 user icons,0x0,
+CustomTrustLevel_NegativeTrustLevel2_CanSpeak,REG_DWORD,Safety: Allow Negative Trust Level 2 users to speak,0x0,
+CustomTrustLevel_NegativeTrustLevel2_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Negative Trust Level 2 animated emojis,0x0,
+CustomTrustLevel_NegativeTrustLevel2_CanUseAvatarAudio,REG_DWORD,Safety: Allow Negative Trust Level 2 avatar audio sources,0x0,
+CustomTrustLevel_NegativeTrustLevel2_CanUseCustomAnimations,REG_DWORD,Safety: Allow Negative Trust Level 2 custom avatar animations,0x0,
+CustomTrustLevel_NegativeTrustLevel2_CanUseCustomAvatar,REG_DWORD,Safety: Show Negative Trust Level 2 custom avatars,0x0,
+CustomTrustLevel_NegativeTrustLevel2_CanUseCustomShaders,REG_DWORD,Safety: Allow Negative Trust Level 2 custom avatar shaders,0x0,
+CustomTrustLevel_NegativeTrustLevel2_CanUseDrone,REG_DWORD,Safety: Allow Negative Trust Level 2 users to see drones,0x0,
 CustomTrustLevel_NegativeTrustLevel2_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Negative Trust Level 2 emoji/sticker sharing,0x0,^(\{.*\}|\[.*\]|)$
-CustomTrustLevel_NegativeTrustLevel2_CanUseParticleSystems,REG_DWORD,Safety: Allow Negative Trust Level 2 avatar particle systems,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel2_CanUseTriggers,REG_DWORD,Safety: Allow Negative Trust Level 2 avatar triggers,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel2_CanUseUserIcons,REG_DWORD,Safety: Show Negative Trust Level 2 user icons,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel_CanSpeak,REG_DWORD,Safety: Allow Negative Trust Level users to speak,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Negative Trust Level animated emojis,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel_CanUseAvatarAudio,REG_DWORD,Safety: Allow Negative Trust Level avatar audio sources,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allow Negative Trust Level custom avatar animations,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show Negative Trust Level custom avatars,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow Negative Trust Level custom avatar shaders,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow Negative Trust Level users to see drones,0x0,^[01]$
+CustomTrustLevel_NegativeTrustLevel2_CanUseParticleSystems,REG_DWORD,Safety: Allow Negative Trust Level 2 avatar particle systems,0x0,
+CustomTrustLevel_NegativeTrustLevel2_CanUseTriggers,REG_DWORD,Safety: Allow Negative Trust Level 2 avatar triggers,0x0,
+CustomTrustLevel_NegativeTrustLevel2_CanUseUserIcons,REG_DWORD,Safety: Show Negative Trust Level 2 user icons,0x0,
+CustomTrustLevel_NegativeTrustLevel_CanSpeak,REG_DWORD,Safety: Allow Negative Trust Level users to speak,0x0,
+CustomTrustLevel_NegativeTrustLevel_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Negative Trust Level animated emojis,0x0,
+CustomTrustLevel_NegativeTrustLevel_CanUseAvatarAudio,REG_DWORD,Safety: Allow Negative Trust Level avatar audio sources,0x0,
+CustomTrustLevel_NegativeTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allow Negative Trust Level custom avatar animations,0x0,
+CustomTrustLevel_NegativeTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show Negative Trust Level custom avatars,0x0,
+CustomTrustLevel_NegativeTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow Negative Trust Level custom avatar shaders,0x0,
+CustomTrustLevel_NegativeTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow Negative Trust Level users to see drones,0x0,
 CustomTrustLevel_NegativeTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Negative Trust Level emoji/sticker sharing,0x0,^(\{.*\}|\[.*\]|)$
-CustomTrustLevel_NegativeTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow Negative Trust Level avatar particle systems,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow Negative Trust Level avatar triggers,0x0,^[01]$
-CustomTrustLevel_NegativeTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show Negative Trust Level user icons,0x0,^[01]$
-CustomTrustLevel_TrustedTrustLevel_CanSpeak,REG_DWORD,Safety: Allow Known User users to speak,0x1,^[01]$
-CustomTrustLevel_TrustedTrustLevel_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Known User animated emojis,0x1,^[01]$
-CustomTrustLevel_TrustedTrustLevel_CanUseAvatarAudio,REG_DWORD,Safety: Allow Known User avatar audio sources,0x1,^[01]$
-CustomTrustLevel_TrustedTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allow Known User custom avatar animations,0x1,^[01]$
-CustomTrustLevel_TrustedTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show Known User custom avatars,0x1,^[01]$
-CustomTrustLevel_TrustedTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow Known User custom avatar shaders,0x0,^[01]$
-CustomTrustLevel_TrustedTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow Known User users to see drones,0x1,^[01]$
+CustomTrustLevel_NegativeTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow Negative Trust Level avatar particle systems,0x0,
+CustomTrustLevel_NegativeTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow Negative Trust Level avatar triggers,0x0,
+CustomTrustLevel_NegativeTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show Negative Trust Level user icons,0x0,
+CustomTrustLevel_TrustedTrustLevel_CanSpeak,REG_DWORD,Safety: Allow Known User users to speak,0x1,
+CustomTrustLevel_TrustedTrustLevel_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Known User animated emojis,0x1,
+CustomTrustLevel_TrustedTrustLevel_CanUseAvatarAudio,REG_DWORD,Safety: Allow Known User avatar audio sources,0x1,
+CustomTrustLevel_TrustedTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allow Known User custom avatar animations,0x1,
+CustomTrustLevel_TrustedTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show Known User custom avatars,0x1,
+CustomTrustLevel_TrustedTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow Known User custom avatar shaders,0x0,
+CustomTrustLevel_TrustedTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow Known User users to see drones,0x1,
 CustomTrustLevel_TrustedTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Known User emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
-CustomTrustLevel_TrustedTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow Known User avatar particle systems,0x0,^[01]$
-CustomTrustLevel_TrustedTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow Known User avatar triggers,0x1,^[01]$
-CustomTrustLevel_TrustedTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show Known User user icons,0x1,^[01]$
-CustomTrustLevel_Untrusted_CanSpeak,REG_DWORD,Safety: Allow Visitor users to speak,0x1,^[01]$
-CustomTrustLevel_Untrusted_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Visitor animated emojis,0x1,^[01]$
-CustomTrustLevel_Untrusted_CanUseAvatarAudio,REG_DWORD,Safety: Allow Visitor avatar audio sources,0x0,^[01]$
-CustomTrustLevel_Untrusted_CanUseCustomAnimations,REG_DWORD,Safety: Allow Visitor custom avatar animations,0x0,^[01]$
-CustomTrustLevel_Untrusted_CanUseCustomAvatar,REG_DWORD,Safety: Show Visitor custom avatars,0x1,^[01]$
-CustomTrustLevel_Untrusted_CanUseCustomShaders,REG_DWORD,Safety: Allow Visitor custom avatar shaders,0x0,^[01]$
-CustomTrustLevel_Untrusted_CanUseDrone,REG_DWORD,Safety: Allow Visitor users to see drones,0x1,^[01]$
+CustomTrustLevel_TrustedTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow Known User avatar particle systems,0x0,
+CustomTrustLevel_TrustedTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow Known User avatar triggers,0x1,
+CustomTrustLevel_TrustedTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show Known User user icons,0x1,
+CustomTrustLevel_Untrusted_CanSpeak,REG_DWORD,Safety: Allow Visitor users to speak,0x1,
+CustomTrustLevel_Untrusted_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Visitor animated emojis,0x1,
+CustomTrustLevel_Untrusted_CanUseAvatarAudio,REG_DWORD,Safety: Allow Visitor avatar audio sources,0x0,
+CustomTrustLevel_Untrusted_CanUseCustomAnimations,REG_DWORD,Safety: Allow Visitor custom avatar animations,0x0,
+CustomTrustLevel_Untrusted_CanUseCustomAvatar,REG_DWORD,Safety: Show Visitor custom avatars,0x1,
+CustomTrustLevel_Untrusted_CanUseCustomShaders,REG_DWORD,Safety: Allow Visitor custom avatar shaders,0x0,
+CustomTrustLevel_Untrusted_CanUseDrone,REG_DWORD,Safety: Allow Visitor users to see drones,0x1,
 CustomTrustLevel_Untrusted_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Visitor emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
-CustomTrustLevel_Untrusted_CanUseParticleSystems,REG_DWORD,Safety: Allow Visitor avatar particle systems,0x0,^[01]$
-CustomTrustLevel_Untrusted_CanUseTriggers,REG_DWORD,Safety: Allow Visitor avatar triggers,0x0,^[01]$
-CustomTrustLevel_Untrusted_CanUseUserIcons,REG_DWORD,Safety: Show Visitor user icons,0x1,^[01]$
-CustomTrustLevel_VeryNegativeTrustLevel_CanSpeak,REG_DWORD,Safety: Allow Very Negative Trust Level (Nuisance) to speak,0x0,^[01]$
-CustomTrustLevel_VeryNegativeTrustLevel_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Very Negative Trust Level animated emojis,0x0,^[01]$
-CustomTrustLevel_VeryNegativeTrustLevel_CanUseAvatarAudio,REG_DWORD,Safety: Allow Very Negative Trust Level avatar audio sources,0x0,^[01]$
-CustomTrustLevel_VeryNegativeTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allow Very Negative Trust Level custom avatar animations,0x0,^[01]$
-CustomTrustLevel_VeryNegativeTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show Very Negative Trust Level custom avatars,0x0,^[01]$
-CustomTrustLevel_VeryNegativeTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow Very Negative Trust Level custom avatar shaders,0x0,^[01]$
-CustomTrustLevel_VeryNegativeTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow Very Negative Trust Level users to see drones,0x0,^[01]$
+CustomTrustLevel_Untrusted_CanUseParticleSystems,REG_DWORD,Safety: Allow Visitor avatar particle systems,0x0,
+CustomTrustLevel_Untrusted_CanUseTriggers,REG_DWORD,Safety: Allow Visitor avatar triggers,0x0,
+CustomTrustLevel_Untrusted_CanUseUserIcons,REG_DWORD,Safety: Show Visitor user icons,0x1,
+CustomTrustLevel_VeryNegativeTrustLevel_CanSpeak,REG_DWORD,Safety: Allow Very Negative Trust Level (Nuisance) to speak,0x0,
+CustomTrustLevel_VeryNegativeTrustLevel_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Very Negative Trust Level animated emojis,0x0,
+CustomTrustLevel_VeryNegativeTrustLevel_CanUseAvatarAudio,REG_DWORD,Safety: Allow Very Negative Trust Level avatar audio sources,0x0,
+CustomTrustLevel_VeryNegativeTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allow Very Negative Trust Level custom avatar animations,0x0,
+CustomTrustLevel_VeryNegativeTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show Very Negative Trust Level custom avatars,0x0,
+CustomTrustLevel_VeryNegativeTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow Very Negative Trust Level custom avatar shaders,0x0,
+CustomTrustLevel_VeryNegativeTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow Very Negative Trust Level users to see drones,0x0,
 CustomTrustLevel_VeryNegativeTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Very Negative Trust Level emoji/sticker sharing,0x0,^(\{.*\}|\[.*\]|)$
-CustomTrustLevel_VeryNegativeTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow Very Negative Trust Level avatar particle systems,0x0,^[01]$
-CustomTrustLevel_VeryNegativeTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow Very Negative Trust Level avatar triggers,0x0,^[01]$
-CustomTrustLevel_VeryNegativeTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show Very Negative Trust Level user icons,0x0,^[01]$
-CustomTrustLevel_VeteranTrustLevel_CanSpeak,REG_DWORD,Safety: Allow Trusted User users to speak,0x1,^[01]$
-CustomTrustLevel_VeteranTrustLevel_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Trusted User animated emojis,0x1,^[01]$
-CustomTrustLevel_VeteranTrustLevel_CanUseAvatarAudio,REG_DWORD,Safety: Allow Trusted User avatar audio sources,0x1,^[01]$
-CustomTrustLevel_VeteranTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allow Trusted User custom avatar animations,0x1,^[01]$
-CustomTrustLevel_VeteranTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show Trusted User custom avatars,0x1,^[01]$
-CustomTrustLevel_VeteranTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow Trusted User custom avatar shaders,0x1,^[01]$
-CustomTrustLevel_VeteranTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow Trusted User users to see drones,0x1,^[01]$
+CustomTrustLevel_VeryNegativeTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow Very Negative Trust Level avatar particle systems,0x0,
+CustomTrustLevel_VeryNegativeTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow Very Negative Trust Level avatar triggers,0x0,
+CustomTrustLevel_VeryNegativeTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show Very Negative Trust Level user icons,0x0,
+CustomTrustLevel_VeteranTrustLevel_CanSpeak,REG_DWORD,Safety: Allow Trusted User users to speak,0x1,
+CustomTrustLevel_VeteranTrustLevel_CanUseAnimatedEmoji,REG_DWORD,Safety: Allow Trusted User animated emojis,0x1,
+CustomTrustLevel_VeteranTrustLevel_CanUseAvatarAudio,REG_DWORD,Safety: Allow Trusted User avatar audio sources,0x1,
+CustomTrustLevel_VeteranTrustLevel_CanUseCustomAnimations,REG_DWORD,Safety: Allow Trusted User custom avatar animations,0x1,
+CustomTrustLevel_VeteranTrustLevel_CanUseCustomAvatar,REG_DWORD,Safety: Show Trusted User custom avatars,0x1,
+CustomTrustLevel_VeteranTrustLevel_CanUseCustomShaders,REG_DWORD,Safety: Allow Trusted User custom avatar shaders,0x1,
+CustomTrustLevel_VeteranTrustLevel_CanUseDrone,REG_DWORD,Safety: Allow Trusted User users to see drones,0x1,
 CustomTrustLevel_VeteranTrustLevel_CanUseEmojiStickersSharing,REG_DWORD,Safety: Allow Trusted User emoji/sticker sharing,0x1,^(\{.*\}|\[.*\]|)$
-CustomTrustLevel_VeteranTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow Trusted User avatar particle systems,0x1,^[01]$
-CustomTrustLevel_VeteranTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow Trusted User avatar triggers,0x1,^[01]$
-CustomTrustLevel_VeteranTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show Trusted User user icons,0x1,^[01]$
+CustomTrustLevel_VeteranTrustLevel_CanUseParticleSystems,REG_DWORD,Safety: Allow Trusted User avatar particle systems,0x1,
+CustomTrustLevel_VeteranTrustLevel_CanUseTriggers,REG_DWORD,Safety: Allow Trusted User avatar triggers,0x1,
+CustomTrustLevel_VeteranTrustLevel_CanUseUserIcons,REG_DWORD,Safety: Show Trusted User user icons,0x1,
 DEFAULT_GROUP,REG_BINARY,VRChat setting: DEFAULT_GROUP,,^(| )$
 DEFAULT_GROUP_{userId},REG_BINARY,"Default group configuration for user (JSON object, can be empty)",,^(\{.*\}|\[.*\])$
 DroneControllerSettings,REG_BINARY,Drone camera controller settings (global),hex: 00,^(| )$
@@ -245,37 +245,37 @@ FirstTimeEvent_First_Wing_Menu_Open_{userId},REG_DWORD,Setting per user (FirstTi
 ForceSettings_AutoWalk,REG_DWORD,VRChat setting: ForceSettings_AutoWalk,,
 ForceSettings_ClearFoldoutPrefKeys,REG_DWORD,Force clear foldout preference keys (migration flag),0x1,
 ForceSettings_DisableGuidedMode,REG_DWORD,Force disable guided mode for new users,,
-ForceSettings_MicToggle,REG_DWORD,Force microphone toggle setting (migration flag),0x2,^[01]$
+ForceSettings_MicToggle,REG_DWORD,Force microphone toggle setting (migration flag),0x2,
 ForceSettings_MigrateMicSettings,REG_DWORD,Force migrate microphone settings (migration flag),0x1,
 ForceSettings_Mixer,REG_DWORD,Force audio mixer setting (migration flag),0x2,
 ForceSettings_PedestalSharing,REG_DWORD,VRChat setting: ForceSettings_PedestalSharing,,
 ForceSettings_SteamAudioSliderRemap,REG_DWORD,VRChat setting: ForceSettings_SteamAudioSliderRemap,,
 ForceSettings_WorldTooltipMode,REG_DWORD,Force world tooltip mode (migration flag),0x1,
-GiftDropNoRefundAfterUsageAgreeToggle,REG_DWORD,User agreed to no refund policy for gift drops (global),,^[01]$
-HasSeenAVMQMCallout{userId},REG_DWORD,Has seen Avatar Menu Quick Menu callout for user,,^[01]$
+GiftDropNoRefundAfterUsageAgreeToggle,REG_DWORD,User agreed to no refund policy for gift drops (global),,
+HasSeenAVMQMCallout{userId},REG_DWORD,Has seen Avatar Menu Quick Menu callout for user,,
 HasSeenAccessoriesShopQMCallout{userId},REG_DWORD,Setting per user (HasSeenAccessoriesShopQMCallout{userId}),,
-HasSeenCameraDollyUserCameraCallout{userId},REG_DWORD,Has seen camera dolly user camera callout for user,,^[01]$
-HasSeenDroneQMCallout{userId},REG_DWORD,Has seen drone Quick Menu callout for user,,^[01]$
+HasSeenCameraDollyUserCameraCallout{userId},REG_DWORD,Has seen camera dolly user camera callout for user,,
+HasSeenDroneQMCallout{userId},REG_DWORD,Has seen drone Quick Menu callout for user,,
 HasSeenExtraWorldFavoritesQMCallout{userId},REG_DWORD,Setting per user (HasSeenExtraWorldFavoritesQMCallout{userId}),,
 HasSeenHolidayEvent2025QMCallout{userId},REG_DWORD,Setting per user (HasSeenHolidayEvent2025QMCallout{userId}),,
-HasSeenMassGiftQMCallout{userId},REG_DWORD,Has seen mass gift Quick Menu callout for user,,^[01]$
-HasSeenPride2025QMCallout{userId},REG_DWORD,Has seen Pride 2025 event Quick Menu callout for user,0x0,^[01]$
+HasSeenMassGiftQMCallout{userId},REG_DWORD,Has seen mass gift Quick Menu callout for user,,
+HasSeenPride2025QMCallout{userId},REG_DWORD,Has seen Pride 2025 event Quick Menu callout for user,0x0,
 HasSeenPrideCampaign2026QMCallout{userId},REG_DWORD,Setting per user (HasSeenPrideCampaign2026QMCallout{userId}),,
-HasSeenPrintsQMCallout{userId},REG_DWORD,Has seen Prints feature Quick Menu callout for user,,^[01]$
-HasSeenPrintsUserCameraCallout{userId},REG_DWORD,Has seen Prints user camera callout for user,,^[01]$
-HasSeenSettingsTabQMCallout,REG_DWORD,Has seen settings tab Quick Menu callout,,^[01]$
+HasSeenPrintsQMCallout{userId},REG_DWORD,Has seen Prints feature Quick Menu callout for user,,
+HasSeenPrintsUserCameraCallout{userId},REG_DWORD,Has seen Prints user camera callout for user,,
+HasSeenSettingsTabQMCallout,REG_DWORD,Has seen settings tab Quick Menu callout,,
 HasSeenShopNov2025QMCallout{userId},REG_DWORD,Setting per user (HasSeenShopNov2025QMCallout{userId}),,
-HasSeenShopQMCallout{userId},REG_DWORD,Has seen shop Quick Menu callout for user,0x0,^[01]$
+HasSeenShopQMCallout{userId},REG_DWORD,Has seen shop Quick Menu callout for user,0x0,
 HasSeenShopRabbidsQMCallout{userId},REG_DWORD,Setting per user (HasSeenShopRabbidsQMCallout{userId}),,
 HasSeenVRCPlusExclusiveItemsQMCallout{userId},REG_DWORD,Setting per user (HasSeenVRCPlusExclusiveItemsQMCallout{userId}),,
-HasSeen_Callout_AVM_Explore_{userId},REG_DWORD,Has seen Avatar Menu Explore callout for user,0x0,^[01]$
+HasSeen_Callout_AVM_Explore_{userId},REG_DWORD,Has seen Avatar Menu Explore callout for user,0x0,
 HasSeen_Callout_AccessoriesShopTab_{userId},REG_DWORD,Setting per user (HasSeen_Callout_AccessoriesShopTab_{userId}),,
 HasSeen_Callout_ThirdPersonViewNewCallout_{userId},REG_DWORD,Setting per user (HasSeen_Callout_ThirdPersonViewNewCallout_{userId}),,
-HasSeen_Callout_VRCPlusNewFeatures_{userId},REG_DWORD,Has seen VRC+ new features callout for user,,^[01]$
-HasSeenexpiredReminderPopup{userId},REG_DWORD,Has seen subscription expired reminder popup for user,,^[01]$
-HasSeenexpiring1ReminderPopup{userId},REG_DWORD,Has seen subscription expiring in 1 day reminder for user,,^[01]$
-HasSeenexpiring3ReminderPopup{userId},REG_DWORD,Has seen subscription expiring in 3 days reminder for user,,^[01]$
-HasSeenexpiring7ReminderPopup{userId},REG_DWORD,Has seen subscription expiring in 7 days reminder for user,,^[01]$
+HasSeen_Callout_VRCPlusNewFeatures_{userId},REG_DWORD,Has seen VRC+ new features callout for user,,
+HasSeenexpiredReminderPopup{userId},REG_DWORD,Has seen subscription expired reminder popup for user,,
+HasSeenexpiring1ReminderPopup{userId},REG_DWORD,Has seen subscription expiring in 1 day reminder for user,,
+HasSeenexpiring3ReminderPopup{userId},REG_DWORD,Has seen subscription expiring in 3 days reminder for user,,
+HasSeenexpiring7ReminderPopup{userId},REG_DWORD,Has seen subscription expiring in 7 days reminder for user,,
 HasSeeninv_46701c77-f141-4b7b-812e-832e389b76a1QMCallout{userId},REG_DWORD,Setting per user (HasSeeninv_46701c77-f141-4b7b-812e-832e389b76a1QMCallout{userId}),,
 HasSeeninv_60fd09fe-e4dc-4db0-afdc-158a7f040099QMCallout{userId},REG_DWORD,Setting per user (HasSeeninv_60fd09fe-e4dc-4db0-afdc-158a7f040099QMCallout{userId}),,
 HasSeeninv_6a075a2f-52cb-45f2-aa84-8f40f5729d55QMCallout{userId},REG_DWORD,Setting per user (HasSeeninv_6a075a2f-52cb-45f2-aa84-8f40f5729d55QMCallout{userId}),,
@@ -284,14 +284,14 @@ HasSeeninv_acf897ec-9706-423c-b00d-6e50c89cf6ebQMCallout{userId},REG_DWORD,Setti
 HasSeeninv_d350baa6-5689-4b53-af9f-5fd4490d59b8QMCallout{userId},REG_DWORD,Setting per user (HasSeeninv_d350baa6-5689-4b53-af9f-5fd4490d59b8QMCallout{userId}),,
 HasSeeninv_e478c275-ac44-4dc9-8761-e9d94874a690QMCallout{userId},REG_DWORD,Setting per user (HasSeeninv_e478c275-ac44-4dc9-8761-e9d94874a690QMCallout{userId}),,
 HasSeeninv_ea37db04-85d5-4566-8c4f-e0e7afcbcca7QMCallout{userId},REG_DWORD,Setting per user (HasSeeninv_ea37db04-85d5-4566-8c4f-e0e7afcbcca7QMCallout{userId}),,
-HasSeeninv_{uuid}QMCallout{userId},REG_DWORD,Has seen specific inventory item Quick Menu callout for user,,^[01]$
-HasSeenresubReminderPopup{userId},REG_DWORD,Has seen resubscribe reminder popup for user,,^[01]$
+HasSeeninv_{uuid}QMCallout{userId},REG_DWORD,Has seen specific inventory item Quick Menu callout for user,,
+HasSeenresubReminderPopup{userId},REG_DWORD,Has seen resubscribe reminder popup for user,,
 I2 Language,REG_BINARY,"I2 Localization language name (e.g., 'English', 'Japanese' as string)",,"^([A-Za-z]{2,})$"
 INSTANCE_RENAME_HISTORY_{userId},REG_BINARY,History of renamed world instances for user (JSON object),,^(\{.*\}|\[.*\])$
-InPageCallout_Drone,REG_DWORD,Has seen drone in-page callout (global),,^[01]$
+InPageCallout_Drone,REG_DWORD,Has seen drone in-page callout (global),,
 InQueueWidgetInfoShowcaseID,REG_DWORD,In-queue widget info showcase ID counter,0x0,
 LOD_QUALITY,REG_DWORD,Level of Detail quality setting (0-3),0x1,^(2|0|1)$
-LOGGING_ENABLED,REG_DWORD,Enable/disable debug logging,0x1,^[01]$
+LOGGING_ENABLED,REG_DWORD,Enable/disable debug logging,0x1,
 LocationContext,REG_DWORD,Current location context (home/world/etc),0x0,^(2|0)$
 LocationContext_World,REG_BINARY,"World ID for current location context (wrld_xxx string, can be empty)",hex: 00,^(wrld_[0-9a-f-]+|avtr_[0-9a-f-]+|mat_[0-9a-f-]+)?$
 MM.Dashboard.RecentWorlds,REG_DWORD,Main Menu: Dashboard recent worlds section collapsed state,,
@@ -340,12 +340,12 @@ PersonalMirror.FaceMirrorScaleDesktop,REG_QWORD,Personal mirror: Face mirror sca
 PersonalMirror.FaceMirrorSpoutEnabled,REG_DWORD,VRChat setting: PersonalMirror.FaceMirrorSpoutEnabled,,
 PersonalMirror.FaceMirrorZoom,REG_QWORD,Personal mirror: Face mirror zoom level in VR (as float),"hex(4): 00,00,00,00,00,00,e0,3f",
 PersonalMirror.FaceMirrorZoomDesktop,REG_QWORD,Personal mirror: Face mirror zoom level on desktop (as float),"hex(4): 00,00,00,60,b8,1e,d5,\3f",
-PersonalMirror.Grabbable,REG_DWORD,Personal mirror: Enable/disable grabbable mirror,0x1,^[01]$
-PersonalMirror.ImmersiveMove,REG_DWORD,Personal mirror: Enable/disable immersive move mode,0x0,^[01]$
+PersonalMirror.Grabbable,REG_DWORD,Personal mirror: Enable/disable grabbable mirror,0x1,
+PersonalMirror.ImmersiveMove,REG_DWORD,Personal mirror: Enable/disable immersive move mode,0x0,
 PersonalMirror.MirrorOpacity,REG_QWORD,Personal mirror: Main mirror opacity (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f",
 PersonalMirror.MirrorScaleX,REG_QWORD,Personal mirror: Main mirror X scale (as float),"hex(4): 00,00,00,00,00,00,f0,3f",
 PersonalMirror.MirrorScaleY,REG_QWORD,Personal mirror: Main mirror Y scale (as float),"hex(4): 00,00,00,00,00,00,f0,3f",
-PersonalMirror.MirrorSnapping,REG_DWORD,Personal mirror: Enable/disable mirror snapping to grid,0x0,^[01]$
+PersonalMirror.MirrorSnapping,REG_DWORD,Personal mirror: Enable/disable mirror snapping to grid,0x0,
 PersonalMirror.MovementMode,REG_DWORD,"Personal mirror: Movement mode (0=locked, 1=free, 2=immersive)",0x1,
 PersonalMirror.ShowBorder,REG_DWORD,Personal mirror: Show/hide mirror border,0x1,
 PersonalMirror.ShowCalibrationMirror,REG_DWORD,Personal mirror: Show/hide calibration mirror,0x0,
@@ -393,10 +393,10 @@ Screenmanager Resolution Width,REG_DWORD,Unity: Current window width in pixels,0
 Screenmanager Resolution Width Default,REG_DWORD,Unity: Default window width in pixels,0x400,
 Screenmanager Resolution Window Height,REG_DWORD,Unity: Windowed mode height in pixels,0x300,^(938|1366|720|446|768|1006|1009|1000|1360)$
 Screenmanager Resolution Window Width,REG_DWORD,Unity: Windowed mode width in pixels,0x400,^(504|1391|958|1080|1920|1718|1024|1501)$
-Screenmanager Stereo 3D,REG_DWORD,Unity: Enable/disable stereo 3D rendering,0x1,^[01]$
+Screenmanager Stereo 3D,REG_DWORD,Unity: Enable/disable stereo 3D rendering,0x1,
 Screenmanager Window Position X,REG_DWORD,Unity: Window X position on screen,0x1d4,^(1013|566|0|584|519|539|860|33|527)$
 Screenmanager Window Position Y,REG_DWORD,Unity: Window Y position on screen,0x85,^(0|263|93|-2|62|99|56|111|173)$
-SeatedPlayEnabled,REG_DWORD,Enable/disable seated play mode,,^[01]$
+SeatedPlayEnabled,REG_DWORD,Enable/disable seated play mode,,
 SeenIPS_SEEN_{userId},REG_BINARY,In-game Purchase Showcase items seen by user (JSON array of IDs),,^(\{.*\}|\[.*\])$
 SortSelection_AllFriends,REG_DWORD,Sort order for All Friends list,,
 SortSelection_Authored,REG_DWORD,Sort order for Authored content list,,
@@ -455,7 +455,7 @@ UI.Emojis.CustomGroup2,REG_BINARY,UI emoji custom group 2 configuration (global)
 UI.MainMenuSocialPage.BlockedByUsers,REG_DWORD,Main Menu social page: Blocked By Users section collapsed state,,
 UI.MainMenuSocialPage.BlockedUsers,REG_DWORD,Main Menu social page: Blocked Users section collapsed state,,
 UI.MenuPlacementZDepthVR,REG_QWORD,Menu placement Z depth distance in VR (as float),"hex(4): 00,00,00,40,33,33,eb,3f",
-UI.MotionSmoothingEnabled,REG_DWORD,Enable/disable UI motion smoothing,0x1,^[01]$
+UI.MotionSmoothingEnabled,REG_DWORD,Enable/disable UI motion smoothing,0x1,
 UI.Props.CustomGroup0,REG_BINARY,UI props custom group 0 configuration (global),hex: 00,^(\{.*\}|\[.*\]|)$
 UI.RecentlyUsedEmojiNames,REG_BINARY,Recently used emoji names list (global),,
 UI.RecentlyUsedEmojiNames.Count,REG_DWORD,Count of recently used emoji names (global),,
@@ -472,7 +472,7 @@ UI.Stickers.CustomGroup1,REG_BINARY,UI stickers custom group 1 configuration (gl
 UI.Stickers.CustomGroup2,REG_BINARY,UI stickers custom group 2 configuration (global),hex: 00,^(\{.*\}|\[.*\]|)$
 UI.{userId}.WingState,REG_BINARY,UI wing menu state for user (open/closed),,^.+$
 USER_CAMERA_RESOLUTION,REG_BINARY,"User camera photo resolution (string value, e.g., 'ConfigFile')",hex: 00,^(ConfigFile||Res_2160|Res_1080 | |Res_1080|Res_1440)$
-USER_CAMERA_ROLL_WHILE_FLYING,REG_DWORD,User camera: Enable/disable roll while flying with drone,0x1,^[01]$
+USER_CAMERA_ROLL_WHILE_FLYING,REG_DWORD,User camera: Enable/disable roll while flying with drone,0x1,
 USER_CAMERA_SAVE_METADATA,REG_DWORD,User camera: Save metadata with photos,0x1,
 USER_CAMERA_STREAM_RESOLUTION,REG_DWORD,User camera: Stream resolution quality level,0x1,^(5|1)$
 UnityGraphicsQuality,REG_DWORD,Unity graphics quality preset level (0-5),0x2,^(2|0)$
@@ -480,14 +480,14 @@ UnitySelectMonitor,REG_DWORD,Unity selected monitor for display output,0x0,
 UserId,REG_BINARY,Current logged-in user ID (numeric ID as string),,^(\d+)$
 VRC.Modal.ArchiveItem,REG_BINARY,UI: Archive item modal state/data,,
 VRC.UI.QuickMenu.ShowQMDebugInfo,REG_DWORD,Debug: Show Quick Menu debug information,0x0,
-VRC_ACTION_MENU_FLICK_SELECT,REG_DWORD,Action Menu: Enable/disable flick to select items,0x1,^[01]$
+VRC_ACTION_MENU_FLICK_SELECT,REG_DWORD,Action Menu: Enable/disable flick to select items,0x1,
 VRC_ACTION_MENU_L_HUD_ANGLE_X,REG_QWORD,Action Menu: Left hand HUD X angle (degrees as float),,
 VRC_ACTION_MENU_L_HUD_ANGLE_Y,REG_QWORD,Action Menu: Left hand HUD Y angle (degrees as float),,
 VRC_ACTION_MENU_L_MENU_OPACITY,REG_QWORD,Action Menu: Left hand menu opacity (0.0-1.0 as float),,
 VRC_ACTION_MENU_L_MENU_SIZE,REG_DWORD,Action Menu: Left hand menu size preset (0-2),,
 VRC_ACTION_MENU_L_MENU_SIZE_PERCENTAGE,REG_QWORD,Action Menu: Left hand menu size percentage (0.0-1.0 as float),,
 VRC_ACTION_MENU_L_SHOW_ON_HUD,REG_DWORD,Action Menu: Show left hand menu on HUD,,
-VRC_ACTION_MENU_ONE_HAND_MOVE,REG_DWORD,Action Menu: Enable/disable one-hand move mode,0x1,^[01]$
+VRC_ACTION_MENU_ONE_HAND_MOVE,REG_DWORD,Action Menu: Enable/disable one-hand move mode,0x1,
 VRC_ACTION_MENU_R_HUD_ANGLE_X,REG_QWORD,Action Menu: Right hand HUD X angle (degrees as float),,
 VRC_ACTION_MENU_R_HUD_ANGLE_Y,REG_QWORD,Action Menu: Right hand HUD Y angle (degrees as float),,
 VRC_ACTION_MENU_R_MENU_OPACITY,REG_QWORD,Action Menu: Right hand menu opacity (0.0-1.0 as float),,
@@ -496,7 +496,7 @@ VRC_ACTION_MENU_R_MENU_SIZE_PERCENTAGE,REG_QWORD,Action Menu: Right hand menu si
 VRC_ACTION_MENU_R_SHOW_ON_HUD,REG_DWORD,Action Menu: Show right hand menu on HUD,,
 VRC_ADVANCED_GRAPHICS_ANTIALIASING,REG_DWORD,"Advanced Graphics: Antialiasing level (0=off, 2=2x, 4=4x, 8=8x)",0x4,^(4|2|1)$
 VRC_ADVANCED_GRAPHICS_QUALITY,REG_BINARY,Advanced Graphics: Quality preset name (Low/Medium/High/Ultra as string),"""High""",^(Low|High |High)$
-VRC_AFK_ENABLED,REG_DWORD,Enable/disable AFK (away from keyboard) detection,0x0,^[01]$
+VRC_AFK_ENABLED,REG_DWORD,Enable/disable AFK (away from keyboard) detection,0x0,
 VRC_ALLOW_AVATAR_COPYING,REG_DWORD,Privacy: Allow others to clone your avatar,0x1,
 VRC_ALLOW_DIRECT_SHARES,REG_DWORD,Privacy: Allow direct avatar sharing with you,0x1,
 VRC_ALLOW_DISCORD_FRIENDS,REG_DWORD,VRChat setting: VRC_ALLOW_DISCORD_FRIENDS,,
@@ -506,13 +506,13 @@ VRC_ALLOW_PRINTS,REG_DWORD,Privacy: Allow others to see your Prints/photos,0x1,
 VRC_ALLOW_SHARED_CONNECTIONS,REG_DWORD,VRChat setting: VRC_ALLOW_SHARED_CONNECTIONS,,
 VRC_ALLOW_UNTRUSTED_URL,REG_BINARY,Safety: Allow untrusted URLs in world (0/1 as string),0x0,^(0|1)$
 VRC_ANDROID_MIC_MODE,REG_DWORD,Android: Microphone mode setting,0x0,
-VRC_ASK_TO_PORTAL,REG_DWORD,Safety: Ask before dropping portal to you,0x0,^[01]$
+VRC_ASK_TO_PORTAL,REG_DWORD,Safety: Ask before dropping portal to you,0x0,
 VRC_AVATAR_FALLBACK_HIDDEN,REG_DWORD,Performance: Hide fallback avatars when blocked,0x0,
-VRC_AVATAR_HAPTICS_ENABLED,REG_DWORD,Avatar Interactions: Enable/disable avatar haptics feedback,0x0,^[01]$
+VRC_AVATAR_HAPTICS_ENABLED,REG_DWORD,Avatar Interactions: Enable/disable avatar haptics feedback,0x0,
 VRC_AVATAR_MAXIMUM_UNCOMPRESSED_SIZE,REG_DWORD,Performance: Maximum avatar uncompressed size in MB,0x1f400000,^(-1|524288000)$
 VRC_AVATAR_PERFORMANCE_RATING_MINIMUM_TO_DISPLAY,REG_DWORD,Performance: Minimum avatar performance rating to show (0-4),0x5,
-VRC_AV_INTERACT_LEVEL,REG_DWORD,Safety: Avatar interaction permission level for others,0x1,^[01]$
-VRC_AV_INTERACT_SELF,REG_DWORD,Safety: Allow self avatar interactions,0x1,^[01]$
+VRC_AV_INTERACT_LEVEL,REG_DWORD,Safety: Avatar interaction permission level for others,0x1,
+VRC_AV_INTERACT_SELF,REG_DWORD,Safety: Allow self avatar interactions,0x1,
 VRC_BACKGROUND_GRADIENT_BOTTOM,REG_BINARY,VRChat setting: VRC_BACKGROUND_GRADIENT_BOTTOM,,^(#21385A )$
 VRC_BACKGROUND_GRADIENT_TOP,REG_BINARY,VRChat setting: VRC_BACKGROUND_GRADIENT_TOP,,^(#5D3F86 )$
 VRC_BINDING_STEAMVR_TOUCH_HOLD_QM,REG_DWORD,Input Binding: SteamVR Touch controller hold for Quick Menu action,,
@@ -531,7 +531,7 @@ VRC_CAMERA_THIRD_PERSON_VIEW_SCROLLED_IN,REG_DWORD,VRChat setting: VRC_CAMERA_TH
 VRC_CAMERA_THIRD_PERSON_VIEW_VERTICAL_1,REG_BINARY,VRChat setting: VRC_CAMERA_THIRD_PERSON_VIEW_VERTICAL_1,,
 VRC_CHAT_BUBBLE_ABOVE_HEAD,REG_DWORD,Chatbox: Show chat bubbles above player heads (legacy),,
 VRC_CHAT_BUBBLE_ABOVE_HEAD_V2,REG_DWORD,Chatbox: Show chat bubbles above player heads,0x0,
-VRC_CHAT_BUBBLE_AUDIO_ENABLED,REG_DWORD,Chatbox: Enable/disable chat bubble audio feedback,0x0,^[01]$
+VRC_CHAT_BUBBLE_AUDIO_ENABLED,REG_DWORD,Chatbox: Enable/disable chat bubble audio feedback,0x0,
 VRC_CHAT_BUBBLE_AUDIO_VOLUME,REG_QWORD,Chatbox: Chat bubble audio volume (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f",^(0|0\.\d+|1|1\.0)$
 VRC_CHAT_BUBBLE_AUTO_SEND,REG_DWORD,Chatbox: Auto-send messages on enter/timeout,0x1,
 VRC_CHAT_BUBBLE_OPACITY,REG_QWORD,Chatbox: Chat bubble opacity (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f",
@@ -577,9 +577,9 @@ VRC_FINGERTRACKING_SHOW_PINCHUI,REG_DWORD,Tracking: Show pinch UI when finger tr
 VRC_FINGER_GRAB_SETTING,REG_DWORD,Input: Finger tracking grab gesture setting,0x1,
 VRC_FINGER_HAPTIC_SENSITIVITY,REG_QWORD,Input: Finger tracking haptic feedback sensitivity (as float),"hex(4): 00,00,00,00,00,00,e0,3f",
 VRC_FINGER_HAPTIC_STRENGTH,REG_QWORD,Input: Finger tracking haptic feedback strength (as float),"hex(4): 00,00,00,00,00,00,e0,3f",
-VRC_FINGER_JUMP_ENABLED,REG_DWORD,Input: Enable/disable finger gesture jump,0x1,^[01]$
+VRC_FINGER_JUMP_ENABLED,REG_DWORD,Input: Enable/disable finger gesture jump,0x1,
 VRC_FINGER_WALK_SETTING,REG_DWORD,Input: Finger tracking walk gesture setting,0x3,
-VRC_GESTURE_BAR_ENABLED,REG_DWORD,UI: Enable/disable gesture indicator bar,0x0,^[01]$
+VRC_GESTURE_BAR_ENABLED,REG_DWORD,UI: Enable/disable gesture indicator bar,0x0,
 VRC_GROUP_ON_NAMEPLATE,REG_BINARY,UI: Group ID to display on nameplate (grp_xxx string),,^(grp_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})?$
 VRC_GROUP_ORDER_{userId},REG_BINARY,User's group display order/priority (JSON array of group IDs),,^(\{.*\}|\[.*\])$
 VRC_GUIDED_MODE_OPT_IN,REG_DWORD,New User: Opted in to guided mode tutorials,,
@@ -592,12 +592,12 @@ VRC_HUD_ANCHOR,REG_DWORD,HUD: Anchor point for HUD elements,0x1,
 VRC_HUD_MIC_OPACITY,REG_QWORD,HUD: Microphone indicator opacity (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,e0,3f",
 VRC_HUD_MODE,REG_DWORD,"HUD: HUD display mode (0=off, 1=minimal, 2=full)",0x0,
 VRC_HUD_OPACITY,REG_QWORD,HUD: Overall HUD opacity (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,e0,3f",
-VRC_HUD_SMOOTHING_Desktop,REG_DWORD,HUD: Enable/disable HUD position smoothing on desktop,0x0,^[01]$
-VRC_HUD_SMOOTHING_VR,REG_DWORD,HUD: Enable/disable HUD position smoothing in VR,0x0,^[01]$
+VRC_HUD_SMOOTHING_Desktop,REG_DWORD,HUD: Enable/disable HUD position smoothing on desktop,0x0,
+VRC_HUD_SMOOTHING_VR,REG_DWORD,HUD: Enable/disable HUD position smoothing in VR,0x0,
 VRC_IK_AVATAR_MEASUREMENT_TYPE,REG_DWORD,"IK: Avatar measurement type (0=automatic, 1=manual)",0x0,
 VRC_IK_CALIBRATION_RANGE,REG_QWORD,IK: Calibration range distance in meters (as float),"hex(4): 00,00,00,a0,99,99,d9,3f",
 VRC_IK_CALIBRATION_VIS,REG_DWORD,IK: Show/hide calibration visualization,0x0,
-VRC_IK_DEBUG_LOGGING,REG_DWORD,IK: Enable/disable IK debug logging,0x0,^[01]$
+VRC_IK_DEBUG_LOGGING,REG_DWORD,IK: Enable/disable IK debug logging,0x0,
 VRC_IK_FBT_CONFIRM_CALIBRATE,REG_DWORD,IK: Require confirmation before FBT calibration,0x0,
 VRC_IK_FBT_LOCOMOTION,REG_DWORD,IK: Full Body Tracking locomotion mode,0x1,
 VRC_IK_FBT_SPINE_MODE,REG_DWORD,IK: Full Body Tracking spine tracking mode,0x0,
@@ -606,7 +606,7 @@ VRC_IK_HEIGHT_RATIO,REG_QWORD,IK: Height ratio adjustment (as float),"hex(4): 00
 VRC_IK_KNEE_ANGLE,REG_QWORD,IK: Knee bend angle in degrees (as float),"hex(4): 00,00,00,00,00,00,00,00",
 VRC_IK_LEGACY,REG_DWORD,IK: Use legacy IK system,,
 VRC_IK_LEGACY_CALIBRATION,REG_DWORD,IK: Use legacy calibration method,0x0,
-VRC_IK_ONE_HANDED_CALIBRATION,REG_DWORD,IK: Enable/disable one-handed calibration,0x0,^[01]$
+VRC_IK_ONE_HANDED_CALIBRATION,REG_DWORD,IK: Enable/disable one-handed calibration,0x0,
 VRC_IK_PER_AVATAR_CALIBRATION_ADJUSTMENT,REG_DWORD,IK: Save calibration adjustments per avatar,0x0,
 VRC_IK_SHOULDER_WIDTH_COMPENSATION,REG_DWORD,IK: Shoulder width compensation amount,0x1,
 VRC_IK_TRACKER_MODEL,REG_DWORD,IK: Tracker model type for visualization,0x0,
@@ -635,7 +635,7 @@ VRC_INPUT_MIC_ON_JOIN,REG_DWORD,Audio: Default microphone state when joining wor
 VRC_INPUT_MOBILE_INTERACTION_MODE,REG_DWORD,Input: Mobile interaction mode type,0x0,
 VRC_INPUT_OPENXR,REG_DWORD,Input: OpenXR controller input enabled,0x0,
 VRC_INPUT_OSC,REG_DWORD,Input: OSC (Open Sound Control) input enabled,0x1,
-VRC_INPUT_PERSONAL_SPACE,REG_DWORD,Safety: Personal space bubble size,0x1,^[01]$
+VRC_INPUT_PERSONAL_SPACE,REG_DWORD,Safety: Personal space bubble size,0x1,
 VRC_INPUT_QUEST_HANDS,REG_DWORD,Input: Quest hand tracking input enabled,0x1,
 VRC_INPUT_SELECTED_SAFETY_RANK,REG_BINARY,"Safety: Currently selected safety preset name (string, e.g., 'Untrusted', 'Normal')",,"^([A-Za-z]{2,})$"
 VRC_INPUT_SHOW_TOOLTIPS,REG_DWORD,UI: Show/hide input tooltips,0x1,
@@ -650,7 +650,7 @@ VRC_INPUT_VIVE,REG_DWORD,Input: HTC Vive controller input enabled,0x0,
 VRC_INPUT_VIVE_ADVANCED,REG_DWORD,Input: HTC Vive advanced controller settings enabled,0x0,
 VRC_INPUT_VOICE_PRIORITIZATION,REG_DWORD,Audio: Voice prioritization mode (nearest/loudest),,
 VRC_INPUT_WAVE,REG_DWORD,Input: Wave VR controller input enabled,0x0,
-VRC_INTERACT_HAPTICS_ENABLED,REG_DWORD,Haptics: Enable/disable interaction haptic feedback,0x1,^[01]$
+VRC_INTERACT_HAPTICS_ENABLED,REG_DWORD,Haptics: Enable/disable interaction haptic feedback,0x1,
 VRC_INVERTED_MOUSE,REG_DWORD,Input: Invert mouse Y-axis for desktop,0x0,
 VRC_INVERT_CONTROLLER_VERTICAL_LOOK,REG_DWORD,Input: Invert vertical look axis for controllers,0x0,
 VRC_IS_BOOPING_ENABLED,REG_DWORD,VRChat setting: VRC_IS_BOOPING_ENABLED,,
@@ -662,13 +662,13 @@ VRC_MIC_ICON_FADE_OUT,REG_DWORD,HUD: Microphone icon fade out after inactivity,,
 VRC_MIC_ICON_VISIBILITY,REG_DWORD,HUD: Microphone icon visibility mode,0x1,
 VRC_MIC_TOGGLE_VOLUME,REG_QWORD,Audio: Volume when microphone toggled off (0.0-1.0 as float),"hex(4): 00,00,00,00,00,00,e0,3f",
 VRC_MIRROR_RESOLUTION,REG_DWORD,Graphics: Mirror reflection resolution quality (0-3),0x0,
-VRC_MM_FREE_PLACEMENT_ENABLED,REG_DWORD,UI: Enable/disable free placement of main menu in VR,0x0,^[01]$
-VRC_MOBILE_AUTO_HOLD_ENABLED,REG_DWORD,Mobile: Enable/disable auto-hold for objects,0x1,^[01]$
-VRC_MOBILE_AUTO_WALK_ENABLED,REG_DWORD,Mobile: Enable/disable auto-walk,0x1,^[01]$
+VRC_MM_FREE_PLACEMENT_ENABLED,REG_DWORD,UI: Enable/disable free placement of main menu in VR,0x0,
+VRC_MOBILE_AUTO_HOLD_ENABLED,REG_DWORD,Mobile: Enable/disable auto-hold for objects,0x1,
+VRC_MOBILE_AUTO_WALK_ENABLED,REG_DWORD,Mobile: Enable/disable auto-walk,0x1,
 VRC_MOBILE_DPI_SCALING,REG_QWORD,Mobile: DPI scaling multiplier (as float),"hex(4): 00,00,00,00,00,00,49,40",
-VRC_MOBILE_NOTIFICATIONS_SERVICE_ENABLED,REG_DWORD,Mobile: Enable/disable push notifications service,0x1,^[01]$
-VRC_MOBILE_PERFORMANCE_SECONDARY_UI_ENABLED,REG_DWORD,Mobile: Enable/disable secondary UI for performance,0x0,^[01]$
-VRC_MOBILE_QUICK_SELECT_ENABLED,REG_DWORD,Mobile: Enable/disable quick select gestures,0x0,^[01]$
+VRC_MOBILE_NOTIFICATIONS_SERVICE_ENABLED,REG_DWORD,Mobile: Enable/disable push notifications service,0x1,
+VRC_MOBILE_PERFORMANCE_SECONDARY_UI_ENABLED,REG_DWORD,Mobile: Enable/disable secondary UI for performance,0x0,
+VRC_MOBILE_QUICK_SELECT_ENABLED,REG_DWORD,Mobile: Enable/disable quick select gestures,0x0,
 VRC_MOBILE_TARGET_FRAME_RATE,REG_DWORD,Mobile: Target frame rate (FPS),,
 VRC_MOUSE_SENSITIVITY,REG_QWORD,Input: Mouse sensitivity for desktop (as float),"hex(4): 00,00,00,00,00,00,f0,3f",
 VRC_NAMEPLATE_FALLBACK_ICON_VISIBLE,REG_DWORD,Nameplates: Show fallback avatar icon,0x1,
@@ -682,8 +682,8 @@ VRC_ONLY_SHOW_FRIEND_JOIN_LEAVE_PORTAL_NOTIFICATIONS,REG_DWORD,Notifications: On
 VRC_PEDESTAL_SHARING_VISIBILITY,REG_DWORD,Privacy: Pedestal avatar sharing visibility setting,0x1,
 VRC_PLAYER_GESTURE_TOGGLE,REG_DWORD,Input: Player gesture toggle mode,0x1,
 VRC_PLAY_NOTIFICATION_AUDIO,REG_DWORD,Notifications: Play audio for notifications,0x1,
-VRC_PORTAL_MODE,REG_DWORD,Safety: Portal drop mode (legacy),,^[01]$
-VRC_PORTAL_MODE_V2,REG_DWORD,"Safety: Portal drop mode (0=ask, 1=friends+, 2=anyone)",0x0,^[01]$
+VRC_PORTAL_MODE,REG_DWORD,Safety: Portal drop mode (legacy),,
+VRC_PORTAL_MODE_V2,REG_DWORD,"Safety: Portal drop mode (0=ask, 1=friends+, 2=anyone)",0x0,
 VRC_PORTRAIT_FOV,REG_QWORD,Camera: Field of view for portrait/vertical orientation (degrees as float),"hex(4): 00,00,00,00,00,00,54,40",
 VRC_PREFERRED_TIMEZONE_2,REG_BINARY,"Clock: Preferred timezone identifier (IANA timezone string, can be empty)",hex: 00,^(| )$
 VRC_PRINT_VISIBILITY,REG_DWORD,Privacy: Print/photo sharing visibility setting,0x0,
@@ -695,7 +695,7 @@ VRC_RANDOMIZE_LOADING_SCREEN,REG_DWORD,VRChat setting: VRC_RANDOMIZE_LOADING_SCR
 VRC_RANDOMIZE_PORTAL,REG_DWORD,VRChat setting: VRC_RANDOMIZE_PORTAL,,
 VRC_RANDOMIZE_WARP_EFFECT,REG_DWORD,VRChat setting: VRC_RANDOMIZE_WARP_EFFECT,,
 VRC_REDUCE_ANIMATIONS,REG_DWORD,Accessibility: Reduce UI animations for motion sensitivity,0x0,
-VRC_SAFETY_LEVEL,REG_DWORD,Safety: Overall safety level preset (0-4),0x2,^[01]$
+VRC_SAFETY_LEVEL,REG_DWORD,Safety: Overall safety level preset (0-4),0x2,
 VRC_SCREEN_BRIGHTNESS,REG_QWORD,Display: Screen brightness adjustment (0.0-2.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f",
 VRC_SCREEN_CONTRAST,REG_QWORD,Display: Screen contrast adjustment (0.0-2.0 as float),"hex(4): 00,00,00,00,00,00,f0,3f",
 VRC_SEARCH_SAVED_SEARCHES,REG_BINARY,Search: Saved search queries (can be empty),,
@@ -713,7 +713,7 @@ VRC_SHOW_LEAVE_NOTIFICATIONS,REG_DWORD,Notifications: Show player leave notifica
 VRC_SHOW_PORTAL_NOTIFICATIONS,REG_DWORD,Notifications: Show portal drop notifications,0x0,
 VRC_SHOW_SOCIAL_RANK,REG_DWORD,Nameplates: Show trust rank badges on nameplates,0x1,
 VRC_SKIP_GO_BUTTON_IN_LOAD,REG_DWORD,UI: Skip showing Go button during world loading,,
-VRC_SLIDER_SNAPPING,REG_DWORD,UI: Enable/disable slider snapping to preset values,0x1,^[01]$
+VRC_SLIDER_SNAPPING,REG_DWORD,UI: Enable/disable slider snapping to preset values,0x1,
 VRC_STREAMER_MODE_ENABLED,REG_DWORD,Privacy: Enable streamer mode (hide sensitive info),0x0,
 VRC_THIRD_PERSON_EXPERIMENT_APPLIED_DEFAULT_USER,REG_BINARY,VRChat setting: VRC_THIRD_PERSON_EXPERIMENT_APPLIED_DEFAULT_USER,,^(unset)$
 VRC_THIRD_PERSON_EXPERIMENT_APPLIED_DEFAULT_USER_1,REG_BINARY,VRChat setting: VRC_THIRD_PERSON_EXPERIMENT_APPLIED_DEFAULT_USER_1,,^(unset)$
@@ -744,9 +744,9 @@ VRC_TRACKING_SELFIE_FACE_TRACKING_RECENTER_SPEED,REG_QWORD,Tracking: Selfie face
 VRC_TRACKING_SEND_VR_SYSTEM_HEAD_AND_WRIST_OSC_DATA,REG_DWORD,Tracking: Send VR system head and wrist data via OSC,0x0,
 VRC_TRACKING_SHOULD_SHOW_OSC_TRACKING_DATA_REMINDER,REG_DWORD,Tracking: Should show OSC tracking data reminder popup,0x1,
 VRC_TRACKING_TRACKER_PREDICTION,REG_QWORD,Tracking: Tracker position prediction amount (as float),"hex(4): 00,00,00,00,00,00,00,00",
-VRC_UI_HAPTICS_ENABLED,REG_DWORD,Haptics: Enable/disable UI interaction haptic feedback,0x1,^[01]$
+VRC_UI_HAPTICS_ENABLED,REG_DWORD,Haptics: Enable/disable UI interaction haptic feedback,0x1,
 VRC_UI_HEADER_CLICK_SCROLL_RESET_ENABLED,REG_DWORD,UI: Click header to scroll to top of list,0x1,
-VRC_USE_COLOR_FILTER,REG_DWORD,Accessibility: Enable/disable color filter,0x0,^[01]$
+VRC_USE_COLOR_FILTER,REG_DWORD,Accessibility: Enable/disable color filter,0x0,
 VRC_USE_GENERIC_INSTANCE_NAMES,REG_DWORD,Privacy: Use generic instance names (hide instance creator),0x0,
 VRC_USE_OUTLINE_MIC_ICON,REG_DWORD,HUD: Use outline style for microphone icon,0x0,
 VRC_USE_PIXEL_SHIFTING_HUD,REG_DWORD,HUD: Use pixel shifting to reduce VR HUD burn-in,0x0,
@@ -771,10 +771,10 @@ announcementsSeen,REG_BINARY,List of announcement IDs that have been seen/dismis
 avatarProxyAlwaysShowExplicit,REG_DWORD,Always show avatars marked explicit (global setting),0x1,
 avatarProxyAlwaysShowFriends,REG_DWORD,Always show friend avatars regardless of performance (global setting),0x1,
 avatarProxyShowAtRange,REG_QWORD,"Distance at which to show full avatars (meters, global setting)","hex(4): 00,00,00,00,00,00,59,40",
-avatarProxyShowAtRangeToggle,REG_DWORD,Enable/disable showing avatars at range (global setting),0x0,^[01]$
+avatarProxyShowAtRangeToggle,REG_DWORD,Enable/disable showing avatars at range (global setting),0x0,
 avatarProxyShowMaxNumber,REG_DWORD,Maximum number of avatars to show (global setting),0x50,^(-1|80|30)$
 avatar_tab_start,REG_BINARY,Default starting avatar tab selection,,
-currentShowMaxNumberOfAvatarsEnabled,REG_DWORD,Enable/disable maximum avatar count limit (global setting),0x0,^[01]$
+currentShowMaxNumberOfAvatarsEnabled,REG_DWORD,Enable/disable maximum avatar count limit (global setting),0x0,
 discordAuthWarningsShown,REG_DWORD,VRChat setting: discordAuthWarningsShown,,^(3|0|1)$
 expiredSeenReminderPopup{userId},REG_BINARY,Has seen subscription expired reminder popup for user,,
 has_opened_live_now_page,REG_DWORD,VRChat setting: has_opened_live_now_page,,
@@ -793,8 +793,8 @@ unity.player_sessionid,REG_BINARY,Unity Analytics player session ID (UUID string
 {userId}_DEFAULT_GROUP,REG_BINARY,Setting per user ({userId}_DEFAULT_GROUP),,
 {userId}_DroneControllerSettings,REG_BINARY,Drone camera controller configuration per user,,^(\{.*\}|\[.*\])$
 {userId}_DroneFlightPresetValues,REG_BINARY,Saved drone flight preset values per user,,^(\{.*\}|\[.*\])$
-{userId}_GiftDropNoRefundAfterUsageAgreeToggle,REG_DWORD,User agreed to no refund policy for gift drops,,^[01]$
-{userId}_InPageCallout_Drone,REG_DWORD,Has seen drone feature callout for this user,,^[01]$
+{userId}_GiftDropNoRefundAfterUsageAgreeToggle,REG_DWORD,User agreed to no refund policy for gift drops,,
+{userId}_InPageCallout_Drone,REG_DWORD,Has seen drone feature callout for this user,,
 {userId}_LastExpiredSubscription,REG_BINARY,Last expired subscription data for this user (can be empty),hex: 00,
 {userId}_OpenMenuHelpShownCount,REG_DWORD,Number of times menu help tooltip shown for this user,0x1,
 {userId}_OpenedQuickMenu,REG_DWORD,Has opened quick menu at least once for this user,0x3,
@@ -811,8 +811,8 @@ unity.player_sessionid,REG_BINARY,Unity Analytics player session ID (UUID string
 {userId}_avatarProxyAlwaysShowExplicit,REG_DWORD,Always show avatars marked explicit for this user,,
 {userId}_avatarProxyAlwaysShowFriends,REG_DWORD,Always show friend avatars regardless of performance for this user,,
 {userId}_avatarProxyShowAtRange,REG_QWORD,Distance at which to show full avatars for this user (meters),,
-{userId}_avatarProxyShowAtRangeToggle,REG_DWORD,Enable/disable showing avatars at range for this user,,^[01]$
+{userId}_avatarProxyShowAtRangeToggle,REG_DWORD,Enable/disable showing avatars at range for this user,,
 {userId}_avatarProxyShowMaxNumber,REG_DWORD,Maximum number of avatars to show for this user,,
 {userId}_avatar_tab_start,REG_BINARY,Starting avatar tab preference per user,,
-{userId}_currentShowMaxNumberOfAvatarsEnabled,REG_DWORD,Enable/disable maximum avatar count limit for this user,,^[01]$
+{userId}_currentShowMaxNumberOfAvatarsEnabled,REG_DWORD,Enable/disable maximum avatar count limit for this user,,
 {userId}_has_opened_live_now_page,REG_DWORD,Setting per user ({userId}_has_opened_live_now_page),,
