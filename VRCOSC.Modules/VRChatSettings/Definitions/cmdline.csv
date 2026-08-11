@@ -4,18 +4,12 @@ CommandLine,ValueType,Description,DefaultValue,Min,Max,Pattern
 --enable-udon-debug-logging,switch,Enables full verbose debug logging for UdonSharp/Udon programs\n\nConfirmed in VRChat docs and VRCX-0 localization,,,,
 --enable-av-pro-in-proton,switch,Fixes AVPro video player compatibility under Wine/Proton on Linux\n\nLinux/Proton-specific; use this on Steam Deck and Linux,,,,
 --enable-hw-video-decoding,switch,Enables hardware-accelerated video decoding for video players (GPU decode)\n\nImproves performance on supported GPU; common on Linux,,,,
---osc=PORTS,string,"Configures OSC ports: inPort:senderIP:outPort format
-
-e.g. --osc=9000:127.0.0.1:9001. Required for VRCOSC and other OSC tools",9000:127.0.0.1:9001,,,"^\d{1,5}:[0-9.]+:\d{1,5}$"
+--osc=PORTS,string,Configures OSC ports: inPort:senderIP:outPort format\n\ne.g. --osc=9000:127.0.0.1:9001. Required for VRCOSC and other OSC tools,9000:127.0.0.1:9001,,,"^\d{1,5}:[0-9.]+:\d{1,5}$"
 --fps=FPS,int,Sets the target frame rate cap for VRChat rendering\n\nUnity engine cap; higher = more CPU/GPU load,90,15,360,^(1[5-9]|[2-9]\d|[1-2]\d{2}|3[0-5]\d|360)$
---affinity=MASK,string,"Sets CPU thread affinity hex bitmask for the VRChat process — for AMD CPU optimization
-
-FFFF=16 threads; wrong value causes crashes. Advanced/AMD only",,,^[0-9A-Fa-f]{1,"^[0-9A-Fa-f]{1,16}$"
+--affinity=MASK,string,Sets CPU thread affinity hex bitmask for the VRChat process — for AMD CPU optimization\n\nFFFF=16 threads; wrong value causes crashes. Advanced/AMD only,,,^[0-9A-Fa-f]{1,"^[0-9A-Fa-f]{1,16}$"
 --process-priority=LEVEL,int,"Sets the OS process priority level for VRChat\n\n-2=Idle,-1=Below Normal,0=Normal,1=Above Normal,2=High",-1,-2,2,^-?[0-2]$
 --no-steam,switch,Bypasses Steam client requirement when launching via launch.exe directly\n\nOnly works with the launcher.exe direct launch method,,,,
---profile=NAME,string,"Launches with a separate isolated settings profile directory
-
-Creates a subfolder in AppData for isolated settings",default,,,"^[A-Za-z0-9_\-]{1,64}$"
+--profile=NAME,string,Launches with a separate isolated settings profile directory\n\nCreates a subfolder in AppData for isolated settings,default,,,"^[A-Za-z0-9_\-]{1,64}$"
 --watch-world=ID,string,Loads a specific world by ID on startup (e.g. wrld_...)\n\nUseful for testing — skips startup world loading,,,,^wrld_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
 --join-or-create=LOCATION,string,Joins or creates a specific instance from launch\n\ne.g. wrld_abc:12345~region(us),,,,^wrld_[0-9a-f\-]+:[0-9a-zA-Z~()]+$
 --desktop,switch,Forces VRChat to launch in Desktop (non-VR) mode\n\nOverrides HMD auto-detection,,,,
