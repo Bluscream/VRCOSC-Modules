@@ -1,0 +1,12 @@
+CommandLine,ValueType,Description,DefaultValue,Pattern
+--enable-sdk-vrc-unlocked,bool,Unlocks SDK debug features and experimental developer tools in-game,false,
+--enable-avpro-in-editor,bool,Enables AVPro video player playback inside editor/debug modes,false,
+--enable-debug-gui,bool,Displays debug GUI overlay with performance and network stats,false,
+--enable-hud-message-debug,bool,Displays verbose HUD debug notification messages,false,
+--enable-[category]-debug-logging,bool,Enables detailed debug log outputs for specific system categories,false,
+--fps=FPS,int,Locks in-game target frame rate limit to specified FPS value,90,^(30|60|72|80|90|120|144|240)$
+--profile=NAME,string,Launches VRChat using a separate isolated user settings profile,default,^[A-Za-z0-9_\-]+$
+--watch-config,bool,Auto-reloads config.json dynamically when modified on disk,true,
+--disable-avatar-copying,bool,Disables avatar cloning/copying feature for all avatars,false,
+--no-sandbox,bool,Disables Unity process sandboxing features,false,
+--ignore-certificate-errors,bool,Ignores SSL/TLS certificate errors for network requests,false,
