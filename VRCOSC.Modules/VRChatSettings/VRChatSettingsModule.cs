@@ -20,7 +20,7 @@ public class VRChatSettingsModule : Module
         CreateTextBox(VRChatSettingsSetting.VRChatUserId, "VRChat User ID", "Your VRChat user ID (usr_xxx...) - Required for user-specific settings. Find it at vrchat.com/home/user/{userId}", string.Empty);
         CreateToggle(VRChatSettingsSetting.AllowUnknownSettings, "Allow Unknown Settings", "Allow reading/writing settings not in the known list", false);
         CreateToggle(VRChatSettingsSetting.AllowOutsideLimits, "Allow Outside Known Limits", "Allow setting values outside known safe limits", false);
-        CreateToggle(VRChatSettingsSetting.AllowRemoteDefinitions, "Allow Remote Definitions", "Try to load definitions from GitHub Gist (fallback to embedded)", true);
+        CreateToggle(VRChatSettingsSetting.AllowRemoteDefinitions, "Allow Remote Definitions", "Try to load definitions from GitHub repo (fallback to embedded)", true);
         CreateToggle(VRChatSettingsSetting.LogOperations, "Log Operations", "Log all get/set operations to console", false);
         CreateToggle(VRChatSettingsSetting.AutoBackup, "Auto Backup", "Automatically backup settings before writing", true);
         CreateTextBox(VRChatSettingsSetting.BackupDirectory, "Backup Directory", "Directory to store backups (leave empty for default)", string.Empty);

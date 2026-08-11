@@ -149,7 +149,7 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | **VRChat User ID** | `TextBox` | `Your VRChat user ID (usr_xxx...) - Required for user-specific settings. Find it at vrchat.com/home/user/{userId}` | `empty` |
 | **Allow Unknown Settings** | `Toggle` | `Allow reading/writing settings not in the known list` | `false` |
 | **Allow Outside Known Limits** | `Toggle` | `Allow setting values outside known safe limits` | `false` |
-| **Allow Remote Definitions** | `Toggle` | `Try to load definitions from GitHub Gist (fallback to embedded)` | `true` |
+| **Allow Remote Definitions** | `Toggle` | `Try to load definitions from GitHub repo (fallback to embedded)` | `true` |
 | **Log Operations** | `Toggle` | `Log all get/set operations to console` | `false` |
 | **Auto Backup** | `Toggle` | `Automatically backup settings before writing` | `true` |
 | **Backup Directory** | `TextBox` | `Directory to store backups (leave empty for default)` | `empty` |
