@@ -171,7 +171,7 @@ public sealed class LinuxHardwareStatsModule : Module
             File.WriteAllText(wineTargetPath, scriptContent);
 
             Log($"Linux hardware stats helper script deployed to {targetPath} (GPU={gpuIndex}, CPU={cpuIndex}, NET={(string.IsNullOrEmpty(netIface) ? "all" : netIface)})");
-            LinuxUtils.ChmodPlusX("~/.local/bin/vrcosc_hwstats.sh", ex => Log($"Error making script executable: {ex.Message}"));
+            LinuxUtils.ChmodPlusX("$HOME/.local/bin/vrcosc_hwstats.sh", ex => Log($"Error making script executable: {ex.Message}"));
         }
         catch (Exception ex)
         {
