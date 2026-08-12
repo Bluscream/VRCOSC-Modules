@@ -392,6 +392,25 @@ public sealed class LinuxHardwareStatsModule : Module
                     SendParameter(HardwareStatsParameter.VRRunning, vrcRunning != 0);
                 }
 
+                // OS Info (lines 27-30)
+                if (lines.Length >= 31)
+                {
+                    var osName = lines[27].Trim();
+                    var osVersion = lines[28].Trim();
+                    var osKernel = lines[29].Trim();
+                    var osPrettyName = lines[30].Trim();
+
+                    _os.Name = osName;
+                    _os.Version = osVersion;
+                    _os.Kernel = osKernel;
+                    _os.PrettyName = osPrettyName;
+
+                    SetVariableValue(HardwareStatsVariable.OSName, osName);
+                    SetVariableValue(HardwareStatsVariable.OSVersion, osVersion);
+                    SetVariableValue(HardwareStatsVariable.OSKernel, osKernel);
+                    SetVariableValue(HardwareStatsVariable.OSPrettyName, osPrettyName);
+                }
+
                 if (!_firstUpdateDone)
                 {
                     _firstUpdateDone = true;
