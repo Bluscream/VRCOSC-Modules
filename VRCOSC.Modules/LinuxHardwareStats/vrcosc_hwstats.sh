@@ -415,12 +415,16 @@ vrchat_running=0
 pgrep -f "VRChat.exe" >/dev/null 2>&1 && vrchat_running=1
 
 # ---------------------------------------------------------------------------
-# OS release & Kernel information (/etc/os-release or /usr/lib/os-release + uname -r)
+# OS release & Kernel information (/run/host/etc/os-release or /etc/os-release + uname -r)
 # ---------------------------------------------------------------------------
 os_name=""
 os_version=""
 os_pretty=""
-if [ -f /etc/os-release ]; then
+if [ -f /run/host/etc/os-release ]; then
+    . /run/host/etc/os-release
+elif [ -f /run/host/usr/lib/os-release ]; then
+    . /run/host/usr/lib/os-release
+elif [ -f /etc/os-release ]; then
     . /etc/os-release
 elif [ -f /usr/lib/os-release ]; then
     . /usr/lib/os-release
