@@ -239,6 +239,10 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | **Active Process Name** | `processname` | `string` | `ChatBox variable Active Process Name` |
 | **Active Window FPS** | `windowfps` | `int` | `ChatBox variable Active Window FPS` |
 | **VR Mode** | `vrmode` | `string` | `ChatBox variable VR Mode` |
+| **OS Name** | `osname` | `string` | `ChatBox variable OS Name` |
+| **OS Version** | `osversion` | `string` | `ChatBox variable OS Version` |
+| **OS Kernel** | `oskernel` | `string` | `ChatBox variable OS Kernel` |
+| **OS Pretty Name** | `osprettyname` | `string` | `ChatBox variable OS Pretty Name` |
 <!-- VARIABLES_TABLE_END -->
 
 ## ChatBox States

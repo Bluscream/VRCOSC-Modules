@@ -20,6 +20,7 @@ public sealed class LinuxHardwareStatsModule : Module
     private readonly LinuxGPU _gpu = new();
     private readonly LinuxRAM _ram = new();
     private readonly LinuxNetwork _network = new();
+    private readonly LinuxOS _os = new();
     private bool _firstUpdateDone = false;
 
     protected override void OnPreLoad()
@@ -106,6 +107,12 @@ public sealed class LinuxHardwareStatsModule : Module
         CreateVariable<int>(HardwareStatsVariable.WindowFPS, "Active Window FPS");
         CreateVariable<string>(HardwareStatsVariable.VRMode, "VR Mode");
 
+        // --- OS Information ---
+        CreateVariable<string>(HardwareStatsVariable.OSName, "OS Name");
+        CreateVariable<string>(HardwareStatsVariable.OSVersion, "OS Version");
+        CreateVariable<string>(HardwareStatsVariable.OSKernel, "OS Kernel");
+        CreateVariable<string>(HardwareStatsVariable.OSPrettyName, "OS Pretty Name");
+
         CreateState(HardwareStatsState.Default, "Default",
             "CPU: {0}% | GPU: {1}%\nRAM: {2}GB/{3}GB\n↓{4} ↑{5}",
             new[]
@@ -163,7 +170,7 @@ public sealed class LinuxHardwareStatsModule : Module
             File.WriteAllText(wineTargetPath, scriptContent);
 
             Log($"Linux hardware stats helper script deployed to {targetPath} (GPU={gpuIndex}, CPU={cpuIndex}, NET={(string.IsNullOrEmpty(netIface) ? "all" : netIface)})");
-            LinuxUtils.ChmodPlusX(targetPath, ex => Log($"Error making script executable: {ex.Message}"));
+            LinuxUtils.ChmodPlusX("~/.local/bin/vrcosc_hwstats.sh", ex => Log($"Error making script executable: {ex.Message}"));
         }
         catch (Exception ex)
         {
@@ -175,6 +182,7 @@ public sealed class LinuxHardwareStatsModule : Module
     public LinuxGPU GetGPU() => _gpu;
     public LinuxRAM GetRAM() => _ram;
     public LinuxNetwork GetNetwork() => _network;
+    public LinuxOS GetOS() => _os;
 
     [ModuleUpdate(ModuleUpdateMode.Custom, true, 2000)]
     private void UpdateParameters()
@@ -582,7 +590,11 @@ public sealed class LinuxHardwareStatsModule : Module
         WindowTitle,
         ProcessName,
         WindowFPS,
-        VRMode
+        VRMode,
+        OSName,
+        OSVersion,
+        OSKernel,
+        OSPrettyName
     }
 }
 
@@ -628,6 +640,14 @@ public class LinuxNetwork
     public float TxKbps { get; set; }
     public float RxTotalMb { get; set; }
     public float TxTotalMb { get; set; }
+}
+
+public class LinuxOS
+{
+    public string Name { get; set; } = string.Empty;
+    public string Version { get; set; } = string.Empty;
+    public string Kernel { get; set; } = string.Empty;
+    public string PrettyName { get; set; } = string.Empty;
 }
 
 // ---------------------------------------------------------------------------

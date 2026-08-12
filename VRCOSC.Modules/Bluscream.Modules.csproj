@@ -93,8 +93,6 @@
     <Compile Remove="DesktopFPS\**\*.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="VRChatSettings\Definitions\registry.csv" LogicalName="Bluscream.Modules.Definitions.Registry.csv" />
-    <EmbeddedResource Include="VRChatSettings\Definitions\config.schema.json" LogicalName="Bluscream.Modules.Definitions.config.schema.json" />
     <EmbeddedResource Include="HTTPServer\openapi.json" LogicalName="Bluscream.Modules.HTTPServer.openapi.json" />
     <EmbeddedResource Include="HTTPServer\swagger-ui.html" LogicalName="Bluscream.Modules.HTTPServer.swagger-ui.html" />
     <EmbeddedResource Include="LinuxMedia\vrcosc_mpris_query.sh" LogicalName="Bluscream.Modules.LinuxMedia.vrcosc_mpris_query.sh" />

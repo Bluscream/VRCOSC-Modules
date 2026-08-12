@@ -4,7 +4,7 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**460** total across **14** modules.
+**461** total across **14** modules.
 
 | Module | Count |
 |---|---|
@@ -15,7 +15,7 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [HTTPServer](#httpserver) | 20 |
 | [HomeAssistant](#homeassistant) | 34 |
 | [IRCBridge](#ircbridge) | 109 |
-| [LinuxHardwareStats](#linuxhardwarestats) | 30 |
+| [LinuxHardwareStats](#linuxhardwarestats) | 31 |
 | [LinuxMedia](#linuxmedia) | 7 |
 | [Notifications](#notifications) | 37 |
 | [OpenXR](#openxr) | 38 |
@@ -398,14 +398,15 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [20](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L20) | `LinuxHardwareStatsModule` | private | `private readonly LinuxGPU _gpu = new();` |
 | [21](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L21) | `LinuxHardwareStatsModule` | private | `private readonly LinuxRAM _ram = new();` |
 | [22](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L22) | `LinuxHardwareStatsModule` | private | `private readonly LinuxNetwork _network = new();` |
-| [23](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L23) | `LinuxHardwareStatsModule` | private | `private bool _firstUpdateDone = false;` |
-| [647](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L647) | `HardwareNameParser` | private | `private static readonly Regex CpuNoisyTokens = new(@"\(R\)|\(TM\)", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [648](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L648) | `HardwareNameParser` | private | `private static readonly Regex CpuGenPrefix = new(@"^\d+\w*\s+Gen\s+", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [649](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L649) | `HardwareNameParser` | private | `private static readonly Regex CpuAtFreqSuffix = new(@"\s+CPU\s*@.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [650](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L650) | `HardwareNameParser` | private | `private static readonly Regex CpuCoresSuffix = new(@"\s+\d+-Core.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [652](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L652) | `HardwareNameParser` | private | `private static readonly Regex IntelModelRegex = new(@"\b([im][0-9]-[0-9]+[A-Z0-9]*(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [653](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L653) | `HardwareNameParser` | private | `private static readonly Regex IntelXeonRegex = new(@"\b(Xeon\s+[A-Z0-9\-]+(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [655](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L655) | `HardwareNameParser` | private | `private static readonly Regex GpuVramRegex = new(@"\b(\d+\s*GB)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [23](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L23) | `LinuxHardwareStatsModule` | private | `private readonly LinuxOS _os = new();` |
+| [24](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L24) | `LinuxHardwareStatsModule` | private | `private bool _firstUpdateDone = false;` |
+| [667](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L667) | `HardwareNameParser` | private | `private static readonly Regex CpuNoisyTokens = new(@"\(R\)|\(TM\)", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [668](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L668) | `HardwareNameParser` | private | `private static readonly Regex CpuGenPrefix = new(@"^\d+\w*\s+Gen\s+", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [669](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L669) | `HardwareNameParser` | private | `private static readonly Regex CpuAtFreqSuffix = new(@"\s+CPU\s*@.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [670](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L670) | `HardwareNameParser` | private | `private static readonly Regex CpuCoresSuffix = new(@"\s+\d+-Core.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [672](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L672) | `HardwareNameParser` | private | `private static readonly Regex IntelModelRegex = new(@"\b([im][0-9]-[0-9]+[A-Z0-9]*(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [673](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L673) | `HardwareNameParser` | private | `private static readonly Regex IntelXeonRegex = new(@"\b(Xeon\s+[A-Z0-9\-]+(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [675](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L675) | `HardwareNameParser` | private | `private static readonly Regex GpuVramRegex = new(@"\b(\d+\s*GB)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
 
 ### `LinuxHardwareStats/Nodes.cs`
 

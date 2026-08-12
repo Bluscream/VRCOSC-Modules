@@ -4,7 +4,7 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**711** total across **15** modules.
+**712** total across **15** modules.
 
 | Module | Count |
 |---|---|
@@ -15,7 +15,7 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [HTTPServer](#httpserver) | 41 |
 | [HomeAssistant](#homeassistant) | 42 |
 | [IRCBridge](#ircbridge) | 103 |
-| [LinuxHardwareStats](#linuxhardwarestats) | 26 |
+| [LinuxHardwareStats](#linuxhardwarestats) | 27 |
 | [LinuxMedia](#linuxmedia) | 8 |
 | [LinuxProcessManager](#linuxprocessmanager) | 4 |
 | [Notifications](#notifications) | 25 |
@@ -510,22 +510,23 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [25](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L25) | `LinuxHardwareStatsModule` | protected | `protected override void OnPreLoad()` |
-| [65](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L65) | `LinuxHardwareStatsModule` | protected | `protected override void OnPostLoad()` |
-| [122](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L122) | `LinuxHardwareStatsModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [130](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L130) | `LinuxHardwareStatsModule` | private | `private void DeployHelperScript()` |
-| [174](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L174) | `LinuxHardwareStatsModule` | public | `public LinuxCPU GetCPU() => _cpu;` |
-| [175](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L175) | `LinuxHardwareStatsModule` | public | `public LinuxGPU GetGPU() => _gpu;` |
-| [176](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L176) | `LinuxHardwareStatsModule` | public | `public LinuxRAM GetRAM() => _ram;` |
-| [177](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L177) | `LinuxHardwareStatsModule` | public | `public LinuxNetwork GetNetwork() => _network;` |
-| [180](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L180) | `LinuxHardwareStatsModule` | private | `private void UpdateParameters()` |
-| [400](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L400) | `LinuxHardwareStatsModule` | protected | `protected override Task OnModuleStop()` |
-| [405](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L405) | `LinuxHardwareStatsModule` | private | `private static string FormatBytes(float mb)` |
-| [427](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L427) | `LinuxHardwareStatsModule` | private | `private static string FormatBytesPerSecond(float kb)` |
-| [449](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L449) | `LinuxHardwareStatsModule` | private | `private static string ApplyRedaction(string value, string pattern, string redactedText)` |
-| [460](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L460) | `LinuxHardwareStatsModule` | private | `private void LogDiagnostics(int lineCount, int systemTemp)` |
-| [665](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L665) | `HardwareNameParser` | public | `public static CpuInfo ParseCpu(string fullName)` |
-| [711](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L711) | `HardwareNameParser` | public | `public static GpuInfo ParseGpu(string fullName)` |
+| [26](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L26) | `LinuxHardwareStatsModule` | protected | `protected override void OnPreLoad()` |
+| [66](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L66) | `LinuxHardwareStatsModule` | protected | `protected override void OnPostLoad()` |
+| [129](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L129) | `LinuxHardwareStatsModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [137](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L137) | `LinuxHardwareStatsModule` | private | `private void DeployHelperScript()` |
+| [181](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L181) | `LinuxHardwareStatsModule` | public | `public LinuxCPU GetCPU() => _cpu;` |
+| [182](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L182) | `LinuxHardwareStatsModule` | public | `public LinuxGPU GetGPU() => _gpu;` |
+| [183](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L183) | `LinuxHardwareStatsModule` | public | `public LinuxRAM GetRAM() => _ram;` |
+| [184](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L184) | `LinuxHardwareStatsModule` | public | `public LinuxNetwork GetNetwork() => _network;` |
+| [185](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L185) | `LinuxHardwareStatsModule` | public | `public LinuxOS GetOS() => _os;` |
+| [188](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L188) | `LinuxHardwareStatsModule` | private | `private void UpdateParameters()` |
+| [408](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L408) | `LinuxHardwareStatsModule` | protected | `protected override Task OnModuleStop()` |
+| [413](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L413) | `LinuxHardwareStatsModule` | private | `private static string FormatBytes(float mb)` |
+| [435](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L435) | `LinuxHardwareStatsModule` | private | `private static string FormatBytesPerSecond(float kb)` |
+| [457](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L457) | `LinuxHardwareStatsModule` | private | `private static string ApplyRedaction(string value, string pattern, string redactedText)` |
+| [468](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L468) | `LinuxHardwareStatsModule` | private | `private void LogDiagnostics(int lineCount, int systemTemp)` |
+| [685](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L685) | `HardwareNameParser` | public | `public static CpuInfo ParseCpu(string fullName)` |
+| [731](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L731) | `HardwareNameParser` | public | `public static GpuInfo ParseGpu(string fullName)` |
 
 ### `LinuxHardwareStats/Nodes.cs`
 

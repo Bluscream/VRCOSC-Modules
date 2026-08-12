@@ -98,7 +98,7 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | **HTTP/MCP Server** | `[VRCOSC.Modules/HTTPServer/README.md](VRCOSC.Modules/HTTPServer/README.md)` | `9` | `5` | 5 | 5 | HTTP/MCP server to control VRCOSC via HTTP Requests or from a AI Agent via MCP (optional) |
 | **HomeAssistant** | `[VRCOSC.Modules/HomeAssistant/README.md](VRCOSC.Modules/HomeAssistant/README.md)` | `10` | `4` | 4 | 3 | Integrate Home Assistant entity states, Jinja templates, avatar parameters, and flow nodes |
 | **IRC Bridge** | `[VRCOSC.Modules/IRCBridge/README.md](VRCOSC.Modules/IRCBridge/README.md)` | `16` | `9` | 6 | 9 | Connect to IRC servers and receive events for channel activity |
-| **Linux Hardware Stats** | `[VRCOSC.Modules/LinuxHardwareStats/README.md](VRCOSC.Modules/LinuxHardwareStats/README.md)` | `6` | `30` | 1 | 0 | Sends hardware stats as avatar parameters and allows for displaying them in the ChatBox on Linux hosts |
+| **Linux Hardware Stats** | `[VRCOSC.Modules/LinuxHardwareStats/README.md](VRCOSC.Modules/LinuxHardwareStats/README.md)` | `6` | `34` | 1 | 0 | Sends hardware stats as avatar parameters and allows for displaying them in the ChatBox on Linux hosts |
 | **Linux Media** | `[VRCOSC.Modules/LinuxMedia/README.md](VRCOSC.Modules/LinuxMedia/README.md)` | `0` | `8` | 3 | 3 | Integration with Linux MPRIS Media Players (via D-Bus) |
 | **Linux Process Manager** | `[VRCOSC.Modules/LinuxProcessManager/README.md](VRCOSC.Modules/LinuxProcessManager/README.md)` | `0` | `0` | 0 | 0 | Allows for starting and stopping Linux host processes from avatar parameters |
 | **Notifications** | `[VRCOSC.Modules/Notifications/README.md](VRCOSC.Modules/Notifications/README.md)` | `11` | `4` | 0 | 2 | Send notifications to Desktop, XSOverlay, and OVRToolkit |

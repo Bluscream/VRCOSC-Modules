@@ -415,7 +415,24 @@ vrchat_running=0
 pgrep -f "VRChat.exe" >/dev/null 2>&1 && vrchat_running=1
 
 # ---------------------------------------------------------------------------
-# Output (27 lines, 0-indexed)
+# OS release & Kernel information (/etc/os-release or /usr/lib/os-release + uname -r)
+# ---------------------------------------------------------------------------
+os_name=""
+os_version=""
+os_pretty=""
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+elif [ -f /usr/lib/os-release ]; then
+    . /usr/lib/os-release
+fi
+
+os_name="${NAME:-${PRETTY_NAME:-Linux}}"
+os_version="${VERSION_ID:-${VERSION:-Rolling}}"
+os_pretty="${PRETTY_NAME:-$os_name}"
+os_kernel=$(uname -r 2>/dev/null || echo "Unknown Kernel")
+
+# ---------------------------------------------------------------------------
+# Output (31 lines, 0-indexed)
 # 0-15  : original fields (backward compatible)
 # 16-19 : network speeds and totals
 # 20    : system_temp (ACPI / motherboard)
@@ -425,6 +442,10 @@ pgrep -f "VRChat.exe" >/dev/null 2>&1 && vrchat_running=1
 # 24    : active_window_fps (MangoHud FPS or window monitor refresh rate)
 # 25    : vr_mode (Desktop / SteamVR / OpenXR)
 # 26    : vrchat_running (0 or 1)
+# 27    : os_name (e.g. "Bazzite" or "CachyOS Linux")
+# 28    : os_version (e.g. "44" or "Rolling")
+# 29    : os_kernel (e.g. "7.1.5-ogc5.1.fc44.x86_64")
+# 30    : os_pretty (e.g. "Bazzite 44" or "CachyOS Linux")
 # ---------------------------------------------------------------------------
 cat <<EOF > ~/.vrcosc_hwstats.txt
 $cpu_usage
@@ -454,4 +475,8 @@ $active_process_name
 $active_window_fps
 $vr_mode
 $vrchat_running
+$os_name
+$os_version
+$os_kernel
+$os_pretty
 EOF

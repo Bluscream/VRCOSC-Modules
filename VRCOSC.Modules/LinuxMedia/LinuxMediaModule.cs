@@ -89,7 +89,7 @@ public class LinuxMediaModule : Module
             }
 
             Log($"MPRIS query helper script deployed to {targetPath}");
-            LinuxUtils.ChmodPlusX(targetPath, ex => Log($"Error making script executable: {ex.Message}"));
+            LinuxUtils.ChmodPlusX("~/.local/bin/vrcosc_mpris_query.sh", ex => Log($"Error making script executable: {ex.Message}"));
         }
         catch (Exception ex)
         {
