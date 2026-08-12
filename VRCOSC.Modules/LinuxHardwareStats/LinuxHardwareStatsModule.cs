@@ -112,6 +112,7 @@ public sealed class LinuxHardwareStatsModule : Module
         CreateVariable<string>(HardwareStatsVariable.OSVersion, "OS Version");
         CreateVariable<string>(HardwareStatsVariable.OSKernel, "OS Kernel");
         CreateVariable<string>(HardwareStatsVariable.OSPrettyName, "OS Pretty Name");
+        CreateVariable<string>(HardwareStatsVariable.OSVariant, "OS Variant");
 
         CreateState(HardwareStatsState.Default, "Default",
             "CPU: {0}% | GPU: {1}%\nRAM: {2}GB/{3}GB\n↓{4} ↑{5}",
@@ -392,7 +393,7 @@ public sealed class LinuxHardwareStatsModule : Module
                     SendParameter(HardwareStatsParameter.VRRunning, vrcRunning != 0);
                 }
 
-                // OS Info (lines 27-30)
+                // OS Info (lines 27-31)
                 if (lines.Length >= 31)
                 {
                     var osName = lines[27].Trim();
@@ -409,6 +410,13 @@ public sealed class LinuxHardwareStatsModule : Module
                     SetVariableValue(HardwareStatsVariable.OSVersion, osVersion);
                     SetVariableValue(HardwareStatsVariable.OSKernel, osKernel);
                     SetVariableValue(HardwareStatsVariable.OSPrettyName, osPrettyName);
+                }
+
+                if (lines.Length >= 32)
+                {
+                    var osVariant = lines[31].Trim();
+                    _os.Variant = osVariant;
+                    SetVariableValue(HardwareStatsVariable.OSVariant, osVariant);
                 }
 
                 if (!_firstUpdateDone)
@@ -613,7 +621,8 @@ public sealed class LinuxHardwareStatsModule : Module
         OSName,
         OSVersion,
         OSKernel,
-        OSPrettyName
+        OSPrettyName,
+        OSVariant
     }
 }
 
@@ -667,6 +676,7 @@ public class LinuxOS
     public string Version { get; set; } = string.Empty;
     public string Kernel { get; set; } = string.Empty;
     public string PrettyName { get; set; } = string.Empty;
+    public string Variant { get; set; } = string.Empty;
 }
 
 // ---------------------------------------------------------------------------

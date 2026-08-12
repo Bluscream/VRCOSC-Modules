@@ -433,10 +433,11 @@ fi
 os_name="${NAME:-${PRETTY_NAME:-Linux}}"
 os_version="${VERSION_ID:-${VERSION:-Rolling}}"
 os_pretty="${PRETTY_NAME:-$os_name}"
+os_variant="${VARIANT:-${VARIANT_ID:-}}"
 os_kernel=$(uname -r 2>/dev/null || echo "Unknown Kernel")
 
 # ---------------------------------------------------------------------------
-# Output (31 lines, 0-indexed)
+# Output (32 lines, 0-indexed)
 # 0-15  : original fields (backward compatible)
 # 16-19 : network speeds and totals
 # 20    : system_temp (ACPI / motherboard)
@@ -450,6 +451,7 @@ os_kernel=$(uname -r 2>/dev/null || echo "Unknown Kernel")
 # 28    : os_version (e.g. "44" or "Rolling")
 # 29    : os_kernel (e.g. "7.1.5-ogc5.1.fc44.x86_64")
 # 30    : os_pretty (e.g. "Bazzite 44" or "CachyOS Linux")
+# 31    : os_variant (e.g. "Kinoite" or "KDE Plasma")
 # ---------------------------------------------------------------------------
 cat <<EOF > ~/.vrcosc_hwstats.txt
 $cpu_usage
@@ -483,4 +485,5 @@ $os_name
 $os_version
 $os_kernel
 $os_pretty
+$os_variant
 EOF
