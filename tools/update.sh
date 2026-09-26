@@ -129,10 +129,20 @@ case "$TARGET" in
         ;;
 esac
 
+# A missing config dir only means this machine has no local install of that target to
+# deploy into. That must not stop a release: the DLL still builds and publishes, and
+# whoever installs it from the release gets it through VRCOSC's package manager.
+DEPLOY_LOCALLY=true
 if [ ! -d "$ROAMING_DIR" ]; then
-    echo "Error: $TARGET config dir not found: $ROAMING_DIR"
-    echo "Start that install once so it creates its config, then re-run."
-    exit 1
+    if [ "$SKIP_RELEASE" = false ]; then
+        echo "[WARN] $TARGET config dir not found: $ROAMING_DIR"
+        echo "[WARN] building and publishing anyway; nothing will be deployed locally."
+        DEPLOY_LOCALLY=false
+    else
+        echo "Error: $TARGET config dir not found: $ROAMING_DIR"
+        echo "Start that install once so it creates its config, then re-run."
+        exit 1
+    fi
 fi
 
 REMOTE_PKG_DIR="$ROAMING_DIR/packages/remote/bluscream.vrcosc.modules"
@@ -181,6 +191,12 @@ fi
 
 echo "Using version: $VERSION"
 
+# The notes used to state an SDK version as a literal, which went stale the moment the
+# pin moved. Read it back out of the project instead.
+SDK_VERSION="$(sed -n "s/.*<VrcoscSdkVersion Condition=\"'\$(VrcoscTarget)' == '$TARGET'\">\([^<]*\)<.*/\\1/p" VRCOSC.Modules/Bluscream.Modules.csproj | head -n 1)"
+[ -n "$SDK_VERSION" ] || SDK_VERSION="unknown"
+echo "Target SDK: $SDK_VERSION"
+
 # Clear logs folder
 LOGS_DIR="$ROAMING_DIR/logs"
 if [ -d "$LOGS_DIR" ]; then
@@ -208,8 +224,35 @@ fi
 # this was added, --beta only flipped the *release* to a pre-release and the build kept
 # producing the stable DLL, so every "beta" release shipped stable bits that could not
 # load on VRCOSC-BETA.
-echo "Building project ($TARGET) in distrobox container..."
-distrobox-enter -n arch -- dotnet build VRCOSC.Modules/Bluscream.Modules.csproj --configuration Release --no-incremental -p:VrcoscTarget="$TARGET"
+# The arch container used to be the only place with a .NET SDK. It is not guaranteed to
+# exist -- containers get recreated and renamed -- so prefer it when it is there and fall
+# back to a host SDK, which is what BUILD_WITH records for the release notes.
+BUILD_ARGS=(build VRCOSC.Modules/Bluscream.Modules.csproj --configuration Release --no-incremental -p:VrcoscTarget="$TARGET")
+
+# Existing is not the same as working: ~/.local/bin/dotnet is a distrobox bridge that
+# offers to create a container when its own is gone, which would hang a release. Accept
+# an SDK only if it answers --list-sdks, with stdin closed so nothing can prompt.
+dotnet_works() { timeout 60 "$1" --list-sdks </dev/null >/dev/null 2>&1; }
+
+DOTNET=""
+if command -v distrobox-enter >/dev/null && distrobox list 2>/dev/null | grep -qE '\| *arch *\|'; then
+    BUILD_WITH="the arch distrobox container"
+    echo "Building project ($TARGET) in distrobox container..."
+    distrobox-enter -n arch -- dotnet "${BUILD_ARGS[@]}"
+else
+    for candidate in "$HOME/.dotnet/dotnet" "$(command -v dotnet || true)"; do
+        [ -n "$candidate" ] && [ -x "$candidate" ] || continue
+        if dotnet_works "$candidate"; then DOTNET="$candidate"; break; fi
+        echo "[WARN] $candidate is not a usable SDK; skipping it"
+    done
+    if [ -z "$DOTNET" ]; then
+        echo "Error: no working .NET SDK found. Install one, or create the arch distrobox container."
+        exit 1
+    fi
+    BUILD_WITH="a host .NET SDK"
+    echo "Building project ($TARGET) with $DOTNET ($("$DOTNET" --version))..."
+    "$DOTNET" "${BUILD_ARGS[@]}"
+fi
 
 DLL_PATH="VRCOSC.Modules/bin/Release/net10.0-windows10.0.26100.0/win-x64/Bluscream.Modules.dll"
 if [ ! -f "$DLL_PATH" ]; then
@@ -222,6 +265,7 @@ if [ ! -f "$DLL_PATH" ]; then
 fi
 
 # Deploy locally
+if [ "$DEPLOY_LOCALLY" = true ]; then
 mkdir -p "$REMOTE_PKG_DIR"
 cp "$DLL_PATH" "$REMOTE_PKG_DIR/Bluscream.Modules.dll"
 echo "[OK] Deployed DLL to $REMOTE_PKG_DIR"
@@ -249,6 +293,7 @@ done
 
 # Clean up any native dll from packages/remote that shouldn't be there (causes BadImageFormatException)
 rm -f "$REMOTE_PKG_DIR/openxr_loader.dll"
+fi
 
 # Deploy openxr_loader.dll to the VRCOSC main AppData Local folder (where VRCOSC.exe resides)
 STEAMVR_LOADER="/run/media/system/Data/Games/Steam/steamapps/common/SteamVR/bin/win64/openxr_loader.dll"
@@ -327,12 +372,12 @@ if [ "$SKIP_RELEASE" = false ]; then
     if [ "$PRERELEASE" = true ]; then
         gh release create "$VERSION" --repo Bluscream/VRCOSC-Modules --prerelease \
             --title "$VERSION - Beta" \
-            --notes "Pre-release $VERSION for the VRCOSC **beta** channel (IPulseContext node API, SDK 2026.702.0). Built on Linux using Arch container.
+            --notes "Pre-release $VERSION for the VRCOSC **beta** channel (IPulseContext node API, SDK $SDK_VERSION). Built on Linux using $BUILD_WITH.
 
 Do not install on stable VRCOSC - it targets a different SDK and will fail to load with a TypeLoadException." "$ZIP_PATH"
         echo "[OK] PRE-RELEASE $VERSION created (beta channel only)"
     else
-        gh release create "$VERSION" --repo Bluscream/VRCOSC-Modules --title "$VERSION" --notes "Release $VERSION - Built on Linux using Arch container" "$ZIP_PATH"
+        gh release create "$VERSION" --repo Bluscream/VRCOSC-Modules --title "$VERSION" --notes "Release $VERSION - Built on Linux using $BUILD_WITH" "$ZIP_PATH"
         echo "[OK] Release $VERSION created (stable channel)"
     fi
 fi
