@@ -14,6 +14,7 @@ using JsonException = System.Text.Json.JsonException;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Bluscream.Modules;
+
 [ModuleTitle("VRCX Bridge")]
 [ModuleDescription("Bidirectional bridge between VRCOSC and VRCX for OSC + VRChat API integration")]
 [ModuleType(ModuleType.Integrations)]
@@ -70,7 +71,7 @@ public class VRCXBridgeModule : VRCOSCModule
     }
     private void RestorePersistedVariables()
     {
-        if (PersistedVariables == null || PersistedVariables.Count == 0) 
+        if (PersistedVariables == null || PersistedVariables.Count == 0)
         {
             return;
         }
@@ -658,7 +659,7 @@ public class VRCXBridgeModule : VRCOSCModule
             Log("Failed to send chatbox message");
         }
     }
-    
+
     private void SendRawOSC(string address, params object[] args)
     {
         if (!ReflectionUtils.SendRawOSC(address, args))
@@ -683,7 +684,7 @@ public class VRCXBridgeModule : VRCOSCModule
         try
         {
             var paramValue = parameter.GetValue<object>();
-            
+
             // Check if value has actually changed (if enabled)
             if (GetSettingValue<bool>(VRCXBridgeSetting.OnlyChangedValues))
             {
@@ -700,7 +701,7 @@ public class VRCXBridgeModule : VRCOSCModule
                     _lastParameterValues[parameter.Name] = paramValue;
                 }
             }
-            
+
             string oscType = paramValue switch
             {
                 bool _ => "bool",
@@ -740,7 +741,7 @@ public class VRCXBridgeModule : VRCOSCModule
         try
         {
             // Use configurable message type for OSC events (Event7List=silent, VrcxMessage=verbose)
-            var messageType = msgType == "OSC_RECEIVED_BULK" 
+            var messageType = msgType == "OSC_RECEIVED_BULK"
                 ? (GetSettingValue<string>(VRCXBridgeSetting.IpcMessageType) ?? "Event7List")
                 : "VrcxMessage";
             // Fallback to Event7List if empty
@@ -928,7 +929,7 @@ public class VRCXBridgeModule : VRCOSCModule
                                     DisplayName = setVarName!,
                                     TypeName = typeName
                                 };
-                        Log($"Created new ChatBox variable: {varKey} ({typeName})");
+                                Log($"Created new ChatBox variable: {varKey} ({typeName})");
                             }
                             catch (Exception createEx)
                             {

@@ -17,36 +17,36 @@ namespace Bluscream.Modules;
 public class Hashing : IDisposable
 {
     private readonly HttpClient _httpClient;
-    
+
     // Cached values (not hashes)
     private IPAddress? _cachedExternalIp;
     private string? _cachedPcHash;
-    
+
     // Events
     public event Action<IPAddress?, IPAddress?>? OnExternalIpChanged;
     public event Action<string?, string?>? OnPcHashChanged;
-    
+
     public Hashing(HttpClient httpClient)
     {
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
     }
-    
+
     // Public properties to access cached values
     public IPAddress? ExternalIp => _cachedExternalIp;
     public string? PcHash => _cachedPcHash;
-    
+
     // Hash getters (hash on demand)
     public string? ExternalIpHash => _cachedExternalIp != null ? HashingUtils.GenerateSha256Hash(_cachedExternalIp.ToString()) : null;
-    
+
     public async Task InitializeAsync()
     {
         // Initialize PC hash
         await UpdatePcHashAsync();
-        
+
         // Initialize external IP (async, don't wait)
         _ = UpdateExternalIpAsync();
     }
-    
+
     public async Task UpdateExternalIpAsync()
     {
         try
@@ -59,7 +59,7 @@ public class Hashing : IDisposable
                 "https://ifconfig.me/ip",
                 "http://ip-api.com/line?fields=query"
             };
-            
+
             IPAddress? newIp = null;
             foreach (var service in services)
             {
@@ -67,7 +67,7 @@ public class Hashing : IDisposable
                 {
                     var response = await _httpClient.GetStringAsync(service);
                     var ipString = response.Trim();
-                    
+
                     if (!string.IsNullOrEmpty(ipString) && IPAddress.TryParse(ipString, out var ip))
                     {
                         newIp = ip;
@@ -80,7 +80,7 @@ public class Hashing : IDisposable
                     continue;
                 }
             }
-            
+
             // Check if IP changed
             if (newIp != null && !Equals(newIp, _cachedExternalIp))
             {
@@ -101,13 +101,13 @@ public class Hashing : IDisposable
             // Ignore errors
         }
     }
-    
+
     public async Task UpdatePcHashAsync()
     {
         try
         {
             var newPcHash = GenerateHardwareId();
-            
+
             if (newPcHash != _cachedPcHash)
             {
                 var oldPcHash = _cachedPcHash;
@@ -120,22 +120,22 @@ public class Hashing : IDisposable
             // Ignore errors
         }
     }
-    
+
     [ModuleUpdate(ModuleUpdateMode.Custom, false, 60000)] // Every 60 seconds
     private async void CheckForChanges()
     {
         await UpdatePcHashAsync();
         await UpdateExternalIpAsync();
     }
-    
+
     #region Static Hash Generation Methods
-    
+
     public static string GenerateHardwareId()
     {
         try
         {
             var components = new StringBuilder();
-            
+
             // Get all CPU IDs (sorted for consistency)
             var cpuIds = GetAllCpuIds();
             if (cpuIds.Count > 0)
@@ -145,14 +145,14 @@ public class Hashing : IDisposable
                     components.Append(cpuId);
                 }
             }
-            
+
             // Get motherboard serial number
             var motherboardId = GetMotherboardId();
             if (!string.IsNullOrEmpty(motherboardId))
             {
                 components.Append(motherboardId);
             }
-            
+
             // Get all GPU IDs (sorted for consistency)
             var gpuIds = GetAllGpuIds();
             if (gpuIds.Count > 0)
@@ -162,12 +162,12 @@ public class Hashing : IDisposable
                     components.Append(gpuId);
                 }
             }
-            
+
             if (components.Length == 0)
             {
                 return string.Empty;
             }
-            
+
             // Generate SHA256 hash of all components
             var componentsString = components.ToString();
             return HashingUtils.GenerateSha256Hash(componentsString);
@@ -177,7 +177,7 @@ public class Hashing : IDisposable
             return string.Empty;
         }
     }
-    
+
     private static List<string> GetAllCpuIds()
     {
         var cpuIds = new List<string>();
@@ -201,7 +201,7 @@ public class Hashing : IDisposable
         }
         return cpuIds;
     }
-    
+
     private static string GetMotherboardId()
     {
         try
@@ -222,7 +222,7 @@ public class Hashing : IDisposable
         }
         return string.Empty;
     }
-    
+
     private static List<string> GetAllGpuIds()
     {
         var gpuIds = new List<string>();
@@ -247,9 +247,9 @@ public class Hashing : IDisposable
         }
         return gpuIds;
     }
-    
+
     #endregion
-    
+
     public void Dispose()
     {
         // Cleanup if needed

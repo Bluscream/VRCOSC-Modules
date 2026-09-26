@@ -60,7 +60,7 @@ public static class WebhookNotificationSender
                 var request = new HttpRequestMessage(httpMethod, fullUrl) { Content = content };
                 response = await _httpClient.SendAsync(request);
             }
-            
+
             if (!response.IsSuccessStatusCode)
             {
                 Console.WriteLine($"[Webhook Notification] {method} failed with status {response.StatusCode}");

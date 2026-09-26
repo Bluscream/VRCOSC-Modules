@@ -74,17 +74,17 @@ public class NotificationsModule : Module
         CreateTextBox(NotificationsSetting.DefaultMessage, "Message", "Default notification message (used if input is empty)", "");
         CreateSlider(NotificationsSetting.DefaultTimeout, "Timeout (ms)", "Default notification display duration in milliseconds", 5000, 1000, 30000, 1000);
         CreateSlider(NotificationsSetting.DefaultOpacity, "Opacity (%)", "Default notification opacity percentage (0-100)", 100, 0, 95, 5);
-        
+
         // Enable/disable specific notification types
         CreateToggle(NotificationsSetting.EnableDesktop, "Enable Desktop Notifications", "Show Windows desktop notifications", true);
         CreateToggle(NotificationsSetting.EnableXSOverlay, "Enable XSOverlay Notifications", "Send notifications to XSOverlay", false);
         CreateToggle(NotificationsSetting.EnableOVRToolkit, "Enable OVRToolkit Notifications", "Send notifications to OVRToolkit", false);
         CreateToggle(NotificationsSetting.EnableWebhook, "Enable Webhook Notifications", "Send notifications to webhook URL", false);
-        
+
         // Webhook settings
         CreateTextBox(NotificationsSetting.WebhookUrl, "Webhook URL", "HTTP(S) URL to send notifications to", string.Empty);
         CreateDropdown(NotificationsSetting.WebhookMethod, "Webhook Method", "HTTP method for webhook requests", WebhookMethod.POST);
-        
+
         // Debug
         CreateToggle(NotificationsSetting.LogNotifications, "Log Notifications", "Log all notification sends to console", false);
 
@@ -125,7 +125,7 @@ public class NotificationsModule : Module
         SetVariableValue(NotificationsVariable.NotificationCount, 0);
         SetVariableValue(NotificationsVariable.LastTarget, "None");
         ChangeState(NotificationsState.Idle);
-        
+
         return Task.FromResult(true);
     }
 
@@ -140,7 +140,7 @@ public class NotificationsModule : Module
             SetVariableValue(NotificationsVariable.LastTarget, target);
             ChangeState(NotificationsState.Idle);
             TriggerEvent(NotificationsEvent.OnNotificationSent);
-            
+
             SendParameter(NotificationsParameter.NotificationSent, true);
             SendParameter(NotificationsParameter.NotificationCount, _notificationsSent);
             TaskUtils.DelayedAction(1000, () => SendParameter(NotificationsParameter.NotificationSent, false));
@@ -149,7 +149,7 @@ public class NotificationsModule : Module
         {
             ChangeState(NotificationsState.Idle);
             TriggerEvent(NotificationsEvent.OnNotificationFailed);
-            
+
             SendParameter(NotificationsParameter.NotificationFailed, true);
             TaskUtils.DelayedAction(1000, () => SendParameter(NotificationsParameter.NotificationFailed, false));
         }

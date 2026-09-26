@@ -21,7 +21,7 @@ internal static unsafe class OpenXRHelper
     public static void WriteUtf8(byte* dst, int maxLen, string value)
     {
         var bytes = Encoding.UTF8.GetBytes(value);
-        int len   = Math.Min(bytes.Length, maxLen - 1);
+        int len = Math.Min(bytes.Length, maxLen - 1);
         for (int i = 0; i < len; i++) dst[i] = bytes[i];
         dst[len] = 0;
     }
@@ -128,7 +128,7 @@ internal static unsafe class OpenXRHelper
         {
             byte* raw = (byte*)p;
             // Memory layout: StructureType(8) + Next*(8) + ActionSetName[64] + LocalizedActionSetName[128] + Priority(4)
-            WriteUtf8(raw + 16, 64,  name);
+            WriteUtf8(raw + 16, 64, name);
             WriteUtf8(raw + 80, 128, localName);
         }
     }
@@ -139,7 +139,7 @@ internal static unsafe class OpenXRHelper
         {
             byte* raw = (byte*)p;
             // Memory layout: StructureType(8) + Next*(8) + ActionType(4) + pad(4) + ActionName[64] + LocalizedActionName[128]
-            WriteUtf8(raw + 24, 64,  name);
+            WriteUtf8(raw + 24, 64, name);
             WriteUtf8(raw + 88, 128, localName);
         }
     }
@@ -169,9 +169,9 @@ internal static unsafe class OpenXRHelper
 /// <summary>Mutable device state, shared between Stats and Gesture modules.</summary>
 internal sealed class OpenXRDeviceState
 {
-    public bool  IsConnected;
-    public bool  IsPresent;
-    public bool  IsCharging;
+    public bool IsConnected;
+    public bool IsPresent;
+    public bool IsCharging;
     public float BatteryPercent;
     public readonly float[] FingerCurl = new float[4]; // [Index, Middle, Ring, Pinky]
 

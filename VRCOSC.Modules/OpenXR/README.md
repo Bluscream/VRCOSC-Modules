@@ -145,6 +145,7 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | Variable Name | Lookup Key | Type | Description |
 |---|---|---|---|
 | **FPS** | `fps` | `float` | `ChatBox variable FPS` |
+| **User Present** | `userpresent` | `bool` | `ChatBox variable User Present` |
 | **HMD Battery (%)** | `hmd_battery` | `int` | `ChatBox variable HMD Battery (%)` |
 | **HMD Charging** | `hmd_charging` | `bool` | `ChatBox variable HMD Charging` |
 | **Left Hand Battery (%)** | `lhand_battery` | `int` | `ChatBox variable Left Hand Battery (%)` |
@@ -176,17 +177,28 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 <!-- OSC_PARAMETERS_TABLE_START -->
 | OSC Parameter Path | Type | Direction | Description |
 |---|---|---|---|
+| **VRCOSC/VR/Gestures/Left** | `int` | `Write` | `Custom left hand gesture value` |
+| **VRCOSC/VR/Gestures/Right** | `int` | `Write` | `Custom right hand gesture value` |
 | **VRCOSC/VR/Haptics/Duration** | `float` | `Read` | `Duration of haptic in seconds` |
 | **VRCOSC/VR/Haptics/Frequency** | `float` | `Read` | `Frequency of haptic (0-1 → 0-300 Hz)` |
 | **VRCOSC/VR/Haptics/Amplitude** | `float` | `Read` | `Amplitude of haptic (0-1)` |
-| **VRCOSC/VR/Gestures/Left** | `int` | `Write` | `Custom left hand gesture value` |
-| **VRCOSC/VR/Gestures/Right** | `int` | `Write` | `Custom right hand gesture value` |
+| **VRCOSC/VR/Haptics/TriggerLeft** | `bool` | `Read` | `Trigger haptic on left controller` |
+| **VRCOSC/VR/Haptics/TriggerRight** | `bool` | `Read` | `Trigger haptic on right controller` |
+| **VRCOSC/VR/Haptics/TriggerLeft/*/*/*** | `bool` | `Read` | `Trigger haptic on left controller using wildcards: Duration / Frequency / Amplitude\nExample: VRCOSC/VR/Haptics/TriggerLeft/2/0.5/0.75` |
+| **VRCOSC/VR/Haptics/TriggerRight/*/*/*** | `bool` | `Read` | `Trigger haptic on right controller using wildcards: Duration / Frequency / Amplitude` |
+| **VRCOSC/VR/FPS/Value** | `int` | `Write` | `Measured compositor FPS` |
 | **VRCOSC/VR/FPS/Normalised** | `float` | `Write` | `FPS normalised 0-240 → 0-1` |
 | **VRCOSC/VR/UserPresent** | `bool` | `Write` | `Headset is worn / session focused` |
 | **VRCOSC/VR/DashboardVisible** | `bool` | `Write` | `Session visible but not focused` |
+| **VRCOSC/VR/HMD/Connected** | `bool` | `Write` | `Whether the HMD device is connected` |
 | **VRCOSC/VR/HMD/Battery** | `float` | `Write` | `HMD battery percentage (0-1)` |
+| **VRCOSC/VR/HMD/Charging** | `bool` | `Write` | `Whether the HMD is charging` |
+| **VRCOSC/VR/LHand/Connected** | `bool` | `Write` | `Whether the left controller is connected` |
 | **VRCOSC/VR/LHand/Battery** | `float` | `Write` | `Left controller battery (0-1)` |
+| **VRCOSC/VR/LHand/Charging** | `bool` | `Write` | `Whether the left controller is charging` |
+| **VRCOSC/VR/RHand/Connected** | `bool` | `Write` | `Whether the right controller is connected` |
 | **VRCOSC/VR/RHand/Battery** | `float` | `Write` | `Right controller battery (0-1)` |
+| **VRCOSC/VR/RHand/Charging** | `bool` | `Write` | `Whether the right controller is charging` |
 | **VRCOSC/VR/LHand/Input/Finger/Index** | `float` | `Write` | `Left index finger curl (0-1)` |
 | **VRCOSC/VR/LHand/Input/Finger/Middle** | `float` | `Write` | `Left middle finger curl (0-1)` |
 | **VRCOSC/VR/LHand/Input/Finger/Ring** | `float` | `Write` | `Left ring finger curl (0-1)` |

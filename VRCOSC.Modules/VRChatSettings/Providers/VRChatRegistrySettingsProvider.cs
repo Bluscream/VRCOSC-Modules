@@ -72,7 +72,7 @@ public class VRChatRegistrySettingsProvider : VRChatSettingsProviderBase<VRChatR
             Settings.Clear();
 
             using var reader = new StringReader(csvContent);
-            
+
             // Skip header
             var header = await reader.ReadLineAsync();
             if (header == null)
@@ -190,7 +190,7 @@ public class VRChatRegistrySettingsProvider : VRChatSettingsProviderBase<VRChatR
         if (key.Contains("avatar") || key.Contains("Avatar")) return "Avatar";
         if (key.Contains("Region") || key.Contains("Network")) return "Network";
         if (description.Contains("Safety:")) return "Safety";
-        
+
         return "General";
     }
 

@@ -29,7 +29,7 @@ public static class DesktopNotificationSender
             // Use PowerShell with BurntToast or fallback to simpler notification
             var escapedTitle = title.Replace("\"", "\"\"").Replace("'", "''");
             var escapedMessage = message.Replace("\"", "\"\"").Replace("'", "''");
-            
+
             // Simpler PowerShell script using Windows.UI.Notifications
             var script = $@"
 Add-Type -AssemblyName System.Runtime.WindowsRuntime
@@ -73,20 +73,20 @@ $toast = [Windows.UI.Notifications.ToastNotification]::new($xml)
 
             var output = process.StandardOutput.ReadToEnd();
             var error = process.StandardError.ReadToEnd();
-            
+
             process.WaitForExit(5000);
-            
+
             if (process.ExitCode != 0)
             {
                 Console.WriteLine($"[Desktop Notification] PowerShell error (exit code {process.ExitCode}): {error}");
                 return false;
             }
-            
+
             if (!error.IsNullOrEmpty())
             {
                 Console.WriteLine($"[Desktop Notification] PowerShell stderr: {error}");
             }
-            
+
             return true;
         }
         catch (Exception ex)

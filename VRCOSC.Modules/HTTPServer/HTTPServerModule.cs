@@ -94,11 +94,11 @@ public class HTTPServerModule : VRCOSCModule
         CreateToggle(HTTPServerSetting.AllowExternalConnections, "Allow External Connections", "Allow connections from other devices on network", false);
         CreateToggle(HTTPServerSetting.RequireAuthentication, "Require Authentication", "Require bearer token authentication", false);
         CreateTextBox(HTTPServerSetting.AuthenticationToken, "Authentication Token", "Bearer token for authentication (leave empty to generate)", string.Empty);
-        
+
         // CORS settings
         CreateToggle(HTTPServerSetting.EnableCORS, "Enable CORS", "Enable Cross-Origin Resource Sharing", true);
         CreateTextBox(HTTPServerSetting.CORSOrigins, "CORS Origins", "Allowed CORS origins (comma-separated, * for all)", "*");
-        
+
         // Behavior settings
         CreateToggle(HTTPServerSetting.LogRequests, "Log Requests", "Log all HTTP requests to console", true);
         CreateToggle(HTTPServerSetting.AutoStart, "Auto Start", "Start server automatically when module loads", true);
@@ -153,12 +153,12 @@ public class HTTPServerModule : VRCOSCModule
     {
         SetVariableValue(HTTPServerVariable.RequestCount, 0);
         _requestCount = 0;
-        
+
         if (GetSettingValue<bool>(HTTPServerSetting.AutoStart))
         {
             return await StartServer();
         }
-        
+
         ChangeState(HTTPServerState.Stopped);
         return true;
     }
@@ -175,7 +175,7 @@ public class HTTPServerModule : VRCOSCModule
         {
             var assembly = Assembly.GetExecutingAssembly();
             var resourceName = "Bluscream.Modules.HTTPServer.openapi.json";
-            
+
             using var stream = assembly.GetManifestResourceStream(resourceName);
             if (stream == null)
             {
@@ -185,10 +185,10 @@ public class HTTPServerModule : VRCOSCModule
 
             using var reader = new StreamReader(stream);
             var json = reader.ReadToEnd();
-            
+
             var doc = JsonDocument.Parse(json);
             _openApiSpec = new Dictionary<string, JsonElement>();
-            
+
             foreach (var prop in doc.RootElement.EnumerateObject())
             {
                 _openApiSpec[prop.Name] = prop.Value.Clone();
@@ -213,7 +213,7 @@ public class HTTPServerModule : VRCOSCModule
         try
         {
             ChangeState(HTTPServerState.Starting);
-            
+
             var portStr = GetSettingValue<string>(HTTPServerSetting.Port);
             var port = portStr.ToIntOrDefault(0);
             if (port < 1024 || port > 65535)
@@ -223,10 +223,10 @@ public class HTTPServerModule : VRCOSCModule
                 ChangeState(HTTPServerState.Error);
                 return Task.FromResult(false);
             }
-            
+
             var allowExternal = GetSettingValue<bool>(HTTPServerSetting.AllowExternalConnections);
             _authToken = GetSettingValue<string>(HTTPServerSetting.AuthenticationToken);
-            
+
             var prefix = allowExternal ? $"http://+:{port}/" : $"http://127.0.0.1:{port}/";
             _serverUrl = allowExternal ? $"http://+:{port}" : $"http://localhost:{port}";
             Log(allowExternal
@@ -261,11 +261,11 @@ public class HTTPServerModule : VRCOSCModule
 
             SetVariableValue(HTTPServerVariable.ServerUrl, _serverUrl);
             SetVariableValue(HTTPServerVariable.ServerStatus, "Running");
-            
+
             this.SendParameterSafe(HTTPServerParameter.ServerRunning, true);
             ChangeState(HTTPServerState.Running);
             TriggerEvent(HTTPServerEvent.OnServerStarted);
-            
+
             Log($"HTTP/MCP Server started on {_serverUrl}");
             Log($"API documentation at {_serverUrl}/docs");
 
@@ -310,7 +310,7 @@ public class HTTPServerModule : VRCOSCModule
         {
             var request = context.Request;
             var response = context.Response;
-            
+
             // Log request
             if (GetSettingValue<bool>(HTTPServerSetting.LogRequests))
             {
@@ -324,7 +324,7 @@ public class HTTPServerModule : VRCOSCModule
                 response.Headers.Add("Access-Control-Allow-Origin", origins);
                 response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
                 response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
-                
+
                 if (request.HttpMethod == "OPTIONS")
                 {
                     response.StatusCode = 204;
@@ -363,7 +363,7 @@ public class HTTPServerModule : VRCOSCModule
     {
         var requiresAuth = GetSettingValue<bool>(HTTPServerSetting.RequireAuthentication) && !_authToken.IsNullOrEmpty();
         var path = request.Url?.AbsolutePath ?? "/";
-        
+
         // Skip auth for docs
         if (path.StartsWith("/docs") || path.StartsWith("/swagger") || path == "/openapi.json")
         {
@@ -523,10 +523,10 @@ public class HTTPServerModule : VRCOSCModule
         {
             response.StatusCode = statusCode;
             response.ContentType = "application/json";
-            
+
             var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
             var buffer = Encoding.UTF8.GetBytes(json);
-            
+
             response.ContentLength64 = buffer.Length;
             response.OutputStream.Write(buffer, 0, buffer.Length);
             response.Close();
@@ -551,10 +551,10 @@ public class HTTPServerModule : VRCOSCModule
         try
         {
             ChangeState(HTTPServerState.Stopping);
-            
+
             // Cancel the listener task first
             _cancellationTokenSource?.Cancel();
-            
+
             // Stop the listener (this will cause GetContextAsync to throw)
             // EmbedIO's WebServer has no Stop/Close — cancelling the token passed to
             // RunAsync ends the accept loop, and Dispose releases the socket.
@@ -566,14 +566,14 @@ public class HTTPServerModule : VRCOSCModule
             {
                 // Already disposed, ignore
             }
-            
+
             _isRunning = false;
-            
+
             SetVariableValue(HTTPServerVariable.ServerStatus, "Stopped");
             this.SendParameterSafe(HTTPServerParameter.ServerRunning, false);
             ChangeState(HTTPServerState.Stopped);
             TriggerEvent(HTTPServerEvent.OnServerStopped);
-            
+
             Log("HTTP/MCP Server stopped");
         }
         catch (Exception ex)
@@ -587,7 +587,7 @@ public class HTTPServerModule : VRCOSCModule
     public string GetDisplayUrl() => _serverUrl.Replace("http://+:", "http://localhost:");
     public int GetRequestCount() => _requestCount;
     public List<string> GetEndpointsList() => GetEndpointsFromOpenApi();
-    
+
     public string GetUptime()
     {
         if (!_isRunning) return "Not running";

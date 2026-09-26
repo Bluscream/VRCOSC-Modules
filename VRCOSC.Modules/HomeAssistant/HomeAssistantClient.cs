@@ -117,7 +117,7 @@ public class HomeAssistantClient
         try
         {
             if (_serviceClient == null) return false;
-            
+
             object? payload = serviceData;
             if (!string.IsNullOrEmpty(entityId))
             {

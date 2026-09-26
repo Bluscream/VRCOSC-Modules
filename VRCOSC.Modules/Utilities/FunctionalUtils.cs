@@ -12,13 +12,13 @@ public static class FunctionalUtils
 {
     public static TResult Pipe<T, TResult>(T value, Func<T, TResult> func)
         => func(value);
-    
+
     public static T Tap<T>(T value, Action<T> action)
     {
         action(value);
         return value;
     }
-    
+
     public static TResult Match<T, TResult>(T? value, Func<T, TResult> some, Func<TResult> none) where T : class
         => value != null ? some(value) : none();
 }

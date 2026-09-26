@@ -15,11 +15,11 @@ public static class HttpUtils
         var separator = url.Contains("?") ? "&" : "?";
         return $"{url}{separator}{Uri.EscapeDataString(key)}={Uri.EscapeDataString(value)}";
     }
-    
+
     public static bool IsValidUrl(string? str)
     {
         if (string.IsNullOrEmpty(str)) return false;
-        return Uri.TryCreate(str, UriKind.Absolute, out var uri) 
+        return Uri.TryCreate(str, UriKind.Absolute, out var uri)
             && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
     }
 }

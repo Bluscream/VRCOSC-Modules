@@ -357,7 +357,7 @@ public sealed class LinuxHardwareStatsModule : Module
                     int.TryParse(lines[24].Trim(), out var windowFps);
 
                     var titlePattern = GetSettingValue<string>(HardwareStatsSetting.RedactedWindowTitlePattern) ?? "";
-                    var procPattern  = GetSettingValue<string>(HardwareStatsSetting.RedactedProcessNamePattern) ?? "";
+                    var procPattern = GetSettingValue<string>(HardwareStatsSetting.RedactedProcessNamePattern) ?? "";
                     var redactedText = GetSettingValue<string>(HardwareStatsSetting.RedactedText) ?? "[REDACTED]";
 
                     windowTitle = ApplyRedaction(windowTitle, titlePattern, redactedText);
@@ -378,11 +378,11 @@ public sealed class LinuxHardwareStatsModule : Module
                     {
                         SetVariableValue(HardwareStatsVariable.VRMode, vrMode);
                         var isSteamVR = vrMode == "SteamVR";
-                        var isOpenXR  = vrMode == "OpenXR";
+                        var isOpenXR = vrMode == "OpenXR";
                         var isDesktop = vrMode == "Desktop";
                         SendParameter(HardwareStatsParameter.VRSteamVR, isSteamVR);
-                        SendParameter(HardwareStatsParameter.VROpenXR,  isOpenXR);
-                        SendParameter(HardwareStatsParameter.VRDesktop,  isDesktop);
+                        SendParameter(HardwareStatsParameter.VROpenXR, isOpenXR);
+                        SendParameter(HardwareStatsParameter.VRDesktop, isDesktop);
                     }
                 }
 
@@ -693,15 +693,15 @@ public static class HardwareNameParser
     public record GpuInfo(string Manufacturer, string Model, string FullName);
 
     // Compiled regexes - shared across calls
-    private static readonly Regex CpuNoisyTokens    = new(@"\(R\)|\(TM\)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-    private static readonly Regex CpuGenPrefix      = new(@"^\d+\w*\s+Gen\s+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-    private static readonly Regex CpuAtFreqSuffix   = new(@"\s+CPU\s*@.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-    private static readonly Regex CpuCoresSuffix    = new(@"\s+\d+-Core.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex CpuNoisyTokens = new(@"\(R\)|\(TM\)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex CpuGenPrefix = new(@"^\d+\w*\s+Gen\s+", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex CpuAtFreqSuffix = new(@"\s+CPU\s*@.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex CpuCoresSuffix = new(@"\s+\d+-Core.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
     // Intel model number: i3/i5/i7/i9-NNNNN[K/T/H/X/...] or Xeon XXXXX [vN]
-    private static readonly Regex IntelModelRegex   = new(@"\b([im][0-9]-[0-9]+[A-Z0-9]*(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-    private static readonly Regex IntelXeonRegex    = new(@"\b(Xeon\s+[A-Z0-9\-]+(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex IntelModelRegex = new(@"\b([im][0-9]-[0-9]+[A-Z0-9]*(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex IntelXeonRegex = new(@"\b(Xeon\s+[A-Z0-9\-]+(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
     // VRAM label: trailing "16GB" / "8 GB" in GPU name
-    private static readonly Regex GpuVramRegex      = new(@"\b(\d+\s*GB)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex GpuVramRegex = new(@"\b(\d+\s*GB)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     /// <summary>
     /// Parses a raw /proc/cpuinfo "model name" string.

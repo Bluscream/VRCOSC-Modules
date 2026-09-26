@@ -21,13 +21,13 @@ internal static class OscParameterEndpoint
         {
             // Get all parameters and convert to simple dict[path] = value
             var parametersDict = new Dictionary<string, object>();
-            
+
             // Try Debug module first
             var debugParams = ReflectionUtils.GetDebugModuleParameters();
             if (debugParams != null)
             {
                 var (incoming, outgoing) = debugParams.Value;
-                
+
                 // Merge incoming and outgoing
                 if (incoming != null)
                 {
@@ -39,7 +39,7 @@ internal static class OscParameterEndpoint
                         parametersDict[kvp.Key] = ReflectionUtils.GetMemberValue(kvp.Value, "Value") ?? null!;
                     }
                 }
-                
+
                 if (outgoing != null)
                 {
                     foreach (var kvp in outgoing)
@@ -79,7 +79,7 @@ internal static class OscParameterEndpoint
         try
         {
             var parameter = ReflectionUtils.GetOscParameter(parameterName);
-            
+
             if (parameter == null)
             {
                 module.SendJsonResponse(context.Response, 404, new
@@ -94,7 +94,7 @@ internal static class OscParameterEndpoint
             // Return raw value as plain text
             var value = parameter.Value.Value;
             var valueStr = value?.ToString() ?? "null";
-            
+
             context.Response.StatusCode = 200;
             context.Response.ContentType = "text/plain";
             var buffer = System.Text.Encoding.UTF8.GetBytes(valueStr);
@@ -140,7 +140,7 @@ internal static class OscParameterEndpoint
 
             // Try reflection first for better error messages, fallback to Module SDK method
             var (reflectionSuccess, reflectionError) = ReflectionUtils.SendOscParameter(parameterName, value);
-            
+
             if (!reflectionSuccess)
             {
                 // Reflection failed, try using Module's built-in method as fallback
@@ -153,9 +153,9 @@ internal static class OscParameterEndpoint
                 catch (Exception ex)
                 {
                     module.Log($"Both methods failed. Reflection: {reflectionError}. Module: {ex.Message}");
-                    module.SendJsonResponse(context.Response, 503, new 
-                    { 
-                        success = false, 
+                    module.SendJsonResponse(context.Response, 503, new
+                    {
+                        success = false,
                         error = $"Both methods failed. Reflection: {reflectionError}. Module: {ex.Message}"
                     });
                     return;

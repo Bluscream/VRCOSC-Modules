@@ -4,7 +4,7 @@
 
 Every property (including expression-bodied and auto-properties), grouped by module and file.
 
-**134** total across **13** modules.
+**135** total across **13** modules.
 
 | Module | Count |
 |---|---|
@@ -15,7 +15,7 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | [HTTPServer](#httpserver) | 3 |
 | [HomeAssistant](#homeassistant) | 10 |
 | [IRCBridge](#ircbridge) | 14 |
-| [LinuxHardwareStats](#linuxhardwarestats) | 33 |
+| [LinuxHardwareStats](#linuxhardwarestats) | 34 |
 | [Notifications](#notifications) | 16 |
 | [OpenXR](#openxr) | 1 |
 | [Utilities](#utilities) | 7 |
@@ -174,34 +174,35 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [607](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L607) | `LinuxCPU` | public | `public string Name { get; set; } = string.Empty;` |
-| [608](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L608) | `LinuxCPU` | public | `public string Manufacturer { get; set; } = string.Empty;` |
-| [609](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L609) | `LinuxCPU` | public | `public string Model { get; set; } = string.Empty;` |
-| [610](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L610) | `LinuxCPU` | public | `public float Usage { get; set; }` |
-| [611](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L611) | `LinuxCPU` | public | `public int Power { get; set; }` |
-| [612](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L612) | `LinuxCPU` | public | `public int Temperature { get; set; }` |
-| [617](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L617) | `LinuxGPU` | public | `public string Name { get; set; } = string.Empty;` |
-| [618](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L618) | `LinuxGPU` | public | `public string Manufacturer { get; set; } = string.Empty;` |
-| [619](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L619) | `LinuxGPU` | public | `public string Model { get; set; } = string.Empty;` |
-| [620](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L620) | `LinuxGPU` | public | `public float Usage { get; set; }` |
-| [621](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L621) | `LinuxGPU` | public | `public int Power { get; set; }` |
-| [622](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L622) | `LinuxGPU` | public | `public int Temperature { get; set; }` |
-| [623](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L623) | `LinuxGPU` | public | `public float MemoryUsage { get; set; }` |
-| [624](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L624) | `LinuxGPU` | public | `public float MemoryTotal { get; set; }` |
-| [625](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L625) | `LinuxGPU` | public | `public float MemoryUsed { get; set; }` |
-| [626](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L626) | `LinuxGPU` | public | `public float MemoryFree { get; set; }` |
-| [631](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L631) | `LinuxRAM` | public | `public float Usage { get; set; }` |
-| [632](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L632) | `LinuxRAM` | public | `public float Total { get; set; }` |
-| [633](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L633) | `LinuxRAM` | public | `public float Used { get; set; }` |
-| [634](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L634) | `LinuxRAM` | public | `public float Available { get; set; }` |
-| [639](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L639) | `LinuxNetwork` | public | `public float RxKbps { get; set; }` |
-| [640](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L640) | `LinuxNetwork` | public | `public float TxKbps { get; set; }` |
-| [641](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L641) | `LinuxNetwork` | public | `public float RxTotalMb { get; set; }` |
-| [642](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L642) | `LinuxNetwork` | public | `public float TxTotalMb { get; set; }` |
-| [647](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L647) | `LinuxOS` | public | `public string Name { get; set; } = string.Empty;` |
-| [648](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L648) | `LinuxOS` | public | `public string Version { get; set; } = string.Empty;` |
-| [649](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L649) | `LinuxOS` | public | `public string Kernel { get; set; } = string.Empty;` |
-| [650](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L650) | `LinuxOS` | public | `public string PrettyName { get; set; } = string.Empty;` |
+| [635](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L635) | `LinuxCPU` | public | `public string Name { get; set; } = string.Empty;` |
+| [636](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L636) | `LinuxCPU` | public | `public string Manufacturer { get; set; } = string.Empty;` |
+| [637](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L637) | `LinuxCPU` | public | `public string Model { get; set; } = string.Empty;` |
+| [638](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L638) | `LinuxCPU` | public | `public float Usage { get; set; }` |
+| [639](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L639) | `LinuxCPU` | public | `public int Power { get; set; }` |
+| [640](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L640) | `LinuxCPU` | public | `public int Temperature { get; set; }` |
+| [645](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L645) | `LinuxGPU` | public | `public string Name { get; set; } = string.Empty;` |
+| [646](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L646) | `LinuxGPU` | public | `public string Manufacturer { get; set; } = string.Empty;` |
+| [647](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L647) | `LinuxGPU` | public | `public string Model { get; set; } = string.Empty;` |
+| [648](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L648) | `LinuxGPU` | public | `public float Usage { get; set; }` |
+| [649](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L649) | `LinuxGPU` | public | `public int Power { get; set; }` |
+| [650](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L650) | `LinuxGPU` | public | `public int Temperature { get; set; }` |
+| [651](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L651) | `LinuxGPU` | public | `public float MemoryUsage { get; set; }` |
+| [652](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L652) | `LinuxGPU` | public | `public float MemoryTotal { get; set; }` |
+| [653](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L653) | `LinuxGPU` | public | `public float MemoryUsed { get; set; }` |
+| [654](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L654) | `LinuxGPU` | public | `public float MemoryFree { get; set; }` |
+| [659](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L659) | `LinuxRAM` | public | `public float Usage { get; set; }` |
+| [660](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L660) | `LinuxRAM` | public | `public float Total { get; set; }` |
+| [661](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L661) | `LinuxRAM` | public | `public float Used { get; set; }` |
+| [662](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L662) | `LinuxRAM` | public | `public float Available { get; set; }` |
+| [667](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L667) | `LinuxNetwork` | public | `public float RxKbps { get; set; }` |
+| [668](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L668) | `LinuxNetwork` | public | `public float TxKbps { get; set; }` |
+| [669](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L669) | `LinuxNetwork` | public | `public float RxTotalMb { get; set; }` |
+| [670](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L670) | `LinuxNetwork` | public | `public float TxTotalMb { get; set; }` |
+| [675](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L675) | `LinuxOS` | public | `public string Name { get; set; } = string.Empty;` |
+| [676](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L676) | `LinuxOS` | public | `public string Version { get; set; } = string.Empty;` |
+| [677](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L677) | `LinuxOS` | public | `public string Kernel { get; set; } = string.Empty;` |
+| [678](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L678) | `LinuxOS` | public | `public string PrettyName { get; set; } = string.Empty;` |
+| [679](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L679) | `LinuxOS` | public | `public string Variant { get; set; } = string.Empty;` |
 
 ### `LinuxHardwareStats/Nodes.cs`
 
@@ -259,11 +260,11 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [29](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L29) | `LinuxUtils` | public | `public static bool IsLinux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);` |
-| [169](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L169) | `UPowerDevice` | public | `public string Path { get; init; } = string.Empty;` |
-| [170](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L170) | `UPowerDevice` | public | `public bool IsPresent { get; set; }` |
-| [171](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L171) | `UPowerDevice` | public | `public bool IsCharging { get; set; }` |
-| [172](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L172) | `UPowerDevice` | public | `public float BatteryLevel { get; set; } // 0-1` |
-| [173](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L173) | `UPowerDevice` | public | `public string DeviceType { get; set; } = string.Empty;` |
+| [219](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L219) | `UPowerDevice` | public | `public string Path { get; init; } = string.Empty;` |
+| [220](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L220) | `UPowerDevice` | public | `public bool IsPresent { get; set; }` |
+| [221](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L221) | `UPowerDevice` | public | `public bool IsCharging { get; set; }` |
+| [222](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L222) | `UPowerDevice` | public | `public float BatteryLevel { get; set; } // 0-1` |
+| [223](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L223) | `UPowerDevice` | public | `public string DeviceType { get; set; } = string.Empty;` |
 
 ### `Utilities/ReflectionUtils.cs`
 
@@ -278,13 +279,13 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [38](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L38) | `VRCXBridgeModule` | public | `public Dictionary<string, VariableInfo> PersistedVariables { get; set; } = new();` |
-| [1236](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1236) | `OscEvent` | public | `public string Address { get; set; } = string.Empty;` |
-| [1237](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1237) | `OscEvent` | public | `public string Type { get; set; } = string.Empty;` |
-| [1238](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1238) | `OscEvent` | public | `public object? Value { get; set; }` |
-| [1239](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1239) | `OscEvent` | public | `public long Timestamp { get; set; }` |
-| [1266](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1266) | `VariableInfo` | public | `public string DisplayName { get; set; } = string.Empty;` |
-| [1267](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1267) | `VariableInfo` | public | `public string TypeName { get; set; } = "String";` |
+| [39](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L39) | `VRCXBridgeModule` | public | `public Dictionary<string, VariableInfo> PersistedVariables { get; set; } = new();` |
+| [1237](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1237) | `OscEvent` | public | `public string Address { get; set; } = string.Empty;` |
+| [1238](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1238) | `OscEvent` | public | `public string Type { get; set; } = string.Empty;` |
+| [1239](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1239) | `OscEvent` | public | `public object? Value { get; set; }` |
+| [1240](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1240) | `OscEvent` | public | `public long Timestamp { get; set; }` |
+| [1267](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1267) | `VariableInfo` | public | `public string DisplayName { get; set; } = string.Empty;` |
+| [1268](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1268) | `VariableInfo` | public | `public string TypeName { get; set; } = "String";` |
 
 
 ## VRChatSettings

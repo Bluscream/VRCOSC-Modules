@@ -21,7 +21,7 @@ public static class HashingUtils
         {
             return string.Empty;
         }
-        
+
         try
         {
             using var sha256 = SHA256.Create();
@@ -33,7 +33,7 @@ public static class HashingUtils
             return string.Empty;
         }
     }
-    
+
     /// <summary>
     /// Generate CRC32 hash of a string input and return as hexadecimal string
     /// CRC32 produces an 8-character hex string (32 bits = 4 bytes = 8 hex chars)
@@ -44,7 +44,7 @@ public static class HashingUtils
         {
             return string.Empty;
         }
-        
+
         try
         {
             var bytes = Encoding.UTF8.GetBytes(input);
@@ -56,7 +56,7 @@ public static class HashingUtils
             return string.Empty;
         }
     }
-    
+
     /// <summary>
     /// Compute CRC32 checksum for a byte array
     /// </summary>
@@ -64,7 +64,7 @@ public static class HashingUtils
     {
         const uint polynomial = 0xEDB88320; // CRC32 polynomial
         var crc = 0xFFFFFFFFu;
-        
+
         foreach (var b in data)
         {
             crc ^= b;
@@ -73,7 +73,7 @@ public static class HashingUtils
                 crc = (crc >> 1) ^ ((crc & 1) != 0 ? polynomial : 0);
             }
         }
-        
+
         return crc ^ 0xFFFFFFFFu;
     }
 }

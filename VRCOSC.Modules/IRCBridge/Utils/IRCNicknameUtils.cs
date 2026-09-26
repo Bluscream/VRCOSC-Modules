@@ -21,9 +21,9 @@ public static class IRCNicknameUtils
         {
             return "User" + conflictCount;
         }
-        
+
         string newNick;
-        
+
         if (baseNickname.Length < maxLength)
         {
             // If we have room, append number or underscore
@@ -60,13 +60,13 @@ public static class IRCNicknameUtils
             var availableLength = maxLength - numberStr.Length;
             newNick = baseNickname.Substring(0, availableLength) + numberStr;
         }
-        
+
         // Safety check: ensure we don't exceed max length
         if (newNick.Length > maxLength)
         {
             newNick = newNick.Substring(0, maxLength);
         }
-        
+
         return newNick;
     }
 }

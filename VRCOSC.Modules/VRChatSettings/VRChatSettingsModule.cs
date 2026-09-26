@@ -57,12 +57,12 @@ public class VRChatSettingsModule : Module
         try
         {
             Log("VRChat Settings Module starting...");
-            
+
             ChangeState(VRChatSettingsState.Idle);
-            
+
             // Initialize and load definitions
             var initialized = await Settings.InitializeAsync();
-            
+
             if (initialized)
             {
                 var totalSettings = Settings.GetTotalSettingsCount();
@@ -73,9 +73,9 @@ public class VRChatSettingsModule : Module
             {
                 Log("Warning: Some definitions failed to load. Module will continue with limited functionality.");
             }
-            
+
             SetVariableValue(VRChatSettingsVariable.OperationsCount, 0);
-            
+
             return true;
         }
         catch (Exception ex)
@@ -121,7 +121,7 @@ public class VRChatSettingsModule : Module
     {
         SetVariableValue(VRChatSettingsVariable.LastKey, key);
         SetVariableValue(VRChatSettingsVariable.LastValue, value);
-        
+
         if (isWrite)
         {
             _operationsCount++;
@@ -129,7 +129,7 @@ public class VRChatSettingsModule : Module
             SendParameter(VRChatSettingsParameter.OperationsCount, _operationsCount);
             ChangeState(VRChatSettingsState.Writing);
             TriggerEvent(VRChatSettingsEvent.OnSettingWrite);
-            
+
             // Return to idle after brief delay
             _ = Task.Delay(100).ContinueWith(_ => ChangeState(VRChatSettingsState.Idle));
         }
@@ -137,7 +137,7 @@ public class VRChatSettingsModule : Module
         {
             ChangeState(VRChatSettingsState.Reading);
             TriggerEvent(VRChatSettingsEvent.OnSettingRead);
-            
+
             // Return to idle after brief delay
             _ = Task.Delay(100).ContinueWith(_ => ChangeState(VRChatSettingsState.Idle));
         }

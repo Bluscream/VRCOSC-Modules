@@ -400,13 +400,13 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [22](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L22) | `LinuxHardwareStatsModule` | private | `private readonly LinuxNetwork _network = new();` |
 | [23](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L23) | `LinuxHardwareStatsModule` | private | `private readonly LinuxOS _os = new();` |
 | [24](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L24) | `LinuxHardwareStatsModule` | private | `private bool _firstUpdateDone = false;` |
-| [667](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L667) | `HardwareNameParser` | private | `private static readonly Regex CpuNoisyTokens = new(@"\(R\)|\(TM\)", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [668](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L668) | `HardwareNameParser` | private | `private static readonly Regex CpuGenPrefix = new(@"^\d+\w*\s+Gen\s+", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [669](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L669) | `HardwareNameParser` | private | `private static readonly Regex CpuAtFreqSuffix = new(@"\s+CPU\s*@.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [670](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L670) | `HardwareNameParser` | private | `private static readonly Regex CpuCoresSuffix = new(@"\s+\d+-Core.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [672](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L672) | `HardwareNameParser` | private | `private static readonly Regex IntelModelRegex = new(@"\b([im][0-9]-[0-9]+[A-Z0-9]*(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [673](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L673) | `HardwareNameParser` | private | `private static readonly Regex IntelXeonRegex = new(@"\b(Xeon\s+[A-Z0-9\-]+(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [675](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L675) | `HardwareNameParser` | private | `private static readonly Regex GpuVramRegex = new(@"\b(\d+\s*GB)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [696](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L696) | `HardwareNameParser` | private | `private static readonly Regex CpuNoisyTokens = new(@"\(R\)|\(TM\)", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [697](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L697) | `HardwareNameParser` | private | `private static readonly Regex CpuGenPrefix = new(@"^\d+\w*\s+Gen\s+", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [698](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L698) | `HardwareNameParser` | private | `private static readonly Regex CpuAtFreqSuffix = new(@"\s+CPU\s*@.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [699](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L699) | `HardwareNameParser` | private | `private static readonly Regex CpuCoresSuffix = new(@"\s+\d+-Core.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [701](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L701) | `HardwareNameParser` | private | `private static readonly Regex IntelModelRegex = new(@"\b([im][0-9]-[0-9]+[A-Z0-9]*(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [702](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L702) | `HardwareNameParser` | private | `private static readonly Regex IntelXeonRegex = new(@"\b(Xeon\s+[A-Z0-9\-]+(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [704](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L704) | `HardwareNameParser` | private | `private static readonly Regex GpuVramRegex = new(@"\b(\d+\s*GB)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
 
 ### `LinuxHardwareStats/Nodes.cs`
 
@@ -586,7 +586,7 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [96](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L96) | `LinuxUtils` | private | `private static bool? isFlatpak;` |
+| [146](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L146) | `LinuxUtils` | private | `private static bool? isFlatpak;` |
 
 ### `Utilities/LogSpamFix.cs`
 
@@ -646,54 +646,54 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [21](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L21) | `VRCXGetOnlineFriendsNode` | public | `public ValueOutput<int> Count = new("Friend Count");` |
 | [22](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L22) | `VRCXGetOnlineFriendsNode` | public | `public ValueOutput<string> FriendsJson = new("Friends JSON");` |
 | [23](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L23) | `VRCXGetOnlineFriendsNode` | public | `public ValueOutput<string> Error = new();` |
-| [57](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L57) | `VRCXSendInviteNode` | public | `public FlowContinuation Next = new("Next");` |
-| [58](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L58) | `VRCXSendInviteNode` | public | `public FlowContinuation OnError = new("On Error");` |
-| [60](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L60) | `VRCXSendInviteNode` | public | `public ValueInput<string> UserId = new("User ID");` |
-| [61](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L61) | `VRCXSendInviteNode` | public | `public ValueInput<string> InstanceId = new("Instance ID");` |
-| [62](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L62) | `VRCXSendInviteNode` | public | `public ValueInput<string> WorldId = new("World ID");` |
-| [63](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L63) | `VRCXSendInviteNode` | public | `public ValueInput<string> WorldName = new("World Name");` |
-| [64](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L64) | `VRCXSendInviteNode` | public | `public ValueInput<string> Message = new("Message (Optional)");` |
-| [66](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L66) | `VRCXSendInviteNode` | public | `public ValueOutput<string> Error = new();` |
-| [108](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L108) | `VRCXGetUserInfoNode` | public | `public FlowContinuation Next = new("Next");` |
-| [109](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L109) | `VRCXGetUserInfoNode` | public | `public FlowContinuation OnError = new("On Error");` |
-| [111](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L111) | `VRCXGetUserInfoNode` | public | `public ValueInput<string> UserId = new("User ID");` |
-| [113](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L113) | `VRCXGetUserInfoNode` | public | `public ValueOutput<string> UserJson = new("User JSON");` |
-| [114](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L114) | `VRCXGetUserInfoNode` | public | `public new ValueOutput<string> DisplayName = new("Display Name");` |
-| [115](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L115) | `VRCXGetUserInfoNode` | public | `public ValueOutput<string> Error = new();` |
-| [156](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L156) | `VRCXGetCurrentLocationNode` | public | `public FlowContinuation Next = new("Next");` |
-| [157](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L157) | `VRCXGetCurrentLocationNode` | public | `public FlowContinuation OnError = new("On Error");` |
-| [159](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L159) | `VRCXGetCurrentLocationNode` | public | `public ValueOutput<string> WorldId = new("World ID");` |
-| [160](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L160) | `VRCXGetCurrentLocationNode` | public | `public ValueOutput<string> InstanceId = new("Instance ID");` |
-| [161](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L161) | `VRCXGetCurrentLocationNode` | public | `public ValueOutput<string> UserId = new("User ID");` |
-| [162](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L162) | `VRCXGetCurrentLocationNode` | public | `public new ValueOutput<string> DisplayName = new("Display Name");` |
-| [163](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L163) | `VRCXGetCurrentLocationNode` | public | `public ValueOutput<string> LocationJson = new("Location JSON");` |
-| [164](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L164) | `VRCXGetCurrentLocationNode` | public | `public ValueOutput<string> Error = new();` |
-| [200](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L200) | `VRCXShowToastNode` | public | `public FlowContinuation Next = new("Next");` |
-| [201](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L201) | `VRCXShowToastNode` | public | `public FlowContinuation OnError = new("On Error");` |
-| [203](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L203) | `VRCXShowToastNode` | public | `public ValueInput<string> Message = new();` |
-| [204](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L204) | `VRCXShowToastNode` | public | `public ValueInput<string> Type = new("Type (info/success/warning/error)");` |
-| [206](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L206) | `VRCXShowToastNode` | public | `public ValueOutput<string> Error = new();` |
-| [248](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L248) | `VRCXConnectionStatusNode` | public | `public ValueOutput<bool> Connected = new();` |
-| [250](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L250) | `VRCXConnectionStatusNode` | public | `public FlowCall Call = new();` |
+| [58](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L58) | `VRCXSendInviteNode` | public | `public FlowContinuation Next = new("Next");` |
+| [59](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L59) | `VRCXSendInviteNode` | public | `public FlowContinuation OnError = new("On Error");` |
+| [61](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L61) | `VRCXSendInviteNode` | public | `public ValueInput<string> UserId = new("User ID");` |
+| [62](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L62) | `VRCXSendInviteNode` | public | `public ValueInput<string> InstanceId = new("Instance ID");` |
+| [63](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L63) | `VRCXSendInviteNode` | public | `public ValueInput<string> WorldId = new("World ID");` |
+| [64](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L64) | `VRCXSendInviteNode` | public | `public ValueInput<string> WorldName = new("World Name");` |
+| [65](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L65) | `VRCXSendInviteNode` | public | `public ValueInput<string> Message = new("Message (Optional)");` |
+| [67](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L67) | `VRCXSendInviteNode` | public | `public ValueOutput<string> Error = new();` |
+| [110](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L110) | `VRCXGetUserInfoNode` | public | `public FlowContinuation Next = new("Next");` |
+| [111](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L111) | `VRCXGetUserInfoNode` | public | `public FlowContinuation OnError = new("On Error");` |
+| [113](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L113) | `VRCXGetUserInfoNode` | public | `public ValueInput<string> UserId = new("User ID");` |
+| [115](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L115) | `VRCXGetUserInfoNode` | public | `public ValueOutput<string> UserJson = new("User JSON");` |
+| [116](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L116) | `VRCXGetUserInfoNode` | public | `public new ValueOutput<string> DisplayName = new("Display Name");` |
+| [117](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L117) | `VRCXGetUserInfoNode` | public | `public ValueOutput<string> Error = new();` |
+| [159](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L159) | `VRCXGetCurrentLocationNode` | public | `public FlowContinuation Next = new("Next");` |
+| [160](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L160) | `VRCXGetCurrentLocationNode` | public | `public FlowContinuation OnError = new("On Error");` |
+| [162](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L162) | `VRCXGetCurrentLocationNode` | public | `public ValueOutput<string> WorldId = new("World ID");` |
+| [163](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L163) | `VRCXGetCurrentLocationNode` | public | `public ValueOutput<string> InstanceId = new("Instance ID");` |
+| [164](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L164) | `VRCXGetCurrentLocationNode` | public | `public ValueOutput<string> UserId = new("User ID");` |
+| [165](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L165) | `VRCXGetCurrentLocationNode` | public | `public new ValueOutput<string> DisplayName = new("Display Name");` |
+| [166](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L166) | `VRCXGetCurrentLocationNode` | public | `public ValueOutput<string> LocationJson = new("Location JSON");` |
+| [167](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L167) | `VRCXGetCurrentLocationNode` | public | `public ValueOutput<string> Error = new();` |
+| [204](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L204) | `VRCXShowToastNode` | public | `public FlowContinuation Next = new("Next");` |
+| [205](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L205) | `VRCXShowToastNode` | public | `public FlowContinuation OnError = new("On Error");` |
+| [207](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L207) | `VRCXShowToastNode` | public | `public ValueInput<string> Message = new();` |
+| [208](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L208) | `VRCXShowToastNode` | public | `public ValueInput<string> Type = new("Type (info/success/warning/error)");` |
+| [210](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L210) | `VRCXShowToastNode` | public | `public ValueOutput<string> Error = new();` |
+| [253](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L253) | `VRCXConnectionStatusNode` | public | `public ValueOutput<bool> Connected = new();` |
+| [255](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L255) | `VRCXConnectionStatusNode` | public | `public FlowCall Call = new();` |
 
 ### `VRCXBridge/VRCXBridgeModule.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [23](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L23) | `VRCXBridgeModule` | private | `private NamedPipeClientStream? _pipeClient;` |
-| [24](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L24) | `VRCXBridgeModule` | private | `private StreamWriter? _pipeWriter;` |
-| [25](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L25) | `VRCXBridgeModule` | private | `private StreamReader? _pipeReader;` |
-| [26](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L26) | `VRCXBridgeModule` | private | `private Task? _readTask;` |
-| [27](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L27) | `VRCXBridgeModule` | private | `private CancellationTokenSource? _cancellationSource;` |
-| [28](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L28) | `VRCXBridgeModule` | private | `private bool _isConnected;` |
-| [29](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L29) | `VRCXBridgeModule` | private | `private bool _hasLoggedDisconnection;` |
-| [30](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L30) | `VRCXBridgeModule` | private | `private readonly Dictionary<string, TaskCompletionSource<JsonNode>> _pendingRequests = new();` |
-| [31](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L31) | `VRCXBridgeModule` | private | `private readonly List<OscEvent> _eventBuffer = new();` |
-| [32](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L32) | `VRCXBridgeModule` | private | `private readonly object _bufferLock = new();` |
-| [33](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L33) | `VRCXBridgeModule` | private | `private System.Timers.Timer? _flushTimer;` |
-| [34](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L34) | `VRCXBridgeModule` | private | `private readonly Dictionary<string, object> _chatVariables = new();` |
-| [35](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L35) | `VRCXBridgeModule` | private | `private readonly Dictionary<string, Type> _variableTypes = new();` |
-| [36](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L36) | `VRCXBridgeModule` | private | `private readonly Dictionary<string, object> _lastParameterValues = new();` |
+| [24](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L24) | `VRCXBridgeModule` | private | `private NamedPipeClientStream? _pipeClient;` |
+| [25](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L25) | `VRCXBridgeModule` | private | `private StreamWriter? _pipeWriter;` |
+| [26](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L26) | `VRCXBridgeModule` | private | `private StreamReader? _pipeReader;` |
+| [27](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L27) | `VRCXBridgeModule` | private | `private Task? _readTask;` |
+| [28](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L28) | `VRCXBridgeModule` | private | `private CancellationTokenSource? _cancellationSource;` |
+| [29](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L29) | `VRCXBridgeModule` | private | `private bool _isConnected;` |
+| [30](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L30) | `VRCXBridgeModule` | private | `private bool _hasLoggedDisconnection;` |
+| [31](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L31) | `VRCXBridgeModule` | private | `private readonly Dictionary<string, TaskCompletionSource<JsonNode>> _pendingRequests = new();` |
+| [32](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L32) | `VRCXBridgeModule` | private | `private readonly List<OscEvent> _eventBuffer = new();` |
+| [33](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L33) | `VRCXBridgeModule` | private | `private readonly object _bufferLock = new();` |
+| [34](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L34) | `VRCXBridgeModule` | private | `private System.Timers.Timer? _flushTimer;` |
+| [35](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L35) | `VRCXBridgeModule` | private | `private readonly Dictionary<string, object> _chatVariables = new();` |
+| [36](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L36) | `VRCXBridgeModule` | private | `private readonly Dictionary<string, Type> _variableTypes = new();` |
+| [37](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L37) | `VRCXBridgeModule` | private | `private readonly Dictionary<string, object> _lastParameterValues = new();` |
 
 
 ## VRChatSettings

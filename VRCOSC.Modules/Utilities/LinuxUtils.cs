@@ -128,16 +128,16 @@ public static class LinuxUtils
         {
             using var process = Process.Start(new ProcessStartInfo
             {
-                FileName        = "Z:\\bin\\bash",
-                Arguments       = $"-c \"{EscapeQuotes(command)}\"",
+                FileName = "Z:\\bin\\bash",
+                Arguments = $"-c \"{EscapeQuotes(command)}\"",
                 UseShellExecute = true,
-                CreateNoWindow  = true,
+                CreateNoWindow = true,
                 WorkingDirectory = "C:\\"
             });
 
             if (process is null) return;
 
-            try   { process.WaitForExit(); }
+            try { process.WaitForExit(); }
             catch (InvalidOperationException) { /* Wine may detach from child processes */ }
         }
         catch (Exception ex) { onError?.Invoke(ex); }
@@ -187,12 +187,12 @@ public static class LinuxUtils
             using var proc = new Process();
             proc.StartInfo = new ProcessStartInfo
             {
-                FileName               = "/bin/bash",
-                Arguments              = $"-c \"{EscapeQuotes(command)}\"",
+                FileName = "/bin/bash",
+                Arguments = $"-c \"{EscapeQuotes(command)}\"",
                 RedirectStandardOutput = true,
-                RedirectStandardError  = false,
-                UseShellExecute        = false,
-                CreateNoWindow         = true
+                RedirectStandardError = false,
+                UseShellExecute = false,
+                CreateNoWindow = true
             };
             proc.Start();
             var output = proc.StandardOutput.ReadToEnd();
@@ -216,11 +216,11 @@ public static class LinuxUtils
     /// <summary>Represents a parsed UPower device entry.</summary>
     public sealed class UPowerDevice
     {
-        public string Path          { get; init; } = string.Empty;
-        public bool   IsPresent     { get; set; }
-        public bool   IsCharging    { get; set; }
-        public float  BatteryLevel  { get; set; }   // 0-1
-        public string DeviceType    { get; set; } = string.Empty;
+        public string Path { get; init; } = string.Empty;
+        public bool IsPresent { get; set; }
+        public bool IsCharging { get; set; }
+        public float BatteryLevel { get; set; }   // 0-1
+        public string DeviceType { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -237,8 +237,8 @@ public static class LinuxUtils
     /// When <see langword="false"/> (default), uses the Wine bridge.
     /// </param>
     public static List<UPowerDevice> GetUPowerDevices(
-        string? filter    = null,
-        bool    useNative = false)
+        string? filter = null,
+        bool useNative = false)
     {
         var results = new List<UPowerDevice>();
         if (!IsLinux) return results;

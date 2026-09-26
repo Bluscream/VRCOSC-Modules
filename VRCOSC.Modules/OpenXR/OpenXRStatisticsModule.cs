@@ -16,14 +16,14 @@ namespace VRCOSC.Modules.OpenXR;
 public class OpenXRStatisticsModule : Module
 {
     // ─────────────────── Silk.NET / OpenXR objects ───────────────────
-    private XR?       _xr;
-    private Instance  _instance;
-    private Session   _session;
-    private ulong     _systemId;
-    private bool      _xrReady;
+    private XR? _xr;
+    private Instance _instance;
+    private Session _session;
+    private ulong _systemId;
+    private bool _xrReady;
 
     // Per-poll device state cache
-    private readonly OpenXRDeviceState _hmd   = new();
+    private readonly OpenXRDeviceState _hmd = new();
     private readonly OpenXRDeviceState _lHand = new();
     private readonly OpenXRDeviceState _rHand = new();
     private float _currentFps;
@@ -32,39 +32,39 @@ public class OpenXRStatisticsModule : Module
     protected override void OnPreLoad()
     {
         Bluscream.ModuleUtils.RegisterNativeResolver(Log);
-        RegisterParameter<int>  (OpenXRParameter.FPS,           "VRCOSC/VR/FPS/Value",      ParameterMode.Write, "FPS",            "Measured compositor FPS");
+        RegisterParameter<int>(OpenXRParameter.FPS, "VRCOSC/VR/FPS/Value", ParameterMode.Write, "FPS", "Measured compositor FPS");
         RegisterParameter<float>(OpenXRParameter.FPSNormalised, "VRCOSC/VR/FPS/Normalised", ParameterMode.Write, "FPS Normalised", "FPS normalised 0-240 → 0-1");
 
-        RegisterParameter<bool>(OpenXRParameter.UserPresent,     "VRCOSC/VR/UserPresent",      ParameterMode.Write, "User Present",      "Headset is worn / session focused");
-        RegisterParameter<bool>(OpenXRParameter.DashboardVisible,"VRCOSC/VR/DashboardVisible", ParameterMode.Write, "Dashboard Visible", "Session visible but not focused");
+        RegisterParameter<bool>(OpenXRParameter.UserPresent, "VRCOSC/VR/UserPresent", ParameterMode.Write, "User Present", "Headset is worn / session focused");
+        RegisterParameter<bool>(OpenXRParameter.DashboardVisible, "VRCOSC/VR/DashboardVisible", ParameterMode.Write, "Dashboard Visible", "Session visible but not focused");
 
-        RegisterParameter<bool> (OpenXRParameter.HMD_Connected, "VRCOSC/VR/HMD/Connected", ParameterMode.Write, "HMD Connected", "Whether the HMD device is connected");
-        RegisterParameter<float>(OpenXRParameter.HMD_Battery,   "VRCOSC/VR/HMD/Battery",   ParameterMode.Write, "HMD Battery",   "HMD battery percentage (0-1)");
-        RegisterParameter<bool> (OpenXRParameter.HMD_Charging,  "VRCOSC/VR/HMD/Charging",  ParameterMode.Write, "HMD Charging",  "Whether the HMD is charging");
+        RegisterParameter<bool>(OpenXRParameter.HMD_Connected, "VRCOSC/VR/HMD/Connected", ParameterMode.Write, "HMD Connected", "Whether the HMD device is connected");
+        RegisterParameter<float>(OpenXRParameter.HMD_Battery, "VRCOSC/VR/HMD/Battery", ParameterMode.Write, "HMD Battery", "HMD battery percentage (0-1)");
+        RegisterParameter<bool>(OpenXRParameter.HMD_Charging, "VRCOSC/VR/HMD/Charging", ParameterMode.Write, "HMD Charging", "Whether the HMD is charging");
 
-        RegisterParameter<bool> (OpenXRParameter.LHand_Connected, "VRCOSC/VR/LHand/Connected", ParameterMode.Write, "Left Hand Connected", "Whether the left controller is connected");
-        RegisterParameter<float>(OpenXRParameter.LHand_Battery,   "VRCOSC/VR/LHand/Battery",   ParameterMode.Write, "Left Hand Battery",   "Left controller battery (0-1)");
-        RegisterParameter<bool> (OpenXRParameter.LHand_Charging,  "VRCOSC/VR/LHand/Charging",  ParameterMode.Write, "Left Hand Charging",  "Whether the left controller is charging");
+        RegisterParameter<bool>(OpenXRParameter.LHand_Connected, "VRCOSC/VR/LHand/Connected", ParameterMode.Write, "Left Hand Connected", "Whether the left controller is connected");
+        RegisterParameter<float>(OpenXRParameter.LHand_Battery, "VRCOSC/VR/LHand/Battery", ParameterMode.Write, "Left Hand Battery", "Left controller battery (0-1)");
+        RegisterParameter<bool>(OpenXRParameter.LHand_Charging, "VRCOSC/VR/LHand/Charging", ParameterMode.Write, "Left Hand Charging", "Whether the left controller is charging");
 
-        RegisterParameter<bool> (OpenXRParameter.RHand_Connected, "VRCOSC/VR/RHand/Connected", ParameterMode.Write, "Right Hand Connected", "Whether the right controller is connected");
-        RegisterParameter<float>(OpenXRParameter.RHand_Battery,   "VRCOSC/VR/RHand/Battery",   ParameterMode.Write, "Right Hand Battery",   "Right controller battery (0-1)");
-        RegisterParameter<bool> (OpenXRParameter.RHand_Charging,  "VRCOSC/VR/RHand/Charging",  ParameterMode.Write, "Right Hand Charging",  "Whether the right controller is charging");
+        RegisterParameter<bool>(OpenXRParameter.RHand_Connected, "VRCOSC/VR/RHand/Connected", ParameterMode.Write, "Right Hand Connected", "Whether the right controller is connected");
+        RegisterParameter<float>(OpenXRParameter.RHand_Battery, "VRCOSC/VR/RHand/Battery", ParameterMode.Write, "Right Hand Battery", "Right controller battery (0-1)");
+        RegisterParameter<bool>(OpenXRParameter.RHand_Charging, "VRCOSC/VR/RHand/Charging", ParameterMode.Write, "Right Hand Charging", "Whether the right controller is charging");
 
-        RegisterParameter<float>(OpenXRParameter.LeftIndex,  "VRCOSC/VR/LHand/Input/Finger/Index",  ParameterMode.Write, "Left Index",  "Left index finger curl (0-1)");
+        RegisterParameter<float>(OpenXRParameter.LeftIndex, "VRCOSC/VR/LHand/Input/Finger/Index", ParameterMode.Write, "Left Index", "Left index finger curl (0-1)");
         RegisterParameter<float>(OpenXRParameter.LeftMiddle, "VRCOSC/VR/LHand/Input/Finger/Middle", ParameterMode.Write, "Left Middle", "Left middle finger curl (0-1)");
-        RegisterParameter<float>(OpenXRParameter.LeftRing,   "VRCOSC/VR/LHand/Input/Finger/Ring",   ParameterMode.Write, "Left Ring",   "Left ring finger curl (0-1)");
-        RegisterParameter<float>(OpenXRParameter.LeftPinky,  "VRCOSC/VR/LHand/Input/Finger/Pinky",  ParameterMode.Write, "Left Pinky",  "Left pinky finger curl (0-1)");
+        RegisterParameter<float>(OpenXRParameter.LeftRing, "VRCOSC/VR/LHand/Input/Finger/Ring", ParameterMode.Write, "Left Ring", "Left ring finger curl (0-1)");
+        RegisterParameter<float>(OpenXRParameter.LeftPinky, "VRCOSC/VR/LHand/Input/Finger/Pinky", ParameterMode.Write, "Left Pinky", "Left pinky finger curl (0-1)");
 
-        RegisterParameter<float>(OpenXRParameter.RightIndex,  "VRCOSC/VR/RHand/Input/Finger/Index",  ParameterMode.Write, "Right Index",  "Right index finger curl (0-1)");
+        RegisterParameter<float>(OpenXRParameter.RightIndex, "VRCOSC/VR/RHand/Input/Finger/Index", ParameterMode.Write, "Right Index", "Right index finger curl (0-1)");
         RegisterParameter<float>(OpenXRParameter.RightMiddle, "VRCOSC/VR/RHand/Input/Finger/Middle", ParameterMode.Write, "Right Middle", "Right middle finger curl (0-1)");
-        RegisterParameter<float>(OpenXRParameter.RightRing,   "VRCOSC/VR/RHand/Input/Finger/Ring",   ParameterMode.Write, "Right Ring",   "Right ring finger curl (0-1)");
-        RegisterParameter<float>(OpenXRParameter.RightPinky,  "VRCOSC/VR/RHand/Input/Finger/Pinky",  ParameterMode.Write, "Right Pinky",  "Right pinky finger curl (0-1)");
+        RegisterParameter<float>(OpenXRParameter.RightRing, "VRCOSC/VR/RHand/Input/Finger/Ring", ParameterMode.Write, "Right Ring", "Right ring finger curl (0-1)");
+        RegisterParameter<float>(OpenXRParameter.RightPinky, "VRCOSC/VR/RHand/Input/Finger/Pinky", ParameterMode.Write, "Right Pinky", "Right pinky finger curl (0-1)");
     }
 
     protected override void OnPostLoad()
     {
         CreateVariable<float>(OpenXRVariable.FPS, "FPS");
-        CreateVariable<bool> (OpenXRVariable.UserPresent, "User Present");
+        CreateVariable<bool>(OpenXRVariable.UserPresent, "User Present");
 
         var hmdBat = CreateVariable<int>(OpenXRVariable.HMD_Battery, "HMD Battery (%)")!;
         CreateVariable<bool>(OpenXRVariable.HMD_Charging, "HMD Charging");
@@ -75,9 +75,9 @@ public class OpenXRStatisticsModule : Module
         var rcBat = CreateVariable<int>(OpenXRVariable.RHand_Battery, "Right Hand Battery (%)")!;
         CreateVariable<bool>(OpenXRVariable.RHand_Charging, "Right Hand Charging");
 
-        CreateState(OpenXRState.Default,   "Default",    "HMD: {0}%\nLHand: {1}%\nRHand: {2}%", new[] { hmdBat, lcBat, rcBat });
+        CreateState(OpenXRState.Default, "Default", "HMD: {0}%\nLHand: {1}%\nRHand: {2}%", new[] { hmdBat, lcBat, rcBat });
         CreateState(OpenXRState.NoRuntime, "No Runtime", "OpenXR runtime not found");
-        CreateState(OpenXRState.Error,     "Error",      "OpenXR error — check logs");
+        CreateState(OpenXRState.Error, "Error", "OpenXR error — check logs");
     }
 
     protected override Task<bool> OnModuleStart()
@@ -134,13 +134,13 @@ public class OpenXRStatisticsModule : Module
     [ModuleUpdate(ModuleUpdateMode.ChatBox)]
     private void UpdateVariables()
     {
-        SetVariableValue(OpenXRVariable.FPS,          MathF.Round(_currentFps));
-        SetVariableValue(OpenXRVariable.UserPresent,  _hmd.IsPresent);
-        SetVariableValue(OpenXRVariable.HMD_Battery,  (int)(_hmd.BatteryPercent  * 100f));
+        SetVariableValue(OpenXRVariable.FPS, MathF.Round(_currentFps));
+        SetVariableValue(OpenXRVariable.UserPresent, _hmd.IsPresent);
+        SetVariableValue(OpenXRVariable.HMD_Battery, (int)(_hmd.BatteryPercent * 100f));
         SetVariableValue(OpenXRVariable.HMD_Charging, _hmd.IsCharging);
-        SetVariableValue(OpenXRVariable.LHand_Battery,  (int)(_lHand.BatteryPercent * 100f));
+        SetVariableValue(OpenXRVariable.LHand_Battery, (int)(_lHand.BatteryPercent * 100f));
         SetVariableValue(OpenXRVariable.LHand_Charging, _lHand.IsCharging);
-        SetVariableValue(OpenXRVariable.RHand_Battery,  (int)(_rHand.BatteryPercent * 100f));
+        SetVariableValue(OpenXRVariable.RHand_Battery, (int)(_rHand.BatteryPercent * 100f));
         SetVariableValue(OpenXRVariable.RHand_Charging, _rHand.IsCharging);
     }
 
@@ -152,20 +152,20 @@ public class OpenXRStatisticsModule : Module
         if (LinuxUtils.IsLinux)
             PollBatteryViaUPower();
 
-        SendParameter(OpenXRParameter.UserPresent,      _hmd.IsPresent);
+        SendParameter(OpenXRParameter.UserPresent, _hmd.IsPresent);
         SendParameter(OpenXRParameter.DashboardVisible, !_hmd.IsPresent);
 
         SendParameter(OpenXRParameter.HMD_Connected, _hmd.IsConnected);
-        SendParameter(OpenXRParameter.HMD_Battery,   _hmd.BatteryPercent);
-        SendParameter(OpenXRParameter.HMD_Charging,  _hmd.IsCharging);
+        SendParameter(OpenXRParameter.HMD_Battery, _hmd.BatteryPercent);
+        SendParameter(OpenXRParameter.HMD_Charging, _hmd.IsCharging);
 
         SendParameter(OpenXRParameter.LHand_Connected, _lHand.IsConnected);
-        SendParameter(OpenXRParameter.LHand_Battery,   _lHand.BatteryPercent);
-        SendParameter(OpenXRParameter.LHand_Charging,  _lHand.IsCharging);
+        SendParameter(OpenXRParameter.LHand_Battery, _lHand.BatteryPercent);
+        SendParameter(OpenXRParameter.LHand_Charging, _lHand.IsCharging);
 
         SendParameter(OpenXRParameter.RHand_Connected, _rHand.IsConnected);
-        SendParameter(OpenXRParameter.RHand_Battery,   _rHand.BatteryPercent);
-        SendParameter(OpenXRParameter.RHand_Charging,  _rHand.IsCharging);
+        SendParameter(OpenXRParameter.RHand_Battery, _rHand.BatteryPercent);
+        SendParameter(OpenXRParameter.RHand_Charging, _rHand.IsCharging);
     }
 
     [ModuleUpdate(ModuleUpdateMode.Custom, true, 1000f / 60f)]
@@ -176,18 +176,18 @@ public class OpenXRStatisticsModule : Module
 
         _currentFps = EstimateFpsFromFrameState();
 
-        SendParameter(OpenXRParameter.FPS,           (int)MathF.Round(_currentFps));
+        SendParameter(OpenXRParameter.FPS, (int)MathF.Round(_currentFps));
         SendParameter(OpenXRParameter.FPSNormalised, Math.Clamp(_currentFps / 240f, 0f, 1f));
 
-        SendParameter(OpenXRParameter.LeftIndex,   _lHand.FingerCurl[0]);
-        SendParameter(OpenXRParameter.LeftMiddle,  _lHand.FingerCurl[1]);
-        SendParameter(OpenXRParameter.LeftRing,    _lHand.FingerCurl[2]);
-        SendParameter(OpenXRParameter.LeftPinky,   _lHand.FingerCurl[3]);
+        SendParameter(OpenXRParameter.LeftIndex, _lHand.FingerCurl[0]);
+        SendParameter(OpenXRParameter.LeftMiddle, _lHand.FingerCurl[1]);
+        SendParameter(OpenXRParameter.LeftRing, _lHand.FingerCurl[2]);
+        SendParameter(OpenXRParameter.LeftPinky, _lHand.FingerCurl[3]);
 
-        SendParameter(OpenXRParameter.RightIndex,  _rHand.FingerCurl[0]);
+        SendParameter(OpenXRParameter.RightIndex, _rHand.FingerCurl[0]);
         SendParameter(OpenXRParameter.RightMiddle, _rHand.FingerCurl[1]);
-        SendParameter(OpenXRParameter.RightRing,   _rHand.FingerCurl[2]);
-        SendParameter(OpenXRParameter.RightPinky,  _rHand.FingerCurl[3]);
+        SendParameter(OpenXRParameter.RightRing, _rHand.FingerCurl[2]);
+        SendParameter(OpenXRParameter.RightPinky, _rHand.FingerCurl[3]);
     }
 
     // ─────────────────── Helpers ─────────────────────────────────────
@@ -196,7 +196,7 @@ public class OpenXRStatisticsModule : Module
         if (_xr is null || _session.Handle == 0) return 0f;
 
         var frameState = new FrameState { Type = StructureType.FrameState };
-        var waitInfo   = new FrameWaitInfo { Type = StructureType.FrameWaitInfo };
+        var waitInfo = new FrameWaitInfo { Type = StructureType.FrameWaitInfo };
         if (_xr.WaitFrame(_session, in waitInfo, ref frameState) != Result.Success) return _currentFps;
         if (frameState.PredictedDisplayPeriod > 0)
             return 1_000_000_000f / frameState.PredictedDisplayPeriod;
@@ -206,7 +206,7 @@ public class OpenXRStatisticsModule : Module
     private void PollBatteryViaUPower()
     {
         var keywords = new[] { "headset", "controller", "gamepad", "input" };
-        var devices  = LinuxUtils.GetUPowerDevices(filter: null, useNative: true);
+        var devices = LinuxUtils.GetUPowerDevices(filter: null, useNative: true);
 
         foreach (var dev in devices.Where(d => keywords.Any(k => d.Path.Contains(k, StringComparison.OrdinalIgnoreCase))))
         {

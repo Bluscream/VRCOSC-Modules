@@ -12,23 +12,23 @@ public static class DateTimeUtils
 {
     public static long ToUnixTimestamp(DateTime dateTime)
         => ((DateTimeOffset)dateTime).ToUnixTimeSeconds();
-    
+
     public static long ToUnixTimestampMs(DateTime dateTime)
         => ((DateTimeOffset)dateTime).ToUnixTimeMilliseconds();
-    
+
     public static DateTime FromUnixTimestamp(long timestamp)
         => DateTimeOffset.FromUnixTimeSeconds(timestamp).DateTime;
-    
+
     public static DateTime FromUnixTimestampMs(long timestamp)
         => DateTimeOffset.FromUnixTimeMilliseconds(timestamp).DateTime;
-    
+
     public static string ToIso8601(DateTime dateTime)
         => dateTime.ToString("o");
-    
+
     public static string ToTimeAgo(DateTime dateTime)
     {
         var timeSpan = DateTime.Now - dateTime;
-        
+
         if (timeSpan.TotalSeconds < 60)
             return $"{(int)timeSpan.TotalSeconds}s ago";
         if (timeSpan.TotalMinutes < 60)

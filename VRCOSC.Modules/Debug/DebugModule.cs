@@ -30,14 +30,14 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         CreateTextBox(DebugSetting.DumpDirectory, "Dump Directory", "Directory for parameter dumps (leave empty for 'dumps' folder in module directory)", string.Empty);
         CreateDropdown(DebugSetting.SortBy, "Sort By", "Which column to sort the CSV by before saving", CsvSortBy.ParameterPath);
         CreateDropdown(DebugSetting.SortDirection, "Sort Direction", "Sort order for CSV export", CsvSortDirection.Ascending);
-        
+
         // Tracking mode - DISABLED (always using VRCOSC tracking)
         // CreateToggle(DebugSetting.UseVrcoscTracking, "Use VRCOSC Tracking", "Use VRCOSC's built-in parameter tracking", true);
         // CreateToggle(DebugSetting.TrackAvatarOnly, "Avatar Parameters Only", "Only track avatar parameters", true);
         // CreateToggle(DebugSetting.AutoTrackIncoming, "Auto-Track Incoming", "Automatically track incoming parameters", true);
         // CreateToggle(DebugSetting.AutoTrackOutgoing, "Auto-Track Outgoing", "Automatically track outgoing parameters", true);
         // CreateSlider(DebugSetting.MaxParameters, "Max Parameters", "Maximum parameters to track (0 = unlimited)", 0, 0, 10000, 100);
-        
+
         // Debug settings
         CreateToggle(DebugSetting.LogParameterUpdates, "Log Parameter Updates", "Log all parameter updates to console", false);
         CreateToggle(DebugSetting.AutoStartModules, "Auto Start VRCOSC on Load", "Automatically starts VRCOSC when it loads (equivalent to clicking Play button). Bypasses VRChat detection.", false);
@@ -80,7 +80,7 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         CreateEvent(DebugEvent.OnTrackingCleared, "Tracking Cleared", "Cleared all tracked parameters");
 
         ChangeState(DebugState.Idle);
-        
+
         // Auto-start VRCOSC if enabled (read from disk since settings aren't loaded yet in OnPostLoad).
         // Log what the disk read resolved to: a silent false here is indistinguishable from the
         // setting being off, which previously made a broken lookup impossible to diagnose.
@@ -102,18 +102,18 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
                 {
                     // Wait longer to ensure VRCOSC is fully initialized
                     await Task.Delay(3000);
-                    
+
                     Log("Auto-start enabled, checking VRCOSC state...");
-                    
+
                     var currentState = ReflectionUtils.GetAppManagerState();
                     Log($"Current AppManager state: {currentState ?? "Unknown"}");
-                    
+
                     if (currentState == "Started" || currentState == "Starting")
                     {
                         Log($"⏭ VRCOSC is already {currentState}, skipping auto-start");
                         return;
                     }
-                    
+
                     // "Waiting" means VRCOSC is blocked on VRChat detection — which is
                     // precisely what this setting says it bypasses. Skipping here made
                     // auto-start a no-op in the only situation it exists for.
@@ -124,22 +124,22 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
 
                     Log("🚀 Force-starting VRCOSC (skipping VRChat detection)...");
                     var error = ReflectionUtils.ForceAppManagerStart();
-                    
+
                     if (error != null)
                     {
                         Log($"❌ Auto-start failed: {error}");
                         return;
                     }
-                    
+
                     Log("⏳ Waiting for VRCOSC to complete startup...");
                     var isStarted = await ReflectionUtils.WaitForAppManagerStarted(30000);
-                    
+
                     if (!isStarted)
                     {
                         Log("⚠ VRCOSC didn't reach 'Started' state within 30 seconds");
                         return;
                     }
-                    
+
                     Log("✅ VRCOSC auto-started successfully - all enabled modules are now running");
                 }
                 catch (Exception ex)
@@ -158,7 +158,7 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
             IsLoggingEnabled(),
             false   // track all parameters, not just avatar
         );
-        
+
         _outgoingTracker = new OutgoingParameterTracker(
             10000,  // max parameters
             IsLoggingEnabled()
@@ -176,12 +176,12 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
 
         // Cache the base SendParameter method for reflection-based interception
         _baseSendParameterMethod = ReflectionUtils.GetModuleSendParameterMethod();
-        
+
         Log("Using custom parameter tracking");
-        
+
         Log("Debug module started");
         UpdateCounts();
-        
+
         return Task.FromResult(true);
     }
 
@@ -234,21 +234,29 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         if (_incomingTracker == null) return;
         _incomingTracker.ProcessParameter(parameter);
     }
-    
+
     // Override SendParameter to track outgoing parameters
+#if BETA_SDK
+    protected void SendParameter(string name, object value)
+#else
     protected new void SendParameter(string name, object value)
+#endif
     {
         // Track outgoing
         if (_outgoingTracker != null)
         {
             _outgoingTracker.ProcessParameter(name, value);
         }
-        
+
         // Call base implementation using reflection
         _baseSendParameterMethod?.Invoke(this, new[] { name, value });
     }
-    
+
+#if BETA_SDK
+    protected void SendParameter(Enum lookup, object value)
+#else
     protected new void SendParameter(Enum lookup, object value)
+#endif
     {
         // Get the parameter name from reflection to access internal Parameters dictionary
         var parametersDict = ReflectionUtils.GetAllModuleParameters(this);
@@ -259,7 +267,7 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
             {
                 _outgoingTracker.ProcessParameter(lookup, value, parametersDict);
             }
-            
+
             // Get parameter name and send
             if (parametersDict.TryGetValue(lookup, out var moduleParameter))
             {
@@ -271,7 +279,7 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
                 }
             }
         }
-        
+
         // Fallback to base if reflection fails
         _baseSendParameterMethod?.Invoke(this, new[] { lookup, value });
     }
@@ -294,11 +302,11 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
     public async Task<string> DumpParametersAsync(bool includeIncoming = true, bool includeOutgoing = true, string? customFilePath = null)
     {
         ChangeState(DebugState.Dumping);
-        
+
         try
         {
             string filepath;
-            
+
             if (!string.IsNullOrWhiteSpace(customFilePath))
             {
                 // Use custom file path
@@ -324,13 +332,13 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
             }
 
             var lines = new List<string>();
-            
+
             // CSV Header (always include timestamps, direction last)
             lines.Add("Parameter Path;Type;Value;First Seen;Last Update;Update Count;Direction");
 
             // Collect all parameters
             var allParams = new List<(ParameterData param, string direction)>();
-            
+
             if (includeIncoming)
             {
                 var incoming = GetIncomingParameters();
@@ -350,7 +358,7 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
                     allParams.Add((param, "OUT"));
                 }
             }
-            
+
             Log($"[Dump] Total parameters collected: {allParams.Count}");
 
             // Sort parameters based on settings
@@ -365,12 +373,12 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
 
             var totalParams = sortedParams.Count();
             await System.IO.File.WriteAllLinesAsync(filepath, lines);
-            
+
             Log($"Dumped {totalParams} parameters to: {filepath}");
 
             SetVariableValue(DebugVariable.LastDumpPath, filepath);
             TriggerEvent(DebugEvent.OnDumpComplete);
-            
+
             ChangeState(DebugState.Idle);
             return filepath;
         }
@@ -400,8 +408,8 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
             _ => parameters.OrderBy(p => p.param.Path)
         };
 
-        return sortDirection == CsvSortDirection.Descending 
-            ? sorted.Reverse() 
+        return sortDirection == CsvSortDirection.Descending
+            ? sorted.Reverse()
             : sorted;
     }
 
@@ -409,10 +417,10 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
     {
         var inCount = _incomingTracker?.UniqueParameters ?? 0;
         var outCount = _outgoingTracker?.UniqueParameters ?? 0;
-        
+
         _incomingTracker?.Clear();
         _outgoingTracker?.Clear();
-        
+
         Log($"Cleared tracking: {inCount} incoming, {outCount} outgoing");
         UpdateCounts();
         TriggerEvent(DebugEvent.OnTrackingCleared);
@@ -458,7 +466,7 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
 
     private CsvSortBy GetSortColumn() => GetSettingValue<CsvSortBy>(DebugSetting.SortBy);
     private CsvSortDirection GetSortDirection() => GetSettingValue<CsvSortDirection>(DebugSetting.SortDirection);
-    
+
     // CUSTOM TRACKING ACCESSORS - DISABLED
     // private bool UseVrcoscTracking() => GetSettingValue<bool>(DebugSetting.UseVrcoscTracking);
     // private bool IsTrackAvatarOnly() => GetSettingValue<bool>(DebugSetting.TrackAvatarOnly);

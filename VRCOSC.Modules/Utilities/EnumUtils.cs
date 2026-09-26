@@ -18,14 +18,14 @@ public static class EnumUtils
     {
         var field = value.GetType().GetField(value.ToString());
         if (field == null) return value.ToString();
-        
+
         var attribute = field.GetCustomAttribute<DescriptionAttribute>();
         return attribute?.Description ?? value.ToString();
     }
-    
+
     public static T ToEnumOrDefault<T>(string? str, T defaultValue = default!) where T : struct, Enum
         => Enum.TryParse<T>(str, true, out var result) ? result : defaultValue;
-    
+
     public static IEnumerable<T> GetValues<T>() where T : Enum
         => Enum.GetValues(typeof(T)).Cast<T>();
 }

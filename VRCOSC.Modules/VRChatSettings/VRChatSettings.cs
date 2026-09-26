@@ -24,7 +24,7 @@ public class VRChatSettings
     private readonly VRChatConfigSettingsProvider _configProvider;
 
     private const string RegistryPath = @"SOFTWARE\VRChat\VRChat";
-    
+
     private readonly string ConfigFilePath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "Low",
         "VRChat", "VRChat", "config.json"
@@ -79,13 +79,13 @@ public class VRChatSettings
             {
                 // Use provided userId or fall back to module setting
                 var userIdToUse = !string.IsNullOrEmpty(userId) ? userId : _module.VRChatUserId;
-                
+
                 if (string.IsNullOrEmpty(userIdToUse))
                 {
                     error = $"User ID required for template key '{key}'. Configure in module settings or provide via input.";
                     return false;
                 }
-                
+
                 var expandedKey = VRCUtils.ExpandKeyTemplate(key, userIdToUse);
                 if (expandedKey == null)
                 {
@@ -104,7 +104,7 @@ public class VRChatSettings
 
             var keyName = AddHashToKeyName(key);
             using var regKey = Registry.CurrentUser.OpenSubKey(RegistryPath);
-            
+
             if (regKey == null)
             {
                 error = "VRChat registry key not found";
@@ -143,19 +143,19 @@ public class VRChatSettings
         try
         {
             var originalKey = key; // Keep original for logging
-            
+
             // Expand {userId} template if present
             if (VRCUtils.IsUserTemplate(key))
             {
                 // Use provided userId or fall back to module setting
                 var userIdToUse = !string.IsNullOrEmpty(userId) ? userId : _module.VRChatUserId;
-                
+
                 if (string.IsNullOrEmpty(userIdToUse))
                 {
                     error = $"User ID required for template key '{key}'. Configure in module settings or provide via input.";
                     return false;
                 }
-                
+
                 var expandedKey = VRCUtils.ExpandKeyTemplate(key, userIdToUse);
                 if (expandedKey == null)
                 {
@@ -166,7 +166,7 @@ public class VRChatSettings
             }
 
             var setting = _registryProvider.GetSetting(key);
-            
+
             if (setting == null && !_module.AllowUnknownSettings)
             {
                 error = $"Unknown setting '{key}'";
@@ -189,7 +189,7 @@ public class VRChatSettings
 
             var keyName = AddHashToKeyName(key);
             using var regKey = Registry.CurrentUser.OpenSubKey(RegistryPath, true);
-            
+
             if (regKey == null)
             {
                 error = "VRChat registry key not found";
@@ -278,7 +278,7 @@ public class VRChatSettings
         try
         {
             using var regKey = Registry.CurrentUser.OpenSubKey(RegistryPath);
-            
+
             if (regKey == null)
             {
                 error = "VRChat registry key not found";
@@ -291,7 +291,7 @@ public class VRChatSettings
                 if (index <= 0) continue;
 
                 var keyName = valueName.Substring(0, index);
-                
+
                 if (!_module.AllowUnknownSettings && !_registryProvider.IsKnownSetting(keyName))
                     continue;
 
@@ -314,7 +314,7 @@ public class VRChatSettings
     {
         try
         {
-            var backupDir = string.IsNullOrEmpty(_module.BackupDirectory) 
+            var backupDir = string.IsNullOrEmpty(_module.BackupDirectory)
                 ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "VRCOSC", "Backups", "VRChatSettings")
                 : _module.BackupDirectory;
 
@@ -402,7 +402,7 @@ public class VRChatSettings
         try
         {
             var setting = _configProvider.GetSetting(key);
-            
+
             if (setting == null && !_module.AllowUnknownSettings)
             {
                 error = $"Unknown setting '{key}'";
@@ -507,8 +507,8 @@ public class VRChatSettings
             foreach (var prop in element.EnumerateObject())
             {
                 var key = string.IsNullOrEmpty(prefix) ? prop.Name : $"{prefix}.{prop.Name}";
-                
-                if (prop.Value.ValueKind == System.Text.Json.JsonValueKind.Object || 
+
+                if (prop.Value.ValueKind == System.Text.Json.JsonValueKind.Object ||
                     prop.Value.ValueKind == System.Text.Json.JsonValueKind.Array)
                 {
                     ExtractConfigKeys(prop.Value, key, keys);
@@ -525,7 +525,7 @@ public class VRChatSettings
     {
         try
         {
-            var backupDir = string.IsNullOrEmpty(_module.BackupDirectory) 
+            var backupDir = string.IsNullOrEmpty(_module.BackupDirectory)
                 ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "VRCOSC", "Backups", "VRChatSettings")
                 : _module.BackupDirectory;
 

@@ -9,7 +9,7 @@ namespace Bluscream.Modules.Debug;
 public class IncomingParameterTracker : ParameterTracker
 {
     public bool TrackAvatarOnly { get; set; }
-    
+
     public event Action<string, string, object?>? OnParameterReceived;
 
     public IncomingParameterTracker(int maxParameters = 0, bool logUpdates = false, bool trackAvatarOnly = true)

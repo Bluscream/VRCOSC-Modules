@@ -90,12 +90,12 @@ public sealed class GetAllParametersNode : FlowModuleNode<DebugModule>
         var incoming = Module.GetIncomingParameters();
         var outgoing = Module.GetOutgoingParameters();
         var dict = new Dictionary<string, object>();
-        
+
         foreach (var param in incoming.Values)
         {
             dict[$"IN:{param.Path}"] = param.Value ?? "null";
         }
-        
+
         foreach (var param in outgoing.Values)
         {
             dict[$"OUT:{param.Path}"] = param.Value ?? "null";

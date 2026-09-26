@@ -16,7 +16,7 @@ public static class IRCClientUtils
     {
         return client?.Channels.FirstOrDefault(c => c.Name.Equals(channelName, StringComparison.OrdinalIgnoreCase));
     }
-    
+
     /// <summary>
     /// Finds a user by nickname (case-insensitive)
     /// </summary>

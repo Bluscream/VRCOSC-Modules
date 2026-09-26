@@ -59,7 +59,7 @@ public static class AssemblyUtils
         _cachedVersion = null;
         _cachedAssemblyName = null;
     }
-    
+
     /// <summary>
     /// Get the entry assembly name (the application, not the module)
     /// </summary>
@@ -76,7 +76,7 @@ public static class AssemblyUtils
             return string.Empty;
         }
     }
-    
+
     /// <summary>
     /// Get the entry assembly version (the application, not the module)
     /// </summary>

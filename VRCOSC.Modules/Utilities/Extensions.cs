@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -17,8 +18,8 @@ public static class Extensions
 {
     #region String Extensions => StringUtils
 
-    public static bool IsNullOrWhiteSpace(this string? str) => StringUtils.IsNullOrWhiteSpace(str);
-    public static bool IsNullOrEmpty(this string? str) => StringUtils.IsNullOrEmpty(str);
+    public static bool IsNullOrWhiteSpace([NotNullWhen(false)] this string? str) => StringUtils.IsNullOrWhiteSpace(str);
+    public static bool IsNullOrEmpty([NotNullWhen(false)] this string? str) => StringUtils.IsNullOrEmpty(str);
     public static string OrDefault(this string? str, string defaultValue) => StringUtils.OrDefault(str, defaultValue);
     public static string Truncate(this string str, int maxLength, string suffix = "...") => StringUtils.Truncate(str, maxLength, suffix);
     public static int ToIntOrDefault(this string? str, int defaultValue = 0) => StringUtils.ToIntOrDefault(str, defaultValue);
