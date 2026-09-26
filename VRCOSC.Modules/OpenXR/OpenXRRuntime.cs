@@ -54,6 +54,7 @@ internal sealed unsafe partial class OpenXRRuntime
     private bool _running;
     private bool _overlaySession;
     private bool _waitFrameWorks = true;
+    private bool _probedWaitFrame;
     private long _lastPredictedTime;
     private long _lastPredictedPeriod;
     private readonly Stopwatch _sinceLastFrame = new();
@@ -67,6 +68,16 @@ internal sealed unsafe partial class OpenXRRuntime
     private delegate* unmanaged[Cdecl]<Instance, long*, long*, Result> _convertWin32Time;
 
     private volatile OpenXRSnapshot _snapshot = OpenXRSnapshot.Empty;
+    private volatile string _phase = "idle";
+    private long _lastLoopTicks;
+
+    /// <summary>Which OpenXR call the worker thread is in or last completed (for stuck-thread diagnosis).</summary>
+    public string CurrentPhase => _phase;
+
+    /// <summary>UTC time of the last completed loop iteration.</summary>
+    public DateTime LastLoopUtc => new(Interlocked.Read(ref _lastLoopTicks), DateTimeKind.Utc);
+
+    private void Phase(string name) => _phase = name;
 
     /// <summary>Latest published state. Never null; <see cref="OpenXRSnapshot.Empty"/> until initialised.</summary>
     public OpenXRSnapshot Snapshot => _snapshot;
@@ -169,6 +180,8 @@ internal sealed unsafe partial class OpenXRRuntime
                 else Thread.Sleep(50);
 
                 Publish();
+                Interlocked.Exchange(ref _lastLoopTicks, DateTime.UtcNow.Ticks);
+                Phase("loop-done");
             }
             catch (Exception ex)
             {
@@ -192,6 +205,7 @@ internal sealed unsafe partial class OpenXRRuntime
         {
             buffer.Type = StructureType.EventDataBuffer;
             buffer.Next = null;
+            Phase("xrPollEvent");
             var r = _xr!.PollEvent(_instance, &buffer);
             if (r == Result.EventUnavailable) return;
             if (r != Result.Success) { LogOnce($"xrPollEvent failed: {r}"); return; }
@@ -230,7 +244,8 @@ internal sealed unsafe partial class OpenXRRuntime
                         Type = StructureType.SessionBeginInfo,
                         PrimaryViewConfigurationType = ViewConfigurationType.PrimaryStereo
                     };
-                    var r = _xr!.BeginSession(_session, &beginInfo);
+                    Phase("xrBeginSession");
+                var r = _xr!.BeginSession(_session, &beginInfo);
                     if (r == Result.Success) { _running = true; _sinceLastFrame.Restart(); }
                     else Log($"xrBeginSession failed: {r}");
                     break;
@@ -260,6 +275,7 @@ internal sealed unsafe partial class OpenXRRuntime
         {
             var waitInfo = new FrameWaitInfo { Type = StructureType.FrameWaitInfo };
             var frameState = new FrameState { Type = StructureType.FrameState };
+            Phase("xrWaitFrame");
             var r = _xr!.WaitFrame(_session, &waitInfo, &frameState);
             if (r == Result.Success)
             {
@@ -298,6 +314,22 @@ internal sealed unsafe partial class OpenXRRuntime
             Log($"xrWaitFrame returned {r}; falling back to a self-paced loop with estimated times.");
         }
 
+        // Even without a frame loop, one xrWaitFrame right after the session starts is
+        // answered and carries the display period, which is the only refresh-rate source
+        // when xrGetDisplayRefreshRateFB reports 0 Hz for a non-rendering client.
+        if (!_probedWaitFrame)
+        {
+            _probedWaitFrame = true;
+            var waitInfo = new FrameWaitInfo { Type = StructureType.FrameWaitInfo };
+            var frameState = new FrameState { Type = StructureType.FrameState };
+            Phase("xrWaitFrame(probe)");
+            if (_xr!.WaitFrame(_session, &waitInfo, &frameState) == Result.Success && frameState.PredictedDisplayPeriod > 0)
+            {
+                _lastPredictedPeriod = frameState.PredictedDisplayPeriod;
+                Log($"Display period from xrWaitFrame: {1_000_000_000d / _lastPredictedPeriod:0.#} Hz");
+            }
+        }
+
         time = EstimateNow();
         if (time == 0)
         {
@@ -305,6 +337,7 @@ internal sealed unsafe partial class OpenXRRuntime
         }
 
         UpdateFrameData(time);
+        Phase("sleep");
         Thread.Sleep(FramePeriod());
     }
 
@@ -321,6 +354,7 @@ internal sealed unsafe partial class OpenXRRuntime
         {
             long qpc = Stopwatch.GetTimestamp();
             long xrTime = 0;
+            Phase("xrConvertWin32PerformanceCounterToTimeKHR");
             if (_convertWin32Time(_instance, &qpc, &xrTime) == Result.Success) return xrTime;
         }
 
@@ -332,16 +366,20 @@ internal sealed unsafe partial class OpenXRRuntime
 
     private void UpdateFrameData(long time)
     {
+        Phase("SyncInput");
         SyncInput();
+        Phase("LocateHands");
         LocateHands(time);
         _headTracked = time != 0 && LocateHead(time);
         PollRefreshRate();
+        Phase("ApplyQueuedHaptics");
         ApplyQueuedHaptics();
     }
 
     private bool LocateHead(long time)
     {
         var location = new SpaceLocation { Type = StructureType.SpaceLocation };
+        Phase("xrLocateSpace(view)");
         var r = _xr!.LocateSpace(_viewSpace, _localSpace, time, &location);
         if (r != Result.Success) { LogOnce($"xrLocateSpace(VIEW) failed: {r}"); return false; }
         return OpenXRHelper.IsTracked(location.LocationFlags);
@@ -353,6 +391,7 @@ internal sealed unsafe partial class OpenXRRuntime
         _nextRefreshRatePoll = DateTime.UtcNow + TimeSpan.FromSeconds(1);
 
         float rate = 0f;
+        Phase("xrGetDisplayRefreshRateFB");
         var r = _getDisplayRefreshRate(_session, &rate);
         if (r == Result.Success && rate > 0f) _refreshRate = rate;
         else

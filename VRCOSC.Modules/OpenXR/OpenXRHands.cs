@@ -117,6 +117,7 @@ internal sealed unsafe partial class OpenXRRuntime
                 Time = time
             };
 
+            Phase("xrLocateHandJointsEXT");
             var r = _handTracking!.LocateHandJoints(tracker, &locateInfo, &locations);
             if (r != Result.Success) { LogOnce($"xrLocateHandJointsEXT failed: {r}"); return null; }
             if (locations.IsActive == 0) return null;

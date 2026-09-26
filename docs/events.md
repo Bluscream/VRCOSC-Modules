@@ -76,7 +76,7 @@ Not `event`-qualified, but the same idea in practice: a slot a caller plugs a ha
 
 | Line | Owner | Name | Type |
 |---|---|---|---|
-| [115](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L115) | `OpenXRRuntime` | `target` | `Action<string>?` |
+| [126](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L126) | `OpenXRRuntime` | `target` | `Action<string>?` |
 
 ### Utilities
 

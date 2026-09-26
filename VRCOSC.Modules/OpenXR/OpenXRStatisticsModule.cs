@@ -16,6 +16,7 @@ public class OpenXRStatisticsModule : Module
     private readonly OpenXRRuntime _runtime = OpenXRRuntime.Shared;
     private readonly OpenXRDeviceProbe _probe = OpenXRDeviceProbe.Shared;
     private bool _wasRunning;
+    private DateTime _lastStuckReport = DateTime.MinValue;
 
     protected override void OnPreLoad()
     {
@@ -126,6 +127,12 @@ public class OpenXRStatisticsModule : Module
         _probe.Poll(Log);
         var xr = _runtime.Snapshot;
         var probe = _probe.Latest;
+
+        if (xr.SessionRunning && DateTime.UtcNow - _runtime.LastLoopUtc > TimeSpan.FromSeconds(5) && DateTime.UtcNow - _lastStuckReport > TimeSpan.FromSeconds(30))
+        {
+            _lastStuckReport = DateTime.UtcNow;
+            Log($"OpenXR worker has not completed a loop for {(DateTime.UtcNow - _runtime.LastLoopUtc).TotalSeconds:0} s; stuck in '{_runtime.CurrentPhase}'.");
+        }
 
         if (xr.SessionRunning != _wasRunning)
         {

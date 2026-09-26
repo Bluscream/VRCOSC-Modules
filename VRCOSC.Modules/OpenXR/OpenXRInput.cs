@@ -172,6 +172,7 @@ internal sealed unsafe partial class OpenXRRuntime
 
         var active = new ActiveActionSet { ActionSet = _actionSet, SubactionPath = 0 };
         var syncInfo = new ActionsSyncInfo { Type = StructureType.ActionsSyncInfo, CountActiveActionSets = 1, ActiveActionSets = &active };
+        Phase("xrSyncActions");
         var r = xr.SyncAction(_session, &syncInfo);
         if (r != Result.Success)
         {
@@ -215,6 +216,7 @@ internal sealed unsafe partial class OpenXRRuntime
 
         var getInfo = new ActionStateGetInfo { Type = StructureType.ActionStateGetInfo, Action = action, SubactionPath = subaction };
         var state = new ActionStateFloat { Type = StructureType.ActionStateFloat };
+        Phase("xrGetActionStateFloat");
         if (_xr!.GetActionStateFloat(_session, &getInfo, &state) != Result.Success) return 0f;
 
         isActive = state.IsActive != 0;
@@ -227,6 +229,7 @@ internal sealed unsafe partial class OpenXRRuntime
 
         var getInfo = new ActionStateGetInfo { Type = StructureType.ActionStateGetInfo, Action = action, SubactionPath = subaction };
         var state = new ActionStateBoolean { Type = StructureType.ActionStateBoolean };
+        Phase("xrGetActionStateBoolean");
         if (_xr!.GetActionStateBoolean(_session, &getInfo, &state) != Result.Success) return false;
 
         return state.IsActive != 0 && state.CurrentState != 0;
@@ -260,6 +263,7 @@ internal sealed unsafe partial class OpenXRRuntime
                 Amplitude = Math.Clamp(request.Amplitude, 0f, 1f)
             };
             var info = new HapticActionInfo { Type = StructureType.HapticActionInfo, Action = _haptic, SubactionPath = _handPaths[(int)request.Hand] };
+            Phase("xrApplyHapticFeedback");
             var r = _xr!.ApplyHapticFeedback(_session, &info, (HapticBaseHeader*)&vibration);
             if (r != Result.Success) LogOnce($"xrApplyHapticFeedback failed: {r}");
         }

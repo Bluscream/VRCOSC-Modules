@@ -4,7 +4,7 @@
 
 Every property (including expression-bodied and auto-properties), grouped by module and file.
 
-**155** total across **15** modules.
+**157** total across **15** modules.
 
 | Module | Count |
 |---|---|
@@ -18,7 +18,7 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | [LinuxHardwareStats](#linuxhardwarestats) | 40 |
 | [LinuxMedia](#linuxmedia) | 2 |
 | [Notifications](#notifications) | 16 |
-| [OpenXR](#openxr) | 8 |
+| [OpenXR](#openxr) | 10 |
 | [Status](#status) | 5 |
 | [Utilities](#utilities) | 7 |
 | [VRCXBridge](#vrcxbridge) | 7 |
@@ -289,8 +289,10 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [27](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L27) | `OpenXRRuntime` | public | `public static OpenXRRuntime Shared { get; } = new();` |
-| [72](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L72) | `OpenXRRuntime` | public | `public OpenXRSnapshot Snapshot => _snapshot;` |
-| [79](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L79) | `OpenXRRuntime` | public | `public bool UseOverlaySession { get; set; } = true;` |
+| [75](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L75) | `OpenXRRuntime` | public | `public string CurrentPhase => _phase;` |
+| [78](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L78) | `OpenXRRuntime` | public | `public DateTime LastLoopUtc => new(Interlocked.Read(ref _lastLoopTicks), DateTimeKind.Utc);` |
+| [83](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L83) | `OpenXRRuntime` | public | `public OpenXRSnapshot Snapshot => _snapshot;` |
+| [90](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L90) | `OpenXRRuntime` | public | `public bool UseOverlaySession { get; set; } = true;` |
 
 
 ## Status
