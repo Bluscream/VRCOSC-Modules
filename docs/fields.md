@@ -4,18 +4,18 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**694** total across **23** modules.
+**731** total across **23** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 1 |
 | [Debug](#debug) | 25 |
 | [DesktopFPS](#desktopfps) | 10 |
-| [DiscordVoice](#discordvoice) | 44 |
+| [DiscordVoice](#discordvoice) | 67 |
 | [HTTP](#http) | 24 |
 | [HTTPServer](#httpserver) | 20 |
 | [HeartrateStats](#heartratestats) | 31 |
-| [HomeAssistant](#homeassistant) | 34 |
+| [HomeAssistant](#homeassistant) | 48 |
 | [IRCBridge](#ircbridge) | 109 |
 | [LinuxAudioFx](#linuxaudiofx) | 10 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 31 |
@@ -129,31 +129,64 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [15](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L15) | `DiscordVoiceModule` | private | `private static readonly string[] ChannelScopedEvents = ["VOICE_STATE_CREATE", "VOICE_STATE_UPDATE", "VOICE_STATE_DELETE", "SPEAKING_START", "SPEAKING_STOP"];` |
-| [18](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L18) | `DiscordVoiceModule` | private | `private const string VarChannel = "discord_channel";` |
-| [19](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L19) | `DiscordVoiceModule` | private | `private const string VarSpeaking = "discord_speaking";` |
-| [20](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L20) | `DiscordVoiceModule` | private | `private const string VarMuteState = "discord_mute_state";` |
-| [21](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L21) | `DiscordVoiceModule` | private | `private const string VarMuted = "discord_muted";` |
-| [22](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L22) | `DiscordVoiceModule` | private | `private const string VarDeafened = "discord_deafened";` |
-| [23](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L23) | `DiscordVoiceModule` | private | `private const string VarUsers = "discord_users";` |
-| [25](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L25) | `DiscordVoiceModule` | private | `private readonly VoiceStateTracker _voice = new();` |
-| [26](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L26) | `DiscordVoiceModule` | private | `private string _trackedChannelId = string.Empty;` |
-| [27](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L27) | `DiscordVoiceModule` | private | `private VoiceSnapshot _lastPublished;` |
-| [28](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L28) | `DiscordVoiceModule` | private | `private string _lastSpeakingText = string.Empty;` |
+| [16](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L16) | `DiscordVoiceModule` | private | `private static readonly string[] ChannelScopedEvents = ["VOICE_STATE_CREATE", "VOICE_STATE_UPDATE", "VOICE_STATE_DELETE", "SPEAKING_START", "SPEAKING_STOP"];` |
+| [19](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L19) | `DiscordVoiceModule` | private | `private const string VarChannel = "discord_channel";` |
+| [20](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L20) | `DiscordVoiceModule` | private | `private const string VarSpeaking = "discord_speaking";` |
+| [21](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L21) | `DiscordVoiceModule` | private | `private const string VarMuteState = "discord_mute_state";` |
+| [22](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L22) | `DiscordVoiceModule` | private | `private const string VarMuted = "discord_muted";` |
+| [23](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L23) | `DiscordVoiceModule` | private | `private const string VarDeafened = "discord_deafened";` |
+| [24](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L24) | `DiscordVoiceModule` | private | `private const string VarUsers = "discord_users";` |
+| [26](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L26) | `DiscordVoiceModule` | private | `private readonly VoiceStateTracker _voice = new();` |
+| [27](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L27) | `DiscordVoiceModule` | private | `private string _trackedChannelId = string.Empty;` |
+| [28](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L28) | `DiscordVoiceModule` | private | `private VoiceSnapshot _lastPublished;` |
+| [29](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L29) | `DiscordVoiceModule` | private | `private string _lastSpeakingText = string.Empty;` |
+| [30](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L30) | `DiscordVoiceModule` | private | `private string _lastSource = string.Empty;` |
 
 ### `DiscordVoice/DiscordVoiceModule.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [21](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L21) | `DiscordVoiceModule` | private | `private static readonly TimeSpan ConnectTimeout = TimeSpan.FromSeconds(2);` |
-| [22](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L22) | `DiscordVoiceModule` | private | `private static readonly TimeSpan CommandTimeout = TimeSpan.FromSeconds(5);` |
-| [24](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L24) | `DiscordVoiceModule` | private | `private DiscordIpcClient? _client;` |
-| [25](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L25) | `DiscordVoiceModule` | private | `private CancellationTokenSource? _lifetime;` |
-| [26](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L26) | `DiscordVoiceModule` | private | `private string _clientId = string.Empty;` |
-| [28](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L28) | `DiscordVoiceModule` | private | `private string _lastGuildId = string.Empty;` |
-| [29](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L29) | `DiscordVoiceModule` | private | `private string _lastChannelId = string.Empty;` |
-| [30](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L30) | `DiscordVoiceModule` | private | `private bool _autoUpdateDefaults;` |
-| [31](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L31) | `DiscordVoiceModule` | private | `private bool _polling;` |
+| [22](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L22) | `DiscordVoiceModule` | private | `private static readonly TimeSpan ConnectTimeout = TimeSpan.FromSeconds(2);` |
+| [23](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L23) | `DiscordVoiceModule` | private | `private static readonly TimeSpan CommandTimeout = TimeSpan.FromSeconds(5);` |
+| [25](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L25) | `DiscordVoiceModule` | private | `private DiscordIpcClient? _client;` |
+| [26](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L26) | `DiscordVoiceModule` | private | `private bool _rpcReady;` |
+| [27](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L27) | `DiscordVoiceModule` | private | `private readonly List<IVoiceProvider> _providers = [];` |
+| [28](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L28) | `DiscordVoiceModule` | private | `private CancellationTokenSource? _lifetime;` |
+| [29](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L29) | `DiscordVoiceModule` | private | `private string _clientId = string.Empty;` |
+| [31](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L31) | `DiscordVoiceModule` | private | `private string _lastGuildId = string.Empty;` |
+| [32](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L32) | `DiscordVoiceModule` | private | `private string _lastChannelId = string.Empty;` |
+| [33](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L33) | `DiscordVoiceModule` | private | `private bool _autoUpdateDefaults;` |
+| [34](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L34) | `DiscordVoiceModule` | private | `private bool _polling;` |
+
+### `DiscordVoice/Providers/DevCompanionProvider.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [27](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L27) | `DevCompanionProvider` | public | `public const int DefaultPort = 8486;` |
+| [28](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L28) | `DevCompanionProvider` | private | `private static readonly TimeSpan PollInterval = TimeSpan.FromSeconds(1);` |
+| [30](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L30) | `DevCompanionProvider` | private | `private readonly HttpClient _http = new() { Timeout = TimeSpan.FromSeconds(5) };` |
+| [31](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L31) | `DevCompanionProvider` | private | `private readonly string _url;` |
+| [32](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L32) | `DevCompanionProvider` | private | `private readonly Dictionary<string, string> _names = new(StringComparer.Ordinal);` |
+| [33](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L33) | `DevCompanionProvider` | private | `private CancellationTokenSource? _cts;` |
+| [34](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L34) | `DevCompanionProvider` | private | `private Action<string> _log = _ => { };` |
+| [35](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L35) | `DevCompanionProvider` | private | `private string _selfId = string.Empty;` |
+| [36](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L36) | `DevCompanionProvider` | private | `private bool _available;` |
+| [37](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L37) | `DevCompanionProvider` | private | `private bool _loggedFailure;` |
+| [38](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L38) | `DevCompanionProvider` | private | `private int _rpcId;` |
+
+### `DiscordVoice/Providers/OrbolayBridgeProvider.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [31](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L31) | `OrbolayBridgeProvider` | public | `public const int DefaultPort = 6888;` |
+| [33](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L33) | `OrbolayBridgeProvider` | private | `private readonly int _port;` |
+| [34](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L34) | `OrbolayBridgeProvider` | private | `private WebServer? _server;` |
+| [35](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L35) | `OrbolayBridgeProvider` | private | `private BridgeSocket? _socket;` |
+| [36](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L36) | `OrbolayBridgeProvider` | private | `private CancellationTokenSource? _cts;` |
+| [37](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L37) | `OrbolayBridgeProvider` | private | `private Action<string> _log = _ => { };` |
+| [114](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L114) | `OrbolayBridgeProvider` | private | `private string _selfId = string.Empty;` |
+| [172](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L172) | `BridgeSocket` | private | `private readonly OrbolayBridgeProvider _owner;` |
+| [173](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L173) | `BridgeSocket` | private | `private int _clients;` |
 
 ### `DiscordVoice/Rpc/DiscordAuth.cs`
 
@@ -365,7 +398,8 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [23](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L23) | `HomeAssistantModule` | private | `private HomeAssistantClient? _client;` |
 | [24](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L24) | `HomeAssistantModule` | private | `private readonly HashSet<string> _registeredDynamicVars = new();` |
 | [25](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L25) | `HomeAssistantModule` | private | `private readonly Dictionary<int, string> _wsTemplateVarMap = new();` |
-| [37](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L37) | `HomeAssistantModule` | private | `private readonly Dictionary<string, HomeAssistant.HAEntityStateSnapshot> _entityStatesSnapshot = new(StringComparer.OrdinalIgnoreCase);` |
+| [26](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L26) | `HomeAssistantModule` | private | `private readonly HomeAssistant.ParameterRedirectRouter _redirects;` |
+| [38](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L38) | `HomeAssistantModule` | private | `private readonly Dictionary<string, HomeAssistant.HAEntityStateSnapshot> _entityStatesSnapshot = new(StringComparer.OrdinalIgnoreCase);` |
 
 ### `HomeAssistant/Nodes.cs`
 
@@ -389,6 +423,29 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [129](../VRCOSC.Modules/HomeAssistant/Nodes.cs#L129) | `HARenderTemplateNode` | public | `public FlowContinuation OnError = new("On Error");` |
 | [131](../VRCOSC.Modules/HomeAssistant/Nodes.cs#L131) | `HARenderTemplateNode` | public | `public ValueInput<string> Template = new("Jinja Template");` |
 | [133](../VRCOSC.Modules/HomeAssistant/Nodes.cs#L133) | `HARenderTemplateNode` | public | `public ValueOutput<string> Result = new("Rendered Result");` |
+
+### `HomeAssistant/ParameterRedirectRouter.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [16](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L16) | `ParameterRedirectRouter` | private | `private const string AvatarParametersPrefix = "/avatar/parameters/";` |
+| [18](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L18) | `ParameterRedirectRouter` | private | `private readonly Func<List<ParameterRedirect>> _rows;` |
+| [19](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L19) | `ParameterRedirectRouter` | private | `private readonly Func<int> _rateLimitMs;` |
+| [20](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L20) | `ParameterRedirectRouter` | private | `private readonly Func<string, IReadOnlyDictionary<string, object?>?> _attributesOf;` |
+| [21](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L21) | `ParameterRedirectRouter` | private | `private readonly Func<HaServiceCall, string, Task<bool>> _callService;` |
+| [22](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L22) | `ParameterRedirectRouter` | private | `private readonly Action<string, object> _sendParameter;` |
+| [23](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L23) | `ParameterRedirectRouter` | private | `private readonly Action<string> _log;` |
+| [24](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L24) | `ParameterRedirectRouter` | private | `private readonly Action<string> _logDebug;` |
+| [26](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L26) | `ParameterRedirectRouter` | private | `private readonly ConcurrentDictionary<string, byte> _rejected = new(StringComparer.Ordinal);` |
+| [27](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L27) | `ParameterRedirectRouter` | private | `private readonly ConcurrentDictionary<ParameterRedirect, PendingSend> _pending = new();` |
+| [31](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L31) | `PendingSend` | public | `public object? Value;` |
+| [32](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L32) | `PendingSend` | public | `public int Scheduled;` |
+
+### `HomeAssistant/UI/ParameterRedirectListModuleSettingView.xaml.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [12](../VRCOSC.Modules/HomeAssistant/UI/ParameterRedirectListModuleSettingView.xaml.cs#L12) | `ParameterRedirectListModuleSettingView` | private | `private readonly ParameterRedirectListModuleSetting moduleSetting;` |
 
 
 ## IRCBridge

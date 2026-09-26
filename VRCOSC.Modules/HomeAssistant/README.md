@@ -164,6 +164,7 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | **Entity Filter** | `TextBox` | `Comma-separated list of entity IDs or domains to track (leave empty for all)` | `empty` |
 | **Register All Entity Variables** | `Toggle` | `Register every HA entity state as an individual ChatBox variable (HAState.{entity_id}). Disabled by default to prevent cluttering.` | `false` |
 | **Custom ChatBox Template Variables** | `KeyValuePairList` | `Configure custom ChatBox variables mapped to Jinja templates or entity states.\nKey: Variable Name (e.g. LivingRoomTemp)\nValue: Jinja Template (e.g. {{ states('sensor.living_room_temp') }}°C)` | `Array.Empty<MutableKeyValuePair>(` |
+| **Redirect Rate Limit (ms)** | `TextBox` | `Minimum time between service calls per redirect row for float/int values, so sliders do not flood Home Assistant. Bools are sent immediately.` | `200` |
 <!-- SETTINGS_TABLE_END -->
 
 ## ChatBox Variables

@@ -42,6 +42,9 @@ Note: Vesktop / Equibop implement RPC through arRPC, which only handles Rich Pre
 | **Auto Update Defaults** | `Toggle` | `Update the default guild and channel whenever you join a voice channel.` | `false` |
 | **Max Speaking Names** | `Slider` | `Configure Max Speaking Names` | `"How many speakers the Speaking variable lists before collapsing the rest into \"+N\". 0 = unlimited.", 3, 0, 10` |
 | **Speaking Hold (ms)** | `TextBox` | `How long a speaker stays listed after they stop talking, so short pauses do not flicker.` | `300` |
+| **Voice Source** | `Dropdown` | `Auto uses Discord RPC when it is authenticated and falls back to an Equicord plugin bridge otherwise. See README for what each fallback can and cannot provide.` | `VoiceSource.Auto` |
+| **OrbolayBridge Port** | `TextBox` | `Port the Equicord OrbolayBridge plugin connects to (its 'Port to connect to' setting).` | `OrbolayBridgeProvider.DefaultPort` |
+| **DevCompanion MCP Port** | `TextBox` | `Port of the devcompanionExtended plugin's in-app MCP HTTP server.` | `DevCompanionProvider.DefaultPort` |
 | **Client ID** | `TextBox` | `Client ID of your Discord application (Developer Portal, OAuth2 tab). Required for RPC.` | `empty` |
 <!-- SETTINGS_TABLE_END -->
 

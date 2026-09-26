@@ -4,18 +4,18 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**1042** total across **24** modules.
+**1119** total across **24** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 1 |
 | [Debug](#debug) | 41 |
 | [DesktopFPS](#desktopfps) | 18 |
-| [DiscordVoice](#discordvoice) | 90 |
+| [DiscordVoice](#discordvoice) | 127 |
 | [HTTP](#http) | 9 |
 | [HTTPServer](#httpserver) | 41 |
 | [HeartrateStats](#heartratestats) | 41 |
-| [HomeAssistant](#homeassistant) | 42 |
+| [HomeAssistant](#homeassistant) | 82 |
 | [IRCBridge](#ircbridge) | 103 |
 | [LinuxAudioFx](#linuxaudiofx) | 10 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 29 |
@@ -184,39 +184,91 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [30](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L30) | `DiscordVoiceModule` | private | `private void RegisterVoiceVariables()` |
-| [40](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L40) | `DiscordVoiceModule` | private | `private void ResetVoice()` |
-| [50](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L50) | `DiscordVoiceModule` | private | `private void VoiceTick() => PublishVoice(force: false);` |
-| [52](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L52) | `DiscordVoiceModule` | private | `private void PublishVoice(bool force)` |
-| [79](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L79) | `DiscordVoiceModule` | private | `private void OnVoiceChannelChanged(string channelId)` |
-| [86](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L86) | `DiscordVoiceModule` | private | `private async Task TrackChannelAsync(DiscordIpcClient client, string channelId, CancellationToken ct)` |
-| [125](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L125) | `DiscordVoiceModule` | private | `private void ApplyChannel(string channelId, JsonElement data)` |
-| [140](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L140) | `DiscordVoiceModule` | private | `private static string DisplayName(JsonElement voiceState)` |
-| [145](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L145) | `DiscordVoiceModule` | private | `private void OnVoiceStateEvent(string name, JsonElement data)` |
-| [153](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L153) | `DiscordVoiceModule` | private | `private void OnSpeakingEvent(string name, JsonElement data)` |
-| [160](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L160) | `DiscordVoiceModule` | private | `private void OnVoiceSettings(JsonElement data)` |
+| [32](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L32) | `DiscordVoiceModule` | private | `private void RegisterVoiceVariables()` |
+| [42](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L42) | `DiscordVoiceModule` | private | `private void ResetVoice()` |
+| [52](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L52) | `DiscordVoiceModule` | private | `private void VoiceTick() => PublishVoice(force: false);` |
+| [65](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L65) | `DiscordVoiceModule` | private | `private void PublishVoice(bool force)` |
+| [97](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L97) | `DiscordVoiceModule` | private | `private void SetSelfVoiceFlag(bool deafen, bool value)` |
+| [113](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L113) | `DiscordVoiceModule` | private | `private async Task SetSelfViaProviderAsync(IVoiceProvider provider, bool deafen, bool value, CancellationToken ct)` |
+| [130](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L130) | `DiscordVoiceModule` | private | `private void OnVoiceChannelChanged(string channelId)` |
+| [137](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L137) | `DiscordVoiceModule` | private | `private async Task TrackChannelAsync(DiscordIpcClient client, string channelId, CancellationToken ct)` |
+| [176](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L176) | `DiscordVoiceModule` | private | `private void ApplyChannel(string channelId, JsonElement data)` |
+| [191](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L191) | `DiscordVoiceModule` | private | `private static string DisplayName(JsonElement voiceState)` |
+| [196](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L196) | `DiscordVoiceModule` | private | `private void OnVoiceStateEvent(string name, JsonElement data)` |
+| [204](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L204) | `DiscordVoiceModule` | private | `private void OnSpeakingEvent(string name, JsonElement data)` |
+| [211](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L211) | `DiscordVoiceModule` | private | `private void OnVoiceSettings(JsonElement data)` |
 
 ### `DiscordVoice/DiscordVoiceModule.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [33](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L33) | `DiscordVoiceModule` | protected | `protected override void OnPreLoad()` |
-| [49](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L49) | `DiscordVoiceModule` | protected | `protected override void OnPostLoad()` |
-| [55](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L55) | `DiscordVoiceModule` | protected | `protected override async Task<bool> OnModuleStart()` |
-| [122](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L122) | `DiscordVoiceModule` | protected | `protected override Task OnModuleStop()` |
-| [141](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L141) | `DiscordVoiceModule` | private | `private async Task<DiscordIpcClient?> ConnectAsync(CancellationToken ct)` |
-| [160](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L160) | `DiscordVoiceModule` | private | `private async Task SubscribeDefaultsAsync(DiscordIpcClient client, CancellationToken ct)` |
-| [172](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L172) | `DiscordVoiceModule` | private | `private async Task SubscribeChannelEventsAsync(DiscordIpcClient client, string channelId, CancellationToken ct)` |
-| [179](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L179) | `DiscordVoiceModule` | private | `private async Task SubscribeAsync(DiscordIpcClient client, string evt, object? args, CancellationToken ct)` |
-| [192](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L192) | `DiscordVoiceModule` | private | `private void OnClientDisconnected(Exception? cause)` |
-| [200](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L200) | `DiscordVoiceModule` | private | `private void Send(RpcCommand command)` |
-| [213](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L213) | `DiscordVoiceModule` | private | `private async Task SendAndLogAsync(DiscordIpcClient client, RpcCommand command, CancellationToken ct)` |
-| [229](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L229) | `DiscordVoiceModule` | private | `private void ApplyCommandResponse(string cmd, JsonElement data)` |
-| [264](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L264) | `DiscordVoiceModule` | private | `private void SetCount(DiscordVoiceParameter parameter, DiscordVoiceVariable variable, int value)` |
-| [270](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L270) | `DiscordVoiceModule` | private | `private void ApplyVoiceSettings(JsonElement data)` |
-| [289](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L289) | `DiscordVoiceModule` | private | `private static int SnowflakeToInt(string? snowflake) => long.TryParse(snowflake, out var id) ? unchecked((int)id) : 0;` |
-| [296](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L296) | `DiscordVoiceModule` | private | `private void ChatBoxUpdate()` |
-| [304](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L304) | `DiscordVoiceModule` | private | `private async Task PollAsync(DiscordIpcClient client, CancellationToken ct)` |
+| [36](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L36) | `DiscordVoiceModule` | protected | `protected override void OnPreLoad()` |
+| [57](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L57) | `DiscordVoiceModule` | protected | `protected override void OnPostLoad()` |
+| [63](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L63) | `DiscordVoiceModule` | protected | `protected override async Task<bool> OnModuleStart()` |
+| [83](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L83) | `DiscordVoiceModule` | private | `private async Task StartProvidersAsync(CancellationToken ct)` |
+| [96](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L96) | `DiscordVoiceModule` | private | `private async Task<bool> ConnectRpcAsync(CancellationToken ct)` |
+| [156](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L156) | `DiscordVoiceModule` | protected | `protected override Task OnModuleStop()` |
+| [178](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L178) | `DiscordVoiceModule` | private | `private async Task<DiscordIpcClient?> ConnectAsync(CancellationToken ct)` |
+| [197](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L197) | `DiscordVoiceModule` | private | `private async Task SubscribeDefaultsAsync(DiscordIpcClient client, CancellationToken ct)` |
+| [209](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L209) | `DiscordVoiceModule` | private | `private async Task SubscribeChannelEventsAsync(DiscordIpcClient client, string channelId, CancellationToken ct)` |
+| [216](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L216) | `DiscordVoiceModule` | private | `private async Task SubscribeAsync(DiscordIpcClient client, string evt, object? args, CancellationToken ct)` |
+| [229](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L229) | `DiscordVoiceModule` | private | `private void OnClientDisconnected(Exception? cause)` |
+| [238](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L238) | `DiscordVoiceModule` | private | `private void Send(RpcCommand command)` |
+| [251](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L251) | `DiscordVoiceModule` | private | `private async Task SendAndLogAsync(DiscordIpcClient client, RpcCommand command, CancellationToken ct)` |
+| [267](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L267) | `DiscordVoiceModule` | private | `private void ApplyCommandResponse(string cmd, JsonElement data)` |
+| [302](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L302) | `DiscordVoiceModule` | private | `private void SetCount(DiscordVoiceParameter parameter, DiscordVoiceVariable variable, int value)` |
+| [308](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L308) | `DiscordVoiceModule` | private | `private void ApplyVoiceSettings(JsonElement data)` |
+| [327](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L327) | `DiscordVoiceModule` | private | `private static int SnowflakeToInt(string? snowflake) => long.TryParse(snowflake, out var id) ? unchecked((int)id) : 0;` |
+| [334](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L334) | `DiscordVoiceModule` | private | `private void ChatBoxUpdate()` |
+| [342](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L342) | `DiscordVoiceModule` | private | `private async Task PollAsync(DiscordIpcClient client, CancellationToken ct)` |
+
+### `DiscordVoice/Providers/DevCompanionProvider.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [40](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L40) | `DevCompanionProvider` | private | `public DevCompanionProvider(int port) => _url = $"http://127.0.0.1:{port}/";` |
+| [46](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L46) | `DevCompanionProvider` | public | `public Task StartAsync(Action<string> log, CancellationToken ct)` |
+| [54](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L54) | `DevCompanionProvider` | public | `public async Task<bool> SetMuteAsync(bool mute, CancellationToken ct)` |
+| [61](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L61) | `DevCompanionProvider` | public | `public async Task<bool> SetDeafenAsync(bool deafen, CancellationToken ct)` |
+| [68](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L68) | `DevCompanionProvider` | private | `private async Task<bool> DispatchAsync(string type, CancellationToken ct)` |
+| [82](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L82) | `DevCompanionProvider` | private | `private async Task PollLoopAsync(CancellationToken ct)` |
+| [96](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L96) | `DevCompanionProvider` | private | `private async Task PollOnceAsync(CancellationToken ct)` |
+| [126](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L126) | `DevCompanionProvider` | private | `private async Task RefreshChannelAsync(string channelId, CancellationToken ct)` |
+| [165](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L165) | `DevCompanionProvider` | private | `private async Task<string> DisplayNameAsync(string userId, CancellationToken ct)` |
+| [177](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L177) | `DevCompanionProvider` | private | `private static bool Flag(JsonElement e, string key) => e.TryGetProperty(key, out var v) && v.ValueKind == JsonValueKind.True;` |
+| [180](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L180) | `DevCompanionProvider` | private | `private async Task<JsonElement> StoreCallAsync(string store, string method, object[]? args, CancellationToken ct)` |
+| [193](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L193) | `DevCompanionProvider` | private | `private async Task<JsonDocument?> CallToolAsync(string tool, object arguments, CancellationToken ct)` |
+| [210](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L210) | `DevCompanionProvider` | private | `private void SetAvailable(bool available, string? reason = null)` |
+| [227](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L227) | `DevCompanionProvider` | public | `public void Dispose()` |
+
+### `DiscordVoice/Providers/IVoiceProvider.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [21](../VRCOSC.Modules/DiscordVoice/Providers/IVoiceProvider.cs#L21) | `IVoiceProvider` | private | `Task StartAsync(Action<string> log, CancellationToken ct);` |
+| [24](../VRCOSC.Modules/DiscordVoice/Providers/IVoiceProvider.cs#L24) | `IVoiceProvider` | private | `Task<bool> SetMuteAsync(bool mute, CancellationToken ct);` |
+| [25](../VRCOSC.Modules/DiscordVoice/Providers/IVoiceProvider.cs#L25) | `IVoiceProvider` | private | `Task<bool> SetDeafenAsync(bool deafen, CancellationToken ct);` |
+
+### `DiscordVoice/Providers/OrbolayBridgeProvider.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [39](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L39) | `OrbolayBridgeProvider` | private | `public OrbolayBridgeProvider(int port) => _port = port;` |
+| [45](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L45) | `OrbolayBridgeProvider` | public | `public Task StartAsync(Action<string> log, CancellationToken ct)` |
+| [66](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L66) | `OrbolayBridgeProvider` | public | `public async Task<bool> SetMuteAsync(bool mute, CancellationToken ct)` |
+| [75](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L75) | `OrbolayBridgeProvider` | public | `public async Task<bool> SetDeafenAsync(bool deafen, CancellationToken ct)` |
+| [83](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L83) | `OrbolayBridgeProvider` | private | `private Task Send(object payload) => _socket?.SendToAllAsync(JsonSerializer.Serialize(payload)) ?? Task.CompletedTask;` |
+| [85](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L85) | `OrbolayBridgeProvider` | private | `private void HandleMessage(string json)` |
+| [116](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L116) | `OrbolayBridgeProvider` | private | `private void OnChannelJoined(JsonElement root)` |
+| [134](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L134) | `OrbolayBridgeProvider` | private | `private void OnVoiceStateUpdate(JsonElement state)` |
+| [156](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L156) | `OrbolayBridgeProvider` | private | `private static string Str(JsonElement e, string key) => e.TryGetProperty(key, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() ?? string.Empty : string.Empty;` |
+| [157](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L157) | `OrbolayBridgeProvider` | private | `private static bool? Bool(JsonElement e, string key) => e.TryGetProperty(key, out var v) && v.ValueKind is JsonValueKind.True or JsonValueKind.False ? v.GetBoolean() : null;` |
+| [159](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L159) | `OrbolayBridgeProvider` | public | `public void Dispose()` |
+| [175](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L175) | `BridgeSocket` | private | `public BridgeSocket(OrbolayBridgeProvider owner) : base("/", true) => _owner = owner;` |
+| [179](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L179) | `BridgeSocket` | public | `public Task SendToAllAsync(string payload) => BroadcastAsync(payload);` |
+| [181](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L181) | `BridgeSocket` | protected | `protected override Task OnClientConnectedAsync(IWebSocketContext context)` |
+| [188](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L188) | `BridgeSocket` | protected | `protected override Task OnClientDisconnectedAsync(IWebSocketContext context)` |
+| [199](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L199) | `BridgeSocket` | protected | `protected override Task OnMessageReceivedAsync(IWebSocketContext context, byte[] buffer, IWebSocketReceiveResult result)` |
 
 ### `DiscordVoice/Rpc/DiscordAuth.cs`
 
@@ -509,23 +561,25 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [39](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L39) | `HomeAssistantModule` | private | `private void UpdateEntityStateSnapshot(string entityId, string state, Dictionary<string, object?>? attributes = null)` |
-| [59](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L59) | `HomeAssistantModule` | protected | `protected override void OnPreLoad()` |
-| [96](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L96) | `HomeAssistantModule` | protected | `protected override void OnPostLoad()` |
-| [146](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L146) | `HomeAssistantModule` | protected | `protected override async Task<bool> OnModuleStart()` |
-| [212](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L212) | `HomeAssistantModule` | protected | `protected override async Task OnModuleStop()` |
-| [229](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L229) | `HomeAssistantModule` | private | `private async Task InitializeTemplateVariables()` |
-| [264](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L264) | `HomeAssistantModule` | private | `private void HandleConnectionStatusChanged(bool connected)` |
-| [281](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L281) | `HomeAssistantModule` | private | `private void HandleStateChanged(string entityId, string newState, JsonElement attributes)` |
-| [312](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L312) | `HomeAssistantModule` | private | `private void HandleTemplateRendered(int subId, string renderedText)` |
-| [321](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L321) | `HomeAssistantModule` | private | `private void PushEntityToOscParameter(string entityId, string state, JsonElement attributes)` |
-| [363](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L363) | `HomeAssistantModule` | protected | `protected override void OnAnyParameterReceived(VRChatParameter parameter)` |
-| [412](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L412) | `HomeAssistantModule` | private | `private async Task ProcessOscParameterInput(string path, VRChatParameter parameter)` |
-| [595](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L595) | `HomeAssistantModule` | private | `private void EnsureDynamicVariable(string entityId, string stateValue)` |
-| [601](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L601) | `HomeAssistantModule` | private | `private void EnsureCustomVariable(string varKey, string displayName, string initialValue)` |
-| [611](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L611) | `HomeAssistantModule` | private | `private bool IsEntityAllowed(string entityId)` |
-| [622](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L622) | `HomeAssistantModule` | public | `public async Task<bool> CallService(string domain, string service, string? entityId = null, object? serviceData = null)` |
-| [649](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L649) | `HomeAssistantModule` | public | `public async Task<string> RenderTemplate(string template)` |
+| [40](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L40) | `HomeAssistantModule` | private | `public HomeAssistantModule()` |
+| [52](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L52) | `HomeAssistantModule` | private | `private void SendRedirectParameter(string name, object value)` |
+| [70](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L70) | `HomeAssistantModule` | private | `private void UpdateEntityStateSnapshot(string entityId, string state, Dictionary<string, object?>? attributes = null)` |
+| [90](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L90) | `HomeAssistantModule` | protected | `protected override void OnPreLoad()` |
+| [132](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L132) | `HomeAssistantModule` | protected | `protected override void OnPostLoad()` |
+| [182](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L182) | `HomeAssistantModule` | protected | `protected override async Task<bool> OnModuleStart()` |
+| [249](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L249) | `HomeAssistantModule` | protected | `protected override async Task OnModuleStop()` |
+| [266](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L266) | `HomeAssistantModule` | private | `private async Task InitializeTemplateVariables()` |
+| [301](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L301) | `HomeAssistantModule` | private | `private void HandleConnectionStatusChanged(bool connected)` |
+| [318](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L318) | `HomeAssistantModule` | private | `private void HandleStateChanged(string entityId, string newState, JsonElement attributes)` |
+| [353](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L353) | `HomeAssistantModule` | private | `private void HandleTemplateRendered(int subId, string renderedText)` |
+| [362](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L362) | `HomeAssistantModule` | private | `private void PushEntityToOscParameter(string entityId, string state, JsonElement attributes)` |
+| [404](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L404) | `HomeAssistantModule` | protected | `protected override void OnAnyParameterReceived(VRChatParameter parameter)` |
+| [461](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L461) | `HomeAssistantModule` | private | `private async Task ProcessOscParameterInput(string path, VRChatParameter parameter)` |
+| [644](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L644) | `HomeAssistantModule` | private | `private void EnsureDynamicVariable(string entityId, string stateValue)` |
+| [650](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L650) | `HomeAssistantModule` | private | `private void EnsureCustomVariable(string varKey, string displayName, string initialValue)` |
+| [660](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L660) | `HomeAssistantModule` | private | `private bool IsEntityAllowed(string entityId)` |
+| [671](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L671) | `HomeAssistantModule` | public | `public async Task<bool> CallService(string domain, string service, string? entityId = null, object? serviceData = null)` |
+| [698](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L698) | `HomeAssistantModule` | public | `public async Task<string> RenderTemplate(string template)` |
 
 ### `HomeAssistant/Nodes.cs`
 
@@ -534,6 +588,64 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [29](../VRCOSC.Modules/HomeAssistant/Nodes.cs#L29) | `HACallServiceNode` | protected | `protected override async Task Process(PulseCtx c)` |
 | [89](../VRCOSC.Modules/HomeAssistant/Nodes.cs#L89) | `HAGetStateNode` | protected | `protected override async Task Process(PulseCtx c)` |
 | [135](../VRCOSC.Modules/HomeAssistant/Nodes.cs#L135) | `HARenderTemplateNode` | protected | `protected override async Task Process(PulseCtx c)` |
+
+### `HomeAssistant/ParameterRedirect.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [41](../VRCOSC.Modules/HomeAssistant/ParameterRedirect.cs#L41) | `ParameterRedirectListModuleSetting` | private | `public ParameterRedirectListModuleSetting()` |
+| [46](../VRCOSC.Modules/HomeAssistant/ParameterRedirect.cs#L46) | `ParameterRedirectListModuleSetting` | protected | `protected override ParameterRedirect CreateItem() => new();` |
+| [77](../VRCOSC.Modules/HomeAssistant/ParameterRedirect.cs#L77) | `ParameterRedirect` | private | `public ParameterRedirect()` |
+| [81](../VRCOSC.Modules/HomeAssistant/ParameterRedirect.cs#L81) | `ParameterRedirect` | public | `public bool Equals(ParameterRedirect? other)` |
+| [95](../VRCOSC.Modules/HomeAssistant/ParameterRedirect.cs#L95) | `ParameterRedirect` | public | `public override bool Equals(object? obj) => obj is ParameterRedirect other && Equals(other);` |
+| [97](../VRCOSC.Modules/HomeAssistant/ParameterRedirect.cs#L97) | `ParameterRedirect` | public | `public override int GetHashCode() => HashCode.Combine(Enabled.Value, Source.Value, Target.Value, Conversion.Value, Invert.Value, Min.Value, Max.Value);` |
+
+### `HomeAssistant/ParameterRedirectMapping.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [33](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L33) | `ParameterRedirectMapping` | public | `public static string? DomainOf(string entityId)` |
+| [43](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L43) | `ParameterRedirectMapping` | private | `private static bool IsIdChar(char c) => c == '_' || char.IsAsciiDigit(c) || char.IsAsciiLetterLower(c);` |
+| [45](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L45) | `ParameterRedirectMapping` | public | `public static bool IsOscToHa(RedirectConversion conversion) => conversion is RedirectConversion.Passthrough or RedirectConversion.BoolToOnOff or RedirectConversion.FloatToLevel or RedirectConversion.IntToValue;` |
+| [51](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L51) | `ParameterRedirectMapping` | public | `public static HaServiceCall? ToServiceCall(ParameterRedirect row, string domain, object value, IReadOnlyDictionary<string, object?>? attributes)` |
+| [74](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L74) | `ParameterRedirectMapping` | public | `public static object? ToParameterValue(ParameterRedirect row, string domain, string state, IReadOnlyDictionary<string, object?>? attributes)` |
+| [100](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L100) | `ParameterRedirectMapping` | private | `private static HaServiceCall? OnOffCall(string domain, bool on)` |
+| [115](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L115) | `ParameterRedirectMapping` | private | `private static HaServiceCall? LevelCall(string domain, float n, IReadOnlyDictionary<string, object?>? attributes)` |
+| [131](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L131) | `ParameterRedirectMapping` | private | `private static HaServiceCall? IntCall(string domain, int i, IReadOnlyDictionary<string, object?>? attributes)` |
+| [179](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L179) | `ParameterRedirectMapping` | private | `private static float? LevelOf(string domain, string state, IReadOnlyDictionary<string, object?>? attributes)` |
+| [196](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L196) | `ParameterRedirectMapping` | private | `private static int? IntOf(string domain, string state, IReadOnlyDictionary<string, object?>? attributes)` |
+| [217](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L217) | `ParameterRedirectMapping` | private | `private static Dictionary<string, object> Data(string key, object value) => new() { [key] = value };` |
+| [219](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L219) | `ParameterRedirectMapping` | private | `private static bool AsBool(object value) => value switch` |
+| [227](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L227) | `ParameterRedirectMapping` | private | `private static float AsFloat(object value) => value switch` |
+| [235](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L235) | `ParameterRedirectMapping` | private | `private static int AsInt(object value) => value switch` |
+| [244](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L244) | `ParameterRedirectMapping` | private | `private static float Normalize(float value, ParameterRedirect row)` |
+| [252](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L252) | `ParameterRedirectMapping` | private | `private static double Lerp(float n, double min, double max) => Math.Round(min + n * (max - min), 2);` |
+| [254](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L254) | `ParameterRedirectMapping` | private | `private static double? Unlerp(double? value, double min, double max)` |
+| [262](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L262) | `ParameterRedirectMapping` | private | `private static double? ParseDouble(string? text)` |
+| [266](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L266) | `ParameterRedirectMapping` | private | `private static double? Attr(IReadOnlyDictionary<string, object?>? attributes, string key)` |
+| [280](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L280) | `ParameterRedirectMapping` | private | `private static List<string> Options(IReadOnlyDictionary<string, object?>? attributes)` |
+
+### `HomeAssistant/ParameterRedirectRouter.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [54](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L54) | `ParameterRedirectRouter` | public | `public void Reset()` |
+| [64](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L64) | `ParameterRedirectRouter` | public | `public bool HandleParameter(string parameterName, object value)` |
+| [89](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L89) | `ParameterRedirectRouter` | public | `public void HandleStateChanged(string entityId, string state, IReadOnlyDictionary<string, object?>? attributes)` |
+| [115](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L115) | `ParameterRedirectRouter` | private | `private void Schedule(ParameterRedirect row, string domain, object value)` |
+| [131](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L131) | `ParameterRedirectRouter` | private | `private async Task Dispatch(ParameterRedirect row, string domain, object value)` |
+| [156](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L156) | `ParameterRedirectRouter` | private | `private string? ValidTarget(ParameterRedirect row)` |
+| [176](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L176) | `ParameterRedirectRouter` | private | `private void RejectOnce(ParameterRedirect row, string reason)` |
+| [183](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L183) | `ParameterRedirectRouter` | private | `private static bool SourceMatches(ParameterRedirect row, string parameterName)` |
+| [192](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L192) | `ParameterRedirectRouter` | private | `private static string StripAvatarPrefix(string name)` |
+
+### `HomeAssistant/UI/ParameterRedirectListModuleSettingView.xaml.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [16](../VRCOSC.Modules/HomeAssistant/UI/ParameterRedirectListModuleSettingView.xaml.cs#L16) | `ParameterRedirectListModuleSettingView` | private | `public ParameterRedirectListModuleSettingView(HomeAssistantModule _, ParameterRedirectListModuleSetting moduleSetting)` |
+| [23](../VRCOSC.Modules/HomeAssistant/UI/ParameterRedirectListModuleSettingView.xaml.cs#L23) | `ParameterRedirectListModuleSettingView` | private | `private void AddButton_OnClick(object sender, RoutedEventArgs e) => moduleSetting.Add();` |
+| [25](../VRCOSC.Modules/HomeAssistant/UI/ParameterRedirectListModuleSettingView.xaml.cs#L25) | `ParameterRedirectListModuleSettingView` | private | `private void RemoveButton_OnClick(object sender, RoutedEventArgs e)` |
 
 
 ## IRCBridge

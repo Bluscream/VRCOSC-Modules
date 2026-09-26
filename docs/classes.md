@@ -4,18 +4,18 @@
 
 Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
-**340** total across **24** modules.
+**353** total across **24** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 5 |
 | [Debug](#debug) | 15 |
 | [DesktopFPS](#desktopfps) | 8 |
-| [DiscordVoice](#discordvoice) | 18 |
+| [DiscordVoice](#discordvoice) | 23 |
 | [HTTP](#http) | 11 |
 | [HTTPServer](#httpserver) | 17 |
 | [HeartrateStats](#heartratestats) | 13 |
-| [HomeAssistant](#homeassistant) | 12 |
+| [HomeAssistant](#homeassistant) | 20 |
 | [IRCBridge](#ircbridge) | 39 |
 | [LinuxAudioFx](#linuxaudiofx) | 8 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 18 |
@@ -134,9 +134,10 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 |---|---|---|
 | [6](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L6) | public | `public enum DiscordVoiceParameter` |
 | [44](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L44) | public | `public enum DiscordVoiceSetting` |
-| [55](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L55) | public | `public enum DiscordVoiceVariable` |
-| [74](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L74) | public | `public enum DiscordVoiceState` |
-| [79](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L79) | public | `public enum DiscordVoiceEvent` |
+| [59](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L59) | public | `public enum VoiceSource` |
+| [67](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L67) | public | `public enum DiscordVoiceVariable` |
+| [86](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L86) | public | `public enum DiscordVoiceState` |
+| [91](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L91) | public | `public enum DiscordVoiceEvent` |
 
 ### `DiscordVoice/DiscordVoiceModule.Events.cs`
 
@@ -160,13 +161,32 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
 | Line | Visibility | Declaration |
 |---|---|---|
-| [13](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L13) | public | `public sealed partial class DiscordVoiceModule` |
+| [14](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L14) | public | `public sealed partial class DiscordVoiceModule` |
 
 ### `DiscordVoice/DiscordVoiceModule.cs`
 
 | Line | Visibility | Declaration |
 |---|---|---|
-| [19](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L19) | public | `public sealed partial class DiscordVoiceModule : Module` |
+| [20](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L20) | public | `public sealed partial class DiscordVoiceModule : Module` |
+
+### `DiscordVoice/Providers/DevCompanionProvider.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [25](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L25) | public | `public sealed class DevCompanionProvider : IVoiceProvider` |
+
+### `DiscordVoice/Providers/IVoiceProvider.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [11](../VRCOSC.Modules/DiscordVoice/Providers/IVoiceProvider.cs#L11) | public | `public interface IVoiceProvider : IDisposable` |
+
+### `DiscordVoice/Providers/OrbolayBridgeProvider.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [29](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L29) | public | `public sealed class OrbolayBridgeProvider : IVoiceProvider` |
+| [170](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L170) | private | `private sealed class BridgeSocket : WebSocketModule` |
 
 ### `DiscordVoice/Rpc/DiscordAuth.cs`
 
@@ -339,10 +359,10 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [6](../VRCOSC.Modules/HomeAssistant/Enums.cs#L6) | public | `public enum HomeAssistantSetting` |
-| [20](../VRCOSC.Modules/HomeAssistant/Enums.cs#L20) | public | `public enum HomeAssistantParameter` |
-| [27](../VRCOSC.Modules/HomeAssistant/Enums.cs#L27) | public | `public enum HomeAssistantVariable` |
-| [36](../VRCOSC.Modules/HomeAssistant/Enums.cs#L36) | public | `public enum HomeAssistantState` |
-| [44](../VRCOSC.Modules/HomeAssistant/Enums.cs#L44) | public | `public enum HomeAssistantEvent` |
+| [22](../VRCOSC.Modules/HomeAssistant/Enums.cs#L22) | public | `public enum HomeAssistantParameter` |
+| [29](../VRCOSC.Modules/HomeAssistant/Enums.cs#L29) | public | `public enum HomeAssistantVariable` |
+| [38](../VRCOSC.Modules/HomeAssistant/Enums.cs#L38) | public | `public enum HomeAssistantState` |
+| [46](../VRCOSC.Modules/HomeAssistant/Enums.cs#L46) | public | `public enum HomeAssistantEvent` |
 
 ### `HomeAssistant/HomeAssistantClient.cs`
 
@@ -370,6 +390,34 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [16](../VRCOSC.Modules/HomeAssistant/Nodes.cs#L16) | public | `public sealed class HACallServiceNode : FlowModuleNode<HomeAssistantModule>` |
 | [78](../VRCOSC.Modules/HomeAssistant/Nodes.cs#L78) | public | `public sealed class HAGetStateNode : FlowModuleNode<HomeAssistantModule>` |
 | [126](../VRCOSC.Modules/HomeAssistant/Nodes.cs#L126) | public | `public sealed class HARenderTemplateNode : FlowModuleNode<HomeAssistantModule>` |
+
+### `HomeAssistant/ParameterRedirect.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [15](../VRCOSC.Modules/HomeAssistant/ParameterRedirect.cs#L15) | public | `public enum RedirectConversion` |
+| [39](../VRCOSC.Modules/HomeAssistant/ParameterRedirect.cs#L39) | public | `public class ParameterRedirectListModuleSetting : ListModuleSetting<ParameterRedirect>` |
+| [53](../VRCOSC.Modules/HomeAssistant/ParameterRedirect.cs#L53) | public | `public class ParameterRedirect : IEquatable<ParameterRedirect>` |
+
+### `HomeAssistant/ParameterRedirectMapping.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [14](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L14) | public | `public sealed record HaServiceCall(string Domain, string Service, Dictionary<string, object>? Data = null);` |
+| [16](../VRCOSC.Modules/HomeAssistant/ParameterRedirectMapping.cs#L16) | public | `public static class ParameterRedirectMapping` |
+
+### `HomeAssistant/ParameterRedirectRouter.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [14](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L14) | public | `public sealed class ParameterRedirectRouter` |
+| [29](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L29) | private | `private sealed class PendingSend` |
+
+### `HomeAssistant/UI/ParameterRedirectListModuleSettingView.xaml.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [10](../VRCOSC.Modules/HomeAssistant/UI/ParameterRedirectListModuleSettingView.xaml.cs#L10) | public | `public partial class ParameterRedirectListModuleSettingView` |
 
 
 ## IRCBridge

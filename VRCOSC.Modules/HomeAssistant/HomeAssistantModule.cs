@@ -23,6 +23,7 @@ public class HomeAssistantModule : Module
     private HomeAssistantClient? _client;
     private readonly HashSet<string> _registeredDynamicVars = new();
     private readonly Dictionary<int, string> _wsTemplateVarMap = new();
+    private readonly HomeAssistant.ParameterRedirectRouter _redirects;
 
     private static readonly string[] RecognizedDomains = new[]
     {
@@ -35,6 +36,36 @@ public class HomeAssistantModule : Module
     public Dictionary<string, string> CachedStates { get; set; } = new();
 
     private readonly Dictionary<string, HomeAssistant.HAEntityStateSnapshot> _entityStatesSnapshot = new(StringComparer.OrdinalIgnoreCase);
+
+    public HomeAssistantModule()
+    {
+        _redirects = new HomeAssistant.ParameterRedirectRouter(
+            () => GetSettingValue<List<HomeAssistant.ParameterRedirect>>(HomeAssistantSetting.ParameterRedirects) ?? new List<HomeAssistant.ParameterRedirect>(),
+            () => GetSettingValue<int>(HomeAssistantSetting.RedirectRateLimitMs),
+            entityId => _entityStatesSnapshot.TryGetValue(entityId.ToLowerInvariant(), out var snapshot) ? snapshot.Attributes : null,
+            (call, entityId) => CallService(call.Domain, call.Service, entityId, call.Data),
+            SendRedirectParameter,
+            Log,
+            LogDebug);
+    }
+
+    private void SendRedirectParameter(string name, object value)
+    {
+        switch (value)
+        {
+            case bool b:
+                SendParameter(name, b);
+                break;
+
+            case int i:
+                SendParameter(name, i);
+                break;
+
+            case float f:
+                SendParameter(name, f);
+                break;
+        }
+    }
 
     private void UpdateEntityStateSnapshot(string entityId, string state, Dictionary<string, object?>? attributes = null)
     {
@@ -81,6 +112,10 @@ public class HomeAssistantModule : Module
             "Jinja Template / Entity ID"
         );
 
+        // Parameter redirects: alias arbitrary avatar parameters to entities
+        CreateCustomSetting(HomeAssistantSetting.ParameterRedirects, new HomeAssistant.ParameterRedirectListModuleSetting());
+        CreateTextBox(HomeAssistantSetting.RedirectRateLimitMs, "Redirect Rate Limit (ms)", "Minimum time between service calls per redirect row for float/int values, so sliders do not flood Home Assistant. Bools are sent immediately.", 200);
+
         // Parameters
         RegisterParameter<bool>(HomeAssistantParameter.Connected, "VRCOSC/HomeAssistant/Connected", ParameterMode.Write, "Connected", "True when connected to Home Assistant");
         RegisterParameter<bool>(HomeAssistantParameter.EventReceived, "VRCOSC/HomeAssistant/EventReceived", ParameterMode.Write, "Event Received", "True for 1 second when a state change event is received");
@@ -90,6 +125,7 @@ public class HomeAssistantModule : Module
         CreateGroup("Connection", "Home Assistant Connection Settings", HomeAssistantSetting.ServerUrl, HomeAssistantSetting.AccessToken, HomeAssistantSetting.EnableWebSocket);
         CreateGroup("Custom Variables", "Custom Jinja Template ChatBox Variables", HomeAssistantSetting.RegisterAllEntityVariables, HomeAssistantSetting.TemplateVariables);
         CreateGroup("OSC Configuration", "OSC Parameter Integration", HomeAssistantSetting.OscPrefix, HomeAssistantSetting.AllowAnywhereOscPrefix, HomeAssistantSetting.EntityFilter);
+        CreateGroup("Parameter Redirects", "Alias avatar parameters to entities", HomeAssistantSetting.ParameterRedirects, HomeAssistantSetting.RedirectRateLimitMs);
         CreateGroup("Debug", "Debug & Logging Options", HomeAssistantSetting.LogDebug, HomeAssistantSetting.LogOscParams);
     }
 
@@ -146,6 +182,7 @@ public class HomeAssistantModule : Module
     protected override async Task<bool> OnModuleStart()
     {
         ChangeState(HomeAssistantState.Connecting);
+        _redirects.Reset();
 
         var serverUrl = GetSettingValue<string>(HomeAssistantSetting.ServerUrl);
         var token = GetSettingValue<string>(HomeAssistantSetting.AccessToken);
@@ -280,13 +317,6 @@ public class HomeAssistantModule : Module
 
     private void HandleStateChanged(string entityId, string newState, JsonElement attributes)
     {
-        if (!IsEntityAllowed(entityId)) return;
-
-        CachedStates[entityId] = newState;
-
-        SetVariableValue(HomeAssistantVariable.LastEntity, entityId);
-        SetVariableValue(HomeAssistantVariable.LastState, newState);
-
         Dictionary<string, object?>? attrDict = null;
         if (attributes.ValueKind == System.Text.Json.JsonValueKind.Object)
         {
@@ -296,6 +326,17 @@ public class HomeAssistantModule : Module
                 attrDict[prop.Name] = prop.Value.ToString();
             }
         }
+
+        // Explicit redirects run regardless of the entity filter: the row itself is the opt-in
+        _redirects.HandleStateChanged(entityId, newState, attrDict);
+
+        if (!IsEntityAllowed(entityId)) return;
+
+        CachedStates[entityId] = newState;
+
+        SetVariableValue(HomeAssistantVariable.LastEntity, entityId);
+        SetVariableValue(HomeAssistantVariable.LastState, newState);
+
         UpdateEntityStateSnapshot(entityId, newState, attrDict);
 
         if (GetSettingValue<bool>(HomeAssistantSetting.RegisterAllEntityVariables))
@@ -364,8 +405,16 @@ public class HomeAssistantModule : Module
     {
         if (!Bluscream.ModuleUtils.IsStarted() || _client == null) return;
 
-        var prefix = (GetSettingValue<string>(HomeAssistantSetting.OscPrefix) ?? string.Empty).TrimEnd('/');
         var rawName = parameter.Name;
+
+        // A redirect row owns its source address; the prefix convention below does not also apply to it
+        if (_redirects.HandleParameter(rawName, parameter.Value))
+        {
+            if (GetSettingValue<bool>(HomeAssistantSetting.LogOscParams)) LogDebug($"Received redirected OSC parameter: {rawName} = {parameter.Value}");
+            return;
+        }
+
+        var prefix = (GetSettingValue<string>(HomeAssistantSetting.OscPrefix) ?? string.Empty).TrimEnd('/');
 
         // Check if parameter matches HA prefix
         string path = string.Empty;

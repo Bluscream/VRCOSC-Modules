@@ -14,7 +14,9 @@ public enum HomeAssistantSetting
     EntityFilter,
     TemplateVariables,
     RegisterAllEntityVariables,
-    AllowAnywhereOscPrefix
+    AllowAnywhereOscPrefix,
+    ParameterRedirects,
+    RedirectRateLimitMs
 }
 
 public enum HomeAssistantParameter

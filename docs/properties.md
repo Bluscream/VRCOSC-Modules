@@ -4,18 +4,18 @@
 
 Every property (including expression-bodied and auto-properties), grouped by module and file.
 
-**200** total across **20** modules.
+**218** total across **20** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 1 |
 | [Debug](#debug) | 5 |
 | [DesktopFPS](#desktopfps) | 2 |
-| [DiscordVoice](#discordvoice) | 11 |
+| [DiscordVoice](#discordvoice) | 21 |
 | [HTTP](#http) | 4 |
 | [HTTPServer](#httpserver) | 3 |
 | [HeartrateStats](#heartratestats) | 15 |
-| [HomeAssistant](#homeassistant) | 10 |
+| [HomeAssistant](#homeassistant) | 18 |
 | [IRCBridge](#ircbridge) | 14 |
 | [LinuxAudioFx](#linuxaudiofx) | 9 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 40 |
@@ -73,6 +73,31 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 
 
 ## DiscordVoice
+
+### `DiscordVoice/Providers/DevCompanionProvider.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [42](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L42) | `DevCompanionProvider` | public | `public string Name => "DevCompanion";` |
+| [43](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L43) | `DevCompanionProvider` | public | `public bool IsAvailable => _available;` |
+| [44](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L44) | `DevCompanionProvider` | public | `public VoiceStateTracker Tracker { get; } = new();` |
+
+### `DiscordVoice/Providers/IVoiceProvider.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [13](../VRCOSC.Modules/DiscordVoice/Providers/IVoiceProvider.cs#L13) | `IVoiceProvider` | private | `string Name { get; }` |
+| [16](../VRCOSC.Modules/DiscordVoice/Providers/IVoiceProvider.cs#L16) | `IVoiceProvider` | private | `bool IsAvailable { get; }` |
+| [18](../VRCOSC.Modules/DiscordVoice/Providers/IVoiceProvider.cs#L18) | `IVoiceProvider` | private | `VoiceStateTracker Tracker { get; }` |
+
+### `DiscordVoice/Providers/OrbolayBridgeProvider.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [41](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L41) | `OrbolayBridgeProvider` | public | `public string Name => "OrbolayBridge";` |
+| [42](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L42) | `OrbolayBridgeProvider` | public | `public bool IsAvailable => _socket?.HasClient == true;` |
+| [43](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L43) | `OrbolayBridgeProvider` | public | `public VoiceStateTracker Tracker { get; } = new();` |
+| [177](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L177) | `BridgeSocket` | public | `public bool HasClient => Volatile.Read(ref _clients) > 0;` |
 
 ### `DiscordVoice/Rpc/DiscordIpcClient.cs`
 
@@ -192,7 +217,25 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [35](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L35) | `HomeAssistantModule` | public | `public Dictionary<string, string> CachedStates { get; set; } = new();` |
+| [36](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L36) | `HomeAssistantModule` | public | `public Dictionary<string, string> CachedStates { get; set; } = new();` |
+
+### `HomeAssistant/ParameterRedirect.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [56](../VRCOSC.Modules/HomeAssistant/ParameterRedirect.cs#L56) | `ParameterRedirect` | public | `public Observable<bool> Enabled { get; set; } = new(true);` |
+| [59](../VRCOSC.Modules/HomeAssistant/ParameterRedirect.cs#L59) | `ParameterRedirect` | public | `public Observable<string> Source { get; set; } = new(string.Empty);` |
+| [62](../VRCOSC.Modules/HomeAssistant/ParameterRedirect.cs#L62) | `ParameterRedirect` | public | `public Observable<string> Target { get; set; } = new(string.Empty);` |
+| [65](../VRCOSC.Modules/HomeAssistant/ParameterRedirect.cs#L65) | `ParameterRedirect` | public | `public Observable<RedirectConversion> Conversion { get; set; } = new(RedirectConversion.Passthrough);` |
+| [68](../VRCOSC.Modules/HomeAssistant/ParameterRedirect.cs#L68) | `ParameterRedirect` | public | `public Observable<bool> Invert { get; set; } = new(false);` |
+| [71](../VRCOSC.Modules/HomeAssistant/ParameterRedirect.cs#L71) | `ParameterRedirect` | public | `public Observable<float> Min { get; set; } = new(0f);` |
+| [74](../VRCOSC.Modules/HomeAssistant/ParameterRedirect.cs#L74) | `ParameterRedirect` | public | `public Observable<float> Max { get; set; } = new(1f);` |
+
+### `HomeAssistant/UI/ParameterRedirectListModuleSettingView.xaml.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [14](../VRCOSC.Modules/HomeAssistant/UI/ParameterRedirectListModuleSettingView.xaml.cs#L14) | `ParameterRedirectListModuleSettingView` | public | `public IEnumerable<RedirectConversion> ConversionItemsSource => Enum.GetValues<RedirectConversion>();` |
 
 
 ## IRCBridge

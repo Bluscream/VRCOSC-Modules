@@ -72,7 +72,14 @@ _None._
 
 Not `event`-qualified, but the same idea in practice: a slot a caller plugs a handler into. The pervasive `Action<Exception>? onError` parameter pattern shows up here when stored as a member.
 
-**11** total.
+**20** total.
+
+### DiscordVoice
+
+| Line | Owner | Name | Type |
+|---|---|---|---|
+| [34](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L34) | `DevCompanionProvider` | `_log` | `Action<string>` |
+| [37](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L37) | `OrbolayBridgeProvider` | `_log` | `Action<string>` |
 
 ### HeartrateStats
 
@@ -86,6 +93,13 @@ Not `event`-qualified, but the same idea in practice: a slot a caller plugs a ha
 |---|---|---|---|
 | [23](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L23) | `HomeAssistantClient` | `_logger` | `Action<string>` |
 | [24](../VRCOSC.Modules/HomeAssistant/HomeAssistantClient.cs#L24) | `HomeAssistantClient` | `_debugLogger` | `Action<string>` |
+| [18](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L18) | `ParameterRedirectRouter` | `_rows` | `Func<List<ParameterRedirect>>` |
+| [19](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L19) | `ParameterRedirectRouter` | `_rateLimitMs` | `Func<int>` |
+| [20](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L20) | `ParameterRedirectRouter` | `_attributesOf` | `Func<string, IReadOnlyDictionary<string, object?>?>` |
+| [21](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L21) | `ParameterRedirectRouter` | `_callService` | `Func<HaServiceCall, string, Task<bool>>` |
+| [22](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L22) | `ParameterRedirectRouter` | `_sendParameter` | `Action<string, object>` |
+| [23](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L23) | `ParameterRedirectRouter` | `_log` | `Action<string>` |
+| [24](../VRCOSC.Modules/HomeAssistant/ParameterRedirectRouter.cs#L24) | `ParameterRedirectRouter` | `_logDebug` | `Action<string>` |
 
 ### IRCBridge
 
