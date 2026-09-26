@@ -125,6 +125,23 @@ internal sealed unsafe partial class OpenXRRuntime
         if (first) Log(message);
     }
 
+    private readonly Dictionary<string, DateTime> _lastLogged = new();
+
+    /// <summary>
+    /// Logs at most once per <paramref name="every"/> for a given key. Used on the
+    /// initialisation retry path, where the failure reason can change over time (headset
+    /// connects, runtime registers) and a one-shot log would hide the current state.
+    /// </summary>
+    private void LogThrottled(string key, string message, TimeSpan every)
+    {
+        lock (_sync)
+        {
+            if (_lastLogged.TryGetValue(key, out var last) && DateTime.UtcNow - last < every) return;
+            _lastLogged[key] = DateTime.UtcNow;
+        }
+        Log(message);
+    }
+
     // ─────────────────────────── Thread ───────────────────────────
 
     private void ThreadMain(CancellationToken ct)

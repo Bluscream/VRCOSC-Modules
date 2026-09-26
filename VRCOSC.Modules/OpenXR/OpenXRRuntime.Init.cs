@@ -55,7 +55,7 @@ internal sealed unsafe partial class OpenXRRuntime
         var r = _xr!.EnumerateInstanceExtensionProperties((byte*)null, 0, &count, null);
         if (r != Result.Success)
         {
-            LogOnce($"xrEnumerateInstanceExtensionProperties failed: {r} (no OpenXR runtime registered, or the headset is not connected yet).");
+            LogThrottled("enum", $"xrEnumerateInstanceExtensionProperties failed: {r} (no OpenXR runtime registered, or the headset is not connected yet). Retrying every 5 s.", TimeSpan.FromSeconds(60));
             return null;
         }
 
@@ -67,7 +67,7 @@ internal sealed unsafe partial class OpenXRRuntime
 
         if (r != Result.Success)
         {
-            LogOnce($"xrEnumerateInstanceExtensionProperties (fill) failed: {r}");
+            LogThrottled("enum-fill", $"xrEnumerateInstanceExtensionProperties (fill) failed: {r}", TimeSpan.FromSeconds(60));
             return null;
         }
 
@@ -104,7 +104,7 @@ internal sealed unsafe partial class OpenXRRuntime
                 var r = _xr!.CreateInstance(&createInfo, &instance);
                 if (r != Result.Success)
                 {
-                    LogOnce($"xrCreateInstance failed: {r}");
+                    LogThrottled("create-instance", $"xrCreateInstance failed: {r}", TimeSpan.FromSeconds(60));
                     return false;
                 }
                 _instance = instance;
@@ -129,7 +129,7 @@ internal sealed unsafe partial class OpenXRRuntime
         var r = _xr!.GetSystem(_instance, &getInfo, &systemId);
         if (r != Result.Success)
         {
-            LogOnce($"xrGetSystem failed: {r} (is the headset connected?)");
+            LogThrottled("get-system", $"xrGetSystem failed: {r} (is the headset connected?)", TimeSpan.FromSeconds(60));
             return false;
         }
         _systemId = systemId;
@@ -169,7 +169,7 @@ internal sealed unsafe partial class OpenXRRuntime
 
         if (r != Result.Success)
         {
-            LogOnce($"xrCreateSession failed: {r}. The runtime accepted {ExtHeadless} but refused a session without a graphics binding.");
+            LogThrottled("create-session", $"xrCreateSession failed: {r}. The runtime accepted {ExtHeadless} but refused a session without a graphics binding.", TimeSpan.FromSeconds(60));
             return false;
         }
 

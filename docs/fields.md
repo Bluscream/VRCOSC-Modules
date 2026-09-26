@@ -4,7 +4,7 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**520** total across **17** modules.
+**521** total across **17** modules.
 
 | Module | Count |
 |---|---|
@@ -18,7 +18,7 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [LinuxHardwareStats](#linuxhardwarestats) | 31 |
 | [LinuxMedia](#linuxmedia) | 15 |
 | [Notifications](#notifications) | 37 |
-| [OpenXR](#openxr) | 75 |
+| [OpenXR](#openxr) | 76 |
 | [Status](#status) | 7 |
 | [Utilities](#utilities) | 30 |
 | [VRCExtras](#vrcextras) | 1 |
@@ -636,6 +636,7 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [64](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L64) | `OpenXRRuntime` | private | `private float _refreshRate;` |
 | [65](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L65) | `OpenXRRuntime` | private | `private bool _headTracked;` |
 | [69](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L69) | `OpenXRRuntime` | private | `private volatile OpenXRSnapshot _snapshot = OpenXRSnapshot.Empty;` |
+| [128](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L128) | `OpenXRRuntime` | private | `private readonly Dictionary<string, DateTime> _lastLogged = new();` |
 
 ### `OpenXR/OpenXRStatisticsModule.cs`
 
