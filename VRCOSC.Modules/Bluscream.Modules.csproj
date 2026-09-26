@@ -97,6 +97,7 @@
     <EmbeddedResource Include="HTTPServer\swagger-ui.html" LogicalName="Bluscream.Modules.HTTPServer.swagger-ui.html" />
     <EmbeddedResource Include="LinuxMedia\vrcosc_mpris_query.sh" LogicalName="Bluscream.Modules.LinuxMedia.vrcosc_mpris_query.sh" />
     <EmbeddedResource Include="LinuxHardwareStats\vrcosc_hwstats.sh" LogicalName="Bluscream.Modules.LinuxHardwareStats.vrcosc_hwstats.sh" />
+    <EmbeddedResource Include="LinuxAudioFx\vrcosc_audiofx.sh" LogicalName="Bluscream.Modules.LinuxAudioFx.vrcosc_audiofx.sh" />
     <EmbeddedResource Include="OpenXR\openxr_loader.dll" LogicalName="Bluscream.Modules.OpenXR.openxr_loader.dll" />
     <EmbeddedResource Include="OpenXR\vrcosc_xr_query.sh" LogicalName="Bluscream.Modules.OpenXR.vrcosc_xr_query.sh" />
   </ItemGroup>

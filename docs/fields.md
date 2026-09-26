@@ -4,16 +4,17 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**608** total across **21** modules.
+**619** total across **22** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 1 |
 | [Debug](#debug) | 25 |
 | [DesktopFPS](#desktopfps) | 10 |
+| [DiscordVoice](#discordvoice) | 2 |
 | [HTTP](#http) | 24 |
 | [HTTPServer](#httpserver) | 20 |
-| [HeartrateStats](#heartratestats) | 22 |
+| [HeartrateStats](#heartratestats) | 31 |
 | [HomeAssistant](#homeassistant) | 34 |
 | [IRCBridge](#ircbridge) | 109 |
 | [LinuxAudioFx](#linuxaudiofx) | 10 |
@@ -119,6 +120,16 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [156](../VRCOSC.Modules/DesktopFPS/Utils/FPSMeasurementUtils.cs#L156) | `FpsMeasurementSession` | private | `private double _latestFps = 0;` |
 | [157](../VRCOSC.Modules/DesktopFPS/Utils/FPSMeasurementUtils.cs#L157) | `FpsMeasurementSession` | private | `private readonly object _fpsLock = new object();` |
 | [158](../VRCOSC.Modules/DesktopFPS/Utils/FPSMeasurementUtils.cs#L158) | `FpsMeasurementSession` | private | `private bool _disposed = false;` |
+
+
+## DiscordVoice
+
+### `DiscordVoice/Rpc/DiscordAuth.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [19](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordAuth.cs#L19) | `DiscordAuth` | public | `public const string Scopes = "rpc rpc.voice.read rpc.voice.write";` |
+| [20](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordAuth.cs#L20) | `DiscordAuth` | private | `private static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(15) };` |
 
 
 ## HTTP
@@ -235,6 +246,20 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [33](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L33) | `WebSocketHeartrateSource` | private | `private bool _connected;` |
 | [42](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L42) | `WebSocketHeartrateSource` | public | `public event Action<int>? HeartrateReceived;` |
 | [43](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L43) | `WebSocketHeartrateSource` | public | `public event Action<bool>? ConnectionChanged;` |
+
+### `HeartrateStats/HeartrateStatsModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [18](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L18) | `HeartrateStatsModule` | private | `private static readonly TimeSpan ReceiveTimeout = TimeSpan.FromSeconds(30);` |
+| [20](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L20) | `HeartrateStatsModule` | private | `private readonly HeartrateSession _session = new();` |
+| [21](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L21) | `HeartrateStatsModule` | private | `private IHeartrateSource? _source;` |
+| [22](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L22) | `HeartrateStatsModule` | private | `private CancellationTokenSource? _beatCts;` |
+| [23](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L23) | `HeartrateStatsModule` | private | `private Task? _beatTask;` |
+| [24](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L24) | `HeartrateStatsModule` | private | `private bool _beatValue;` |
+| [25](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L25) | `HeartrateStatsModule` | private | `private bool _wasReceiving;` |
+| [26](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L26) | `HeartrateStatsModule` | private | `private bool _pendingConnectEvent;` |
+| [27](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L27) | `HeartrateStatsModule` | private | `private bool _pendingDisconnectEvent;` |
 
 ### `HeartrateStats/HypeRateSource.cs`
 

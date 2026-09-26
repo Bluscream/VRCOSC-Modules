@@ -6,7 +6,7 @@ User-facing events registered in `OnPostLoad` via `CreateEvent(lookup, title)` a
 
 The Fired column lists every `TriggerEvent` call site; an event with **never** there is declared but not raised. Matching prefers the fully qualified lookup, falling back to a bare name only within the same file — several modules each declare an `OnError`, so a global short-name match would cross-link them.
 
-**37** total.
+**39** total.
 
 ## Debug
 
@@ -31,6 +31,13 @@ The Fired column lists every `TriggerEvent` call site; an event with **never** t
 | [147](../VRCOSC.Modules/HTTPServer/HTTPServerModule.cs#L147) | `HTTPServerModule` | `HTTPServerEvent.OnRequestReceived` | On Request Received | [HTTPServerModule.cs:401](../VRCOSC.Modules/HTTPServer/HTTPServerModule.cs#L401) |
 | [148](../VRCOSC.Modules/HTTPServer/HTTPServerModule.cs#L148) | `HTTPServerModule` | `HTTPServerEvent.OnRequestProcessed` | On Request Processed | [HTTPServerModule.cs:470](../VRCOSC.Modules/HTTPServer/HTTPServerModule.cs#L470) |
 | [149](../VRCOSC.Modules/HTTPServer/HTTPServerModule.cs#L149) | `HTTPServerModule` | `HTTPServerEvent.OnError` | On Error | [HTTPServerModule.cs:292](../VRCOSC.Modules/HTTPServer/HTTPServerModule.cs#L292), [HTTPServerModule.cs:301](../VRCOSC.Modules/HTTPServer/HTTPServerModule.cs#L301) |
+
+## HeartrateStats
+
+| Line | Owner | Lookup | Title | Fired |
+|---|---|---|---|---|
+| [79](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L79) | `HeartrateStatsModule` | `HeartrateStatsEvent.Connected` | Connected | [HeartrateStatsModule.cs:242](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L242) |
+| [80](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L80) | `HeartrateStatsModule` | `HeartrateStatsEvent.Disconnected` | Disconnected | [HeartrateStatsModule.cs:248](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L248) |
 
 ## HomeAssistant
 

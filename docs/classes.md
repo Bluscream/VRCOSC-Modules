@@ -4,16 +4,17 @@
 
 Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
-**303** total across **22** modules.
+**313** total across **23** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 5 |
 | [Debug](#debug) | 15 |
 | [DesktopFPS](#desktopfps) | 8 |
+| [DiscordVoice](#discordvoice) | 3 |
 | [HTTP](#http) | 11 |
 | [HTTPServer](#httpserver) | 17 |
-| [HeartrateStats](#heartratestats) | 6 |
+| [HeartrateStats](#heartratestats) | 13 |
 | [HomeAssistant](#homeassistant) | 12 |
 | [IRCBridge](#ircbridge) | 39 |
 | [LinuxAudioFx](#linuxaudiofx) | 8 |
@@ -122,6 +123,22 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 |---|---|---|
 | [17](../VRCOSC.Modules/DesktopFPS/Utils/FPSMeasurementUtils.cs#L17) | public | `public static class FPSMeasurementUtils` |
 | [151](../VRCOSC.Modules/DesktopFPS/Utils/FPSMeasurementUtils.cs#L151) | private | `private class FpsMeasurementSession : IDisposable` |
+
+
+## DiscordVoice
+
+### `DiscordVoice/Rpc/DiscordAuth.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [17](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordAuth.cs#L17) | public | `public static class DiscordAuth` |
+
+### `DiscordVoice/Rpc/RpcCommand.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [11](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L11) | public | `public sealed class RpcCommand` |
+| [27](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L27) | public | `public static class Payload` |
 
 
 ## HTTP
@@ -233,6 +250,18 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 |---|---|---|
 | [13](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L13) | internal | `internal interface IHeartrateSource` |
 | [22](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L22) | internal | `internal abstract class WebSocketHeartrateSource : IHeartrateSource` |
+
+### `HeartrateStats/HeartrateStatsModule.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [16](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L16) | public | `public class HeartrateStatsModule : Module` |
+| [327](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L327) | private | `private enum HeartrateStatsSetting` |
+| [334](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L334) | private | `private enum HeartrateStatsParameter` |
+| [342](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L342) | private | `private enum HeartrateStatsVariable` |
+| [347](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L347) | private | `private enum HeartrateStatsState { Connected, Disconnected }` |
+| [349](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L349) | private | `private enum HeartrateStatsEvent { Connected, Disconnected }` |
+| [352](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L352) | public | `public enum HeartrateProvider` |
 
 ### `HeartrateStats/HypeRateSource.cs`
 

@@ -94,9 +94,10 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 |---|---|---|---|---|---|---|
 | **Debug** | `[VRCOSC.Modules/Debug/README.md](VRCOSC.Modules/Debug/README.md)` | `16` | `4` | 2 | 2 | Debug tools for tracking and exporting OSC parameters |
 | **Desktop FPS** | `[VRCOSC.Modules/DesktopFPS/README.md](VRCOSC.Modules/DesktopFPS/README.md)` | `0` | `1` | 0 | 0 | Monitors VRChat FPS using Windows Performance Counters |
+| **DiscordVoice** | `[VRCOSC.Modules/DiscordVoice/README.md](VRCOSC.Modules/DiscordVoice/README.md)` | `0` | `0` | 0 | 0 | DiscordVoice module for VRCOSC. |
 | **HTTP** | `[VRCOSC.Modules/HTTP/README.md](VRCOSC.Modules/HTTP/README.md)` | `2` | `4` | 4 | 2 | Send HTTP requests and receive responses for automation |
 | **HTTP/MCP Server** | `[VRCOSC.Modules/HTTPServer/README.md](VRCOSC.Modules/HTTPServer/README.md)` | `9` | `5` | 5 | 5 | HTTP/MCP server to control VRCOSC via HTTP Requests or from a AI Agent via MCP (optional) |
-| **HeartrateStats** | `[VRCOSC.Modules/HeartrateStats/README.md](VRCOSC.Modules/HeartrateStats/README.md)` | `0` | `0` | 0 | 0 | HeartrateStats module for VRCOSC. |
+| **Heartrate Stats** | `[VRCOSC.Modules/HeartrateStats/README.md](VRCOSC.Modules/HeartrateStats/README.md)` | `12` | `6` | 1 | 2 | Heart rate from Pulsoid, HypeRate or any OSC parameter, with session min/max and a trend arrow as ChatBox variables. Sends the same avatar parameters as the official heartrate modules. |
 | **HomeAssistant** | `[VRCOSC.Modules/HomeAssistant/README.md](VRCOSC.Modules/HomeAssistant/README.md)` | `10` | `4` | 4 | 3 | Integrate Home Assistant entity states, Jinja templates, avatar parameters, and flow nodes |
 | **IRC Bridge** | `[VRCOSC.Modules/IRCBridge/README.md](VRCOSC.Modules/IRCBridge/README.md)` | `16` | `9` | 6 | 9 | Connect to IRC servers and receive events for channel activity |
 | **Linux Audio FX** | `[VRCOSC.Modules/LinuxAudioFx/README.md](VRCOSC.Modules/LinuxAudioFx/README.md)` | `4` | `4` | 2 | 1 | Soundboard (Soundux, Kenku, ...) and voice changer (EasyEffects, PipeWire filters) state on Linux hosts — MagicChatbox soundpad_* / voicemod_* counterparts |

@@ -4,16 +4,17 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**894** total across **22** modules.
+**929** total across **23** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 1 |
 | [Debug](#debug) | 41 |
 | [DesktopFPS](#desktopfps) | 18 |
+| [DiscordVoice](#discordvoice) | 21 |
 | [HTTP](#http) | 9 |
 | [HTTPServer](#httpserver) | 41 |
-| [HeartrateStats](#heartratestats) | 27 |
+| [HeartrateStats](#heartratestats) | 41 |
 | [HomeAssistant](#homeassistant) | 42 |
 | [IRCBridge](#ircbridge) | 103 |
 | [LinuxAudioFx](#linuxaudiofx) | 10 |
@@ -144,6 +145,40 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [184](../VRCOSC.Modules/DesktopFPS/Utils/FPSMeasurementUtils.cs#L184) | `FpsMeasurementSession` | private | `private void OnFpsReceived(FpsResult result)` |
 | [192](../VRCOSC.Modules/DesktopFPS/Utils/FPSMeasurementUtils.cs#L192) | `FpsMeasurementSession` | public | `public double GetLatestFps()` |
 | [200](../VRCOSC.Modules/DesktopFPS/Utils/FPSMeasurementUtils.cs#L200) | `FpsMeasurementSession` | public | `public void Dispose()` |
+
+
+## DiscordVoice
+
+### `DiscordVoice/Rpc/DiscordAuth.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [22](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordAuth.cs#L22) | `DiscordAuth` | public | `public static async Task<string> FetchAccessTokenAsync(string clientId, string clientSecret, CancellationToken ct)` |
+
+### `DiscordVoice/Rpc/RpcCommand.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [18](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L18) | `RpcCommand` | private | `public RpcCommand(string cmd, object? args = null, string? evt = null)` |
+| [29](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L29) | `Payload` | public | `public static RpcCommand Authenticate(string accessToken) => new("AUTHENTICATE", new { access_token = accessToken });` |
+| [31](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L31) | `Payload` | public | `public static RpcCommand GetVoiceSettings() => new("GET_VOICE_SETTINGS");` |
+| [32](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L32) | `Payload` | public | `public static RpcCommand SetVoiceSettings(Dictionary<string, object> args) => new("SET_VOICE_SETTINGS", args);` |
+| [33](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L33) | `Payload` | public | `public static RpcCommand SetMuteOnly(bool mute) => new("SET_VOICE_SETTINGS", new { mute });` |
+| [34](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L34) | `Payload` | public | `public static RpcCommand SetDeafenOnly(bool deaf) => new("SET_VOICE_SETTINGS", new { deaf });` |
+| [36](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L36) | `Payload` | public | `public static RpcCommand GetGuilds() => new("GET_GUILDS");` |
+| [37](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L37) | `Payload` | public | `public static RpcCommand GetGuild(string guildId) => new("GET_GUILD", new { guild_id = guildId });` |
+| [38](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L38) | `Payload` | public | `public static RpcCommand GetChannels(string guildId) => new("GET_CHANNELS", new { guild_id = guildId });` |
+| [39](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L39) | `Payload` | public | `public static RpcCommand GetChannel(string channelId) => new("GET_CHANNEL", new { channel_id = channelId });` |
+| [40](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L40) | `Payload` | public | `public static RpcCommand GetSelectedVoiceChannel() => new("GET_SELECTED_VOICE_CHANNEL");` |
+| [41](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L41) | `Payload` | public | `public static RpcCommand SelectVoiceChannel(string? channelId) => new("SELECT_VOICE_CHANNEL", new { channel_id = channelId });` |
+| [42](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L42) | `Payload` | public | `public static RpcCommand SelectTextChannel(string channelId) => new("SELECT_TEXT_CHANNEL", new { channel_id = channelId });` |
+| [44](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L44) | `Payload` | public | `public static RpcCommand Subscribe(string eventName, object? args = null) => new("SUBSCRIBE", args, eventName);` |
+| [45](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L45) | `Payload` | public | `public static RpcCommand Unsubscribe(string eventName, object? args = null) => new("UNSUBSCRIBE", args, eventName);` |
+| [47](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L47) | `Payload` | public | `public static RpcCommand SetActivity(string state, string details, string largeImageKey, string smallImageKey) => new("SET_ACTIVITY", new` |
+| [58](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L58) | `Payload` | public | `public static RpcCommand SetUserVoiceSettings(string userId, float? left = null, float? right = null, int? volume = null, bool? mute = null)` |
+| [64](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L64) | `Payload` | public | `public static RpcCommand SendActivityJoinInvite(string userId) => new("SEND_ACTIVITY_JOIN_INVITE", new { user_id = userId });` |
+| [65](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L65) | `Payload` | public | `public static RpcCommand CloseActivityRequest(string userId) => new("CLOSE_ACTIVITY_REQUEST", new { user_id = userId });` |
+| [66](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L66) | `Payload` | public | `public static RpcCommand SetCertifiedDevices(object[] devices) => new("SET_CERTIFIED_DEVICES", new { devices });` |
 
 
 ## HTTP
@@ -294,6 +329,25 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [218](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L218) | `WebSocketHeartrateSource` | private | `private async Task KeepAliveLoopAsync(TimeSpan interval, CancellationToken ct)` |
 | [227](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L227) | `WebSocketHeartrateSource` | private | `private void HandleMessage(string message)` |
 | [244](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L244) | `WebSocketHeartrateSource` | private | `private void SetConnected(bool connected)` |
+
+### `HeartrateStats/HeartrateStatsModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [29](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L29) | `HeartrateStatsModule` | protected | `protected override void OnPreLoad()` |
+| [67](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L67) | `HeartrateStatsModule` | protected | `protected override void OnPostLoad()` |
+| [89](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L89) | `HeartrateStatsModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [128](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L128) | `HeartrateStatsModule` | protected | `protected override async Task OnModuleStop()` |
+| [154](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L154) | `HeartrateStatsModule` | private | `private IHeartrateSource? CreateSource(HeartrateProvider provider)` |
+| [183](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L183) | `HeartrateStatsModule` | private | `private string OscAddress() => GetSettingValue<string>(HeartrateStatsSetting.OscAddress)?.Trim() ?? string.Empty;` |
+| [185](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L185) | `HeartrateStatsModule` | private | `private TimeSpan Retention()` |
+| [192](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L192) | `HeartrateStatsModule` | private | `private void OnHeartrate(int bpm) => _session.Add(bpm, DateTimeOffset.UtcNow);` |
+| [194](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L194) | `HeartrateStatsModule` | private | `private void OnConnectionChanged(bool connected)` |
+| [201](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L201) | `HeartrateStatsModule` | protected | `protected override void OnAnyParameterReceived(VRChatParameter parameter)` |
+| [216](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L216) | `HeartrateStatsModule` | protected | `protected override void OnRegisteredParameterReceived(RegisteredParameter parameter)` |
+| [234](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L234) | `HeartrateStatsModule` | private | `private void Update()` |
+| [274](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L274) | `HeartrateStatsModule` | private | `private void SendParameters(bool receiving, int current, int average, string trend)` |
+| [297](../VRCOSC.Modules/HeartrateStats/HeartrateStatsModule.cs#L297) | `HeartrateStatsModule` | private | `private async Task BeatLoopAsync(CancellationToken ct)` |
 
 ### `HeartrateStats/HypeRateSource.cs`
 
