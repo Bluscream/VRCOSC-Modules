@@ -4,14 +4,14 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**1120** total across **24** modules.
+**1124** total across **24** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 1 |
 | [Debug](#debug) | 41 |
 | [DesktopFPS](#desktopfps) | 18 |
-| [DiscordVoice](#discordvoice) | 128 |
+| [DiscordVoice](#discordvoice) | 132 |
 | [HTTP](#http) | 9 |
 | [HTTPServer](#httpserver) | 41 |
 | [HeartrateStats](#heartratestats) | 41 |
@@ -167,60 +167,64 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [12](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Parameters.cs#L12) | `DiscordVoiceModule` | protected | `protected override void OnRegisteredParameterReceived(RegisteredParameter parameter)` |
-| [89](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Parameters.cs#L89) | `DiscordVoiceModule` | private | `private static string? Wildcard(RegisteredParameter parameter, int position)` |
-| [92](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Parameters.cs#L92) | `DiscordVoiceModule` | private | `private static object? SubscriptionArgs(string evt, string? id)` |
-| [102](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Parameters.cs#L102) | `DiscordVoiceModule` | private | `private void HandleSetVoiceSettings(RegisteredParameter parameter)` |
-| [129](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Parameters.cs#L129) | `DiscordVoiceModule` | private | `private static object[] ExampleCertifiedDevices() =>` |
+| [91](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Parameters.cs#L91) | `DiscordVoiceModule` | private | `private static string? Wildcard(RegisteredParameter parameter, int position)` |
+| [94](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Parameters.cs#L94) | `DiscordVoiceModule` | private | `private static object? SubscriptionArgs(string evt, string? id)` |
+| [104](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Parameters.cs#L104) | `DiscordVoiceModule` | private | `private void HandleSetVoiceSettings(RegisteredParameter parameter)` |
+| [131](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Parameters.cs#L131) | `DiscordVoiceModule` | private | `private static object[] ExampleCertifiedDevices() =>` |
 
 ### `DiscordVoice/DiscordVoiceModule.Registration.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [13](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L13) | `DiscordVoiceModule` | private | `private void RegisterParameters()` |
-| [51](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L51) | `DiscordVoiceModule` | private | `private void RegisterChatBox()` |
-| [91](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L91) | `DiscordVoiceModule` | private | `private static IEnumerable<ClipVariableReference> Vars(params ClipVariableReference?[] refs) => refs.OfType<ClipVariableReference>();` |
+| [53](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L53) | `DiscordVoiceModule` | private | `private void RegisterChatBox()` |
+| [92](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L92) | `DiscordVoiceModule` | private | `private static IEnumerable<ClipVariableReference> Vars(params ClipVariableReference?[] refs) => refs.OfType<ClipVariableReference>();` |
 
 ### `DiscordVoice/DiscordVoiceModule.Voice.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [32](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L32) | `DiscordVoiceModule` | private | `private void RegisterVoiceVariables()` |
-| [42](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L42) | `DiscordVoiceModule` | private | `private void ResetVoice()` |
-| [52](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L52) | `DiscordVoiceModule` | private | `private void VoiceTick() => PublishVoice(force: false);` |
-| [65](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L65) | `DiscordVoiceModule` | private | `private void PublishVoice(bool force)` |
-| [97](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L97) | `DiscordVoiceModule` | private | `private void SetSelfVoiceFlag(bool deafen, bool value)` |
-| [113](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L113) | `DiscordVoiceModule` | private | `private async Task SetSelfViaProviderAsync(IVoiceProvider provider, bool deafen, bool value, CancellationToken ct)` |
-| [130](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L130) | `DiscordVoiceModule` | private | `private void OnVoiceChannelChanged(string channelId)` |
-| [137](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L137) | `DiscordVoiceModule` | private | `private async Task TrackChannelAsync(DiscordIpcClient client, string channelId, CancellationToken ct)` |
-| [176](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L176) | `DiscordVoiceModule` | private | `private void ApplyChannel(string channelId, JsonElement data)` |
-| [191](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L191) | `DiscordVoiceModule` | private | `private static string DisplayName(JsonElement voiceState)` |
-| [196](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L196) | `DiscordVoiceModule` | private | `private void OnVoiceStateEvent(string name, JsonElement data)` |
-| [204](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L204) | `DiscordVoiceModule` | private | `private void OnSpeakingEvent(string name, JsonElement data)` |
-| [211](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L211) | `DiscordVoiceModule` | private | `private void OnVoiceSettings(JsonElement data)` |
+| [46](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L46) | `DiscordVoiceModule` | private | `private void ResetVoice()` |
+| [56](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L56) | `DiscordVoiceModule` | private | `private void VoiceTick() => PublishVoice(force: false);` |
+| [69](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L69) | `DiscordVoiceModule` | private | `private void PublishVoice(bool force)` |
+| [108](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L108) | `DiscordVoiceModule` | private | `private void SetSelfVoiceFlag(bool deafen, bool value)` |
+| [124](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L124) | `DiscordVoiceModule` | private | `private async Task SetSelfViaProviderAsync(IVoiceProvider provider, bool deafen, bool value, CancellationToken ct)` |
+| [141](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L141) | `DiscordVoiceModule` | private | `private void OnVoiceChannelChanged(string channelId)` |
+| [148](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L148) | `DiscordVoiceModule` | private | `private async Task TrackChannelAsync(DiscordIpcClient client, string channelId, CancellationToken ct)` |
+| [187](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L187) | `DiscordVoiceModule` | private | `private void ApplyChannel(string channelId, JsonElement data)` |
+| [202](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L202) | `DiscordVoiceModule` | private | `private static string DisplayName(JsonElement voiceState)` |
+| [207](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L207) | `DiscordVoiceModule` | private | `private void OnVoiceStateEvent(string name, JsonElement data)` |
+| [215](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L215) | `DiscordVoiceModule` | private | `private void OnSpeakingEvent(string name, JsonElement data)` |
+| [222](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L222) | `DiscordVoiceModule` | private | `private void OnVoiceSettings(JsonElement data)` |
 
 ### `DiscordVoice/DiscordVoiceModule.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [36](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L36) | `DiscordVoiceModule` | protected | `protected override void OnPreLoad()` |
-| [57](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L57) | `DiscordVoiceModule` | protected | `protected override void OnPostLoad()` |
-| [63](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L63) | `DiscordVoiceModule` | protected | `protected override async Task<bool> OnModuleStart()` |
-| [83](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L83) | `DiscordVoiceModule` | private | `private async Task StartProvidersAsync(CancellationToken ct)` |
-| [96](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L96) | `DiscordVoiceModule` | private | `private async Task<bool> ConnectRpcAsync(CancellationToken ct)` |
-| [156](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L156) | `DiscordVoiceModule` | protected | `protected override Task OnModuleStop()` |
-| [178](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L178) | `DiscordVoiceModule` | private | `private async Task<DiscordIpcClient?> ConnectAsync(CancellationToken ct)` |
-| [197](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L197) | `DiscordVoiceModule` | private | `private async Task SubscribeDefaultsAsync(DiscordIpcClient client, CancellationToken ct)` |
-| [209](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L209) | `DiscordVoiceModule` | private | `private async Task SubscribeChannelEventsAsync(DiscordIpcClient client, string channelId, CancellationToken ct)` |
-| [216](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L216) | `DiscordVoiceModule` | private | `private async Task SubscribeAsync(DiscordIpcClient client, string evt, object? args, CancellationToken ct)` |
-| [229](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L229) | `DiscordVoiceModule` | private | `private void OnClientDisconnected(Exception? cause)` |
-| [238](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L238) | `DiscordVoiceModule` | private | `private void Send(RpcCommand command)` |
-| [251](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L251) | `DiscordVoiceModule` | private | `private async Task SendAndLogAsync(DiscordIpcClient client, RpcCommand command, CancellationToken ct)` |
-| [267](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L267) | `DiscordVoiceModule` | private | `private void ApplyCommandResponse(string cmd, JsonElement data)` |
-| [302](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L302) | `DiscordVoiceModule` | private | `private void SetCount(DiscordVoiceParameter parameter, DiscordVoiceVariable variable, int value)` |
-| [308](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L308) | `DiscordVoiceModule` | private | `private void ApplyVoiceSettings(JsonElement data)` |
-| [327](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L327) | `DiscordVoiceModule` | private | `private static int SnowflakeToInt(string? snowflake) => long.TryParse(snowflake, out var id) ? unchecked((int)id) : 0;` |
-| [334](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L334) | `DiscordVoiceModule` | private | `private void ChatBoxUpdate()` |
-| [342](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L342) | `DiscordVoiceModule` | private | `private async Task PollAsync(DiscordIpcClient client, CancellationToken ct)` |
+| [39](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L39) | `DiscordVoiceModule` | protected | `protected override void OnPreLoad()` |
+| [60](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L60) | `DiscordVoiceModule` | protected | `protected override void OnPostLoad()` |
+| [66](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L66) | `DiscordVoiceModule` | protected | `protected override async Task<bool> OnModuleStart()` |
+| [89](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L89) | `DiscordVoiceModule` | private | `private bool HasRpcCredentials()` |
+| [100](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L100) | `DiscordVoiceModule` | private | `private void ReconnectTick()` |
+| [109](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L109) | `DiscordVoiceModule` | private | `private async Task ReconnectAsync(CancellationToken ct)` |
+| [122](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L122) | `DiscordVoiceModule` | private | `private void DisposeClient()` |
+| [132](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L132) | `DiscordVoiceModule` | private | `private async Task StartProvidersAsync(CancellationToken ct)` |
+| [145](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L145) | `DiscordVoiceModule` | private | `private async Task<bool> ConnectRpcAsync(CancellationToken ct)` |
+| [205](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L205) | `DiscordVoiceModule` | protected | `protected override Task OnModuleStop()` |
+| [221](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L221) | `DiscordVoiceModule` | private | `private async Task<DiscordIpcClient?> ConnectAsync(CancellationToken ct)` |
+| [240](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L240) | `DiscordVoiceModule` | private | `private async Task SubscribeDefaultsAsync(DiscordIpcClient client, CancellationToken ct)` |
+| [252](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L252) | `DiscordVoiceModule` | private | `private async Task SubscribeChannelEventsAsync(DiscordIpcClient client, string channelId, CancellationToken ct)` |
+| [259](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L259) | `DiscordVoiceModule` | private | `private async Task SubscribeAsync(DiscordIpcClient client, string evt, object? args, CancellationToken ct)` |
+| [272](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L272) | `DiscordVoiceModule` | private | `private void OnClientDisconnected(Exception? cause)` |
+| [283](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L283) | `DiscordVoiceModule` | private | `private void Send(RpcCommand command)` |
+| [296](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L296) | `DiscordVoiceModule` | private | `private async Task SendAndLogAsync(DiscordIpcClient client, RpcCommand command, CancellationToken ct)` |
+| [312](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L312) | `DiscordVoiceModule` | private | `private void ApplyCommandResponse(string cmd, JsonElement data)` |
+| [347](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L347) | `DiscordVoiceModule` | private | `private void SetCount(DiscordVoiceParameter parameter, DiscordVoiceVariable variable, int value)` |
+| [353](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L353) | `DiscordVoiceModule` | private | `private void ApplyVoiceSettings(JsonElement data)` |
+| [368](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L368) | `DiscordVoiceModule` | private | `private static int SnowflakeToInt(string? snowflake) => long.TryParse(snowflake, out var id) ? unchecked((int)id) : 0;` |
+| [375](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L375) | `DiscordVoiceModule` | private | `private void ChatBoxUpdate()` |
+| [383](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L383) | `DiscordVoiceModule` | private | `private async Task PollAsync(DiscordIpcClient client, CancellationToken ct)` |
 
 ### `DiscordVoice/Providers/DevCompanionProvider.cs`
 

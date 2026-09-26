@@ -31,12 +31,16 @@ public sealed partial class DiscordVoiceModule
 
     private void RegisterVoiceVariables()
     {
-        CreateVariable<string>(VarChannel, "Voice Channel");
-        CreateVariable<string>(VarSpeaking, "Speaking");
-        CreateVariable<string>(VarMuteState, "Mute State");
+        var channel = CreateVariable<string>(VarChannel, "Voice Channel");
+        var speaking = CreateVariable<string>(VarSpeaking, "Speaking");
+        var muteState = CreateVariable<string>(VarMuteState, "Mute State");
         CreateVariable<bool>(VarMuted, "Muted");
         CreateVariable<bool>(VarDeafened, "Deafened");
-        CreateVariable<int>(VarUsers, "Users In Channel");
+        var users = CreateVariable<int>(VarUsers, "Users In Channel");
+
+        CreateState(DiscordVoiceState.InVoice, "In Voice", "\U0001F50A {0} ({3})\n{1}\n{2}", Vars(channel, speaking, muteState, users));
+        CreateState(DiscordVoiceState.NotInVoice, "Not In Voice", string.Empty);
+        CreateState(DiscordVoiceState.Disconnected, "Disconnected", string.Empty);
     }
 
     private void ResetVoice()
@@ -91,6 +95,13 @@ public sealed partial class DiscordVoiceModule
         SetVariableValue(VarMuted, snapshot.Muted);
         SetVariableValue(VarDeafened, snapshot.Deafened);
         SetVariableValue(VarUsers, snapshot.UserCount);
+
+        SendParameter(DiscordVoiceParameter.Muted, snapshot.Muted);
+        SendParameter(DiscordVoiceParameter.Deafened, snapshot.Deafened);
+        SendParameter(DiscordVoiceParameter.Mute, snapshot.Muted);
+        SendParameter(DiscordVoiceParameter.Deafen, snapshot.Deafened);
+
+        ChangeState(source == "none" ? DiscordVoiceState.Disconnected : snapshot.InVoice ? DiscordVoiceState.InVoice : DiscordVoiceState.NotInVoice);
     }
 
     /// <summary>Mute/deafen requests go over RPC when authenticated, else to the live fallback provider.</summary>

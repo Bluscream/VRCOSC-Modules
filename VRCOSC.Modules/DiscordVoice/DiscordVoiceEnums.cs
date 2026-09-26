@@ -7,6 +7,8 @@ public enum DiscordVoiceParameter
 {
     Mute,
     Deafen,
+    Muted,
+    Deafened,
     RequestGuildCount,
     GuildCount,
     RequestChannelCount,
@@ -85,7 +87,9 @@ public enum DiscordVoiceVariable
 
 public enum DiscordVoiceState
 {
-    VoiceState
+    InVoice,
+    NotInVoice,
+    Disconnected
 }
 
 public enum DiscordVoiceEvent

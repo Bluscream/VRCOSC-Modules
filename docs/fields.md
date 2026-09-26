@@ -4,14 +4,14 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**731** total across **23** modules.
+**734** total across **23** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 1 |
 | [Debug](#debug) | 25 |
 | [DesktopFPS](#desktopfps) | 10 |
-| [DiscordVoice](#discordvoice) | 67 |
+| [DiscordVoice](#discordvoice) | 70 |
 | [HTTP](#http) | 24 |
 | [HTTPServer](#httpserver) | 20 |
 | [HeartrateStats](#heartratestats) | 31 |
@@ -149,14 +149,17 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [22](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L22) | `DiscordVoiceModule` | private | `private static readonly TimeSpan ConnectTimeout = TimeSpan.FromSeconds(2);` |
 | [23](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L23) | `DiscordVoiceModule` | private | `private static readonly TimeSpan CommandTimeout = TimeSpan.FromSeconds(5);` |
 | [25](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L25) | `DiscordVoiceModule` | private | `private DiscordIpcClient? _client;` |
-| [26](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L26) | `DiscordVoiceModule` | private | `private bool _rpcReady;` |
-| [27](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L27) | `DiscordVoiceModule` | private | `private readonly List<IVoiceProvider> _providers = [];` |
-| [28](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L28) | `DiscordVoiceModule` | private | `private CancellationTokenSource? _lifetime;` |
-| [29](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L29) | `DiscordVoiceModule` | private | `private string _clientId = string.Empty;` |
-| [31](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L31) | `DiscordVoiceModule` | private | `private string _lastGuildId = string.Empty;` |
-| [32](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L32) | `DiscordVoiceModule` | private | `private string _lastChannelId = string.Empty;` |
-| [33](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L33) | `DiscordVoiceModule` | private | `private bool _autoUpdateDefaults;` |
-| [34](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L34) | `DiscordVoiceModule` | private | `private bool _polling;` |
+| [26](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L26) | `DiscordVoiceModule` | private | `private static readonly TimeSpan ReconnectInterval = TimeSpan.FromSeconds(10);` |
+| [27](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L27) | `DiscordVoiceModule` | private | `private bool _rpcReady;` |
+| [28](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L28) | `DiscordVoiceModule` | private | `private bool _rpcEnabled;` |
+| [29](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L29) | `DiscordVoiceModule` | private | `private bool _connecting;` |
+| [30](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L30) | `DiscordVoiceModule` | private | `private readonly List<IVoiceProvider> _providers = [];` |
+| [31](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L31) | `DiscordVoiceModule` | private | `private CancellationTokenSource? _lifetime;` |
+| [32](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L32) | `DiscordVoiceModule` | private | `private string _clientId = string.Empty;` |
+| [34](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L34) | `DiscordVoiceModule` | private | `private string _lastGuildId = string.Empty;` |
+| [35](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L35) | `DiscordVoiceModule` | private | `private string _lastChannelId = string.Empty;` |
+| [36](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L36) | `DiscordVoiceModule` | private | `private bool _autoUpdateDefaults;` |
+| [37](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L37) | `DiscordVoiceModule` | private | `private bool _polling;` |
 
 ### `DiscordVoice/Providers/DevCompanionProvider.cs`
 

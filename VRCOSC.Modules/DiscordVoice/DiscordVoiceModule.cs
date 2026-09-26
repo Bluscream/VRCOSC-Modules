@@ -23,7 +23,10 @@ public sealed partial class DiscordVoiceModule : Module
     private static readonly TimeSpan CommandTimeout = TimeSpan.FromSeconds(5);
 
     private DiscordIpcClient? _client;
+    private static readonly TimeSpan ReconnectInterval = TimeSpan.FromSeconds(10);
     private bool _rpcReady;
+    private bool _rpcEnabled;
+    private bool _connecting;
     private readonly List<IVoiceProvider> _providers = [];
     private CancellationTokenSource? _lifetime;
     private string _clientId = string.Empty;
@@ -71,13 +74,59 @@ public sealed partial class DiscordVoiceModule : Module
         await StartProvidersAsync(_lifetime.Token).ConfigureAwait(false);
 
         var source = GetSettingValue<VoiceSource>(DiscordVoiceSetting.VoiceSource);
-        var rpc = source is VoiceSource.Auto or VoiceSource.Rpc && await ConnectRpcAsync(_lifetime.Token).ConfigureAwait(false);
-        if (!rpc && _providers.Count == 0)
+        _rpcEnabled = source is VoiceSource.Auto or VoiceSource.Rpc && HasRpcCredentials();
+        if (!_rpcEnabled && _providers.Count == 0)
         {
-            Log("Neither Discord RPC nor a fallback source is available; stopping.");
+            Log("Neither Discord RPC nor a fallback source is configured; stopping.");
             return false;
         }
+
+        if (_rpcEnabled && !await ConnectRpcAsync(_lifetime.Token).ConfigureAwait(false))
+            Log($"Will retry the RPC connection every {ReconnectInterval.TotalSeconds:0}s.");
         return true;
+    }
+
+    private bool HasRpcCredentials()
+    {
+        var clientId = GetSettingValue<string>(DiscordVoiceSetting.ClientId)?.Trim() ?? string.Empty;
+        var clientSecret = GetSettingValue<string>(DiscordVoiceSetting.ClientSecret)?.Trim() ?? string.Empty;
+        if (clientId.Length > 0 && clientSecret.Length > 0) return true;
+        Log("RPC disabled: set a Discord application Client ID and Client Secret in the module settings (https://discord.com/developers/applications, OAuth2 tab).");
+        return false;
+    }
+
+    /// <summary>Re-establishes RPC after Discord restarts or was not running at module start.</summary>
+    [ModuleUpdate(ModuleUpdateMode.Custom, false, 10000)]
+    private void ReconnectTick()
+    {
+        if (!_rpcEnabled || _rpcReady || _connecting) return;
+        var ct = _lifetime?.Token ?? CancellationToken.None;
+        if (ct.IsCancellationRequested) return;
+        _connecting = true;
+        _ = ReconnectAsync(ct);
+    }
+
+    private async Task ReconnectAsync(CancellationToken ct)
+    {
+        try
+        {
+            DisposeClient();
+            await ConnectRpcAsync(ct).ConfigureAwait(false);
+        }
+        finally
+        {
+            _connecting = false;
+        }
+    }
+
+    private void DisposeClient()
+    {
+        var client = _client;
+        _client = null;
+        if (client is null) return;
+        client.EventReceived -= HandleRpcEvent;
+        client.Disconnected -= OnClientDisconnected;
+        client.Dispose();
     }
 
     private async Task StartProvidersAsync(CancellationToken ct)
@@ -97,13 +146,9 @@ public sealed partial class DiscordVoiceModule : Module
     {
         var clientId = GetSettingValue<string>(DiscordVoiceSetting.ClientId)?.Trim() ?? string.Empty;
         var clientSecret = GetSettingValue<string>(DiscordVoiceSetting.ClientSecret)?.Trim() ?? string.Empty;
-        if (clientId.Length == 0 || clientSecret.Length == 0)
-        {
-            Log("RPC disabled: set a Discord application Client ID and Client Secret in the module settings (https://discord.com/developers/applications, OAuth2 tab).");
-            return false;
-        }
         _clientId = clientId;
 
+        var ok = false;
         try
         {
             var token = await DiscordAuth.FetchAccessTokenAsync(clientId, clientSecret, ct).ConfigureAwait(false);
@@ -139,7 +184,7 @@ public sealed partial class DiscordVoiceModule : Module
             _rpcReady = true;
             SendParameter(DiscordVoiceParameter.Ready, true);
             SetVariableValue(DiscordVoiceVariable.Ready, true);
-            ChangeState(DiscordVoiceState.VoiceState);
+            ok = true;
             return true;
         }
         catch (OperationCanceledException)
@@ -148,8 +193,12 @@ public sealed partial class DiscordVoiceModule : Module
         }
         catch (Exception ex) when (ex is System.Net.Http.HttpRequestException || ex is TimeoutException || ex is InvalidOperationException || ex is System.IO.IOException)
         {
-            Log($"Discord connection failed: {ex.Message}");
+            Log($"Discord RPC connection failed: {ex.Message}");
             return false;
+        }
+        finally
+        {
+            if (!ok) DisposeClient();
         }
     }
 
@@ -157,16 +206,10 @@ public sealed partial class DiscordVoiceModule : Module
     {
         _lifetime?.Cancel();
         _rpcReady = false;
+        _rpcEnabled = false;
         foreach (var provider in _providers) provider.Dispose();
         _providers.Clear();
-        var client = _client;
-        _client = null;
-        if (client is not null)
-        {
-            client.EventReceived -= HandleRpcEvent;
-            client.Disconnected -= OnClientDisconnected;
-            client.Dispose();
-        }
+        DisposeClient();
         _lifetime?.Dispose();
         _lifetime = null;
         SendParameter(DiscordVoiceParameter.Ready, false);
@@ -229,6 +272,8 @@ public sealed partial class DiscordVoiceModule : Module
     private void OnClientDisconnected(Exception? cause)
     {
         _rpcReady = false;
+        _voice.ClearChannel();
+        _trackedChannelId = string.Empty;
         Log(cause is null ? "Discord closed the RPC connection." : $"Discord RPC connection lost: {cause.Message}");
         SendParameter(DiscordVoiceParameter.Ready, false);
         SetVariableValue(DiscordVoiceVariable.Ready, false);
@@ -317,10 +362,6 @@ public sealed partial class DiscordVoiceModule : Module
             SendParameter(DiscordVoiceParameter.OutputVolume, outputVolume);
             SetVariableValue(DiscordVoiceVariable.OutputVolume, outputVolume);
         }
-        if (data.TryGetProperty("mute", out var mute) && (mute.ValueKind == JsonValueKind.True || mute.ValueKind == JsonValueKind.False))
-            SendParameter(DiscordVoiceParameter.Mute, mute.GetBoolean());
-        if (data.TryGetProperty("deaf", out var deaf) && (deaf.ValueKind == JsonValueKind.True || deaf.ValueKind == JsonValueKind.False))
-            SendParameter(DiscordVoiceParameter.Deafen, deaf.GetBoolean());
     }
 
     /// <summary>Snowflakes do not fit an OSC int; the low 32 bits are what DiscordOSC exposed, kept for compatibility.</summary>

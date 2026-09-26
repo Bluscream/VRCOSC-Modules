@@ -122,7 +122,7 @@ The `discord_*` variables use the MagicChatbox placeholder names so its layouts 
 <!-- STATES_TABLE_START -->
 | State Name | Lookup Key | Format | Description |
 |---|---|---|---|
-| **Voice Connection State** | `voicestate` | `State: {0}` | `Voice Connection State state` |
+| **In Voice** | `invoice` | `\U0001F50A {0} ({3})\n{1}\n{2}` | `In Voice state` |
 <!-- STATES_TABLE_END -->
 
 ## ChatBox Events
@@ -157,6 +157,8 @@ The `discord_*` variables use the MagicChatbox placeholder names so its layouts 
 |---|---|---|---|
 | **VRCOSC/Discord/Mic** | `bool` | `ReadWrite` | `Mute or unmute the Discord client. Also reflects the current mute state.` |
 | **VRCOSC/Discord/Deafen** | `bool` | `ReadWrite` | `Deafen or undeafen the Discord client. Also reflects the current deafen state.` |
+| **VRCOSC/Discord/Muted** | `bool` | `ReadWrite` | `Current mute state; write to mute or unmute (same as VRCOSC/Discord/Mic).` |
+| **VRCOSC/Discord/Deafened** | `bool` | `ReadWrite` | `Current deafen state; write to deafen or undeafen (same as VRCOSC/Discord/Deafen).` |
 | **VRCOSC/Discord/GetGuilds** | `bool` | `ReadWrite` | `Trigger to fetch guilds and update GuildCount.` |
 | **VRCOSC/Discord/GuildCount** | `int` | `Write` | `Number of guilds returned by GET_GUILDS.` |
 | **VRCOSC/Discord/GetChannels/*** | `bool` | `ReadWrite` | `Send guild id as wildcard to fetch channels and update ChannelCount.` |

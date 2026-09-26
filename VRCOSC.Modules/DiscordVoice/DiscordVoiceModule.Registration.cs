@@ -14,6 +14,8 @@ public sealed partial class DiscordVoiceModule
     {
         RegisterParameter<bool>(DiscordVoiceParameter.Mute, "VRCOSC/Discord/Mic", ParameterMode.ReadWrite, "Mute", "Mute or unmute the Discord client. Also reflects the current mute state.");
         RegisterParameter<bool>(DiscordVoiceParameter.Deafen, "VRCOSC/Discord/Deafen", ParameterMode.ReadWrite, "Deafen", "Deafen or undeafen the Discord client. Also reflects the current deafen state.");
+        RegisterParameter<bool>(DiscordVoiceParameter.Muted, "VRCOSC/Discord/Muted", ParameterMode.ReadWrite, "Muted", "Current mute state; write to mute or unmute (same as VRCOSC/Discord/Mic).");
+        RegisterParameter<bool>(DiscordVoiceParameter.Deafened, "VRCOSC/Discord/Deafened", ParameterMode.ReadWrite, "Deafened", "Current deafen state; write to deafen or undeafen (same as VRCOSC/Discord/Deafen).");
         RegisterParameter<bool>(DiscordVoiceParameter.RequestGuildCount, "VRCOSC/Discord/GetGuilds", ParameterMode.ReadWrite, "Request guild list", "Trigger to fetch guilds and update GuildCount.");
         RegisterParameter<int>(DiscordVoiceParameter.GuildCount, "VRCOSC/Discord/GuildCount", ParameterMode.Write, "Guild count", "Number of guilds returned by GET_GUILDS.");
         RegisterParameter<bool>(DiscordVoiceParameter.RequestChannelCount, "VRCOSC/Discord/GetChannels/*", ParameterMode.ReadWrite, "Request channel list", "Send guild id as wildcard to fetch channels and update ChannelCount.");
@@ -59,14 +61,13 @@ public sealed partial class DiscordVoiceModule
         CreateVariable<int>(DiscordVoiceVariable.ChannelType, "Channel Type");
         var readyVar = CreateVariable<bool>(DiscordVoiceVariable.Ready, "Ready");
         var errorVar = CreateVariable<int>(DiscordVoiceVariable.LastErrorCode, "Error Code");
-        var voiceStateVar = CreateVariable<int>(DiscordVoiceVariable.VoiceConnectionState, "Voice Connection State");
+        CreateVariable<int>(DiscordVoiceVariable.VoiceConnectionState, "Voice Connection State");
         var eventGuildVar = CreateVariable<int>(DiscordVoiceVariable.EventGuildId, "Event Guild Id");
         var eventChannelVar = CreateVariable<int>(DiscordVoiceVariable.EventChannelId, "Event Channel Id");
         var eventUserVar = CreateVariable<int>(DiscordVoiceVariable.EventUserId, "Event User Id");
         var eventMessageVar = CreateVariable<int>(DiscordVoiceVariable.EventMessageId, "Event Message Id");
         CreateVariable<int>(DiscordVoiceVariable.LastEventCode, "Last Event Code");
 
-        CreateState(DiscordVoiceState.VoiceState, "Voice Connection State", "State: {0}", Vars(voiceStateVar));
 
         CreateEvent(DiscordVoiceEvent.ReadyEvent, "Ready", "RPC Ready", Vars(readyVar));
         CreateEvent(DiscordVoiceEvent.ErrorEvent, "Error", "Error code {0}", Vars(errorVar));

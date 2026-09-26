@@ -133,11 +133,11 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [6](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L6) | public | `public enum DiscordVoiceParameter` |
-| [44](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L44) | public | `public enum DiscordVoiceSetting` |
-| [59](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L59) | public | `public enum VoiceSource` |
-| [67](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L67) | public | `public enum DiscordVoiceVariable` |
-| [86](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L86) | public | `public enum DiscordVoiceState` |
-| [91](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L91) | public | `public enum DiscordVoiceEvent` |
+| [46](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L46) | public | `public enum DiscordVoiceSetting` |
+| [61](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L61) | public | `public enum VoiceSource` |
+| [69](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L69) | public | `public enum DiscordVoiceVariable` |
+| [88](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L88) | public | `public enum DiscordVoiceState` |
+| [95](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L95) | public | `public enum DiscordVoiceEvent` |
 
 ### `DiscordVoice/DiscordVoiceModule.Events.cs`
 
