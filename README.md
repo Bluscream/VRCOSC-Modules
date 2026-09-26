@@ -48,7 +48,7 @@ cd tools && ./update.sh
 The `update.sh` script automates the full workflow:
 - Stops running VRCOSC instance
 - Auto-bumps build version in `AssemblyInfo.cs`
-- Builds Release DLL in Arch container (`distrobox-enter -n arch -- dotnet build ...`)
+- Builds Release DLL with a working .NET SDK (host, or the build-box distrobox container)
 - Deploys DLL + dependencies (`Silk.NET.*`) to active target roaming directory
 - Deploys native `openxr_loader.dll` from SteamVR to VRCOSC app dir
 - Regenerates code map docs (`python3 tools/gen-docs.py`)

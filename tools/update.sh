@@ -224,9 +224,9 @@ fi
 # this was added, --beta only flipped the *release* to a pre-release and the build kept
 # producing the stable DLL, so every "beta" release shipped stable bits that could not
 # load on VRCOSC-BETA.
-# The arch container used to be the only place with a .NET SDK. It is not guaranteed to
-# exist -- containers get recreated and renamed -- so prefer it when it is there and fall
-# back to a host SDK, which is what BUILD_WITH records for the release notes.
+# The arch container this used to prefer was retired; only build-box exists now, and its
+# .dotnet SDK is reachable through the shared $HOME regardless of whether we are inside
+# the container or on the host, so there is no need to shell into it explicitly.
 BUILD_ARGS=(build VRCOSC.Modules/Bluscream.Modules.csproj --configuration Release --no-incremental -p:VrcoscTarget="$TARGET")
 
 # Existing is not the same as working: ~/.local/bin/dotnet is a distrobox bridge that
@@ -235,24 +235,18 @@ BUILD_ARGS=(build VRCOSC.Modules/Bluscream.Modules.csproj --configuration Releas
 dotnet_works() { timeout 60 "$1" --list-sdks </dev/null >/dev/null 2>&1; }
 
 DOTNET=""
-if command -v distrobox-enter >/dev/null && distrobox list 2>/dev/null | grep -qE '\| *arch *\|'; then
-    BUILD_WITH="the arch distrobox container"
-    echo "Building project ($TARGET) in distrobox container..."
-    distrobox-enter -n arch -- dotnet "${BUILD_ARGS[@]}"
-else
-    for candidate in "$HOME/.dotnet/dotnet" "$(command -v dotnet || true)"; do
-        [ -n "$candidate" ] && [ -x "$candidate" ] || continue
-        if dotnet_works "$candidate"; then DOTNET="$candidate"; break; fi
-        echo "[WARN] $candidate is not a usable SDK; skipping it"
-    done
-    if [ -z "$DOTNET" ]; then
-        echo "Error: no working .NET SDK found. Install one, or create the arch distrobox container."
-        exit 1
-    fi
-    BUILD_WITH="a host .NET SDK"
-    echo "Building project ($TARGET) with $DOTNET ($("$DOTNET" --version))..."
-    "$DOTNET" "${BUILD_ARGS[@]}"
+for candidate in "$HOME/.dotnet/dotnet" "$(command -v dotnet || true)"; do
+    [ -n "$candidate" ] && [ -x "$candidate" ] || continue
+    if dotnet_works "$candidate"; then DOTNET="$candidate"; break; fi
+    echo "[WARN] $candidate is not a usable SDK; skipping it"
+done
+if [ -z "$DOTNET" ]; then
+    echo "Error: no working .NET SDK found. Install one, e.g. inside the build-box distrobox container."
+    exit 1
 fi
+BUILD_WITH="a host .NET SDK"
+echo "Building project ($TARGET) with $DOTNET ($("$DOTNET" --version))..."
+"$DOTNET" "${BUILD_ARGS[@]}"
 
 DLL_PATH="VRCOSC.Modules/bin/Release/net10.0-windows10.0.26100.0/win-x64/Bluscream.Modules.dll"
 if [ ! -f "$DLL_PATH" ]; then
