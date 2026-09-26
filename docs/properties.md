@@ -289,8 +289,8 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [27](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L27) | `OpenXRRuntime` | public | `public static OpenXRRuntime Shared { get; } = new();` |
-| [73](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L73) | `OpenXRRuntime` | public | `public OpenXRSnapshot Snapshot => _snapshot;` |
-| [80](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L80) | `OpenXRRuntime` | public | `public bool UseOverlaySession { get; set; } = true;` |
+| [72](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L72) | `OpenXRRuntime` | public | `public OpenXRSnapshot Snapshot => _snapshot;` |
+| [79](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L79) | `OpenXRRuntime` | public | `public bool UseOverlaySession { get; set; } = true;` |
 
 
 ## Status

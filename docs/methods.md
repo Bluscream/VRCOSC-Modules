@@ -731,34 +731,34 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [13](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L13) | `OpenXRRuntime` | private | `private bool TryInitialise()` |
-| [53](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L53) | `OpenXRRuntime` | private | `private HashSet<string>? EnumerateExtensions()` |
-| [86](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L86) | `OpenXRRuntime` | private | `private bool CreateInstance(IReadOnlyList<string> extensions)` |
-| [126](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L126) | `OpenXRRuntime` | private | `private bool QuerySystem()` |
-| [145](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L145) | `OpenXRRuntime` | private | `private bool CreateSession(bool overlay)` |
-| [182](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L182) | `OpenXRRuntime` | private | `private bool CreateSpaces()` |
-| [204](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L204) | `OpenXRRuntime` | private | `private void ResolveExtensionFunctions(IReadOnlyCollection<string> enabled)` |
-| [222](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L222) | `OpenXRRuntime` | private | `private nint GetProc(string name)` |
+| [52](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L52) | `OpenXRRuntime` | private | `private HashSet<string>? EnumerateExtensions()` |
+| [85](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L85) | `OpenXRRuntime` | private | `private bool CreateInstance(IReadOnlyList<string> extensions)` |
+| [125](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L125) | `OpenXRRuntime` | private | `private bool QuerySystem()` |
+| [144](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L144) | `OpenXRRuntime` | private | `private bool CreateSession(bool overlay)` |
+| [181](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L181) | `OpenXRRuntime` | private | `private bool CreateSpaces()` |
+| [203](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L203) | `OpenXRRuntime` | private | `private void ResolveExtensionFunctions(IReadOnlyCollection<string> enabled)` |
+| [221](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L221) | `OpenXRRuntime` | private | `private nint GetProc(string name)` |
 
 ### `OpenXR/OpenXRRuntime.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [82](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L82) | `OpenXRRuntime` | public | `public void Acquire(Action<string> log)` |
-| [96](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L96) | `OpenXRRuntime` | public | `public void Release(Action<string> log)` |
-| [114](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L114) | `OpenXRRuntime` | private | `private void Log(string message)` |
-| [122](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L122) | `OpenXRRuntime` | private | `private void LogOnce(string message)` |
-| [136](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L136) | `OpenXRRuntime` | private | `private void LogThrottled(string key, string message, TimeSpan every)` |
-| [148](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L148) | `OpenXRRuntime` | private | `private void ThreadMain(CancellationToken ct)` |
-| [188](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L188) | `OpenXRRuntime` | private | `private void PumpEvents()` |
-| [220](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L220) | `OpenXRRuntime` | private | `private void OnSessionStateChanged(SessionState state)` |
-| [256](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L256) | `OpenXRRuntime` | private | `private void FrameStep()` |
-| [320](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L320) | `OpenXRRuntime` | private | `private TimeSpan FramePeriod()` |
-| [327](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L327) | `OpenXRRuntime` | private | `private long EstimateNow()` |
-| [342](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L342) | `OpenXRRuntime` | private | `private void UpdateFrameData(long time)` |
-| [351](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L351) | `OpenXRRuntime` | private | `private bool LocateHead(long time)` |
-| [359](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L359) | `OpenXRRuntime` | private | `private void PollRefreshRate()` |
-| [373](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L373) | `OpenXRRuntime` | private | `private void Publish()` |
-| [402](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L402) | `OpenXRRuntime` | private | `private void TearDown()` |
+| [81](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L81) | `OpenXRRuntime` | public | `public void Acquire(Action<string> log)` |
+| [95](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L95) | `OpenXRRuntime` | public | `public void Release(Action<string> log)` |
+| [113](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L113) | `OpenXRRuntime` | private | `private void Log(string message)` |
+| [121](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L121) | `OpenXRRuntime` | private | `private void LogOnce(string message)` |
+| [135](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L135) | `OpenXRRuntime` | private | `private void LogThrottled(string key, string message, TimeSpan every)` |
+| [147](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L147) | `OpenXRRuntime` | private | `private void ThreadMain(CancellationToken ct)` |
+| [187](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L187) | `OpenXRRuntime` | private | `private void PumpEvents()` |
+| [219](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L219) | `OpenXRRuntime` | private | `private void OnSessionStateChanged(SessionState state)` |
+| [255](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L255) | `OpenXRRuntime` | private | `private void FrameStep()` |
+| [311](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L311) | `OpenXRRuntime` | private | `private TimeSpan FramePeriod()` |
+| [318](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L318) | `OpenXRRuntime` | private | `private long EstimateNow()` |
+| [333](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L333) | `OpenXRRuntime` | private | `private void UpdateFrameData(long time)` |
+| [342](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L342) | `OpenXRRuntime` | private | `private bool LocateHead(long time)` |
+| [350](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L350) | `OpenXRRuntime` | private | `private void PollRefreshRate()` |
+| [364](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L364) | `OpenXRRuntime` | private | `private void Publish()` |
+| [393](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L393) | `OpenXRRuntime` | private | `private void TearDown()` |
 
 ### `OpenXR/OpenXRStatisticsModule.cs`
 

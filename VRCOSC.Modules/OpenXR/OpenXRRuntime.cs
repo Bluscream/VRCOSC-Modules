@@ -54,7 +54,6 @@ internal sealed unsafe partial class OpenXRRuntime
     private bool _running;
     private bool _overlaySession;
     private bool _waitFrameWorks = true;
-    private bool _submitFrames = true;
     private long _lastPredictedTime;
     private long _lastPredictedPeriod;
     private readonly Stopwatch _sinceLastFrame = new();
@@ -268,35 +267,27 @@ internal sealed unsafe partial class OpenXRRuntime
                 _lastPredictedPeriod = frameState.PredictedDisplayPeriod;
                 _sinceLastFrame.Restart();
 
-                // A headless session has nothing to submit. Monado accepts xrWaitFrame alone
-                // and answers xrEndFrame with CALL_ORDER_INVALID; other runtimes may require
-                // the full begin/end pair, so try it once and drop it if it is refused.
-                if (_submitFrames)
-                {
-                    var beginInfo = new FrameBeginInfo { Type = StructureType.FrameBeginInfo };
-                    _xr.BeginFrame(_session, &beginInfo);
-                }
+                // xrWaitFrame blocks until the PREVIOUS frame's xrBeginFrame has been called, so
+                // BeginFrame must run every frame or the loop parks forever. A headless session
+                // has nothing to submit; Monado answers xrEndFrame with CALL_ORDER_INVALID, which
+                // is harmless here (the next BeginFrame simply reports FRAME_DISCARDED).
+                var beginInfo = new FrameBeginInfo { Type = StructureType.FrameBeginInfo };
+                var br = _xr.BeginFrame(_session, &beginInfo);
+                if (br != Result.Success && br != Result.FrameDiscarded) LogOnce($"xrBeginFrame returned {br}");
 
                 time = _lastPredictedTime;
                 UpdateFrameData(time);
 
-                if (_submitFrames)
+                var endInfo = new FrameEndInfo
                 {
-                    var endInfo = new FrameEndInfo
-                    {
-                        Type = StructureType.FrameEndInfo,
-                        DisplayTime = _lastPredictedTime,
-                        EnvironmentBlendMode = EnvironmentBlendMode.Opaque,
-                        LayerCount = 0,
-                        Layers = null
-                    };
-                    r = _xr.EndFrame(_session, &endInfo);
-                    if (r != Result.Success)
-                    {
-                        _submitFrames = false;
-                        Log($"xrEndFrame returned {r}; continuing with xrWaitFrame only (headless session).");
-                    }
-                }
+                    Type = StructureType.FrameEndInfo,
+                    DisplayTime = _lastPredictedTime,
+                    EnvironmentBlendMode = EnvironmentBlendMode.Opaque,
+                    LayerCount = 0,
+                    Layers = null
+                };
+                r = _xr.EndFrame(_session, &endInfo);
+                if (r != Result.Success) LogOnce($"xrEndFrame returned {r} (expected on a headless session; ignored)");
 
                 if (_sinceLastFrame.Elapsed < TimeSpan.FromMilliseconds(1))
                     Thread.Sleep(FramePeriod()); // headless WaitFrame may not pace; do it ourselves
