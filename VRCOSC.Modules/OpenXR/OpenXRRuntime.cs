@@ -368,10 +368,22 @@ internal sealed unsafe partial class OpenXRRuntime
 
     // ─────────────────────────── Publish / teardown ───────────────────────────
 
+    private DateTime _nextSnapshotLog = DateTime.MinValue;
+
     private void Publish()
     {
         var rate = _refreshRate;
         if (rate <= 0f && _lastPredictedPeriod > 0) rate = 1_000_000_000f / _lastPredictedPeriod;
+
+        if (_running && DateTime.UtcNow >= _nextSnapshotLog)
+        {
+            _nextSnapshotLog = DateTime.UtcNow + TimeSpan.FromSeconds(60);
+            var l = _handInputs[0];
+            var r = _handInputs[1];
+            Log($"OpenXR snapshot: {rate:0} Hz, head tracked={_headTracked}, state={_state}, " +
+                $"L={(l.IsActive ? $"{l.Source} curls {l.Index:0.00}/{l.Middle:0.00}/{l.Ring:0.00}/{l.Pinky:0.00} touch a={l.PrimaryTouch} b={l.SecondaryTouch} stick={l.StickTouch} pad={l.PadTouch}" : "inactive")}, " +
+                $"R={(r.IsActive ? $"{r.Source} curls {r.Index:0.00}/{r.Middle:0.00}/{r.Ring:0.00}/{r.Pinky:0.00} touch a={r.PrimaryTouch} b={r.SecondaryTouch} stick={r.StickTouch} pad={r.PadTouch}" : "inactive")}");
+        }
 
         _snapshot = new OpenXRSnapshot(
             RuntimeAvailable: _instance.Handle != 0,

@@ -757,8 +757,8 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [342](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L342) | `OpenXRRuntime` | private | `private void UpdateFrameData(long time)` |
 | [351](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L351) | `OpenXRRuntime` | private | `private bool LocateHead(long time)` |
 | [359](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L359) | `OpenXRRuntime` | private | `private void PollRefreshRate()` |
-| [371](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L371) | `OpenXRRuntime` | private | `private void Publish()` |
-| [390](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L390) | `OpenXRRuntime` | private | `private void TearDown()` |
+| [373](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L373) | `OpenXRRuntime` | private | `private void Publish()` |
+| [402](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L402) | `OpenXRRuntime` | private | `private void TearDown()` |
 
 ### `OpenXR/OpenXRStatisticsModule.cs`
 
