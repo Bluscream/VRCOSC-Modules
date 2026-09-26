@@ -4,7 +4,7 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**715** total across **15** modules.
+**755** total across **15** modules.
 
 | Module | Count |
 |---|---|
@@ -15,11 +15,11 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [HTTPServer](#httpserver) | 41 |
 | [HomeAssistant](#homeassistant) | 42 |
 | [IRCBridge](#ircbridge) | 103 |
-| [LinuxHardwareStats](#linuxhardwarestats) | 27 |
+| [LinuxHardwareStats](#linuxhardwarestats) | 29 |
 | [LinuxMedia](#linuxmedia) | 8 |
 | [LinuxProcessManager](#linuxprocessmanager) | 4 |
 | [Notifications](#notifications) | 25 |
-| [OpenXR](#openxr) | 40 |
+| [OpenXR](#openxr) | 78 |
 | [Utilities](#utilities) | 245 |
 | [VRCXBridge](#vrcxbridge) | 34 |
 | [VRChatSettings](#vrchatsettings) | 77 |
@@ -514,21 +514,23 @@ Every method and constructor, grouped by module and file. The Owner column is th
 |---|---|---|---|
 | [26](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L26) | `LinuxHardwareStatsModule` | protected | `protected override void OnPreLoad()` |
 | [66](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L66) | `LinuxHardwareStatsModule` | protected | `protected override void OnPostLoad()` |
-| [130](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L130) | `LinuxHardwareStatsModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [138](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L138) | `LinuxHardwareStatsModule` | private | `private void DeployHelperScript()` |
-| [182](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L182) | `LinuxHardwareStatsModule` | public | `public LinuxCPU GetCPU() => _cpu;` |
-| [183](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L183) | `LinuxHardwareStatsModule` | public | `public LinuxGPU GetGPU() => _gpu;` |
-| [184](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L184) | `LinuxHardwareStatsModule` | public | `public LinuxRAM GetRAM() => _ram;` |
-| [185](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L185) | `LinuxHardwareStatsModule` | public | `public LinuxNetwork GetNetwork() => _network;` |
-| [186](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L186) | `LinuxHardwareStatsModule` | public | `public LinuxOS GetOS() => _os;` |
-| [189](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L189) | `LinuxHardwareStatsModule` | private | `private void UpdateParameters()` |
-| [435](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L435) | `LinuxHardwareStatsModule` | protected | `protected override Task OnModuleStop()` |
-| [440](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L440) | `LinuxHardwareStatsModule` | private | `private static string FormatBytes(float mb)` |
-| [462](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L462) | `LinuxHardwareStatsModule` | private | `private static string FormatBytesPerSecond(float kb)` |
-| [484](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L484) | `LinuxHardwareStatsModule` | private | `private static string ApplyRedaction(string value, string pattern, string redactedText)` |
-| [495](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L495) | `LinuxHardwareStatsModule` | private | `private void LogDiagnostics(int lineCount, int systemTemp)` |
-| [714](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L714) | `HardwareNameParser` | public | `public static CpuInfo ParseCpu(string fullName)` |
-| [760](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L760) | `HardwareNameParser` | public | `public static GpuInfo ParseGpu(string fullName)` |
+| [134](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L134) | `LinuxHardwareStatsModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [143](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L143) | `LinuxHardwareStatsModule` | private | `private void DeployHelperScript()` |
+| [187](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L187) | `LinuxHardwareStatsModule` | public | `public LinuxCPU GetCPU() => _cpu;` |
+| [188](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L188) | `LinuxHardwareStatsModule` | public | `public LinuxGPU GetGPU() => _gpu;` |
+| [189](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L189) | `LinuxHardwareStatsModule` | public | `public LinuxRAM GetRAM() => _ram;` |
+| [190](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L190) | `LinuxHardwareStatsModule` | public | `public LinuxNetwork GetNetwork() => _network;` |
+| [191](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L191) | `LinuxHardwareStatsModule` | public | `public LinuxOS GetOS() => _os;` |
+| [194](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L194) | `LinuxHardwareStatsModule` | private | `private void UpdateParameters()` |
+| [451](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L451) | `LinuxHardwareStatsModule` | protected | `protected override Task OnModuleStop()` |
+| [456](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L456) | `LinuxHardwareStatsModule` | private | `private static string FormatBytes(float mb)` |
+| [478](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L478) | `LinuxHardwareStatsModule` | private | `private static string FormatBytesPerSecond(float kb)` |
+| [500](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L500) | `LinuxHardwareStatsModule` | private | `private static string ApplyRedaction(string value, string pattern, string redactedText)` |
+| [511](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L511) | `LinuxHardwareStatsModule` | private | `private void LogDiagnostics(int lineCount, int systemTemp)` |
+| [719](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L719) | `LinuxNetwork` | public | `public void RecordSample()` |
+| [725](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L725) | `LinuxNetwork` | public | `public void ResetSession()` |
+| [773](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L773) | `HardwareNameParser` | public | `public static CpuInfo ParseCpu(string fullName)` |
+| [819](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L819) | `HardwareNameParser` | public | `public static GpuInfo ParseGpu(string fullName)` |
 
 ### `LinuxHardwareStats/Nodes.cs`
 
@@ -634,65 +636,128 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 ## OpenXR
 
+### `OpenXR/OpenXRDeviceProbe.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [65](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L65) | `OpenXRDeviceProbe` | public | `public void Deploy(Action<string> log)` |
+| [103](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L103) | `OpenXRDeviceProbe` | public | `public void Poll(Action<string> log)` |
+| [125](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L125) | `OpenXRDeviceProbe` | private | `private void ReadResult(Action<string> log)` |
+| [157](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L157) | `OpenXRDeviceProbe` | private | `private static DeviceProbeResult Convert(RawResult raw, DateTime written)` |
+
 ### `OpenXR/OpenXRGestureExtensionsModule.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [32](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L32) | `OpenXRGestureExtensionsModule` | protected | `protected override void OnPreLoad()` |
-| [44](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L44) | `OpenXRGestureExtensionsModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [67](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L67) | `OpenXRGestureExtensionsModule` | protected | `protected override Task OnModuleStop()` |
-| [75](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L75) | `OpenXRGestureExtensionsModule` | private | `private void SendParameters()` |
-| [89](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L89) | `OpenXRGestureExtensionsModule` | private | `private GestureName GetGesture(float[] curl)` |
-| [99](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L99) | `OpenXRGestureExtensionsModule` | private | `private void UpdateHandCurls()` |
-| [105](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L105) | `OpenXRGestureExtensionsModule` | private | `private static unsafe void UpdateSingleHand(ExtHandTracking ext, HandTrackerEXT tracker, float[] curl)` |
-| [128](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L128) | `OpenXRGestureExtensionsModule` | private | `private static unsafe float EstimateCurl(HandJointLocationEXT* joints, int proxIdx, int tipIdx)` |
-| [139](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L139) | `OpenXRGestureExtensionsModule` | private | `private unsafe bool InitialiseOpenXR()` |
-| [163](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L163) | `OpenXRGestureExtensionsModule` | private | `private void CreateHandTrackers()` |
-| [186](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L186) | `OpenXRGestureExtensionsModule` | private | `private void TearDownOpenXR()` |
+| [20](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L20) | `OpenXRGestureExtensionsModule` | protected | `protected override void OnPreLoad()` |
+| [30](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L30) | `OpenXRGestureExtensionsModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [36](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L36) | `OpenXRGestureExtensionsModule` | protected | `protected override Task OnModuleStop()` |
+| [43](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L43) | `OpenXRGestureExtensionsModule` | private | `private void SendParameters()` |
+| [54](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L54) | `OpenXRGestureExtensionsModule` | private | `private GestureName GetGesture(HandInput hand)` |
+| [64](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L64) | `OpenXRGestureExtensionsModule` | private | `private bool IsDoubleGun(HandInput h) =>` |
+| [71](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L71) | `OpenXRGestureExtensionsModule` | private | `private bool IsMiddleFinger(HandInput h) =>` |
+| [77](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L77) | `OpenXRGestureExtensionsModule` | private | `private bool IsPinkyFinger(HandInput h) =>` |
+
+### `OpenXR/OpenXRHands.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [30](../VRCOSC.Modules/OpenXR/OpenXRHands.cs#L30) | `OpenXRRuntime` | private | `private void InitialiseHands(bool extensionEnabled, bool dataSourceEnabled)` |
+| [72](../VRCOSC.Modules/OpenXR/OpenXRHands.cs#L72) | `OpenXRRuntime` | private | `private void LocateHands(long time)` |
+| [133](../VRCOSC.Modules/OpenXR/OpenXRHands.cs#L133) | `OpenXRRuntime` | private | `private static float FingerCurl(HandJointLocationEXT* joints, int[] chain)` |
+| [151](../VRCOSC.Modules/OpenXR/OpenXRHands.cs#L151) | `OpenXRRuntime` | private | `private static Vector3 Direction(Vector3f from, Vector3f to)` |
+| [154](../VRCOSC.Modules/OpenXR/OpenXRHands.cs#L154) | `OpenXRRuntime` | private | `private static float AngleDegrees(Vector3 a, Vector3 b)` |
+| [161](../VRCOSC.Modules/OpenXR/OpenXRHands.cs#L161) | `OpenXRRuntime` | private | `private void DestroyHands()` |
 
 ### `OpenXR/OpenXRHapticControlModule.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [30](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L30) | `OpenXRHapticControlModule` | protected | `protected override void OnPreLoad()` |
-| [44](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L44) | `OpenXRHapticControlModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [60](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L60) | `OpenXRHapticControlModule` | protected | `protected override Task OnModuleStop()` |
-| [66](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L66) | `OpenXRHapticControlModule` | protected | `protected override void OnRegisteredParameterReceived(RegisteredParameter parameter)` |
-| [117](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L117) | `OpenXRHapticControlModule` | private | `private unsafe void ApplyHaptic(Silk.NET.OpenXR.Action action, float dur, float freq, float amp)` |
-| [133](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L133) | `OpenXRHapticControlModule` | private | `private unsafe bool InitialiseOpenXR()` |
-| [153](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L153) | `OpenXRHapticControlModule` | private | `private Silk.NET.OpenXR.Action CreateHapticAction(string name, string localName)` |
-| [164](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L164) | `OpenXRHapticControlModule` | private | `private void TearDownOpenXR()` |
-| [177](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L177) | `OpenXRHapticControlModule` | private | `private static float ConvertFrequency(float v) => Math.Clamp(v, 0, 1) * 300f;` |
-| [178](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L178) | `OpenXRHapticControlModule` | private | `private static float ConvertAmplitude(float v) => Math.Clamp(v, 0, 1);` |
+| [22](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L22) | `OpenXRHapticControlModule` | protected | `protected override void OnPreLoad()` |
+| [38](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L38) | `OpenXRHapticControlModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [47](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L47) | `OpenXRHapticControlModule` | protected | `protected override Task OnModuleStop()` |
+| [53](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L53) | `OpenXRHapticControlModule` | protected | `protected override void OnRegisteredParameterReceived(RegisteredParameter parameter)` |
+| [87](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L87) | `OpenXRHapticControlModule` | private | `private void Trigger(XrHand hand, float duration, float frequency, float amplitude)` |
+| [99](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L99) | `OpenXRHapticControlModule` | private | `private static float ConvertFrequency(float frequency) => Math.Clamp(frequency, 0f, 1f) * 100f;` |
+| [100](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L100) | `OpenXRHapticControlModule` | private | `private static float ConvertAmplitude(float amplitude) => Math.Clamp(amplitude, 0f, 1f);` |
 
 ### `OpenXR/OpenXRHelpers.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [21](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L21) | `OpenXRHelper` | public | `public static void WriteUtf8(byte* dst, int maxLen, string value)` |
-| [107](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L107) | `OpenXRHelper` | public | `public static void DestroySessionAndInstance(ref XR? xr, ref Session session, ref Instance instance)` |
-| [119](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L119) | `OpenXRHelper` | public | `public static void FillApplicationInfo(ref ApplicationInfo info, string appName)` |
-| [125](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L125) | `OpenXRHelper` | public | `public static void FillActionSetCreateInfo(ref ActionSetCreateInfo info, string name, string localName)` |
-| [136](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L136) | `OpenXRHelper` | public | `public static void FillActionCreateInfo(ref ActionCreateInfo info, string name, string localName)` |
-| [148](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L148) | `OpenXRHelper` | public | `public static IntPtr[] AllocStringPointers(IEnumerable<string> strings)` |
-| [162](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L162) | `OpenXRHelper` | public | `public static void FreeStringPointers(IntPtr[] ptrs)` |
-| [178](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L178) | `OpenXRDeviceState` | public | `public void Reset()` |
+| [20](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L20) | `OpenXRHelper` | public | `public static void WriteUtf8(byte* dst, int maxLen, string value)` |
+| [29](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L29) | `OpenXRHelper` | public | `public static string ReadUtf8(byte* src, int maxLen)` |
+| [36](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L36) | `OpenXRHelper` | public | `public static void FillApplicationInfo(ref ApplicationInfo info, string appName)` |
+| [42](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L42) | `OpenXRHelper` | public | `public static void FillActionSetCreateInfo(ref ActionSetCreateInfo info, string name, string localName)` |
+| [48](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L48) | `OpenXRHelper` | public | `public static void FillActionCreateInfo(ref ActionCreateInfo info, string name, string localName)` |
+| [55](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L55) | `OpenXRHelper` | public | `public static IntPtr[] AllocStringPointers(IReadOnlyList<string> strings)` |
+| [68](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L68) | `OpenXRHelper` | public | `public static void FreeStringPointers(IntPtr[] ptrs)` |
+| [74](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L74) | `OpenXRHelper` | public | `public static ulong Path(XR xr, Instance instance, string path)` |
+| [87](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L87) | `OpenXRHelper` | public | `public static string PathToString(XR xr, Instance instance, ulong path)` |
+| [106](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L106) | `OpenXRHelper` | public | `public static bool IsTracked(SpaceLocationFlags flags)` |
+| [109](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L109) | `OpenXRHelper` | public | `public static bool IsValid(SpaceLocationFlags flags)` |
+
+### `OpenXR/OpenXRInput.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [36](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L36) | `OpenXRRuntime` | public | `public void RequestHaptic(XrHand hand, float durationSeconds, float frequencyHz, float amplitude)` |
+| [39](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L39) | `OpenXRRuntime` | private | `private void InitialiseInput()` |
+| [76](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L76) | `OpenXRRuntime` | private | `private XrAction CreateAction(ActionType type, string name, string localName)` |
+| [136](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L136) | `OpenXRRuntime` | private | `private bool SuggestBindings(string profile, List<(XrAction Action, string? Left, string? Right)> bindings)` |
+| [168](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L168) | `OpenXRRuntime` | private | `private void SyncInput()` |
+| [211](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L211) | `OpenXRRuntime` | private | `private float ReadFloat(XrAction action, ulong subaction, out bool isActive)` |
+| [224](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L224) | `OpenXRRuntime` | private | `private bool ReadBool(XrAction action, ulong subaction)` |
+| [235](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L235) | `OpenXRRuntime` | private | `private void RefreshInteractionProfiles()` |
+| [249](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L249) | `OpenXRRuntime` | private | `private void ApplyQueuedHaptics()` |
+| [268](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L268) | `OpenXRRuntime` | private | `private void DestroyInput()` |
+
+### `OpenXR/OpenXRRuntime.Init.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [13](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L13) | `OpenXRRuntime` | private | `private bool TryInitialise()` |
+| [52](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L52) | `OpenXRRuntime` | private | `private HashSet<string>? EnumerateExtensions()` |
+| [85](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L85) | `OpenXRRuntime` | private | `private bool CreateInstance(IReadOnlyList<string> extensions)` |
+| [125](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L125) | `OpenXRRuntime` | private | `private bool QuerySystem()` |
+| [144](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L144) | `OpenXRRuntime` | private | `private bool CreateSession(bool overlay)` |
+| [181](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L181) | `OpenXRRuntime` | private | `private bool CreateSpaces()` |
+| [203](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L203) | `OpenXRRuntime` | private | `private void ResolveExtensionFunctions(IReadOnlyCollection<string> enabled)` |
+| [221](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L221) | `OpenXRRuntime` | private | `private nint GetProc(string name)` |
+
+### `OpenXR/OpenXRRuntime.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [81](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L81) | `OpenXRRuntime` | public | `public void Acquire(Action<string> log)` |
+| [95](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L95) | `OpenXRRuntime` | public | `public void Release(Action<string> log)` |
+| [113](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L113) | `OpenXRRuntime` | private | `private void Log(string message)` |
+| [121](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L121) | `OpenXRRuntime` | private | `private void LogOnce(string message)` |
+| [130](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L130) | `OpenXRRuntime` | private | `private void ThreadMain(CancellationToken ct)` |
+| [170](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L170) | `OpenXRRuntime` | private | `private void PumpEvents()` |
+| [202](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L202) | `OpenXRRuntime` | private | `private void OnSessionStateChanged(SessionState state)` |
+| [238](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L238) | `OpenXRRuntime` | private | `private void FrameStep()` |
+| [289](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L289) | `OpenXRRuntime` | private | `private TimeSpan FramePeriod()` |
+| [296](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L296) | `OpenXRRuntime` | private | `private long EstimateNow()` |
+| [311](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L311) | `OpenXRRuntime` | private | `private void UpdateFrameData(long time)` |
+| [320](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L320) | `OpenXRRuntime` | private | `private bool LocateHead(long time)` |
+| [328](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L328) | `OpenXRRuntime` | private | `private void PollRefreshRate()` |
+| [340](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L340) | `OpenXRRuntime` | private | `private void Publish()` |
+| [359](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L359) | `OpenXRRuntime` | private | `private void TearDown()` |
 
 ### `OpenXR/OpenXRStatisticsModule.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [32](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L32) | `OpenXRStatisticsModule` | protected | `protected override void OnPreLoad()` |
+| [20](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L20) | `OpenXRStatisticsModule` | protected | `protected override void OnPreLoad()` |
 | [64](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L64) | `OpenXRStatisticsModule` | protected | `protected override void OnPostLoad()` |
 | [83](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L83) | `OpenXRStatisticsModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [109](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L109) | `OpenXRStatisticsModule` | protected | `protected override Task OnModuleStop()` |
-| [116](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L116) | `OpenXRStatisticsModule` | private | `private bool InitialiseOpenXR()` |
-| [127](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L127) | `OpenXRStatisticsModule` | private | `private void TearDownOpenXR()` |
-| [135](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L135) | `OpenXRStatisticsModule` | private | `private void UpdateVariables()` |
-| [148](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L148) | `OpenXRStatisticsModule` | private | `private void UpdateSlowParameters()` |
-| [172](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L172) | `OpenXRStatisticsModule` | private | `private void UpdateRealtimeParameters()` |
-| [194](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L194) | `OpenXRStatisticsModule` | private | `private float EstimateFpsFromFrameState()` |
-| [206](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L206) | `OpenXRStatisticsModule` | private | `private void PollBatteryViaUPower()` |
+| [93](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L93) | `OpenXRStatisticsModule` | protected | `protected override Task OnModuleStop()` |
+| [100](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L100) | `OpenXRStatisticsModule` | private | `private void UpdateVariables()` |
+| [120](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L120) | `OpenXRStatisticsModule` | private | `private void UpdateMetadataParameters()` |
+| [151](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L151) | `OpenXRStatisticsModule` | private | `private void UpdateRealtimeParameters()` |
+| [185](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L185) | `OpenXRStatisticsModule` | private | `private static bool IsDashboardVisible(DeviceProbeResult probe)` |
+| [188](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L188) | `OpenXRStatisticsModule` | private | `private static int Percent(DeviceBattery battery) => battery.Present ? (int)MathF.Round(battery.Charge * 100f) : 0;` |
 
 
 ## Utilities
@@ -863,23 +928,23 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [45](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L45) | `LinuxUtils` | public | `public static string GetWineHomeDir()` |
-| [101](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L101) | `LinuxUtils` | private | `private static bool CanWriteToDirectory(string dirPath)` |
-| [125](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L125) | `LinuxUtils` | public | `public static void RunWine(string command, Action<Exception>? onError = null)` |
-| [150](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L150) | `LinuxUtils` | public | `public static string WrapHostCommand(string command)` |
-| [158](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L158) | `LinuxUtils` | public | `public static void RunHost(string command, Action<Exception>? onError = null)` |
-| [169](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L169) | `LinuxUtils` | public | `public static void RunHostScript(string scriptName, string? arguments = null, Action<Exception>? onError = null)` |
-| [183](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L183) | `LinuxUtils` | public | `public static string RunShell(string command, int timeoutMs = 5000)` |
-| [209](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L209) | `LinuxUtils` | public | `public static string RunShellHost(string command, int timeoutMs = 5000)` |
-| [271](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L271) | `LinuxUtils` | private | `private static UPowerDevice ParseUPowerInfo(string path, string info)` |
-| [311](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L311) | `LinuxUtils` | public | `public static void StartHostProcess(string processName, Action<Exception>? onError = null)` |
-| [317](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L317) | `LinuxUtils` | public | `public static void StopHostProcess(string processName, Action<Exception>? onError = null)` |
-| [331](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L331) | `LinuxUtils` | public | `public static bool IsHostProcessRunning(string processName, bool matchFullCommandLine = false)` |
-| [339](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L339) | `LinuxUtils` | public | `public static string? GetHostProcessId(string processName, bool matchFullCommandLine = false)` |
-| [353](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L353) | `LinuxUtils` | public | `public static string ReadHostFile(string path, int timeoutMs = 5000)` |
-| [379](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L379) | `LinuxUtils` | private | `private static string RunShellViaWine(string command, int timeoutMs = 5000)` |
-| [405](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L405) | `LinuxUtils` | private | `private static string EscapeQuotes(string s) => s.Replace("\"", "\\\"");` |
-| [412](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L412) | `LinuxUtils` | public | `public static void ChmodPlusX(string hostPath, Action<Exception>? onError = null)` |
+| [56](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L56) | `LinuxUtils` | public | `public static string GetWineHomeDir()` |
+| [112](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L112) | `LinuxUtils` | private | `private static bool CanWriteToDirectory(string dirPath)` |
+| [136](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L136) | `LinuxUtils` | public | `public static void RunWine(string command, Action<Exception>? onError = null)` |
+| [161](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L161) | `LinuxUtils` | public | `public static string WrapHostCommand(string command)` |
+| [169](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L169) | `LinuxUtils` | public | `public static void RunHost(string command, Action<Exception>? onError = null)` |
+| [180](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L180) | `LinuxUtils` | public | `public static void RunHostScript(string scriptName, string? arguments = null, Action<Exception>? onError = null)` |
+| [194](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L194) | `LinuxUtils` | public | `public static string RunShell(string command, int timeoutMs = 5000)` |
+| [220](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L220) | `LinuxUtils` | public | `public static string RunShellHost(string command, int timeoutMs = 5000)` |
+| [282](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L282) | `LinuxUtils` | private | `private static UPowerDevice ParseUPowerInfo(string path, string info)` |
+| [322](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L322) | `LinuxUtils` | public | `public static void StartHostProcess(string processName, Action<Exception>? onError = null)` |
+| [328](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L328) | `LinuxUtils` | public | `public static void StopHostProcess(string processName, Action<Exception>? onError = null)` |
+| [342](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L342) | `LinuxUtils` | public | `public static bool IsHostProcessRunning(string processName, bool matchFullCommandLine = false)` |
+| [350](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L350) | `LinuxUtils` | public | `public static string? GetHostProcessId(string processName, bool matchFullCommandLine = false)` |
+| [364](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L364) | `LinuxUtils` | public | `public static string ReadHostFile(string path, int timeoutMs = 5000)` |
+| [390](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L390) | `LinuxUtils` | private | `private static string RunShellViaWine(string command, int timeoutMs = 5000)` |
+| [416](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L416) | `LinuxUtils` | private | `private static string EscapeQuotes(string s) => s.Replace("\"", "\\\"");` |
+| [423](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L423) | `LinuxUtils` | public | `public static void ChmodPlusX(string hostPath, Action<Exception>? onError = null)` |
 
 ### `Utilities/LogSpamFix.cs`
 

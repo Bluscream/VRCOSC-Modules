@@ -56,7 +56,7 @@ _None._
 
 Not `event`-qualified, but the same idea in practice: a slot a caller plugs a handler into. The pervasive `Action<Exception>? onError` parameter pattern shows up here when stored as a member.
 
-**7** total.
+**8** total.
 
 ### HomeAssistant
 
@@ -72,11 +72,17 @@ Not `event`-qualified, but the same idea in practice: a slot a caller plugs a ha
 | [30](../VRCOSC.Modules/IRCBridge/IRCClient.cs#L30) | `IRCClient` | `_logAction` | `Action<string>` |
 | [22](../VRCOSC.Modules/IRCBridge/Utils/IRCISupportParser.cs#L22) | `IRCISupportParser` | `OnLimitUpdated` | `Action<string>?` |
 
+### OpenXR
+
+| Line | Owner | Name | Type |
+|---|---|---|---|
+| [115](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L115) | `OpenXRRuntime` | `target` | `Action<string>?` |
+
 ### Utilities
 
 | Line | Owner | Name | Type |
 |---|---|---|---|
-| [364](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L364) | `LinuxUtils` | `onError` | `Action<Exception>?` |
+| [375](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L375) | `LinuxUtils` | `onError` | `Action<Exception>?` |
 | [315](../VRCOSC.Modules/Utilities/ReflectionUtils.cs#L315) | `ReflectionUtils` | `Logger` | `Action<string>?` |
 | [808](../VRCOSC.Modules/Utilities/ReflectionUtils.cs#L808) | `ReflectionUtils` | `forceStartAction` | `Action` |
 

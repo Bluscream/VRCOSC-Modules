@@ -1,157 +1,63 @@
 // Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 // Shared helpers for the OpenXR module suite.
 
-using Silk.NET.OpenXR;
-using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using Silk.NET.OpenXR;
 
 namespace VRCOSC.Modules.OpenXR;
 
-/// <summary>Shared utility helpers for the OpenXR module suite.</summary>
+/// <summary>Small, allocation-light helpers shared by <see cref="OpenXRRuntime"/> and the modules.</summary>
 internal static unsafe class OpenXRHelper
 {
-    // XR_MAKE_VERSION(1, 0, 0)
-    public const ulong XrVersion10 = (ulong)1 << 48;
+    /// <summary>XR_MAKE_VERSION(1, 0, 0). Requested API version for the instance.</summary>
+    public const ulong XrVersion10 = 1UL << 48;
 
-    // Total hand joints per XR_EXT_hand_tracking spec (indices 0-25)
+    /// <summary>Total hand joints per XR_EXT_hand_tracking (XR_HAND_JOINT_COUNT_EXT).</summary>
     public const int HandJointCount = 26;
 
-    // ── UTF-8 write into a fixed-size buffer pointer ──────────────
+    /// <summary>Copies <paramref name="value"/> as NUL-terminated UTF-8 into a fixed-size buffer.</summary>
     public static void WriteUtf8(byte* dst, int maxLen, string value)
     {
         var bytes = Encoding.UTF8.GetBytes(value);
-        int len = Math.Min(bytes.Length, maxLen - 1);
-        for (int i = 0; i < len; i++) dst[i] = bytes[i];
+        var len = Math.Min(bytes.Length, maxLen - 1);
+        for (var i = 0; i < len; i++) dst[i] = bytes[i];
         dst[len] = 0;
     }
 
-    // ── Instance/system bring-up ──────────────────────────────────
-    /// <summary>
-    /// Creates an OpenXR instance and resolves the HMD system id — the identical preamble
-    /// all three OpenXR modules need before they diverge into their own setup.
-    /// </summary>
-    /// <remarks>
-    /// This was copy-pasted in OpenXRStatistics, OpenXRHapticControl and
-    /// OpenXRGestureExtensions, right down to the error strings, so a fix to one silently
-    /// missed the other two. Callers that need more (a session, action sets, extensions)
-    /// still do that themselves — only the common prefix lives here.
-    /// </remarks>
-    /// <param name="log">Module logger; the caller's Log so messages keep their module prefix.</param>
-    /// <returns>True if both the instance and the system were obtained.</returns>
-    public static bool CreateInstanceAndSystem(XR xr, string appName, Action<string> log,
-                                               ref Instance instance, ref ulong systemId,
-                                               string[]? extensions = null)
+    /// <summary>Reads a NUL-terminated UTF-8 string out of a fixed-size buffer.</summary>
+    public static string ReadUtf8(byte* src, int maxLen)
     {
-        var appInfo = new ApplicationInfo();
-        FillApplicationInfo(ref appInfo, appName);
-        appInfo.ApplicationVersion = 1;
-        appInfo.ApiVersion = XrVersion10;
-
-        IntPtr[]? extPtrs = null;
-
-        try
-        {
-            var createInfo = new InstanceCreateInfo
-            {
-                Type = StructureType.InstanceCreateInfo,
-                ApplicationInfo = appInfo,
-                EnabledExtensionCount = 0,
-                EnabledExtensionNames = null
-            };
-
-            if (extensions is { Length: > 0 })
-            {
-                extPtrs = AllocStringPointers(extensions);
-                fixed (IntPtr* pp = extPtrs)
-                {
-                    createInfo.EnabledExtensionCount = (uint)extensions.Length;
-                    createInfo.EnabledExtensionNames = (byte**)pp;
-
-                    if (xr.CreateInstance(in createInfo, ref instance) != Result.Success)
-                    {
-                        log("xrCreateInstance failed — is an OpenXR runtime installed?");
-                        return false;
-                    }
-                }
-            }
-            else if (xr.CreateInstance(in createInfo, ref instance) != Result.Success)
-            {
-                log("xrCreateInstance failed — is an OpenXR runtime installed?");
-                return false;
-            }
-        }
-        finally
-        {
-            // The runtime copies the strings during xrCreateInstance, so they are safe to
-            // free as soon as the call returns.
-            if (extPtrs is not null) FreeStringPointers(extPtrs);
-        }
-
-        var sysInfo = new SystemGetInfo { Type = StructureType.SystemGetInfo, FormFactor = FormFactor.HeadMountedDisplay };
-        if (xr.GetSystem(instance, in sysInfo, ref systemId) != Result.Success)
-        {
-            log("xrGetSystem failed — is an HMD connected?");
-            return false;
-        }
-
-        return true;
+        var len = 0;
+        while (len < maxLen && src[len] != 0) len++;
+        return Encoding.UTF8.GetString(src, len);
     }
 
-    /// <summary>
-    /// Destroys the session and instance and disposes the API object — the common tail of
-    /// every module's TearDownOpenXR. Anything module-specific (action sets, actions,
-    /// hand trackers) must be destroyed by the caller BEFORE calling this, since OpenXR
-    /// requires children to go before their parent instance.
-    /// </summary>
-    public static void DestroySessionAndInstance(ref XR? xr, ref Session session, ref Instance instance)
-    {
-        if (xr is null) return;
-
-        if (session.Handle != 0) { xr.DestroySession(session); session = default; }
-        if (instance.Handle != 0) { xr.DestroyInstance(instance); instance = default; }
-
-        xr.Dispose();
-        xr = null;
-    }
-
-    // ── Per-struct fill helpers ───────────────────────────────────
     public static void FillApplicationInfo(ref ApplicationInfo info, string appName)
     {
-        fixed (ApplicationInfo* p = &info)
-            WriteUtf8((byte*)p, 128, appName);       // ApplicationName is the first field
+        fixed (byte* p = info.ApplicationName) WriteUtf8(p, 128, appName);
+        fixed (byte* p = info.EngineName) WriteUtf8(p, 128, "VRCOSC");
     }
 
     public static void FillActionSetCreateInfo(ref ActionSetCreateInfo info, string name, string localName)
     {
-        fixed (ActionSetCreateInfo* p = &info)
-        {
-            byte* raw = (byte*)p;
-            // Memory layout: StructureType(8) + Next*(8) + ActionSetName[64] + LocalizedActionSetName[128] + Priority(4)
-            WriteUtf8(raw + 16, 64, name);
-            WriteUtf8(raw + 80, 128, localName);
-        }
+        fixed (byte* p = info.ActionSetName) WriteUtf8(p, 64, name);
+        fixed (byte* p = info.LocalizedActionSetName) WriteUtf8(p, 128, localName);
     }
 
     public static void FillActionCreateInfo(ref ActionCreateInfo info, string name, string localName)
     {
-        fixed (ActionCreateInfo* p = &info)
-        {
-            byte* raw = (byte*)p;
-            // Memory layout: StructureType(8) + Next*(8) + ActionType(4) + pad(4) + ActionName[64] + LocalizedActionName[128]
-            WriteUtf8(raw + 24, 64, name);
-            WriteUtf8(raw + 88, 128, localName);
-        }
+        fixed (byte* p = info.ActionName) WriteUtf8(p, 64, name);
+        fixed (byte* p = info.LocalizedActionName) WriteUtf8(p, 128, localName);
     }
 
-    // ── Extension string pointer helpers ─────────────────────────
-    public static IntPtr[] AllocStringPointers(IEnumerable<string> strings)
+    /// <summary>Allocates NUL-terminated UTF-8 copies of <paramref name="strings"/> on the unmanaged heap.</summary>
+    public static IntPtr[] AllocStringPointers(IReadOnlyList<string> strings)
     {
-        var list = strings.ToList();
-        var ptrs = new IntPtr[list.Count];
-        for (int i = 0; i < list.Count; i++)
+        var ptrs = new IntPtr[strings.Count];
+        for (var i = 0; i < strings.Count; i++)
         {
-            var bytes = Encoding.UTF8.GetBytes(list[i] + '\0');
+            var bytes = Encoding.UTF8.GetBytes(strings[i] + '\0');
             var ptr = Marshal.AllocHGlobal(bytes.Length);
             Marshal.Copy(bytes, 0, ptr, bytes.Length);
             ptrs[i] = ptr;
@@ -164,21 +70,94 @@ internal static unsafe class OpenXRHelper
         foreach (var p in ptrs) Marshal.FreeHGlobal(p);
     }
 
+    /// <summary>Resolves an OpenXR path string (e.g. <c>/user/hand/left</c>) to its atom.</summary>
+    public static ulong Path(XR xr, Instance instance, string path)
+    {
+        var bytes = Encoding.UTF8.GetBytes(path + '\0');
+        ulong atom = 0;
+        fixed (byte* p = bytes)
+        {
+            var r = xr.StringToPath(instance, p, &atom);
+            if (r != Result.Success) return 0;
+        }
+        return atom;
+    }
+
+    /// <summary>Converts a path atom back to its string for logging; empty on failure.</summary>
+    public static string PathToString(XR xr, Instance instance, ulong path)
+    {
+        if (path == 0) return string.Empty;
+        var buffer = new byte[256];
+        uint written = 0;
+        fixed (byte* p = buffer)
+        {
+            if (xr.PathToString(instance, path, (uint)buffer.Length, &written, p) != Result.Success) return string.Empty;
+        }
+        return written <= 1 ? string.Empty : Encoding.UTF8.GetString(buffer, 0, (int)written - 1);
+    }
+
+    /// <summary>Identity pose, for reference-space creation.</summary>
+    public static Posef IdentityPose => new()
+    {
+        Orientation = new Quaternionf(0f, 0f, 0f, 1f),
+        Position = new Vector3f(0f, 0f, 0f)
+    };
+
+    public static bool IsTracked(SpaceLocationFlags flags)
+        => (flags & SpaceLocationFlags.OrientationTrackedBit) != 0;
+
+    public static bool IsValid(SpaceLocationFlags flags)
+        => (flags & (SpaceLocationFlags.OrientationValidBit | SpaceLocationFlags.PositionValidBit))
+           == (SpaceLocationFlags.OrientationValidBit | SpaceLocationFlags.PositionValidBit);
 }
 
-/// <summary>Mutable device state, shared between Stats and Gesture modules.</summary>
-internal sealed class OpenXRDeviceState
+/// <summary>Which hand an action or tracker refers to. Values double as array indices.</summary>
+internal enum XrHand
 {
-    public bool IsConnected;
-    public bool IsPresent;
-    public bool IsCharging;
-    public float BatteryPercent;
-    public readonly float[] FingerCurl = new float[4]; // [Index, Middle, Ring, Pinky]
+    Left = 0,
+    Right = 1
+}
 
-    public void Reset()
-    {
-        IsConnected = IsPresent = IsCharging = false;
-        BatteryPercent = 0f;
-        Array.Clear(FingerCurl, 0, 4);
-    }
+/// <summary>Where the finger-curl values of a hand came from.</summary>
+internal enum HandDataSource
+{
+    None,
+    Controller,
+    HandTracking
+}
+
+/// <summary>Per-hand input snapshot. Curl values are 0 (straight) to 1 (fully bent).</summary>
+internal sealed record HandInput(
+    bool IsActive,
+    HandDataSource Source,
+    float Index,
+    float Middle,
+    float Ring,
+    float Pinky,
+    bool PrimaryTouch,
+    bool SecondaryTouch,
+    bool StickTouch,
+    bool PadTouch)
+{
+    public static readonly HandInput Inactive = new(false, HandDataSource.None, 0f, 0f, 0f, 0f, false, false, false, false);
+}
+
+/// <summary>Immutable snapshot of everything the runtime knows; replaced atomically each frame.</summary>
+internal sealed record OpenXRSnapshot(
+    bool RuntimeAvailable,
+    bool SessionRunning,
+    SessionState SessionState,
+    string RuntimeName,
+    string SystemName,
+    float DisplayRefreshRate,
+    bool HeadTracked,
+    HandInput Left,
+    HandInput Right,
+    string LeftProfile,
+    string RightProfile)
+{
+    public static readonly OpenXRSnapshot Empty = new(false, false, SessionState.Unknown, string.Empty, string.Empty, 0f, false,
+        HandInput.Inactive, HandInput.Inactive, string.Empty, string.Empty);
+
+    public HandInput Hand(XrHand hand) => hand == XrHand.Left ? Left : Right;
 }

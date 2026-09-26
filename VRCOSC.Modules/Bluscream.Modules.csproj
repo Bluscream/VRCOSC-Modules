@@ -98,6 +98,7 @@
     <EmbeddedResource Include="LinuxMedia\vrcosc_mpris_query.sh" LogicalName="Bluscream.Modules.LinuxMedia.vrcosc_mpris_query.sh" />
     <EmbeddedResource Include="LinuxHardwareStats\vrcosc_hwstats.sh" LogicalName="Bluscream.Modules.LinuxHardwareStats.vrcosc_hwstats.sh" />
     <EmbeddedResource Include="OpenXR\openxr_loader.dll" LogicalName="Bluscream.Modules.OpenXR.openxr_loader.dll" />
+    <EmbeddedResource Include="OpenXR\vrcosc_xr_query.sh" LogicalName="Bluscream.Modules.OpenXR.vrcosc_xr_query.sh" />
   </ItemGroup>
   <!--
     No post-build deploy step here on purpose. Deployment is owned by update.sh,

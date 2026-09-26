@@ -4,7 +4,7 @@
 
 Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
-**224** total across **15** modules.
+**240** total across **15** modules.
 
 | Module | Count |
 |---|---|
@@ -19,7 +19,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [LinuxMedia](#linuxmedia) | 5 |
 | [LinuxProcessManager](#linuxprocessmanager) | 2 |
 | [Notifications](#notifications) | 19 |
-| [OpenXR](#openxr) | 12 |
+| [OpenXR](#openxr) | 28 |
 | [Utilities](#utilities) | 28 |
 | [VRCXBridge](#vrcxbridge) | 12 |
 | [VRChatSettings](#vrchatsettings) | 21 |
@@ -385,18 +385,18 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [17](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L17) | public | `public sealed class LinuxHardwareStatsModule : Module` |
-| [546](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L546) | private | `private enum HardwareStatsSetting` |
-| [556](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L556) | private | `private enum HardwareStatsParameter` |
-| [584](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L584) | private | `private enum HardwareStatsState` |
-| [589](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L589) | private | `private enum HardwareStatsVariable` |
-| [633](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L633) | public | `public class LinuxCPU` |
-| [643](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L643) | public | `public class LinuxGPU` |
-| [657](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L657) | public | `public class LinuxRAM` |
-| [665](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L665) | public | `public class LinuxNetwork` |
-| [673](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L673) | public | `public class LinuxOS` |
-| [690](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L690) | public | `public static class HardwareNameParser` |
-| [692](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L692) | public | `public record CpuInfo(string Manufacturer, string Model, string FullName);` |
-| [693](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L693) | public | `public record GpuInfo(string Manufacturer, string Model, string FullName);` |
+| [562](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L562) | private | `private enum HardwareStatsSetting` |
+| [572](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L572) | private | `private enum HardwareStatsParameter` |
+| [600](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L600) | private | `private enum HardwareStatsState` |
+| [605](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L605) | private | `private enum HardwareStatsVariable` |
+| [653](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L653) | public | `public class LinuxCPU` |
+| [663](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L663) | public | `public class LinuxGPU` |
+| [677](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L677) | public | `public class LinuxRAM` |
+| [685](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L685) | public | `public class LinuxNetwork` |
+| [732](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L732) | public | `public class LinuxOS` |
+| [749](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L749) | public | `public static class HardwareNameParser` |
+| [751](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L751) | public | `public record CpuInfo(string Manufacturer, string Model, string FullName);` |
+| [752](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L752) | public | `public record GpuInfo(string Manufacturer, string Model, string FullName);` |
 
 ### `LinuxHardwareStats/Nodes.cs`
 
@@ -486,37 +486,78 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
 ## OpenXR
 
+### `OpenXR/OpenXRDeviceProbe.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [12](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L12) | internal | `internal sealed record DeviceBattery(bool Present, bool Charging, float Charge)` |
+| [18](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L18) | internal | `internal sealed record RuntimeClient(string Name, bool IsPrimary, bool IsActive, bool IsVisible, bool IsFocused, bool IsOverlay);` |
+| [21](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L21) | internal | `internal sealed record DeviceProbeResult(` |
+| [43](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L43) | internal | `internal sealed class OpenXRDeviceProbe` |
+| [180](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L180) | private | `private sealed class RawResult` |
+| [188](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L188) | private | `private sealed class RawDevice` |
+| [196](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L196) | private | `private sealed class RawClient` |
+
 ### `OpenXR/OpenXRGestureExtensionsModule.cs`
 
 | Line | Visibility | Declaration |
 |---|---|---|
 | [16](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L16) | public | `public class OpenXRGestureExtensionsModule : Module` |
-| [198](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L198) | private | `private enum GestureSetting { Threshold }` |
-| [199](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L199) | private | `private enum GestureParameter { GestureLeft, GestureRight }` |
-| [200](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L200) | private | `private enum GestureName { None = 0, DoubleGun = 1, MiddleFinger = 2, PinkyFinger = 3 }` |
+| [83](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L83) | private | `private enum GestureSetting { Threshold }` |
+| [84](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L84) | private | `private enum GestureParameter { GestureLeft, GestureRight }` |
+| [85](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L85) | private | `private enum GestureName { None, DoubleGun, MiddleFinger, PinkyFinger }` |
+
+### `OpenXR/OpenXRHands.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [10](../VRCOSC.Modules/OpenXR/OpenXRHands.cs#L10) | internal | `internal sealed unsafe partial class OpenXRRuntime` |
 
 ### `OpenXR/OpenXRHapticControlModule.cs`
 
 | Line | Visibility | Declaration |
 |---|---|---|
 | [14](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L14) | public | `public class OpenXRHapticControlModule : Module` |
-| [180](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L180) | private | `private enum OpenXRHapticParameter` |
+| [102](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L102) | private | `private enum HapticParameter` |
 
 ### `OpenXR/OpenXRHelpers.cs`
 
 | Line | Visibility | Declaration |
 |---|---|---|
-| [12](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L12) | internal | `internal static unsafe class OpenXRHelper` |
-| [170](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L170) | internal | `internal sealed class OpenXRDeviceState` |
+| [11](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L11) | internal | `internal static unsafe class OpenXRHelper` |
+| [115](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L115) | internal | `internal enum XrHand` |
+| [122](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L122) | internal | `internal enum HandDataSource` |
+| [130](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L130) | internal | `internal sealed record HandInput(` |
+| [146](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L146) | internal | `internal sealed record OpenXRSnapshot(` |
+
+### `OpenXR/OpenXRInput.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [10](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L10) | internal | `internal sealed unsafe partial class OpenXRRuntime` |
+| [14](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L14) | private | `private readonly record struct HapticRequest(XrHand Hand, float DurationSeconds, float FrequencyHz, float Amplitude);` |
+
+### `OpenXR/OpenXRRuntime.Init.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [9](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L9) | internal | `internal sealed unsafe partial class OpenXRRuntime` |
+
+### `OpenXR/OpenXRRuntime.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [25](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L25) | internal | `internal sealed unsafe partial class OpenXRRuntime` |
 
 ### `OpenXR/OpenXRStatisticsModule.cs`
 
 | Line | Visibility | Declaration |
 |---|---|---|
-| [16](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L16) | public | `public class OpenXRStatisticsModule : Module` |
-| [230](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L230) | private | `private enum OpenXRParameter` |
-| [240](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L240) | private | `private enum OpenXRVariable` |
-| [248](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L248) | private | `private enum OpenXRState { Default, NoRuntime, Error }` |
+| [14](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L14) | public | `public class OpenXRStatisticsModule : Module` |
+| [190](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L190) | private | `private enum OpenXRSetting { OverlaySession }` |
+| [192](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L192) | private | `private enum OpenXRParameter` |
+| [204](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L204) | private | `private enum OpenXRVariable` |
+| [212](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L212) | private | `private enum OpenXRState { Default, NoRuntime }` |
 
 
 ## Utilities
@@ -592,7 +633,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [25](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L25) | public | `public static class LinuxUtils` |
-| [217](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L217) | public | `public sealed class UPowerDevice` |
+| [228](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L228) | public | `public sealed class UPowerDevice` |
 
 ### `Utilities/LogSpamFix.cs`
 

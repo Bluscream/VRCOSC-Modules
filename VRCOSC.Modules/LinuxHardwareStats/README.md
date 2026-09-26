@@ -233,6 +233,10 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | **Network Upload** | `networkupload` | `string` | `ChatBox variable Network Upload` |
 | **Network Received Total** | `networkrxtotal` | `string` | `ChatBox variable Network Received Total` |
 | **Network Sent Total** | `networktxtotal` | `string` | `ChatBox variable Network Sent Total` |
+| **Network Max Download (Mbps, session)** | `networkmaxdown` | `float` | `ChatBox variable Network Max Download (Mbps, session)` |
+| **Network Max Upload (Mbps, session)** | `networkmaxup` | `float` | `ChatBox variable Network Max Upload (Mbps, session)` |
+| **Network Utilization (%)** | `networkutilization` | `int` | `ChatBox variable Network Utilization (%)` |
+| **Network Link Speed (Mbps)** | `networklinkspeed` | `int` | `ChatBox variable Network Link Speed (Mbps)` |
 | **System Temp (C)** | `systemtemp` | `int` | `ChatBox variable System Temp (C)` |
 | **Max Temp (C)** | `maxtemp` | `int` | `ChatBox variable Max Temp (C)` |
 | **Active Window Title** | `windowtitle` | `string` | `ChatBox variable Active Window Title` |

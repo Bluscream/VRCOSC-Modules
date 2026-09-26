@@ -121,8 +121,15 @@ case "$TARGET" in
         ROAMING_DIR="$VRC_COMPATDATA/pfx/drive_c/users/steamuser/AppData/Roaming/VRCOSC"
         ;;
     beta)
+        # A dedicated beta prefix is optional. On this machine VRCOSC-beta is installed
+        # inside VRChat's prefix (AppData/Local/VRCOSC-beta, launched by ~/.local/bin/
+        # vrcosc-beta) and shares that prefix's Roaming/VRCOSC, so fall back to it.
         BETA_PREFIX="${VRCOSC_BETA_PREFIX:-$HOME/.local/share/vrcosc-beta-prefix}"
-        ROAMING_DIR="$BETA_PREFIX/drive_c/users/$USER/AppData/Roaming/VRCOSC"
+        if [ -d "$BETA_PREFIX" ]; then
+            ROAMING_DIR="$BETA_PREFIX/drive_c/users/$USER/AppData/Roaming/VRCOSC"
+        else
+            ROAMING_DIR="$VRC_COMPATDATA/pfx/drive_c/users/steamuser/AppData/Roaming/VRCOSC"
+        fi
         ;;
     dev)
         ROAMING_DIR="$VRC_COMPATDATA/pfx/drive_c/users/$USER/AppData/Roaming/VRCOSC-Dev"

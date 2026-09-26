@@ -1,65 +1,52 @@
 // Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
-// OpenXR equivalent of the official SteamVR Haptic Control Module.
-// Uses Silk.NET.OpenXR xrApplyHapticFeedback for cross-platform haptic feedback.
+// OpenXR equivalent of the official SteamVR Haptic Control Module. Same OSC contract:
+// Duration / Frequency / Amplitude followed by a TriggerLeft/TriggerRight pulse, or the
+// wildcard form TriggerLeft/<duration>/<frequency>/<amplitude>.
 
-using Silk.NET.OpenXR;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Parameters;
 
 namespace VRCOSC.Modules.OpenXR;
 
 [ModuleTitle("OpenXR Haptic Control")]
-[ModuleDescription("Trigger haptic feedback on OpenXR controllers (SteamVR, Monado, etc.)")]
+[ModuleDescription("Lets you trigger haptics on OpenXR controllers (WiVRn, Monado, SteamVR)")]
 [ModuleType(ModuleType.SteamVR)]
 public class OpenXRHapticControlModule : Module
 {
+    private readonly OpenXRRuntime _runtime = OpenXRRuntime.Shared;
+
     private float _duration;
     private float _frequency;
     private float _amplitude;
 
-    private XR? _xr;
-    private Instance _instance;
-    private Session _session;
-    private ulong _systemId;
-    private bool _xrReady;
-
-    private ActionSet _actionSet;
-    private Silk.NET.OpenXR.Action _hapticLeft;
-    private Silk.NET.OpenXR.Action _hapticRight;
-
     protected override void OnPreLoad()
     {
         Bluscream.ModuleUtils.RegisterNativeResolver(Log);
-        RegisterParameter<float>(OpenXRHapticParameter.Duration, "VRCOSC/VR/Haptics/Duration", ParameterMode.Read, "Duration", "Duration of haptic in seconds");
-        RegisterParameter<float>(OpenXRHapticParameter.Frequency, "VRCOSC/VR/Haptics/Frequency", ParameterMode.Read, "Frequency", "Frequency of haptic (0-1 → 0-300 Hz)");
-        RegisterParameter<float>(OpenXRHapticParameter.Amplitude, "VRCOSC/VR/Haptics/Amplitude", ParameterMode.Read, "Amplitude", "Amplitude of haptic (0-1)");
-        RegisterParameter<bool>(OpenXRHapticParameter.TriggerLeft, "VRCOSC/VR/Haptics/TriggerLeft", ParameterMode.Read, "Trigger Left", "Trigger haptic on left controller");
-        RegisterParameter<bool>(OpenXRHapticParameter.TriggerRight, "VRCOSC/VR/Haptics/TriggerRight", ParameterMode.Read, "Trigger Right", "Trigger haptic on right controller");
-        RegisterParameter<bool>(OpenXRHapticParameter.TriggerLeftDirect, "VRCOSC/VR/Haptics/TriggerLeft/*/*/*", ParameterMode.Read, "Trigger Left Direct",
-            "Trigger haptic on left controller using wildcards: Duration / Frequency / Amplitude\nExample: VRCOSC/VR/Haptics/TriggerLeft/2/0.5/0.75");
-        RegisterParameter<bool>(OpenXRHapticParameter.TriggerRightDirect, "VRCOSC/VR/Haptics/TriggerRight/*/*/*", ParameterMode.Read, "Trigger Right Direct",
-            "Trigger haptic on right controller using wildcards: Duration / Frequency / Amplitude");
+
+        RegisterParameter<float>(HapticParameter.Duration, "VRCOSC/VR/Haptics/Duration", ParameterMode.Read, "Duration", "The duration of the haptic trigger in seconds");
+        RegisterParameter<float>(HapticParameter.Frequency, "VRCOSC/VR/Haptics/Frequency", ParameterMode.Read, "Frequency", "The frequency of the haptic trigger (0-1, mapped to 0-100 Hz; 0 lets the runtime choose)");
+        RegisterParameter<float>(HapticParameter.Amplitude, "VRCOSC/VR/Haptics/Amplitude", ParameterMode.Read, "Amplitude", "The amplitude of the haptic trigger (0-1)");
+        RegisterParameter<bool>(HapticParameter.TriggerLeft, "VRCOSC/VR/Haptics/TriggerLeft", ParameterMode.Read, "Trigger Left", "Becoming true causes a haptic trigger in the left controller using the above parameters");
+        RegisterParameter<bool>(HapticParameter.TriggerRight, "VRCOSC/VR/Haptics/TriggerRight", ParameterMode.Read, "Trigger Right", "Becoming true causes a haptic trigger in the right controller using the above parameters");
+
+        RegisterParameter<bool>(HapticParameter.TriggerLeftDirect, "VRCOSC/VR/Haptics/TriggerLeft/*/*/*", ParameterMode.Read, "Trigger Left Direct",
+            "Becoming true causes a haptic trigger in the left controller using the wildcards\nFor example:\n Writing 'VRCOSC/VR/Haptics/TriggerLeft/2/0.5/0.75' will trigger haptics in the left controller with a 2 second duration, 0.5 frequency, and 0.75 amplitude");
+        RegisterParameter<bool>(HapticParameter.TriggerRightDirect, "VRCOSC/VR/Haptics/TriggerRight/*/*/*", ParameterMode.Read, "Trigger Right Direct",
+            "Becoming true causes a haptic trigger in the right controller using the wildcards\nFor example:\n Writing 'VRCOSC/VR/Haptics/TriggerRight/2/0.5/0.75' will trigger haptics in the right controller with a 2 second duration, 0.5 frequency, and 0.75 amplitude");
     }
 
     protected override Task<bool> OnModuleStart()
     {
-        _duration = _frequency = _amplitude = 0f;
-        _xrReady = false;
-
-        try
-        {
-            _xr = XR.GetApi();
-            if (InitialiseOpenXR()) { _xrReady = true; Log("OpenXR haptics ready."); }
-            else Log("OpenXR runtime not available — haptic triggers will be silently ignored.");
-        }
-        catch (Exception ex) { Log($"OpenXR haptics init error: {ex.Message}"); }
-
+        _duration = 0f;
+        _frequency = 0f;
+        _amplitude = 0f;
+        _runtime.Acquire(Log);
         return Task.FromResult(true);
     }
 
     protected override Task OnModuleStop()
     {
-        TearDownOpenXR();
+        _runtime.Release(Log);
         return Task.CompletedTask;
     }
 
@@ -67,117 +54,52 @@ public class OpenXRHapticControlModule : Module
     {
         switch (parameter.Lookup)
         {
-            case OpenXRHapticParameter.Duration:
+            case HapticParameter.Duration:
                 _duration = parameter.GetValue<float>();
                 break;
-            case OpenXRHapticParameter.Frequency:
+
+            case HapticParameter.Frequency:
                 _frequency = ConvertFrequency(parameter.GetValue<float>());
                 break;
-            case OpenXRHapticParameter.Amplitude:
+
+            case HapticParameter.Amplitude:
                 _amplitude = ConvertAmplitude(parameter.GetValue<float>());
                 break;
-            case OpenXRHapticParameter.TriggerLeft when parameter.GetValue<bool>():
-                _ = TriggerHapticAsync(true, false);
+
+            case HapticParameter.TriggerLeft when parameter.GetValue<bool>():
+                Trigger(XrHand.Left, _duration, _frequency, _amplitude);
                 break;
-            case OpenXRHapticParameter.TriggerRight when parameter.GetValue<bool>():
-                _ = TriggerHapticAsync(false, true);
+
+            case HapticParameter.TriggerRight when parameter.GetValue<bool>():
+                Trigger(XrHand.Right, _duration, _frequency, _amplitude);
                 break;
-            case OpenXRHapticParameter.TriggerLeftDirect when parameter.GetValue<bool>():
-                _ = TriggerHapticAsync(true, false,
-                    parameter.GetWildcard<float>(0),
-                    ConvertFrequency(parameter.GetWildcard<float>(1)),
-                    ConvertAmplitude(parameter.GetWildcard<float>(2)));
+
+            case HapticParameter.TriggerLeftDirect when parameter.GetValue<bool>():
+                Trigger(XrHand.Left, parameter.GetWildcard<float>(0), ConvertFrequency(parameter.GetWildcard<float>(1)), ConvertAmplitude(parameter.GetWildcard<float>(2)));
                 break;
-            case OpenXRHapticParameter.TriggerRightDirect when parameter.GetValue<bool>():
-                _ = TriggerHapticAsync(false, true,
-                    parameter.GetWildcard<float>(0),
-                    ConvertFrequency(parameter.GetWildcard<float>(1)),
-                    ConvertAmplitude(parameter.GetWildcard<float>(2)));
+
+            case HapticParameter.TriggerRightDirect when parameter.GetValue<bool>():
+                Trigger(XrHand.Right, parameter.GetWildcard<float>(0), ConvertFrequency(parameter.GetWildcard<float>(1)), ConvertAmplitude(parameter.GetWildcard<float>(2)));
                 break;
         }
     }
 
-    // ── Haptic triggering (non-unsafe wrapper so we can await) ────
-    private async Task TriggerHapticAsync(bool left, bool right,
-        float? localDuration = null,
-        float? localFrequency = null,
-        float? localAmplitude = null)
+    private void Trigger(XrHand hand, float duration, float frequency, float amplitude)
     {
-        if (!_xrReady || _xr is null) return;
-
-        float dur = localDuration ?? _duration;
-        float freq = localFrequency ?? _frequency;
-        float amp = localAmplitude ?? _amplitude;
-
-        if (left) { ApplyHaptic(_hapticLeft, dur, freq, amp); await Task.Delay(10); }
-        if (right) ApplyHaptic(_hapticRight, dur, freq, amp);
-    }
-
-    // Unsafe code isolated to a non-async method (C# restriction)
-    private unsafe void ApplyHaptic(Silk.NET.OpenXR.Action action, float dur, float freq, float amp)
-    {
-        if (_xr is null || action.Handle == 0 || _session.Handle == 0) return;
-
-        var vib = new HapticVibration
+        if (!_runtime.Snapshot.SessionRunning)
         {
-            Type = StructureType.HapticVibration,
-            Duration = (long)(dur * 1_000_000_000L),
-            Frequency = freq,
-            Amplitude = amp
-        };
-        var info = new HapticActionInfo { Type = StructureType.HapticActionInfo, Action = action };
-        _xr.ApplyHapticFeedback(_session, in info, (HapticBaseHeader*)&vib);
+            Log($"Haptic on {hand} ignored: no running OpenXR session.");
+            return;
+        }
+
+        _runtime.RequestHaptic(hand, duration, frequency, amplitude);
     }
 
-    // ── OpenXR init/teardown ─────────────────────────────────────
-    private unsafe bool InitialiseOpenXR()
-    {
-        if (_xr is null) return false;
+    // Same mapping as the official SteamVR module, so existing avatar setups feel the same.
+    private static float ConvertFrequency(float frequency) => Math.Clamp(frequency, 0f, 1f) * 100f;
+    private static float ConvertAmplitude(float amplitude) => Math.Clamp(amplitude, 0f, 1f);
 
-        if (!OpenXRHelper.CreateInstanceAndSystem(_xr, "VRCOSC OpenXR Haptics", Log, ref _instance, ref _systemId))
-            return false;
-
-        var sessionCI = new SessionCreateInfo { Type = StructureType.SessionCreateInfo, SystemId = _systemId };
-        if (_xr.CreateSession(_instance, in sessionCI, ref _session) != Result.Success)
-        { Log("Could not create OpenXR session — haptics need an active VR session."); return false; }
-
-        var asCI = new ActionSetCreateInfo { Type = StructureType.ActionSetCreateInfo, Priority = 0 };
-        OpenXRHelper.FillActionSetCreateInfo(ref asCI, "vrcosc_haptics", "VRCOSC Haptics");
-        if (_xr.CreateActionSet(_instance, in asCI, ref _actionSet) != Result.Success) return false;
-
-        _hapticLeft = CreateHapticAction("haptic_left", "Left Haptic");
-        _hapticRight = CreateHapticAction("haptic_right", "Right Haptic");
-        return true;
-    }
-
-    private Silk.NET.OpenXR.Action CreateHapticAction(string name, string localName)
-    {
-        var action = new Silk.NET.OpenXR.Action();
-        if (_xr is null) return action;
-
-        var aCI = new ActionCreateInfo { Type = StructureType.ActionCreateInfo, ActionType = ActionType.VibrationOutput };
-        OpenXRHelper.FillActionCreateInfo(ref aCI, name, localName);
-        _xr.CreateAction(_actionSet, in aCI, ref action);
-        return action;
-    }
-
-    private void TearDownOpenXR()
-    {
-        if (_xr is null) return;
-
-        // Children before the instance — OpenXR requires it.
-        if (_hapticLeft.Handle != 0) { _xr.DestroyAction(_hapticLeft); _hapticLeft = default; }
-        if (_hapticRight.Handle != 0) { _xr.DestroyAction(_hapticRight); _hapticRight = default; }
-        if (_actionSet.Handle != 0) { _xr.DestroyActionSet(_actionSet); _actionSet = default; }
-
-        OpenXRHelper.DestroySessionAndInstance(ref _xr, ref _session, ref _instance);
-        _xrReady = false;
-    }
-
-    private static float ConvertFrequency(float v) => Math.Clamp(v, 0, 1) * 300f;
-    private static float ConvertAmplitude(float v) => Math.Clamp(v, 0, 1);
-
-    private enum OpenXRHapticParameter
+    private enum HapticParameter
     {
         Duration, Frequency, Amplitude,
         TriggerLeft, TriggerRight,

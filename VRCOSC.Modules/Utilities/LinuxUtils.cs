@@ -28,6 +28,17 @@ public static class LinuxUtils
     /// <summary>Returns true when running on a Linux host.</summary>
     public static bool IsLinux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
+    private static bool? isWineOnLinux;
+
+    /// <summary>
+    /// True when this is a Windows .NET process hosted by Wine/Proton on a Linux machine.
+    /// <see cref="IsLinux"/> is false there (the runtime believes it is on Windows), yet the
+    /// host bridges below all work, so callers that gate on "is there a Linux host" must
+    /// check both.
+    /// </summary>
+    public static bool IsWineOnLinux
+        => isWineOnLinux ??= !IsLinux && (System.IO.File.Exists("Z:\\bin\\bash") || System.IO.Directory.Exists("Z:\\proc"));
+
     /// <summary>
     /// The user's home directory expressed as a path Wine can open — Wine maps drive Z: to
     /// the filesystem root, so <c>/home/blu</c> becomes <c>Z:\home\blu</c>.

@@ -4,7 +4,7 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**461** total across **14** modules.
+**499** total across **14** modules.
 
 | Module | Count |
 |---|---|
@@ -18,8 +18,8 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [LinuxHardwareStats](#linuxhardwarestats) | 31 |
 | [LinuxMedia](#linuxmedia) | 7 |
 | [Notifications](#notifications) | 37 |
-| [OpenXR](#openxr) | 38 |
-| [Utilities](#utilities) | 29 |
+| [OpenXR](#openxr) | 75 |
+| [Utilities](#utilities) | 30 |
 | [VRCXBridge](#vrcxbridge) | 48 |
 | [VRChatSettings](#vrchatsettings) | 48 |
 
@@ -400,13 +400,13 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [22](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L22) | `LinuxHardwareStatsModule` | private | `private readonly LinuxNetwork _network = new();` |
 | [23](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L23) | `LinuxHardwareStatsModule` | private | `private readonly LinuxOS _os = new();` |
 | [24](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L24) | `LinuxHardwareStatsModule` | private | `private bool _firstUpdateDone = false;` |
-| [696](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L696) | `HardwareNameParser` | private | `private static readonly Regex CpuNoisyTokens = new(@"\(R\)|\(TM\)", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [697](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L697) | `HardwareNameParser` | private | `private static readonly Regex CpuGenPrefix = new(@"^\d+\w*\s+Gen\s+", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [698](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L698) | `HardwareNameParser` | private | `private static readonly Regex CpuAtFreqSuffix = new(@"\s+CPU\s*@.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [699](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L699) | `HardwareNameParser` | private | `private static readonly Regex CpuCoresSuffix = new(@"\s+\d+-Core.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [701](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L701) | `HardwareNameParser` | private | `private static readonly Regex IntelModelRegex = new(@"\b([im][0-9]-[0-9]+[A-Z0-9]*(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [702](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L702) | `HardwareNameParser` | private | `private static readonly Regex IntelXeonRegex = new(@"\b(Xeon\s+[A-Z0-9\-]+(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
-| [704](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L704) | `HardwareNameParser` | private | `private static readonly Regex GpuVramRegex = new(@"\b(\d+\s*GB)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [755](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L755) | `HardwareNameParser` | private | `private static readonly Regex CpuNoisyTokens = new(@"\(R\)|\(TM\)", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [756](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L756) | `HardwareNameParser` | private | `private static readonly Regex CpuGenPrefix = new(@"^\d+\w*\s+Gen\s+", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [757](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L757) | `HardwareNameParser` | private | `private static readonly Regex CpuAtFreqSuffix = new(@"\s+CPU\s*@.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [758](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L758) | `HardwareNameParser` | private | `private static readonly Regex CpuCoresSuffix = new(@"\s+\d+-Core.*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [760](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L760) | `HardwareNameParser` | private | `private static readonly Regex IntelModelRegex = new(@"\b([im][0-9]-[0-9]+[A-Z0-9]*(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [761](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L761) | `HardwareNameParser` | private | `private static readonly Regex IntelXeonRegex = new(@"\b(Xeon\s+[A-Z0-9\-]+(?:\s+v\d+)?)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
+| [763](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L763) | `HardwareNameParser` | private | `private static readonly Regex GpuVramRegex = new(@"\b(\d+\s*GB)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);` |
 
 ### `LinuxHardwareStats/Nodes.cs`
 
@@ -514,63 +514,120 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 
 ## OpenXR
 
+### `OpenXR/OpenXRDeviceProbe.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [14](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L14) | `DeviceBattery` | public | `public static readonly DeviceBattery None = new(false, false, 0f);` |
+| [47](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L47) | `OpenXRDeviceProbe` | private | `private const string ScriptName = "vrcosc_xr_query.sh";` |
+| [48](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L48) | `OpenXRDeviceProbe` | private | `private const string ResourceName = "Bluscream.Modules.OpenXR.vrcosc_xr_query.sh";` |
+| [49](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L49) | `OpenXRDeviceProbe` | private | `private const string OutputName = ".vrcosc_openxr.json";` |
+| [50](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L50) | `OpenXRDeviceProbe` | private | `private static readonly TimeSpan PollInterval = TimeSpan.FromSeconds(5);` |
+| [52](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L52) | `OpenXRDeviceProbe` | private | `private readonly object _sync = new();` |
+| [53](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L53) | `OpenXRDeviceProbe` | private | `private bool _deployed;` |
+| [54](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L54) | `OpenXRDeviceProbe` | private | `private bool _launchInFlight;` |
+| [55](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L55) | `OpenXRDeviceProbe` | private | `private DateTime _lastLaunch = DateTime.MinValue;` |
+| [56](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L56) | `OpenXRDeviceProbe` | private | `private DateTime _lastFileWrite = DateTime.MinValue;` |
+| [57](../VRCOSC.Modules/OpenXR/OpenXRDeviceProbe.cs#L57) | `OpenXRDeviceProbe` | private | `private string _lastError = string.Empty;` |
+
 ### `OpenXR/OpenXRGestureExtensionsModule.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [18](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L18) | `OpenXRGestureExtensionsModule` | private | `private XR? _xr;` |
-| [19](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L19) | `OpenXRGestureExtensionsModule` | private | `private Instance _instance;` |
-| [20](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L20) | `OpenXRGestureExtensionsModule` | private | `private Session _session;` |
-| [21](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L21) | `OpenXRGestureExtensionsModule` | private | `private ulong _systemId;` |
-| [22](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L22) | `OpenXRGestureExtensionsModule` | private | `private bool _xrReady;` |
-| [23](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L23) | `OpenXRGestureExtensionsModule` | private | `private bool _handTrackingSupported;` |
-| [25](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L25) | `OpenXRGestureExtensionsModule` | private | `private ExtHandTracking? _handTrackingExt;` |
-| [26](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L26) | `OpenXRGestureExtensionsModule` | private | `private HandTrackerEXT _leftTracker;` |
-| [27](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L27) | `OpenXRGestureExtensionsModule` | private | `private HandTrackerEXT _rightTracker;` |
-| [29](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L29) | `OpenXRGestureExtensionsModule` | private | `private readonly float[] _leftCurl = new float[4]; // [Index, Middle, Ring, Pinky]` |
-| [30](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L30) | `OpenXRGestureExtensionsModule` | private | `private readonly float[] _rightCurl = new float[4];` |
+| [18](../VRCOSC.Modules/OpenXR/OpenXRGestureExtensionsModule.cs#L18) | `OpenXRGestureExtensionsModule` | private | `private readonly OpenXRRuntime _runtime = OpenXRRuntime.Shared;` |
+
+### `OpenXR/OpenXRHands.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [23](../VRCOSC.Modules/OpenXR/OpenXRHands.cs#L23) | `OpenXRRuntime` | private | `private const float CurlMinDegrees = 15f;` |
+| [24](../VRCOSC.Modules/OpenXR/OpenXRHands.cs#L24) | `OpenXRRuntime` | private | `private const float CurlRangeDegrees = 200f;` |
+| [26](../VRCOSC.Modules/OpenXR/OpenXRHands.cs#L26) | `OpenXRRuntime` | private | `private ExtHandTracking? _handTracking;` |
+| [27](../VRCOSC.Modules/OpenXR/OpenXRHands.cs#L27) | `OpenXRRuntime` | private | `private readonly HandTrackerEXT[] _trackers = new HandTrackerEXT[2];` |
+| [28](../VRCOSC.Modules/OpenXR/OpenXRHands.cs#L28) | `OpenXRRuntime` | private | `private readonly HandJointLocationEXT[] _jointBuffer = new HandJointLocationEXT[OpenXRHelper.HandJointCount];` |
 
 ### `OpenXR/OpenXRHapticControlModule.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [16](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L16) | `OpenXRHapticControlModule` | private | `private float _duration;` |
-| [17](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L17) | `OpenXRHapticControlModule` | private | `private float _frequency;` |
-| [18](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L18) | `OpenXRHapticControlModule` | private | `private float _amplitude;` |
-| [20](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L20) | `OpenXRHapticControlModule` | private | `private XR? _xr;` |
-| [21](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L21) | `OpenXRHapticControlModule` | private | `private Instance _instance;` |
-| [22](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L22) | `OpenXRHapticControlModule` | private | `private Session _session;` |
-| [23](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L23) | `OpenXRHapticControlModule` | private | `private ulong _systemId;` |
-| [24](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L24) | `OpenXRHapticControlModule` | private | `private bool _xrReady;` |
-| [26](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L26) | `OpenXRHapticControlModule` | private | `private ActionSet _actionSet;` |
-| [27](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L27) | `OpenXRHapticControlModule` | private | `private Silk.NET.OpenXR.Action _hapticLeft;` |
-| [28](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L28) | `OpenXRHapticControlModule` | private | `private Silk.NET.OpenXR.Action _hapticRight;` |
+| [16](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L16) | `OpenXRHapticControlModule` | private | `private readonly OpenXRRuntime _runtime = OpenXRRuntime.Shared;` |
+| [18](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L18) | `OpenXRHapticControlModule` | private | `private float _duration;` |
+| [19](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L19) | `OpenXRHapticControlModule` | private | `private float _frequency;` |
+| [20](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L20) | `OpenXRHapticControlModule` | private | `private float _amplitude;` |
 
 ### `OpenXR/OpenXRHelpers.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [15](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L15) | `OpenXRHelper` | public | `public const ulong XrVersion10 = (ulong)1 << 48;` |
-| [18](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L18) | `OpenXRHelper` | public | `public const int HandJointCount = 26;` |
-| [172](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L172) | `OpenXRDeviceState` | public | `public bool IsConnected;` |
-| [173](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L173) | `OpenXRDeviceState` | public | `public bool IsPresent;` |
-| [174](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L174) | `OpenXRDeviceState` | public | `public bool IsCharging;` |
-| [175](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L175) | `OpenXRDeviceState` | public | `public float BatteryPercent;` |
-| [176](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L176) | `OpenXRDeviceState` | public | `public readonly float[] FingerCurl = new float[4]; // [Index, Middle, Ring, Pinky]` |
+| [14](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L14) | `OpenXRHelper` | public | `public const ulong XrVersion10 = 1UL << 48;` |
+| [17](../VRCOSC.Modules/OpenXR/OpenXRHelpers.cs#L17) | `OpenXRHelper` | public | `public const int HandJointCount = 26;` |
+
+### `OpenXR/OpenXRInput.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [12](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L12) | `OpenXRRuntime` | private | `private static readonly string[] HandPathStrings = { "/user/hand/left", "/user/hand/right" };` |
+| [16](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L16) | `OpenXRRuntime` | private | `private readonly ConcurrentQueue<HapticRequest> _hapticQueue = new();` |
+| [17](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L17) | `OpenXRRuntime` | private | `private readonly HandInput[] _handInputs = { HandInput.Inactive, HandInput.Inactive };` |
+| [18](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L18) | `OpenXRRuntime` | private | `private readonly string[] _profiles = { string.Empty, string.Empty };` |
+| [19](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L19) | `OpenXRRuntime` | private | `private readonly ulong[] _handPaths = new ulong[2];` |
+| [21](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L21) | `OpenXRRuntime` | private | `private ActionSet _actionSet;` |
+| [22](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L22) | `OpenXRRuntime` | private | `private XrAction _trigger;` |
+| [23](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L23) | `OpenXRRuntime` | private | `private XrAction _squeeze;` |
+| [24](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L24) | `OpenXRRuntime` | private | `private XrAction _primaryTouch;` |
+| [25](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L25) | `OpenXRRuntime` | private | `private XrAction _secondaryTouch;` |
+| [26](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L26) | `OpenXRRuntime` | private | `private XrAction _stickTouch;` |
+| [27](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L27) | `OpenXRRuntime` | private | `private XrAction _padTouch;` |
+| [28](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L28) | `OpenXRRuntime` | private | `private XrAction _haptic;` |
+| [29](../VRCOSC.Modules/OpenXR/OpenXRInput.cs#L29) | `OpenXRRuntime` | private | `private bool _inputAttached;` |
+
+### `OpenXR/OpenXRRuntime.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [29](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L29) | `OpenXRRuntime` | private | `private const string AppName = "VRCOSC Bluscream Modules";` |
+| [30](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L30) | `OpenXRRuntime` | private | `private static readonly TimeSpan RetryInterval = TimeSpan.FromSeconds(5);` |
+| [31](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L31) | `OpenXRRuntime` | private | `private static readonly TimeSpan FallbackFramePeriod = TimeSpan.FromMilliseconds(1000d / 72d);` |
+| [33](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L33) | `OpenXRRuntime` | private | `private const string ExtHeadless = "XR_MND_headless";` |
+| [34](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L34) | `OpenXRRuntime` | private | `private const string ExtOverlay = "XR_EXTX_overlay";` |
+| [35](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L35) | `OpenXRRuntime` | private | `private const string ExtHandTrackingName = "XR_EXT_hand_tracking";` |
+| [36](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L36) | `OpenXRRuntime` | private | `private const string ExtHandTrackingDataSource = "XR_EXT_hand_tracking_data_source";` |
+| [37](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L37) | `OpenXRRuntime` | private | `private const string ExtDisplayRefreshRate = "XR_FB_display_refresh_rate";` |
+| [38](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L38) | `OpenXRRuntime` | private | `private const string ExtWin32Time = "XR_KHR_win32_convert_performance_counter_time";` |
+| [40](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L40) | `OpenXRRuntime` | private | `private readonly object _sync = new();` |
+| [41](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L41) | `OpenXRRuntime` | private | `private readonly List<Action<string>> _loggers = new();` |
+| [42](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L42) | `OpenXRRuntime` | private | `private readonly HashSet<string> _loggedOnce = new();` |
+| [43](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L43) | `OpenXRRuntime` | private | `private int _refCount;` |
+| [44](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L44) | `OpenXRRuntime` | private | `private Thread? _thread;` |
+| [45](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L45) | `OpenXRRuntime` | private | `private CancellationTokenSource? _cts;` |
+| [47](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L47) | `OpenXRRuntime` | private | `private XR? _xr;` |
+| [48](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L48) | `OpenXRRuntime` | private | `private Instance _instance;` |
+| [49](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L49) | `OpenXRRuntime` | private | `private ulong _systemId;` |
+| [50](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L50) | `OpenXRRuntime` | private | `private Session _session;` |
+| [51](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L51) | `OpenXRRuntime` | private | `private Space _localSpace;` |
+| [52](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L52) | `OpenXRRuntime` | private | `private Space _viewSpace;` |
+| [53](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L53) | `OpenXRRuntime` | private | `private SessionState _state = SessionState.Unknown;` |
+| [54](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L54) | `OpenXRRuntime` | private | `private bool _running;` |
+| [55](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L55) | `OpenXRRuntime` | private | `private bool _overlaySession;` |
+| [56](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L56) | `OpenXRRuntime` | private | `private bool _waitFrameWorks = true;` |
+| [57](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L57) | `OpenXRRuntime` | private | `private long _lastPredictedTime;` |
+| [58](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L58) | `OpenXRRuntime` | private | `private long _lastPredictedPeriod;` |
+| [59](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L59) | `OpenXRRuntime` | private | `private readonly Stopwatch _sinceLastFrame = new();` |
+| [60](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L60) | `OpenXRRuntime` | private | `private DateTime _nextRetry = DateTime.MinValue;` |
+| [61](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L61) | `OpenXRRuntime` | private | `private DateTime _nextRefreshRatePoll = DateTime.MinValue;` |
+| [62](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L62) | `OpenXRRuntime` | private | `private string _runtimeName = string.Empty;` |
+| [63](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L63) | `OpenXRRuntime` | private | `private string _systemName = string.Empty;` |
+| [64](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L64) | `OpenXRRuntime` | private | `private float _refreshRate;` |
+| [65](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L65) | `OpenXRRuntime` | private | `private bool _headTracked;` |
+| [69](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L69) | `OpenXRRuntime` | private | `private volatile OpenXRSnapshot _snapshot = OpenXRSnapshot.Empty;` |
 
 ### `OpenXR/OpenXRStatisticsModule.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [19](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L19) | `OpenXRStatisticsModule` | private | `private XR? _xr;` |
-| [20](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L20) | `OpenXRStatisticsModule` | private | `private Instance _instance;` |
-| [21](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L21) | `OpenXRStatisticsModule` | private | `private Session _session;` |
-| [22](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L22) | `OpenXRStatisticsModule` | private | `private ulong _systemId;` |
-| [23](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L23) | `OpenXRStatisticsModule` | private | `private bool _xrReady;` |
-| [26](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L26) | `OpenXRStatisticsModule` | private | `private readonly OpenXRDeviceState _hmd = new();` |
-| [27](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L27) | `OpenXRStatisticsModule` | private | `private readonly OpenXRDeviceState _lHand = new();` |
-| [28](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L28) | `OpenXRStatisticsModule` | private | `private readonly OpenXRDeviceState _rHand = new();` |
-| [29](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L29) | `OpenXRStatisticsModule` | private | `private float _currentFps;` |
+| [16](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L16) | `OpenXRStatisticsModule` | private | `private readonly OpenXRRuntime _runtime = OpenXRRuntime.Shared;` |
+| [17](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L17) | `OpenXRStatisticsModule` | private | `private readonly OpenXRDeviceProbe _probe = OpenXRDeviceProbe.Shared;` |
+| [18](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L18) | `OpenXRStatisticsModule` | private | `private bool _wasRunning;` |
 
 
 ## Utilities
@@ -586,7 +643,8 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [146](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L146) | `LinuxUtils` | private | `private static bool? isFlatpak;` |
+| [31](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L31) | `LinuxUtils` | private | `private static bool? isWineOnLinux;` |
+| [157](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L157) | `LinuxUtils` | private | `private static bool? isFlatpak;` |
 
 ### `Utilities/LogSpamFix.cs`
 
