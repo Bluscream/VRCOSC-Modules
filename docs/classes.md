@@ -4,7 +4,7 @@
 
 Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
-**254** total across **17** modules.
+**263** total across **18** modules.
 
 | Module | Count |
 |---|---|
@@ -20,6 +20,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [LinuxProcessManager](#linuxprocessmanager) | 2 |
 | [Notifications](#notifications) | 19 |
 | [OpenXR](#openxr) | 28 |
+| [Status](#status) | 9 |
 | [Utilities](#utilities) | 28 |
 | [VRCExtras](#vrcextras) | 6 |
 | [VRCXBridge](#vrcxbridge) | 12 |
@@ -567,6 +568,33 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [194](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L194) | private | `private enum OpenXRParameter` |
 | [206](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L206) | private | `private enum OpenXRVariable` |
 | [214](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L214) | private | `private enum OpenXRState { Default, NoRuntime }` |
+
+
+## Status
+
+### `Status/StatusListModuleSetting.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [11](../VRCOSC.Modules/Status/StatusListModuleSetting.cs#L11) | public | `public class StatusListModuleSetting : ListModuleSetting<StatusEntry>` |
+| [26](../VRCOSC.Modules/Status/StatusListModuleSetting.cs#L26) | public | `public class StatusEntry : IEquatable<StatusEntry>` |
+
+### `Status/StatusModule.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [14](../VRCOSC.Modules/Status/StatusModule.cs#L14) | public | `public class StatusModule : Module` |
+| [275](../VRCOSC.Modules/Status/StatusModule.cs#L275) | private | `private enum StatusSetting { Statuses, Cycle, Interval, Random, DisabledGroups, OverrideGroup, PrefixIcon, Icons, ShuffleIcons }` |
+| [277](../VRCOSC.Modules/Status/StatusModule.cs#L277) | private | `private enum StatusParameter { Next, Previous, Cycle, Index }` |
+| [279](../VRCOSC.Modules/Status/StatusModule.cs#L279) | private | `private enum StatusVariable { Status, Text, Icon, Index, Count, Group }` |
+| [281](../VRCOSC.Modules/Status/StatusModule.cs#L281) | private | `private enum StatusState { Default, Idle }` |
+| [283](../VRCOSC.Modules/Status/StatusModule.cs#L283) | private | `private enum StatusEvent { Changed }` |
+
+### `Status/UI/StatusListModuleSettingView.xaml.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [7](../VRCOSC.Modules/Status/UI/StatusListModuleSettingView.xaml.cs#L7) | public | `public partial class StatusListModuleSettingView` |
 
 
 ## Utilities

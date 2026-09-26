@@ -4,7 +4,7 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**513** total across **16** modules.
+**520** total across **17** modules.
 
 | Module | Count |
 |---|---|
@@ -19,6 +19,7 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [LinuxMedia](#linuxmedia) | 15 |
 | [Notifications](#notifications) | 37 |
 | [OpenXR](#openxr) | 75 |
+| [Status](#status) | 7 |
 | [Utilities](#utilities) | 30 |
 | [VRCExtras](#vrcextras) | 1 |
 | [VRCXBridge](#vrcxbridge) | 48 |
@@ -643,6 +644,26 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [16](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L16) | `OpenXRStatisticsModule` | private | `private readonly OpenXRRuntime _runtime = OpenXRRuntime.Shared;` |
 | [17](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L17) | `OpenXRStatisticsModule` | private | `private readonly OpenXRDeviceProbe _probe = OpenXRDeviceProbe.Shared;` |
 | [18](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L18) | `OpenXRStatisticsModule` | private | `private bool _wasRunning;` |
+
+
+## Status
+
+### `Status/StatusModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [16](../VRCOSC.Modules/Status/StatusModule.cs#L16) | `StatusModule` | private | `private readonly Random _random = new();` |
+| [26](../VRCOSC.Modules/Status/StatusModule.cs#L26) | `StatusModule` | private | `private bool _cycling;` |
+| [27](../VRCOSC.Modules/Status/StatusModule.cs#L27) | `StatusModule` | private | `private DateTime _lastSwitch = DateTime.MinValue;` |
+| [28](../VRCOSC.Modules/Status/StatusModule.cs#L28) | `StatusModule` | private | `private int _iconIndex;` |
+| [29](../VRCOSC.Modules/Status/StatusModule.cs#L29) | `StatusModule` | private | `private string _currentIcon = string.Empty;` |
+| [30](../VRCOSC.Modules/Status/StatusModule.cs#L30) | `StatusModule` | private | `private bool _hasActive;` |
+
+### `Status/UI/StatusListModuleSettingView.xaml.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [9](../VRCOSC.Modules/Status/UI/StatusListModuleSettingView.xaml.cs#L9) | `StatusListModuleSettingView` | private | `private readonly StatusListModuleSetting moduleSetting;` |
 
 
 ## Utilities

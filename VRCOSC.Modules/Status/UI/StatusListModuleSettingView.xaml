@@ -1,0 +1,90 @@
+<UserControl x:Class="Bluscream.Modules.Status.UI.StatusListModuleSettingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:core="clr-namespace:VRCOSC.App.UI.Core;assembly=VRCOSC.App"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="600">
+    <UserControl.Resources>
+        <core:AlternatingColourConverterMulti x:Key="AlternatingColourConverter" />
+        <core:BindingProxy x:Key="CBackground3Proxy" Data="{DynamicResource CBackground3}"/>
+        <core:BindingProxy x:Key="CBackground4Proxy" Data="{DynamicResource CBackground4}"/>
+    </UserControl.Resources>
+    <core:SpacedStackPanel Spacing="10">
+        <core:HeaderFooterListView
+            ItemsSource="{Binding Attribute, Mode=OneWay}"
+            HideHeaderWhenEmpty="True"
+            ShouldTruncateHeight="False"
+            AlternationCount="2">
+            <core:HeaderFooterListView.Header>
+                <Border Background="{DynamicResource CBackground1}">
+                    <Grid Margin="5 2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="140" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="60" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="35" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Status" Foreground="{DynamicResource CForeground2}" FontSize="14" />
+                        <TextBlock Grid.Column="2" Text="Group" Foreground="{DynamicResource CForeground2}" FontSize="14" />
+                        <TextBlock Grid.Column="4" Text="Cycle" Foreground="{DynamicResource CForeground2}" FontSize="14" TextAlignment="Center" />
+                    </Grid>
+                </Border>
+            </core:HeaderFooterListView.Header>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <Border VerticalAlignment="Top">
+                                    <Border.Background>
+                                        <MultiBinding Converter="{StaticResource AlternatingColourConverter}">
+                                            <Binding RelativeSource="{RelativeSource Mode=TemplatedParent}" Path="(ItemsControl.AlternationIndex)" />
+                                            <Binding Source="{StaticResource CBackground3Proxy}" Path="Data"/>
+                                            <Binding Source="{StaticResource CBackground4Proxy}" Path="Data"/>
+                                        </MultiBinding>
+                                    </Border.Background>
+                                    <Grid VerticalAlignment="Center" Margin="5 2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="10" />
+                                            <ColumnDefinition Width="140" />
+                                            <ColumnDefinition Width="10" />
+                                            <ColumnDefinition Width="60" />
+                                            <ColumnDefinition Width="10" />
+                                            <ColumnDefinition Width="35" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Grid.Column="0" FontSize="16" VerticalAlignment="Center"
+                                                 Text="{Binding Text.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        <TextBox Grid.Column="2" FontSize="16" VerticalAlignment="Center"
+                                                 Text="{Binding Group.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        <core:VRCOSCCheckBox Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                             IsChecked="{Binding UseInCycle.Value, Mode=TwoWay}" />
+                                        <core:IconButton Grid.Column="6" ButtonColour="Red" Icon="Solid_Minus" Width="25" Height="25"
+                                                         HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                         Click="RemoveButton_OnClick" Tag="{Binding}" />
+                                    </Grid>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <core:HeaderFooterListView.Footer>
+                <Border Background="{DynamicResource CBackground1}">
+                    <core:IconButton
+                        ButtonColour="Green"
+                        Width="100"
+                        Height="20"
+                        Margin="0 5"
+                        Icon="Solid_Plus"
+                        Click="AddButton_OnClick" />
+                </Border>
+            </core:HeaderFooterListView.Footer>
+        </core:HeaderFooterListView>
+    </core:SpacedStackPanel>
+</UserControl>

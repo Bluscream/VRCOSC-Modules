@@ -6,7 +6,7 @@ User-facing events registered in `OnPostLoad` via `CreateEvent(lookup, title)` a
 
 The Fired column lists every `TriggerEvent` call site; an event with **never** there is declared but not raised. Matching prefers the fully qualified lookup, falling back to a bare name only within the same file — several modules each declare an `OnError`, so a global short-name match would cross-link them.
 
-**31** total.
+**32** total.
 
 ## Debug
 
@@ -68,6 +68,12 @@ The Fired column lists every `TriggerEvent` call site; an event with **never** t
 |---|---|---|---|---|
 | [116](../VRCOSC.Modules/Notifications/NotificationsModule.cs#L116) | `NotificationsModule` | `NotificationsEvent.OnNotificationSent` | On Notification Sent | [NotificationsModule.cs:142](../VRCOSC.Modules/Notifications/NotificationsModule.cs#L142) |
 | [117](../VRCOSC.Modules/Notifications/NotificationsModule.cs#L117) | `NotificationsModule` | `NotificationsEvent.OnNotificationFailed` | On Notification Failed | [NotificationsModule.cs:151](../VRCOSC.Modules/Notifications/NotificationsModule.cs#L151) |
+
+## Status
+
+| Line | Owner | Lookup | Title | Fired |
+|---|---|---|---|---|
+| [65](../VRCOSC.Modules/Status/StatusModule.cs#L65) | `StatusModule` | `StatusEvent.Changed` | Status changed | [StatusModule.cs:223](../VRCOSC.Modules/Status/StatusModule.cs#L223) |
 
 ## VRCExtras
 

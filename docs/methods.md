@@ -4,7 +4,7 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**778** total across **17** modules.
+**801** total across **18** modules.
 
 | Module | Count |
 |---|---|
@@ -20,6 +20,7 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [LinuxProcessManager](#linuxprocessmanager) | 4 |
 | [Notifications](#notifications) | 25 |
 | [OpenXR](#openxr) | 78 |
+| [Status](#status) | 23 |
 | [Utilities](#utilities) | 245 |
 | [VRCExtras](#vrcextras) | 6 |
 | [VRCXBridge](#vrcxbridge) | 34 |
@@ -771,6 +772,47 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [153](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L153) | `OpenXRStatisticsModule` | private | `private void UpdateRealtimeParameters()` |
 | [187](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L187) | `OpenXRStatisticsModule` | private | `private static bool IsDashboardVisible(DeviceProbeResult probe)` |
 | [190](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L190) | `OpenXRStatisticsModule` | private | `private static int Percent(DeviceBattery battery) => battery.Present ? (int)MathF.Round(battery.Charge * 100f) : 0;` |
+
+
+## Status
+
+### `Status/StatusListModuleSetting.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [13](../VRCOSC.Modules/Status/StatusListModuleSetting.cs#L13) | `StatusListModuleSetting` | private | `public StatusListModuleSetting()` |
+| [18](../VRCOSC.Modules/Status/StatusListModuleSetting.cs#L18) | `StatusListModuleSetting` | protected | `protected override StatusEntry CreateItem() => new();` |
+| [38](../VRCOSC.Modules/Status/StatusListModuleSetting.cs#L38) | `StatusEntry` | private | `public StatusEntry()` |
+| [42](../VRCOSC.Modules/Status/StatusListModuleSetting.cs#L42) | `StatusEntry` | public | `public bool Equals(StatusEntry? other)` |
+| [49](../VRCOSC.Modules/Status/StatusListModuleSetting.cs#L49) | `StatusEntry` | public | `public override bool Equals(object? obj) => obj is StatusEntry other && Equals(other);` |
+| [51](../VRCOSC.Modules/Status/StatusListModuleSetting.cs#L51) | `StatusEntry` | public | `public override int GetHashCode() => HashCode.Combine(Text.Value, Group.Value, UseInCycle.Value);` |
+
+### `Status/StatusModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [32](../VRCOSC.Modules/Status/StatusModule.cs#L32) | `StatusModule` | protected | `protected override void OnPreLoad()` |
+| [53](../VRCOSC.Modules/Status/StatusModule.cs#L53) | `StatusModule` | protected | `protected override void OnPostLoad()` |
+| [68](../VRCOSC.Modules/Status/StatusModule.cs#L68) | `StatusModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [86](../VRCOSC.Modules/Status/StatusModule.cs#L86) | `StatusModule` | protected | `protected override Task OnModuleStop()` |
+| [93](../VRCOSC.Modules/Status/StatusModule.cs#L93) | `StatusModule` | private | `private void Tick()` |
+| [120](../VRCOSC.Modules/Status/StatusModule.cs#L120) | `StatusModule` | protected | `protected override void OnRegisteredParameterReceived(RegisteredParameter parameter)` |
+| [161](../VRCOSC.Modules/Status/StatusModule.cs#L161) | `StatusModule` | private | `private List<StatusEntry> Rows()` |
+| [166](../VRCOSC.Modules/Status/StatusModule.cs#L166) | `StatusModule` | private | `private StatusEntry? ActiveRow(List<StatusEntry> rows)` |
+| [169](../VRCOSC.Modules/Status/StatusModule.cs#L169) | `StatusModule` | private | `private List<StatusEntry> Candidates(List<StatusEntry> rows)` |
+| [186](../VRCOSC.Modules/Status/StatusModule.cs#L186) | `StatusModule` | private | `private static StatusEntry NextRoundRobin(List<StatusEntry> pool, StatusEntry? active, bool forward)` |
+| [195](../VRCOSC.Modules/Status/StatusModule.cs#L195) | `StatusModule` | private | `private StatusEntry WeightedRandom(List<StatusEntry> pool)` |
+| [211](../VRCOSC.Modules/Status/StatusModule.cs#L211) | `StatusModule` | private | `private void SwitchTo(StatusEntry row, List<StatusEntry> rows, bool announce)` |
+| [226](../VRCOSC.Modules/Status/StatusModule.cs#L226) | `StatusModule` | private | `private void ApplyActive(StatusEntry? row, List<StatusEntry> rows)` |
+| [260](../VRCOSC.Modules/Status/StatusModule.cs#L260) | `StatusModule` | private | `private string PickIcon(bool first)` |
+
+### `Status/UI/StatusListModuleSettingView.xaml.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [11](../VRCOSC.Modules/Status/UI/StatusListModuleSettingView.xaml.cs#L11) | `StatusListModuleSettingView` | private | `public StatusListModuleSettingView(StatusModule _, StatusListModuleSetting moduleSetting)` |
+| [18](../VRCOSC.Modules/Status/UI/StatusListModuleSettingView.xaml.cs#L18) | `StatusListModuleSettingView` | private | `private void AddButton_OnClick(object sender, RoutedEventArgs e) => moduleSetting.Add();` |
+| [20](../VRCOSC.Modules/Status/UI/StatusListModuleSettingView.xaml.cs#L20) | `StatusListModuleSettingView` | private | `private void RemoveButton_OnClick(object sender, RoutedEventArgs e)` |
 
 
 ## Utilities

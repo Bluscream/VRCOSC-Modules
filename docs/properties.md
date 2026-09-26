@@ -4,7 +4,7 @@
 
 Every property (including expression-bodied and auto-properties), grouped by module and file.
 
-**150** total across **14** modules.
+**155** total across **15** modules.
 
 | Module | Count |
 |---|---|
@@ -19,6 +19,7 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | [LinuxMedia](#linuxmedia) | 2 |
 | [Notifications](#notifications) | 16 |
 | [OpenXR](#openxr) | 8 |
+| [Status](#status) | 5 |
 | [Utilities](#utilities) | 7 |
 | [VRCXBridge](#vrcxbridge) | 7 |
 | [VRChatSettings](#vrchatsettings) | 31 |
@@ -290,6 +291,24 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | [27](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L27) | `OpenXRRuntime` | public | `public static OpenXRRuntime Shared { get; } = new();` |
 | [72](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L72) | `OpenXRRuntime` | public | `public OpenXRSnapshot Snapshot => _snapshot;` |
 | [79](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L79) | `OpenXRRuntime` | public | `public bool UseOverlaySession { get; set; } = true;` |
+
+
+## Status
+
+### `Status/StatusListModuleSetting.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [29](../VRCOSC.Modules/Status/StatusListModuleSetting.cs#L29) | `StatusEntry` | public | `public Observable<string> Text { get; set; } = new("New status");` |
+| [32](../VRCOSC.Modules/Status/StatusListModuleSetting.cs#L32) | `StatusEntry` | public | `public Observable<string> Group { get; set; } = new(string.Empty);` |
+| [35](../VRCOSC.Modules/Status/StatusListModuleSetting.cs#L35) | `StatusEntry` | public | `public Observable<bool> UseInCycle { get; set; } = new(true);` |
+
+### `Status/StatusModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [20](../VRCOSC.Modules/Status/StatusModule.cs#L20) | `StatusModule` | public | `public string ActiveText { get; set; } = string.Empty;` |
+| [24](../VRCOSC.Modules/Status/StatusModule.cs#L24) | `StatusModule` | public | `public Dictionary<string, DateTime> LastUsed { get; set; } = new();` |
 
 
 ## Utilities

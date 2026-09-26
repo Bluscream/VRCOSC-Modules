@@ -105,4 +105,13 @@
     which builds Release and copies to packages/remote/bluscream.vrcosc.modules
     (NOT packages/local — VRCOSC would load the module twice).
   -->
+
+  <ItemGroup>
+    <Page Update="Status\UI\StatusListModuleSettingView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <XamlRuntime>Wpf</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
 </Project>
