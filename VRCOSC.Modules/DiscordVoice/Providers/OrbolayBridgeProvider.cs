@@ -71,7 +71,7 @@ public sealed class OrbolayBridgeProvider : IVoiceProvider
             await server.RunAsync(ct).ConfigureAwait(false);
         }
         catch (OperationCanceledException) { }
-        catch (Exception ex) when (ex is SocketException || ex is System.Net.HttpListenerException || ex is InvalidOperationException || ex is System.IO.IOException)
+        catch (Exception ex) when (ex is SocketException || ex is System.Net.HttpListenerException || ex is InvalidOperationException || ex is System.IO.IOException || ex is ObjectDisposedException)
         {
             _log($"OrbolayBridge server on port {_port} stopped: {ex.Message}");
         }
@@ -94,7 +94,17 @@ public sealed class OrbolayBridgeProvider : IVoiceProvider
         return true;
     }
 
-    private Task Send(object payload) => _socket?.SendToAllAsync(JsonSerializer.Serialize(payload)) ?? Task.CompletedTask;
+    private async Task Send(object payload)
+    {
+        try
+        {
+            if (_socket is { } socket) await socket.SendToAllAsync(JsonSerializer.Serialize(payload)).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is System.IO.IOException || ex is SocketException || ex is ObjectDisposedException || ex is InvalidOperationException)
+        {
+            _log($"OrbolayBridge send failed: {ex.Message}");
+        }
+    }
 
     private void HandleMessage(string json)
     {

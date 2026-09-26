@@ -193,7 +193,7 @@ public sealed partial class DiscordVoiceModule : Module
         {
             return false;
         }
-        catch (Exception ex) when (ex is System.Net.Http.HttpRequestException || ex is TimeoutException || ex is InvalidOperationException || ex is System.IO.IOException)
+        catch (Exception ex) when (ex is System.Net.Http.HttpRequestException || ex is TimeoutException || ex is InvalidOperationException || ex is System.IO.IOException || ex is ObjectDisposedException || ex is JsonException)
         {
             Log($"Discord RPC connection failed: {ex.Message}");
             return false;
@@ -277,7 +277,7 @@ public sealed partial class DiscordVoiceModule : Module
             using var response = await client.SendAsync(Payload.Subscribe(evt, args), CommandTimeout, ct).ConfigureAwait(false);
             if (response.IsError) Log($"Subscribe {evt} refused: {response.ErrorCode} {response.ErrorMessage}");
         }
-        catch (TimeoutException ex)
+        catch (Exception ex) when (ex is TimeoutException || ex is System.IO.IOException || ex is InvalidOperationException || ex is ObjectDisposedException)
         {
             Log($"Subscribe {evt}: {ex.Message}");
         }
@@ -316,7 +316,7 @@ public sealed partial class DiscordVoiceModule : Module
             else ApplyCommandResponse(command.Cmd, response.Data);
         }
         catch (OperationCanceledException) { }
-        catch (Exception ex) when (ex is TimeoutException || ex is System.IO.IOException || ex is InvalidOperationException || ex is JsonException)
+        catch (Exception ex) when (ex is TimeoutException || ex is System.IO.IOException || ex is InvalidOperationException || ex is JsonException || ex is ObjectDisposedException)
         {
             LogDebug($"{command.Cmd}: {ex.Message}");
         }
@@ -398,6 +398,7 @@ public sealed partial class DiscordVoiceModule : Module
     {
         try
         {
+            if (ct.IsCancellationRequested) return;
             await SendAndLogAsync(client, Payload.GetGuilds(), ct).ConfigureAwait(false);
             if (_lastGuildId.Length > 0) await SendAndLogAsync(client, Payload.GetChannels(_lastGuildId), ct).ConfigureAwait(false);
             await SendAndLogAsync(client, Payload.GetSelectedVoiceChannel(), ct).ConfigureAwait(false);

@@ -129,7 +129,7 @@ public sealed partial class DiscordVoiceModule
             if (!ok) Log($"{provider.Name} could not set {(deafen ? "deafen" : "mute")}.");
         }
         catch (OperationCanceledException) { }
-        catch (Exception ex) when (ex is System.Net.Http.HttpRequestException || ex is System.IO.IOException || ex is InvalidOperationException || ex is JsonException)
+        catch (Exception ex) when (ex is System.Net.Http.HttpRequestException || ex is System.IO.IOException || ex is InvalidOperationException || ex is JsonException || ex is ObjectDisposedException)
         {
             Log($"{provider.Name} set {(deafen ? "deafen" : "mute")} failed: {ex.Message}");
         }
@@ -177,7 +177,7 @@ public sealed partial class DiscordVoiceModule
             }
         }
         catch (OperationCanceledException) { }
-        catch (Exception ex) when (ex is TimeoutException || ex is System.IO.IOException || ex is InvalidOperationException || ex is JsonException)
+        catch (Exception ex) when (ex is TimeoutException || ex is System.IO.IOException || ex is InvalidOperationException || ex is JsonException || ex is ObjectDisposedException)
         {
             Log($"Tracking voice channel {channelId} failed: {ex.Message}");
         }

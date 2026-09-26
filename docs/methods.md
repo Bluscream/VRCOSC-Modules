@@ -237,14 +237,14 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [61](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L61) | `DevCompanionProvider` | public | `public async Task<bool> SetDeafenAsync(bool deafen, CancellationToken ct)` |
 | [68](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L68) | `DevCompanionProvider` | private | `private async Task<bool> DispatchAsync(string type, CancellationToken ct)` |
 | [82](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L82) | `DevCompanionProvider` | private | `private async Task PollLoopAsync(CancellationToken ct)` |
-| [96](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L96) | `DevCompanionProvider` | private | `private async Task PollOnceAsync(CancellationToken ct)` |
-| [126](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L126) | `DevCompanionProvider` | private | `private async Task RefreshChannelAsync(string channelId, CancellationToken ct)` |
-| [165](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L165) | `DevCompanionProvider` | private | `private async Task<string> DisplayNameAsync(string userId, CancellationToken ct)` |
-| [177](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L177) | `DevCompanionProvider` | private | `private static bool Flag(JsonElement e, string key) => e.TryGetProperty(key, out var v) && v.ValueKind == JsonValueKind.True;` |
-| [180](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L180) | `DevCompanionProvider` | private | `private async Task<JsonElement> StoreCallAsync(string store, string method, object[]? args, CancellationToken ct)` |
-| [193](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L193) | `DevCompanionProvider` | private | `private async Task<JsonDocument?> CallToolAsync(string tool, object arguments, CancellationToken ct)` |
-| [210](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L210) | `DevCompanionProvider` | private | `private void SetAvailable(bool available, string? reason = null)` |
-| [227](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L227) | `DevCompanionProvider` | public | `public void Dispose()` |
+| [101](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L101) | `DevCompanionProvider` | private | `private async Task PollOnceAsync(CancellationToken ct)` |
+| [131](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L131) | `DevCompanionProvider` | private | `private async Task RefreshChannelAsync(string channelId, CancellationToken ct)` |
+| [170](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L170) | `DevCompanionProvider` | private | `private async Task<string> DisplayNameAsync(string userId, CancellationToken ct)` |
+| [182](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L182) | `DevCompanionProvider` | private | `private static bool Flag(JsonElement e, string key) => e.TryGetProperty(key, out var v) && v.ValueKind == JsonValueKind.True;` |
+| [185](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L185) | `DevCompanionProvider` | private | `private async Task<JsonElement> StoreCallAsync(string store, string method, object[]? args, CancellationToken ct)` |
+| [198](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L198) | `DevCompanionProvider` | private | `private async Task<JsonDocument?> CallToolAsync(string tool, object arguments, CancellationToken ct)` |
+| [215](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L215) | `DevCompanionProvider` | private | `private void SetAvailable(bool available, string? reason = null)` |
+| [232](../VRCOSC.Modules/DiscordVoice/Providers/DevCompanionProvider.cs#L232) | `DevCompanionProvider` | public | `public void Dispose()` |
 
 ### `DiscordVoice/Providers/IVoiceProvider.cs`
 
@@ -263,18 +263,18 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [67](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L67) | `OrbolayBridgeProvider` | private | `private async Task RunServerAsync(WebServer server, CancellationToken ct)` |
 | [80](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L80) | `OrbolayBridgeProvider` | public | `public async Task<bool> SetMuteAsync(bool mute, CancellationToken ct)` |
 | [89](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L89) | `OrbolayBridgeProvider` | public | `public async Task<bool> SetDeafenAsync(bool deafen, CancellationToken ct)` |
-| [97](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L97) | `OrbolayBridgeProvider` | private | `private Task Send(object payload) => _socket?.SendToAllAsync(JsonSerializer.Serialize(payload)) ?? Task.CompletedTask;` |
-| [99](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L99) | `OrbolayBridgeProvider` | private | `private void HandleMessage(string json)` |
-| [130](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L130) | `OrbolayBridgeProvider` | private | `private void OnChannelJoined(JsonElement root)` |
-| [148](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L148) | `OrbolayBridgeProvider` | private | `private void OnVoiceStateUpdate(JsonElement state)` |
-| [170](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L170) | `OrbolayBridgeProvider` | private | `private static string Str(JsonElement e, string key) => e.TryGetProperty(key, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() ?? string.Empty : string.Empty;` |
-| [171](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L171) | `OrbolayBridgeProvider` | private | `private static bool? Bool(JsonElement e, string key) => e.TryGetProperty(key, out var v) && v.ValueKind is JsonValueKind.True or JsonValueKind.False ? v.GetBoolean() : null;` |
-| [173](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L173) | `OrbolayBridgeProvider` | public | `public void Dispose()` |
-| [189](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L189) | `BridgeSocket` | private | `public BridgeSocket(OrbolayBridgeProvider owner) : base("/", true) => _owner = owner;` |
-| [193](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L193) | `BridgeSocket` | public | `public Task SendToAllAsync(string payload) => BroadcastAsync(payload);` |
-| [195](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L195) | `BridgeSocket` | protected | `protected override Task OnClientConnectedAsync(IWebSocketContext context)` |
-| [202](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L202) | `BridgeSocket` | protected | `protected override Task OnClientDisconnectedAsync(IWebSocketContext context)` |
-| [213](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L213) | `BridgeSocket` | protected | `protected override Task OnMessageReceivedAsync(IWebSocketContext context, byte[] buffer, IWebSocketReceiveResult result)` |
+| [97](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L97) | `OrbolayBridgeProvider` | private | `private async Task Send(object payload)` |
+| [109](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L109) | `OrbolayBridgeProvider` | private | `private void HandleMessage(string json)` |
+| [140](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L140) | `OrbolayBridgeProvider` | private | `private void OnChannelJoined(JsonElement root)` |
+| [158](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L158) | `OrbolayBridgeProvider` | private | `private void OnVoiceStateUpdate(JsonElement state)` |
+| [180](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L180) | `OrbolayBridgeProvider` | private | `private static string Str(JsonElement e, string key) => e.TryGetProperty(key, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() ?? string.Empty : string.Empty;` |
+| [181](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L181) | `OrbolayBridgeProvider` | private | `private static bool? Bool(JsonElement e, string key) => e.TryGetProperty(key, out var v) && v.ValueKind is JsonValueKind.True or JsonValueKind.False ? v.GetBoolean() : null;` |
+| [183](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L183) | `OrbolayBridgeProvider` | public | `public void Dispose()` |
+| [199](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L199) | `BridgeSocket` | private | `public BridgeSocket(OrbolayBridgeProvider owner) : base("/", true) => _owner = owner;` |
+| [203](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L203) | `BridgeSocket` | public | `public Task SendToAllAsync(string payload) => BroadcastAsync(payload);` |
+| [205](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L205) | `BridgeSocket` | protected | `protected override Task OnClientConnectedAsync(IWebSocketContext context)` |
+| [212](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L212) | `BridgeSocket` | protected | `protected override Task OnClientDisconnectedAsync(IWebSocketContext context)` |
+| [223](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L223) | `BridgeSocket` | protected | `protected override Task OnMessageReceivedAsync(IWebSocketContext context, byte[] buffer, IWebSocketReceiveResult result)` |
 
 ### `DiscordVoice/Rpc/DiscordAuth.cs`
 

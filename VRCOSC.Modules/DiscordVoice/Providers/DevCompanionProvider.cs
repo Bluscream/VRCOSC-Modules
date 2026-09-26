@@ -72,7 +72,7 @@ public sealed class DevCompanionProvider : IVoiceProvider
             using var doc = await CallToolAsync("flux", new { action = "dispatch", type, payload = new { syncRemote = true, playSoundEffect = true, context = "default" } }, ct).ConfigureAwait(false);
             return doc is not null;
         }
-        catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException || ex is JsonException)
+        catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException || ex is JsonException || ex is InvalidOperationException || ex is ObjectDisposedException)
         {
             _log($"DevCompanion dispatch {type} failed: {ex.Message}");
             return false;
@@ -91,6 +91,11 @@ public sealed class DevCompanionProvider : IVoiceProvider
             while (await timer.WaitForNextTickAsync(ct).ConfigureAwait(false));
         }
         catch (OperationCanceledException) { }
+        catch (Exception ex)
+        {
+            // Safety net for a background loop: anything unexpected is logged, never left unobserved.
+            _log($"DevCompanion poll loop stopped: {ex.GetType().Name}: {ex.Message}");
+        }
     }
 
     private async Task PollOnceAsync(CancellationToken ct)
@@ -117,7 +122,7 @@ public sealed class DevCompanionProvider : IVoiceProvider
 
             SetAvailable(true);
         }
-        catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException || ex is JsonException || ex is InvalidOperationException)
+        catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException || ex is JsonException || ex is InvalidOperationException || ex is ObjectDisposedException)
         {
             if (!ct.IsCancellationRequested) SetAvailable(false, ex.Message);
         }

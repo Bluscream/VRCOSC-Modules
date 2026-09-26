@@ -187,9 +187,9 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [35](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L35) | `OrbolayBridgeProvider` | private | `private BridgeSocket? _socket;` |
 | [36](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L36) | `OrbolayBridgeProvider` | private | `private CancellationTokenSource? _cts;` |
 | [37](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L37) | `OrbolayBridgeProvider` | private | `private Action<string> _log = _ => { };` |
-| [128](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L128) | `OrbolayBridgeProvider` | private | `private string _selfId = string.Empty;` |
-| [186](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L186) | `BridgeSocket` | private | `private readonly OrbolayBridgeProvider _owner;` |
-| [187](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L187) | `BridgeSocket` | private | `private int _clients;` |
+| [138](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L138) | `OrbolayBridgeProvider` | private | `private string _selfId = string.Empty;` |
+| [196](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L196) | `BridgeSocket` | private | `private readonly OrbolayBridgeProvider _owner;` |
+| [197](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L197) | `BridgeSocket` | private | `private int _clients;` |
 
 ### `DiscordVoice/Rpc/DiscordAuth.cs`
 
