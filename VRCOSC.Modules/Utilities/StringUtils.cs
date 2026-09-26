@@ -2,6 +2,7 @@
 // See the LICENSE file in the repository root for full license text.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Bluscream;
 
@@ -10,9 +11,9 @@ namespace Bluscream;
 /// </summary>
 public static class StringUtils
 {
-    public static bool IsNullOrWhiteSpace(string? str) => string.IsNullOrWhiteSpace(str);
+    public static bool IsNullOrWhiteSpace([NotNullWhen(false)] string? str) => string.IsNullOrWhiteSpace(str);
     
-    public static bool IsNullOrEmpty(string? str) => string.IsNullOrEmpty(str);
+    public static bool IsNullOrEmpty([NotNullWhen(false)] string? str) => string.IsNullOrEmpty(str);
     
     public static string OrDefault(string? str, string defaultValue) 
         => string.IsNullOrEmpty(str) ? defaultValue : str;

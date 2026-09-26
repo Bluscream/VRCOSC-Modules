@@ -236,7 +236,11 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
     }
     
     // Override SendParameter to track outgoing parameters
+#if BETA_SDK
+    protected void SendParameter(string name, object value)
+#else
     protected new void SendParameter(string name, object value)
+#endif
     {
         // Track outgoing
         if (_outgoingTracker != null)
@@ -248,7 +252,11 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         _baseSendParameterMethod?.Invoke(this, new[] { name, value });
     }
     
+#if BETA_SDK
+    protected void SendParameter(Enum lookup, object value)
+#else
     protected new void SendParameter(Enum lookup, object value)
+#endif
     {
         // Get the parameter name from reflection to access internal Parameters dictionary
         var parametersDict = ReflectionUtils.GetAllModuleParameters(this);

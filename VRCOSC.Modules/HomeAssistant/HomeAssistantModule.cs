@@ -209,14 +209,14 @@ public class HomeAssistantModule : Module
         return true;
     }
 
-    protected override Task OnModuleStop()
+    protected override async Task OnModuleStop()
     {
         if (_client != null)
         {
             _client.OnStateChanged -= HandleStateChanged;
             _client.OnTemplateRendered -= HandleTemplateRendered;
             _client.OnConnectionStatusChanged -= HandleConnectionStatusChanged;
-            _client.StopWebSocket();
+            await _client.StopWebSocket();
             _client = null;
         }
 
@@ -224,8 +224,6 @@ public class HomeAssistantModule : Module
         SendParameter(HomeAssistantParameter.Connected, false);
         SetVariableValue(HomeAssistantVariable.Connected, false);
         ChangeState(HomeAssistantState.Disconnected);
-
-        return Task.CompletedTask;
     }
 
     private async Task InitializeTemplateVariables()
@@ -651,7 +649,7 @@ public class HomeAssistantModule : Module
     public async Task<string> RenderTemplate(string template)
     {
         if (_client == null) return "[Error: Client not initialized]";
-        return await _client.RenderTemplateAsync(template);
+        return await _client.RenderTemplateAsync(template) ?? "[Error: No response from Home Assistant]";
     }
 
     #endregion
