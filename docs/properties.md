@@ -378,8 +378,8 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | [27](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L27) | `OpenXRRuntime` | public | `public static OpenXRRuntime Shared { get; } = new();` |
 | [76](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L76) | `OpenXRRuntime` | public | `public string CurrentPhase => _phase;` |
 | [79](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L79) | `OpenXRRuntime` | public | `public DateTime LastLoopUtc => new(Interlocked.Read(ref _lastLoopTicks), DateTimeKind.Utc);` |
-| [84](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L84) | `OpenXRRuntime` | public | `public OpenXRSnapshot Snapshot => _snapshot;` |
-| [91](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L91) | `OpenXRRuntime` | public | `public bool UseOverlaySession { get; set; } = true;` |
+| [95](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L95) | `OpenXRRuntime` | public | `public OpenXRSnapshot Snapshot => _snapshot;` |
+| [102](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L102) | `OpenXRRuntime` | public | `public bool UseOverlaySession { get; set; } = true;` |
 
 
 ## Status

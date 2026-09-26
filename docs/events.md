@@ -104,7 +104,7 @@ Not `event`-qualified, but the same idea in practice: a slot a caller plugs a ha
 
 | Line | Owner | Name | Type |
 |---|---|---|---|
-| [127](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L127) | `OpenXRRuntime` | `target` | `Action<string>?` |
+| [138](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L138) | `OpenXRRuntime` | `target` | `Action<string>?` |
 
 ### Utilities
 

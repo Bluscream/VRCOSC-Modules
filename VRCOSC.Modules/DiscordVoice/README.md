@@ -1,8 +1,36 @@
-# DiscordVoice
+# Discord Voice
 
-DiscordVoice module for VRCOSC.
+Mute, deafen and voice-channel state for the running Discord client over its local RPC socket.
 
 **Repository**: https://github.com/Bluscream/VRCOSC-Modules
+
+---
+
+## Attribution
+
+This module is a fork of **DiscordOSC** by Yeusepe
+(https://github.com/Yeusepe/Yeusepes-Modules, `YeusepesModules/DISCORDOSC/`), licensed under
+the GNU General Public License v3.0. The OSC parameter surface (`VRCOSC/Discord/...`) is kept
+compatible so avatars built for DiscordOSC keep working. This fork is distributed under the
+same GPL-3.0 licence; see the LICENSE file in the repository root.
+
+Changes from upstream: namespace and naming adapted to this repository, nullable-safe, a single
+IPC reader loop that matches responses to requests by nonce (upstream had two readers competing
+for the pipe), non-blocking ChatBox polling, and no built-in Discord application (bring your
+own Client ID / Client Secret).
+
+## Setup & Requirements
+
+1. Create an application at https://discord.com/developers/applications, open its OAuth2 tab and
+   copy the Client ID and Client Secret into the module settings.
+2. Discord must be running on the same machine. The module connects to `discord-ipc-0` ..
+   `discord-ipc-9`.
+3. The RPC token is requested with the scopes `rpc rpc.voice.read rpc.voice.write`
+   (`rpc` for the connection and channel events, `rpc.voice.read` for voice settings,
+   `rpc.voice.write` for SET_VOICE_SETTINGS).
+
+Note: Vesktop / Equibop implement RPC through arRPC, which only handles Rich Presence
+(SET_ACTIVITY) and none of the voice commands. Use the official Discord client for RPC.
 
 ## Module Settings
 
@@ -69,6 +97,11 @@ DiscordVoice module for VRCOSC.
 | **Activity Spectate** | `activityspectateevent` | `Spectate` | `Triggered on Activity Spectate` |
 | **Join Request** | `activityjoinrequestevent` | `User {0}` | `Triggered on Join Request` |
 <!-- EVENTS_TABLE_END -->
+
+## Avatar OSC Parameters
+
+<!-- PARAMETERS_TABLE_START -->
+<!-- PARAMETERS_TABLE_END -->
 
 ## Avatar OSC Parameters
 

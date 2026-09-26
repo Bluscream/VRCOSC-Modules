@@ -4,7 +4,7 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**665** total across **23** modules.
+**667** total across **23** modules.
 
 | Module | Count |
 |---|---|
@@ -22,7 +22,7 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [LinuxMedia](#linuxmedia) | 15 |
 | [MCBParity](#mcbparity) | 25 |
 | [Notifications](#notifications) | 37 |
-| [OpenXR](#openxr) | 81 |
+| [OpenXR](#openxr) | 83 |
 | [Status](#status) | 7 |
 | [TikTokLive](#tiktoklive) | 21 |
 | [TwitchStats](#twitchstats) | 23 |
@@ -806,8 +806,10 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [71](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L71) | `OpenXRRuntime` | private | `private volatile OpenXRSnapshot _snapshot = OpenXRSnapshot.Empty;` |
 | [72](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L72) | `OpenXRRuntime` | private | `private volatile string _phase = "idle";` |
 | [73](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L73) | `OpenXRRuntime` | private | `private long _lastLoopTicks;` |
-| [140](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L140) | `OpenXRRuntime` | private | `private readonly Dictionary<string, DateTime> _lastLogged = new();` |
-| [432](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L432) | `OpenXRRuntime` | private | `private DateTime _nextSnapshotLog = DateTime.MinValue;` |
+| [81](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L81) | `OpenXRRuntime` | private | `private long _frameCount;` |
+| [82](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L82) | `OpenXRRuntime` | private | `private long _missedFrameCount;` |
+| [151](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L151) | `OpenXRRuntime` | private | `private readonly Dictionary<string, DateTime> _lastLogged = new();` |
+| [450](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L450) | `OpenXRRuntime` | private | `private DateTime _nextSnapshotLog = DateTime.MinValue;` |
 
 ### `OpenXR/OpenXRStatisticsModule.cs`
 
