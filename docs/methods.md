@@ -4,7 +4,7 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**1133** total across **23** modules.
+**1121** total across **23** modules.
 
 | Module | Count |
 |---|---|
@@ -21,7 +21,7 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [LinuxHardwareStats](#linuxhardwarestats) | 29 |
 | [LinuxMedia](#linuxmedia) | 14 |
 | [LinuxProcessManager](#linuxprocessmanager) | 4 |
-| [MCBParity](#mcbparity) | 20 |
+| [MCBParity](#mcbparity) | 8 |
 | [Notifications](#notifications) | 25 |
 | [OpenXR](#openxr) | 82 |
 | [Status](#status) | 23 |
@@ -956,31 +956,14 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [58](../VRCOSC.Modules/MCBParity/MCBParityModule.VR.cs#L58) | `MCBParityModule` | private | `private void StopVr()` |
 | [66](../VRCOSC.Modules/MCBParity/MCBParityModule.VR.cs#L66) | `MCBParityModule` | private | `private void UpdateVr()` |
 
-### `MCBParity/MCBParityModule.Weather.cs`
-
-| Line | Owner | Visibility | Declaration |
-|---|---|---|---|
-| [30](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L30) | `MCBParityModule` | private | `private static HttpClient CreateHttpClient()` |
-| [37](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L37) | `MCBParityModule` | private | `private void CreateWeatherSettings()` |
-| [59](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L59) | `MCBParityModule` | private | `private void StartWeather()` |
-| [66](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L66) | `MCBParityModule` | private | `private void UpdateWeather()` |
-| [76](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L76) | `MCBParityModule` | private | `private async Task RefreshWeatherAsync()` |
-| [110](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L110) | `MCBParityModule` | private | `private void ApplyWeather(WeatherReading w)` |
-| [123](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L123) | `MCBParityModule` | private | `private static string FormatTemperature(float celsius, bool fahrenheit)` |
-| [129](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L129) | `MCBParityModule` | private | `private static string FormatWind(float kph, string direction, bool mph)` |
-| [139](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L139) | `MCBParityModule` | private | `private async Task<WeatherReading?> FetchWeatherApiAsync(string apiKey, string location)` |
-| [174](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L174) | `MCBParityModule` | private | `private static int WeatherApiCodeToWmo(int code) => code switch` |
-| [209](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L209) | `MCBParityModule` | private | `private async Task<WeatherReading?> FetchOpenMeteoAsync(string location)` |
-| [256](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L256) | `MCBParityModule` | private | `private static float JsonNumber(JsonElement element, string key)` |
-
 ### `MCBParity/MCBParityModule.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [22](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L22) | `MCBParityModule` | protected | `protected override void OnPreLoad()` |
-| [28](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L28) | `MCBParityModule` | protected | `protected override void OnPostLoad()` |
-| [36](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L36) | `MCBParityModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [44](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L44) | `MCBParityModule` | protected | `protected override Task OnModuleStop()` |
+| [19](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L19) | `MCBParityModule` | protected | `protected override void OnPreLoad()` |
+| [24](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L24) | `MCBParityModule` | protected | `protected override void OnPostLoad()` |
+| [31](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L31) | `MCBParityModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [38](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L38) | `MCBParityModule` | protected | `protected override Task OnModuleStop()` |
 
 
 ## Notifications

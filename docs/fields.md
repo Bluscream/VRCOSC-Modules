@@ -4,7 +4,7 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**748** total across **22** modules.
+**742** total across **22** modules.
 
 | Module | Count |
 |---|---|
@@ -20,7 +20,7 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [LinuxAudioFx](#linuxaudiofx) | 10 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 31 |
 | [LinuxMedia](#linuxmedia) | 15 |
-| [MCBParity](#mcbparity) | 12 |
+| [MCBParity](#mcbparity) | 6 |
 | [Notifications](#notifications) | 37 |
 | [OpenXR](#openxr) | 83 |
 | [Status](#status) | 7 |
@@ -697,17 +697,6 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [26](../VRCOSC.Modules/MCBParity/MCBParityModule.VR.cs#L26) | `MCBParityModule` | private | `private int _missedRing;` |
 | [27](../VRCOSC.Modules/MCBParity/MCBParityModule.VR.cs#L27) | `MCBParityModule` | private | `private bool _xrAcquired;` |
 | [28](../VRCOSC.Modules/MCBParity/MCBParityModule.VR.cs#L28) | `MCBParityModule` | private | `private bool _xrLoggedNoStats;` |
-
-### `MCBParity/MCBParityModule.Weather.cs`
-
-| Line | Owner | Visibility | Declaration |
-|---|---|---|---|
-| [17](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L17) | `MCBParityModule` | private | `private static readonly HttpClient Http = CreateHttpClient();` |
-| [20](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L20) | `MCBParityModule` | private | `private const string WeatherApiCurrentUrl = "https://api.weatherapi.com/v1/current.json?key={0}&q={1}";` |
-| [21](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L21) | `MCBParityModule` | private | `private const string OpenMeteoGeocodeUrl = "https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&format=json&name={0}";` |
-| [26](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L26) | `MCBParityModule` | private | `private DateTime _weatherLastFetch = DateTime.MinValue;` |
-| [27](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L27) | `MCBParityModule` | private | `private bool _weatherFetching;` |
-| [28](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L28) | `MCBParityModule` | private | `private bool _weatherLoggedNoKey;` |
 
 
 ## Notifications

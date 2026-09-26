@@ -4,7 +4,7 @@
 
 Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
-**351** total across **23** modules.
+**347** total across **23** modules.
 
 | Module | Count |
 |---|---|
@@ -21,7 +21,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [LinuxHardwareStats](#linuxhardwarestats) | 18 |
 | [LinuxMedia](#linuxmedia) | 7 |
 | [LinuxProcessManager](#linuxprocessmanager) | 2 |
-| [MCBParity](#mcbparity) | 9 |
+| [MCBParity](#mcbparity) | 5 |
 | [Notifications](#notifications) | 19 |
 | [OpenXR](#openxr) | 28 |
 | [Status](#status) | 9 |
@@ -637,23 +637,14 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 |---|---|---|
 | [20](../VRCOSC.Modules/MCBParity/MCBParityModule.VR.cs#L20) | public | `public sealed partial class MCBParityModule` |
 
-### `MCBParity/MCBParityModule.Weather.cs`
-
-| Line | Visibility | Declaration |
-|---|---|---|
-| [15](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L15) | public | `public sealed partial class MCBParityModule` |
-| [135](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L135) | private | `private readonly record struct WeatherReading(float TempC, float FeelsLikeC, int Humidity, float WindKph, string WindDirection, string Condition, string Emoji);` |
-| [259](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L259) | private | `private enum TemperatureUnit { Celsius, Fahrenheit }` |
-| [261](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L261) | private | `private enum WindUnit { Kmh, Mph }` |
-
 ### `MCBParity/MCBParityModule.cs`
 
 | Line | Visibility | Declaration |
 |---|---|---|
-| [20](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L20) | public | `public sealed partial class MCBParityModule : Module` |
-| [50](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L50) | private | `private enum MCBParitySetting` |
-| [57](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L57) | private | `private enum MCBParityVariable` |
-| [63](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L63) | private | `private enum MCBParityState { Default }` |
+| [17](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L17) | public | `public sealed partial class MCBParityModule : Module` |
+| [44](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L44) | private | `private enum MCBParitySetting { VrFrameStats }` |
+| [47](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L47) | private | `private enum MCBParityVariable { vr_reprojection, vr_dropped_frames }` |
+| [49](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L49) | private | `private enum MCBParityState { Default }` |
 
 
 ## Notifications
