@@ -4,14 +4,14 @@
 
 Every property (including expression-bodied and auto-properties), grouped by module and file.
 
-**196** total across **20** modules.
+**200** total across **20** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 1 |
 | [Debug](#debug) | 5 |
 | [DesktopFPS](#desktopfps) | 2 |
-| [DiscordVoice](#discordvoice) | 7 |
+| [DiscordVoice](#discordvoice) | 11 |
 | [HTTP](#http) | 4 |
 | [HTTPServer](#httpserver) | 3 |
 | [HeartrateStats](#heartratestats) | 15 |
@@ -85,6 +85,15 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | [28](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L28) | `RpcResponse` | public | `public string ErrorMessage => IsError && Data.TryGetProperty("message", out var m) ? m.GetString() ?? string.Empty : string.Empty;` |
 | [51](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L51) | `DiscordIpcClient` | public | `public string Transport { get; private set; } = "none";` |
 | [52](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L52) | `DiscordIpcClient` | public | `public bool IsConnected => _stream is not null && Volatile.Read(ref _disposed) == 0;` |
+
+### `DiscordVoice/Voice/VoiceStateTracker.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [11](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L11) | `struct` | public | `public bool InVoice => ChannelId.Length > 0;` |
+| [14](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L14) | `struct` | public | `public string MuteState => Deafened ? "deafened" : Muted ? "muted" : string.Empty;` |
+| [45](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L45) | `VoiceStateTracker` | public | `public TimeSpan SpeakingHold { get; set; } = TimeSpan.FromMilliseconds(300);` |
+| [47](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L47) | `VoiceStateTracker` | public | `public string ChannelId { get { lock (_gate) return _channelId; } }` |
 
 
 ## HTTP

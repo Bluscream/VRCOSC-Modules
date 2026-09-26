@@ -78,6 +78,17 @@ internal sealed unsafe partial class OpenXRRuntime
     /// <summary>UTC time of the last completed loop iteration.</summary>
     public DateTime LastLoopUtc => new(Interlocked.Read(ref _lastLoopTicks), DateTimeKind.Utc);
 
+    private long _frameCount;
+    private long _missedFrameCount;
+
+    /// <summary>
+    /// Read-only frame counters from the headless loop: frames xrWaitFrame handed out, and how
+    /// many display periods the runtime skipped between consecutive predicted display times
+    /// (each skip is a frame this client did not get). OpenXR exposes no compositor statistics,
+    /// so this is the only frame-drop signal available; consumers diff successive readings.
+    /// </summary>
+    public (long Frames, long Missed) FrameCounters => (Interlocked.Read(ref _frameCount), Interlocked.Read(ref _missedFrameCount));
+
     private void Phase(string name) => _phase = name;
 
     /// <summary>Latest published state. Never null; <see cref="OpenXRSnapshot.Empty"/> until initialised.</summary>
@@ -280,6 +291,13 @@ internal sealed unsafe partial class OpenXRRuntime
             var r = _xr!.WaitFrame(_session, &waitInfo, &frameState);
             if (r == Result.Success)
             {
+                if (_lastPredictedTime != 0 && _lastPredictedPeriod > 0)
+                {
+                    var skipped = (long)Math.Round((frameState.PredictedDisplayTime - _lastPredictedTime) / (double)_lastPredictedPeriod) - 1;
+                    if (skipped > 0) Interlocked.Add(ref _missedFrameCount, skipped);
+                }
+                Interlocked.Increment(ref _frameCount);
+
                 _lastPredictedTime = frameState.PredictedDisplayTime;
                 _lastPredictedPeriod = frameState.PredictedDisplayPeriod;
                 _sinceLastFrame.Restart();

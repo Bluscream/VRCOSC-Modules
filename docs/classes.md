@@ -4,14 +4,14 @@
 
 Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
-**335** total across **24** modules.
+**339** total across **24** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 5 |
 | [Debug](#debug) | 15 |
 | [DesktopFPS](#desktopfps) | 8 |
-| [DiscordVoice](#discordvoice) | 14 |
+| [DiscordVoice](#discordvoice) | 17 |
 | [HTTP](#http) | 11 |
 | [HTTPServer](#httpserver) | 17 |
 | [HeartrateStats](#heartratestats) | 13 |
@@ -21,7 +21,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [LinuxHardwareStats](#linuxhardwarestats) | 18 |
 | [LinuxMedia](#linuxmedia) | 7 |
 | [LinuxProcessManager](#linuxprocessmanager) | 2 |
-| [MCBParity](#mcbparity) | 10 |
+| [MCBParity](#mcbparity) | 11 |
 | [Notifications](#notifications) | 19 |
 | [OpenXR](#openxr) | 28 |
 | [Status](#status) | 9 |
@@ -181,6 +181,14 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 |---|---|---|
 | [11](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L11) | public | `public sealed class RpcCommand` |
 | [27](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L27) | public | `public static class Payload` |
+
+### `DiscordVoice/Voice/VoiceStateTracker.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [9](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L9) | public | `public readonly record struct VoiceSnapshot(string ChannelName, string ChannelId, int UserCount, IReadOnlyList<string> Speaking, bool Muted, bool Deafened)` |
+| [25](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L25) | public | `public sealed class VoiceStateTracker` |
+| [27](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L27) | private | `private sealed class Member` |
 
 
 ## HTTP
@@ -570,6 +578,12 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 |---|---|---|
 | [14](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L14) | public | `public sealed partial class MCBParityModule` |
 
+### `MCBParity/MCBParityModule.VR.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [20](../VRCOSC.Modules/MCBParity/MCBParityModule.VR.cs#L20) | public | `public sealed partial class MCBParityModule` |
+
 ### `MCBParity/MCBParityModule.Weather.cs`
 
 | Line | Visibility | Declaration |
@@ -583,10 +597,10 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
 | Line | Visibility | Declaration |
 |---|---|---|
-| [18](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L18) | public | `public sealed partial class MCBParityModule : Module` |
-| [50](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L50) | private | `private enum MCBParitySetting` |
-| [57](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L57) | private | `private enum MCBParityVariable` |
-| [63](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L63) | private | `private enum MCBParityState { Default, InInstance, NotInInstance }` |
+| [19](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L19) | public | `public sealed partial class MCBParityModule : Module` |
+| [55](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L55) | private | `private enum MCBParitySetting` |
+| [63](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L63) | private | `private enum MCBParityVariable` |
+| [70](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L70) | private | `private enum MCBParityState { Default, InInstance, NotInInstance }` |
 
 ### `MCBParity/VRChatLogTail.cs`
 

@@ -4,14 +4,14 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**667** total across **23** modules.
+**683** total across **23** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 1 |
 | [Debug](#debug) | 25 |
 | [DesktopFPS](#desktopfps) | 10 |
-| [DiscordVoice](#discordvoice) | 23 |
+| [DiscordVoice](#discordvoice) | 33 |
 | [HTTP](#http) | 24 |
 | [HTTPServer](#httpserver) | 20 |
 | [HeartrateStats](#heartratestats) | 31 |
@@ -20,7 +20,7 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [LinuxAudioFx](#linuxaudiofx) | 10 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 31 |
 | [LinuxMedia](#linuxmedia) | 15 |
-| [MCBParity](#mcbparity) | 25 |
+| [MCBParity](#mcbparity) | 31 |
 | [Notifications](#notifications) | 37 |
 | [OpenXR](#openxr) | 83 |
 | [Status](#status) | 7 |
@@ -162,6 +162,21 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [44](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L44) | `DiscordIpcClient` | private | `private int _disposed;` |
 | [47](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L47) | `DiscordIpcClient` | public | `public event Action<JsonElement>? EventReceived;` |
 | [49](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L49) | `DiscordIpcClient` | public | `public event Action<Exception?>? Disconnected;` |
+
+### `DiscordVoice/Voice/VoiceStateTracker.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [29](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L29) | `Member` | public | `public string Name = string.Empty;` |
+| [30](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L30) | `Member` | public | `public bool Speaking;` |
+| [32](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L32) | `Member` | public | `public DateTime StoppedAt = DateTime.MinValue;` |
+| [34](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L34) | `Member` | public | `public DateTime StartedAt = DateTime.MinValue;` |
+| [37](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L37) | `VoiceStateTracker` | private | `private readonly object _gate = new();` |
+| [38](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L38) | `VoiceStateTracker` | private | `private readonly Dictionary<string, Member> _members = new(StringComparer.Ordinal);` |
+| [39](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L39) | `VoiceStateTracker` | private | `private string _channelName = string.Empty;` |
+| [40](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L40) | `VoiceStateTracker` | private | `private string _channelId = string.Empty;` |
+| [41](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L41) | `VoiceStateTracker` | private | `private bool _muted;` |
+| [42](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L42) | `VoiceStateTracker` | private | `private bool _deafened;` |
 
 
 ## HTTP
@@ -599,6 +614,17 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [20](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L20) | `MCBParityModule` | private | `private string _capacityRequestedFor = string.Empty;` |
 | [21](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L21) | `MCBParityModule` | private | `private bool _capacityFetching;` |
 | [22](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L22) | `MCBParityModule` | private | `private bool _wasInInstance;` |
+
+### `MCBParity/MCBParityModule.VR.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [22](../VRCOSC.Modules/MCBParity/MCBParityModule.VR.cs#L22) | `MCBParityModule` | private | `private const int DroppedWindowSeconds = 60;` |
+| [24](../VRCOSC.Modules/MCBParity/MCBParityModule.VR.cs#L24) | `MCBParityModule` | private | `private readonly OpenXRRuntime _xr = OpenXRRuntime.Shared;` |
+| [25](../VRCOSC.Modules/MCBParity/MCBParityModule.VR.cs#L25) | `MCBParityModule` | private | `private readonly long[] _missedPerSecond = new long[DroppedWindowSeconds];` |
+| [26](../VRCOSC.Modules/MCBParity/MCBParityModule.VR.cs#L26) | `MCBParityModule` | private | `private int _missedRing;` |
+| [27](../VRCOSC.Modules/MCBParity/MCBParityModule.VR.cs#L27) | `MCBParityModule` | private | `private bool _xrAcquired;` |
+| [28](../VRCOSC.Modules/MCBParity/MCBParityModule.VR.cs#L28) | `MCBParityModule` | private | `private bool _xrLoggedNoStats;` |
 
 ### `MCBParity/MCBParityModule.Weather.cs`
 

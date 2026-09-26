@@ -4,14 +4,14 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**1018** total across **24** modules.
+**1031** total across **24** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 1 |
 | [Debug](#debug) | 41 |
 | [DesktopFPS](#desktopfps) | 18 |
-| [DiscordVoice](#discordvoice) | 70 |
+| [DiscordVoice](#discordvoice) | 79 |
 | [HTTP](#http) | 9 |
 | [HTTPServer](#httpserver) | 41 |
 | [HeartrateStats](#heartratestats) | 41 |
@@ -21,7 +21,7 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [LinuxHardwareStats](#linuxhardwarestats) | 29 |
 | [LinuxMedia](#linuxmedia) | 14 |
 | [LinuxProcessManager](#linuxprocessmanager) | 4 |
-| [MCBParity](#mcbparity) | 39 |
+| [MCBParity](#mcbparity) | 43 |
 | [Notifications](#notifications) | 25 |
 | [OpenXR](#openxr) | 80 |
 | [Status](#status) | 23 |
@@ -254,6 +254,20 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [64](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L64) | `Payload` | public | `public static RpcCommand SendActivityJoinInvite(string userId) => new("SEND_ACTIVITY_JOIN_INVITE", new { user_id = userId });` |
 | [65](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L65) | `Payload` | public | `public static RpcCommand CloseActivityRequest(string userId) => new("CLOSE_ACTIVITY_REQUEST", new { user_id = userId });` |
 | [66](../VRCOSC.Modules/DiscordVoice/Rpc/RpcCommand.cs#L66) | `Payload` | public | `public static RpcCommand SetCertifiedDevices(object[] devices) => new("SET_CERTIFIED_DEVICES", new { devices });` |
+
+### `DiscordVoice/Voice/VoiceStateTracker.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [17](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L17) | `struct` | public | `public string SpeakingText(int max)` |
+| [49](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L49) | `VoiceStateTracker` | public | `public void SetChannel(string channelId, string channelName)` |
+| [59](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L59) | `VoiceStateTracker` | public | `public void ClearChannel()` |
+| [69](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L69) | `VoiceStateTracker` | public | `public void SetSelf(bool? muted, bool? deafened)` |
+| [79](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L79) | `VoiceStateTracker` | public | `public void UpsertMember(string userId, string displayName)` |
+| [88](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L88) | `VoiceStateTracker` | public | `public void RemoveMember(string userId)` |
+| [94](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L94) | `VoiceStateTracker` | public | `public void ReplaceMembers(IEnumerable<(string UserId, string DisplayName)> members)` |
+| [109](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L109) | `VoiceStateTracker` | public | `public void SetSpeaking(string userId, bool speaking, DateTime now)` |
+| [131](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L131) | `VoiceStateTracker` | public | `public VoiceSnapshot Snapshot(DateTime now)` |
 
 
 ## HTTP
@@ -803,6 +817,15 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [49](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L49) | `MCBParityModule` | private | `private void UpdateInstance()` |
 | [82](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L82) | `MCBParityModule` | private | `private async Task FetchCapacityAsync(string worldId)` |
 
+### `MCBParity/MCBParityModule.VR.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [31](../VRCOSC.Modules/MCBParity/MCBParityModule.VR.cs#L31) | `MCBParityModule` | private | `private void CreateVrSettings()` |
+| [44](../VRCOSC.Modules/MCBParity/MCBParityModule.VR.cs#L44) | `MCBParityModule` | private | `private void StartVr()` |
+| [58](../VRCOSC.Modules/MCBParity/MCBParityModule.VR.cs#L58) | `MCBParityModule` | private | `private void StopVr()` |
+| [66](../VRCOSC.Modules/MCBParity/MCBParityModule.VR.cs#L66) | `MCBParityModule` | private | `private void UpdateVr()` |
+
 ### `MCBParity/MCBParityModule.Weather.cs`
 
 | Line | Owner | Visibility | Declaration |
@@ -824,10 +847,10 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [20](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L20) | `MCBParityModule` | protected | `protected override void OnPreLoad()` |
-| [26](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L26) | `MCBParityModule` | protected | `protected override void OnPostLoad()` |
-| [36](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L36) | `MCBParityModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [44](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L44) | `MCBParityModule` | protected | `protected override Task OnModuleStop()` |
+| [21](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L21) | `MCBParityModule` | protected | `protected override void OnPreLoad()` |
+| [28](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L28) | `MCBParityModule` | protected | `protected override void OnPostLoad()` |
+| [39](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L39) | `MCBParityModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [48](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L48) | `MCBParityModule` | protected | `protected override Task OnModuleStop()` |
 
 ### `MCBParity/VRChatLogTail.cs`
 

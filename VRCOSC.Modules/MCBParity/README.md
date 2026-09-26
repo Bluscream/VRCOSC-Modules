@@ -15,6 +15,7 @@ Weather feels-like/wind/emoji as ChatBox variables (MagicChatbox placeholder par
 | **Wind speed unit** | `Dropdown` | `Unit for the wind variable.` | `WindUnit.Kmh` |
 | **Instance master icon** | `TextBox` | `Value of the master variable while you are the instance master; empty otherwise.` | `"\U0001F451"` |
 | **VRChat log directory** | `TextBox` | `Override for the folder holding output_log_*.txt, as a path VRCOSC can open (Z:\\... under Wine). Leave empty to auto-detect (own prefix's LocalLow, then every Steam library's compatdata/438100).` | `empty` |
+| **VR frame estimates** | `Toggle` | `Keep the shared OpenXR session open to estimate reprojection and dropped frames from the runtime's display-period schedule. Off leaves both variables at 0.` | `true` |
 <!-- SETTINGS_TABLE_END -->
 
 ## ChatBox Variables
@@ -30,6 +31,8 @@ Weather feels-like/wind/emoji as ChatBox variables (MagicChatbox placeholder par
 | **Weather Humidity (%)** | `weather_humidity` | `int` | `ChatBox variable Weather Humidity (%)` |
 | **Instance Capacity (world capacity)** | `vrc_instance_capacity` | `int` | `ChatBox variable Instance Capacity (world capacity)` |
 | **Instance Master Icon** | `vrc_master` | `string` | `ChatBox variable Instance Master Icon` |
+| **VR Reprojection (% of frames, last second)** | `vr_reprojection` | `int` | `ChatBox variable VR Reprojection (% of frames, last second)` |
+| **VR Dropped Frames (per minute)** | `vr_dropped_frames` | `int` | `ChatBox variable VR Dropped Frames (per minute)` |
 <!-- VARIABLES_TABLE_END -->
 
 ## ChatBox States
@@ -37,7 +40,7 @@ Weather feels-like/wind/emoji as ChatBox variables (MagicChatbox placeholder par
 <!-- STATES_TABLE_START -->
 | State Name | Lookup Key | Format | Description |
 |---|---|---|---|
-| **Default** | `default` | `{0} {1} (feels {2})\n{3}` | `Default state` |
+| **Default** | `default` | `{0} {1} (feels {2})\n{3}\nReproj {4}% · Dropped {5}/min` | `Default state` |
 | **In Instance** | `ininstance` | `{0} {1} (feels {2})\n{3} cap {4}` | `In Instance state` |
 | **Not In Instance** | `notininstance` | `{0} {1} (feels {2})\n{3}` | `Not In Instance state` |
 <!-- STATES_TABLE_END -->
