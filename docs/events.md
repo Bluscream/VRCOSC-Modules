@@ -72,7 +72,7 @@ _None._
 
 Not `event`-qualified, but the same idea in practice: a slot a caller plugs a handler into. The pervasive `Action<Exception>? onError` parameter pattern shows up here when stored as a member.
 
-**20** total.
+**22** total.
 
 ### DiscordVoice
 
@@ -113,6 +113,13 @@ Not `event`-qualified, but the same idea in practice: a slot a caller plugs a ha
 | Line | Owner | Name | Type |
 |---|---|---|---|
 | [145](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L145) | `OpenXRRuntime` | `target` | `Action<string>?` |
+
+### TranslationPatches
+
+| Line | Owner | Name | Type |
+|---|---|---|---|
+| [19](../VRCOSC.Modules/TranslationPatches/SecondaryWhisperCapture.cs#L19) | `SecondaryWhisperCapture` | `_log` | `Action<string>` |
+| [21](../VRCOSC.Modules/TranslationPatches/Translator.cs#L21) | `Translator` | `_log` | `Action<string>` |
 
 ### Utilities
 

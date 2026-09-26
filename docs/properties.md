@@ -4,7 +4,7 @@
 
 Every property (including expression-bodied and auto-properties), grouped by module and file.
 
-**219** total across **20** modules.
+**220** total across **21** modules.
 
 | Module | Count |
 |---|---|
@@ -24,6 +24,7 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | [OpenXR](#openxr) | 11 |
 | [Status](#status) | 5 |
 | [StreamStats](#streamstats) | 4 |
+| [TranslationPatches](#translationpatches) | 1 |
 | [Utilities](#utilities) | 7 |
 | [VRCExtras](#vrcextras) | 4 |
 | [VRCXBridge](#vrcxbridge) | 7 |
@@ -456,6 +457,15 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 |---|---|---|---|
 | [31](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L31) | `HelixException` | public | `public HttpStatusCode StatusCode { get; }` |
 | [34](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L34) | `HelixException` | public | `public DateTime? RateLimitReset { get; }` |
+
+
+## TranslationPatches
+
+### `TranslationPatches/SecondaryWhisperCapture.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [25](../VRCOSC.Modules/TranslationPatches/SecondaryWhisperCapture.cs#L25) | `SecondaryWhisperCapture` | public | `public bool IsRunning => _processor is not null;` |
 
 
 ## Utilities

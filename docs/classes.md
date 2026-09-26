@@ -4,7 +4,7 @@
 
 Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
-**348** total across **23** modules.
+**355** total across **24** modules.
 
 | Module | Count |
 |---|---|
@@ -26,6 +26,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [OpenXR](#openxr) | 28 |
 | [Status](#status) | 9 |
 | [StreamStats](#streamstats) | 20 |
+| [TranslationPatches](#translationpatches) | 7 |
 | [Utilities](#utilities) | 32 |
 | [VRCExtras](#vrcextras) | 7 |
 | [VRCXBridge](#vrcxbridge) | 12 |
@@ -854,6 +855,31 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [26](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L26) | internal | `internal sealed record HelixChannel(string DisplayName, string GameName, string Title);` |
 | [29](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L29) | internal | `internal sealed class HelixException : Exception` |
 | [43](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L43) | internal | `internal sealed class TwitchHelixClient` |
+
+
+## TranslationPatches
+
+### `TranslationPatches/SecondaryWhisperCapture.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [14](../VRCOSC.Modules/TranslationPatches/SecondaryWhisperCapture.cs#L14) | internal | `internal sealed class SecondaryWhisperCapture` |
+
+### `TranslationPatches/TranslationPatchesModule.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [25](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L25) | public | `public sealed class TranslationPatchesModule : Module, ISpeechHandler` |
+| [313](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L313) | private | `private enum TranslationSetting { TargetLanguage, SpeakingSeconds, TwoWayEnabled, TwoWayDevice, TwoWayLanguage }` |
+| [316](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L316) | private | `private enum TranslationVariable { speech_text, translation, translation_language, twoway_input, twoway_output }` |
+| [318](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L318) | private | `private enum TranslationState { Idle, Speaking }` |
+| [320](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L320) | private | `private enum TranslationEvent { Spoken, Translated, TwoWay }` |
+
+### `TranslationPatches/Translator.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [12](../VRCOSC.Modules/TranslationPatches/Translator.cs#L12) | internal | `internal sealed class Translator` |
 
 
 ## Utilities

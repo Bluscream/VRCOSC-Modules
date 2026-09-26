@@ -4,7 +4,7 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**747** total across **22** modules.
+**773** total across **23** modules.
 
 | Module | Count |
 |---|---|
@@ -25,6 +25,7 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [OpenXR](#openxr) | 83 |
 | [Status](#status) | 7 |
 | [StreamStats](#streamstats) | 55 |
+| [TranslationPatches](#translationpatches) | 26 |
 | [Utilities](#utilities) | 36 |
 | [VRCExtras](#vrcextras) | 20 |
 | [VRCXBridge](#vrcxbridge) | 48 |
@@ -1001,6 +1002,50 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [47](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L47) | `TwitchHelixClient` | private | `private const string DeviceGrantType = "urn:ietf:params:oauth:grant-type:device_code";` |
 | [49](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L49) | `TwitchHelixClient` | private | `private static readonly HttpClient Http = CreateClient();` |
 | [51](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L51) | `TwitchHelixClient` | private | `private readonly string _clientId;` |
+
+
+## TranslationPatches
+
+### `TranslationPatches/SecondaryWhisperCapture.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [16](../VRCOSC.Modules/TranslationPatches/SecondaryWhisperCapture.cs#L16) | `SecondaryWhisperCapture` | private | `private const string AudioProcessorTypeName = "VRCOSC.App.Audio.Whisper.AudioProcessor";` |
+| [17](../VRCOSC.Modules/TranslationPatches/SecondaryWhisperCapture.cs#L17) | `SecondaryWhisperCapture` | private | `private const string DeviceHelperTypeName = "VRCOSC.App.Audio.AudioDeviceHelper";` |
+| [19](../VRCOSC.Modules/TranslationPatches/SecondaryWhisperCapture.cs#L19) | `SecondaryWhisperCapture` | private | `private readonly Action<string> _log;` |
+| [20](../VRCOSC.Modules/TranslationPatches/SecondaryWhisperCapture.cs#L20) | `SecondaryWhisperCapture` | private | `private object? _processor;` |
+| [21](../VRCOSC.Modules/TranslationPatches/SecondaryWhisperCapture.cs#L21) | `SecondaryWhisperCapture` | private | `private MethodInfo? _getResult;` |
+| [22](../VRCOSC.Modules/TranslationPatches/SecondaryWhisperCapture.cs#L22) | `SecondaryWhisperCapture` | private | `private MethodInfo? _stop;` |
+| [23](../VRCOSC.Modules/TranslationPatches/SecondaryWhisperCapture.cs#L23) | `SecondaryWhisperCapture` | private | `private bool _busy;` |
+
+### `TranslationPatches/TranslationPatchesModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [27](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L27) | `TranslationPatchesModule` | private | `private const string DefaultLanguage = "en";` |
+| [29](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L29) | `TranslationPatchesModule` | private | `private readonly object _sync = new();` |
+| [30](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L30) | `TranslationPatchesModule` | private | `private Translator? _translator;` |
+| [31](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L31) | `TranslationPatchesModule` | private | `private SecondaryWhisperCapture? _twoWay;` |
+| [33](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L33) | `TranslationPatchesModule` | private | `private DateTime _lastSpoken = DateTime.MinValue;` |
+| [34](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L34) | `TranslationPatchesModule` | private | `private bool _speaking;` |
+| [35](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L35) | `TranslationPatchesModule` | private | `private bool _loggedAppTranslate;` |
+| [38](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L38) | `TranslationPatchesModule` | private | `private string _currentText = string.Empty;` |
+| [39](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L39) | `TranslationPatchesModule` | private | `private string? _pendingText;` |
+| [40](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L40) | `TranslationPatchesModule` | private | `private bool _pendingFinal;` |
+| [41](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L41) | `TranslationPatchesModule` | private | `private bool _translating;` |
+| [44](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L44) | `TranslationPatchesModule` | private | `private string _twoWayPending = string.Empty;` |
+| [45](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L45) | `TranslationPatchesModule` | private | `private bool _twoWayTranslating;` |
+
+### `TranslationPatches/Translator.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [14](../VRCOSC.Modules/TranslationPatches/Translator.cs#L14) | `Translator` | private | `private const string EndpointUrl = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl={0}&dt=t&q={1}";` |
+| [15](../VRCOSC.Modules/TranslationPatches/Translator.cs#L15) | `Translator` | private | `private const int MaxCacheEntries = 500;` |
+| [16](../VRCOSC.Modules/TranslationPatches/Translator.cs#L16) | `Translator` | private | `private static readonly TimeSpan FailureLogInterval = TimeSpan.FromSeconds(30);` |
+| [18](../VRCOSC.Modules/TranslationPatches/Translator.cs#L18) | `Translator` | private | `private static readonly HttpClient Http = CreateHttpClient();` |
+| [21](../VRCOSC.Modules/TranslationPatches/Translator.cs#L21) | `Translator` | private | `private readonly Action<string> _log;` |
+| [22](../VRCOSC.Modules/TranslationPatches/Translator.cs#L22) | `Translator` | private | `private DateTime _lastFailureLog = DateTime.MinValue;` |
 
 
 ## Utilities

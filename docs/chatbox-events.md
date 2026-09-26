@@ -6,7 +6,7 @@ User-facing events registered in `OnPostLoad` via `CreateEvent(lookup, title)` a
 
 The Fired column lists every `TriggerEvent` call site; an event with **never** there is declared but not raised. Matching prefers the fully qualified lookup, falling back to a bare name only within the same file — several modules each declare an `OnError`, so a global short-name match would cross-link them.
 
-**57** total.
+**60** total.
 
 ## Debug
 
@@ -119,6 +119,14 @@ The Fired column lists every `TriggerEvent` call site; an event with **never** t
 | [54](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L54) | `StreamStatsModule` | `StreamEvent.WentOffline` | Twitch went offline | **never** |
 | [55](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L55) | `StreamStatsModule` | `StreamEvent.Follow` | TikTok new follower(s) | [StreamStatsModule.TikTok.cs:197](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L197) |
 | [56](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L56) | `StreamStatsModule` | `StreamEvent.Like` | TikTok new like(s) | [StreamStatsModule.TikTok.cs:206](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L206) |
+
+## TranslationPatches
+
+| Line | Owner | Lookup | Title | Fired |
+|---|---|---|---|---|
+| [72](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L72) | `TranslationPatchesModule` | `TranslationEvent.Spoken` | Spoken | [TranslationPatchesModule.cs:138](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L138) |
+| [73](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L73) | `TranslationPatchesModule` | `TranslationEvent.Translated` | Translated | [TranslationPatchesModule.cs:173](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L173) |
+| [74](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L74) | `TranslationPatchesModule` | `TranslationEvent.TwoWay` | Two-way Translated | [TranslationPatchesModule.cs:284](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L284) |
 
 ## VRCExtras
 

@@ -4,7 +4,7 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**1128** total across **23** modules.
+**1153** total across **24** modules.
 
 | Module | Count |
 |---|---|
@@ -26,6 +26,7 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [OpenXR](#openxr) | 82 |
 | [Status](#status) | 23 |
 | [StreamStats](#streamstats) | 52 |
+| [TranslationPatches](#translationpatches) | 25 |
 | [Utilities](#utilities) | 251 |
 | [VRCExtras](#vrcextras) | 29 |
 | [VRCXBridge](#vrcxbridge) | 34 |
@@ -1285,6 +1286,49 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [212](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L212) | `TwitchHelixClient` | public | `public async Task<int> GetFollowerTotalAsync(string accessToken, string broadcasterId, CancellationToken ct)` |
 | [218](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L218) | `TwitchHelixClient` | private | `private async Task<JsonDocument> GetAsync(string accessToken, string path, CancellationToken ct)` |
 | [237](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L237) | `TwitchHelixClient` | private | `private static string Str(JsonElement e, string key) => e.TryGetProperty(key, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() ?? string.Empty : string.Empty;` |
+
+
+## TranslationPatches
+
+### `TranslationPatches/SecondaryWhisperCapture.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [27](../VRCOSC.Modules/TranslationPatches/SecondaryWhisperCapture.cs#L27) | `SecondaryWhisperCapture` | private | `public SecondaryWhisperCapture(Action<string> log)` |
+| [50](../VRCOSC.Modules/TranslationPatches/SecondaryWhisperCapture.cs#L50) | `SecondaryWhisperCapture` | public | `public bool Start(string deviceFilter)` |
+| [90](../VRCOSC.Modules/TranslationPatches/SecondaryWhisperCapture.cs#L90) | `SecondaryWhisperCapture` | public | `public async Task<SpeechResult?> PollAsync()` |
+| [108](../VRCOSC.Modules/TranslationPatches/SecondaryWhisperCapture.cs#L108) | `SecondaryWhisperCapture` | public | `public void Stop()` |
+
+### `TranslationPatches/TranslationPatchesModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [47](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L47) | `TranslationPatchesModule` | protected | `protected override void OnPreLoad()` |
+| [61](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L61) | `TranslationPatchesModule` | protected | `protected override void OnPostLoad()` |
+| [77](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L77) | `TranslationPatchesModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [103](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L103) | `TranslationPatchesModule` | protected | `protected override Task OnModuleStop()` |
+| [112](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L112) | `TranslationPatchesModule` | public | `public void OnPartialSpeechResult(string text) => HandleSpeech(text, final: false);` |
+| [114](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L114) | `TranslationPatchesModule` | public | `public void OnFinalSpeechResult(string text) => HandleSpeech(text, final: true);` |
+| [116](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L116) | `TranslationPatchesModule` | private | `private void HandleSpeech(string text, bool final)` |
+| [142](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L142) | `TranslationPatchesModule` | private | `private void QueueTranslation(string text, bool final)` |
+| [159](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L159) | `TranslationPatchesModule` | private | `private async Task TranslateLoopAsync(string text, bool final)` |
+| [199](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L199) | `TranslationPatchesModule` | private | `private void UpdateState()` |
+| [212](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L212) | `TranslationPatchesModule` | private | `private void StartTwoWay()` |
+| [233](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L233) | `TranslationPatchesModule` | private | `private static bool SpeechModelAvailable()` |
+| [250](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L250) | `TranslationPatchesModule` | private | `private void UpdateTwoWay()` |
+| [256](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L256) | `TranslationPatchesModule` | private | `private async Task PollTwoWayAsync()` |
+| [305](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L305) | `TranslationPatchesModule` | private | `private string TargetLanguage() => Language(TranslationSetting.TargetLanguage);` |
+| [307](../VRCOSC.Modules/TranslationPatches/TranslationPatchesModule.cs#L307) | `TranslationPatchesModule` | private | `private string Language(TranslationSetting setting)` |
+
+### `TranslationPatches/Translator.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [24](../VRCOSC.Modules/TranslationPatches/Translator.cs#L24) | `Translator` | private | `public Translator(Action<string> log)` |
+| [29](../VRCOSC.Modules/TranslationPatches/Translator.cs#L29) | `Translator` | private | `private static HttpClient CreateHttpClient()` |
+| [37](../VRCOSC.Modules/TranslationPatches/Translator.cs#L37) | `Translator` | public | `public async Task<string> TranslateAsync(string text, string language)` |
+| [74](../VRCOSC.Modules/TranslationPatches/Translator.cs#L74) | `Translator` | private | `private static string Parse(string json)` |
+| [93](../VRCOSC.Modules/TranslationPatches/Translator.cs#L93) | `Translator` | private | `private void LogFailure(string message)` |
 
 
 ## Utilities
