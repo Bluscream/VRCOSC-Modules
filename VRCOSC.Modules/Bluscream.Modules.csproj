@@ -40,7 +40,7 @@
 
     <VrcoscSdkVersion Condition="'$(VrcoscTarget)' == 'stable'">2026.501.0</VrcoscSdkVersion>
     <VrcoscSdkVersion Condition="'$(VrcoscTarget)' == 'beta'">2026.906.0</VrcoscSdkVersion>
-    <VrcoscSdkVersion Condition="'$(VrcoscTarget)' == 'dev'">2026.718.0</VrcoscSdkVersion>
+    <VrcoscSdkVersion Condition="'$(VrcoscTarget)' == 'dev'">2026.920.0</VrcoscSdkVersion>
 
     <DefineConstants Condition="'$(VrcoscTarget)' != 'stable'">$(DefineConstants);BETA_SDK</DefineConstants>
     <DefineConstants Condition="'$(VrcoscTarget)' == 'dev'">$(DefineConstants);DEV_SDK</DefineConstants>

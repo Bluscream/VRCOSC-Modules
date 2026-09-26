@@ -16,6 +16,7 @@
 # how the beta target once ended up compiled against the feat/cli fork while still
 # building cleanly - the bug only surfaced at runtime as a TypeLoadException.
 set -euo pipefail
+PACK_LOG="${PACK_LOG:-}"
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 SRC="$REPO_ROOT/source-code"
@@ -24,9 +25,11 @@ GH_REPO="VolcanicArts/VRCOSC"
 
 pack() { # <worktree> <version>
     echo "==> packing $2 from $1"
-    ( cd "$1" && distrobox-enter -n arch -- dotnet pack VRCOSC.App/VRCOSC.App.csproj \
-        -c Release -p:GlobalVersion="$2.0" -p:EnableWindowsTargeting=true -o "$FEED" \
-        2>&1 | grep -E "error|Successfully created" )
+    # build-box has the .NET 10 SDK under ~/.dotnet; the ~/.local/bin/dotnet host bridge
+    # shadows it on PATH inside the container, so call the SDK binary explicitly.
+    distrobox enter build-box -- bash -c "cd '$1' && \"\$HOME/.dotnet/dotnet\" pack VRCOSC.App/VRCOSC.App.csproj \
+        -c Release -p:GlobalVersion='$2.0' -p:EnableWindowsTargeting=true -o '$FEED'" \
+        2>&1 | tee -a "${PACK_LOG:-/dev/null}" | grep -E "error|Successfully created"
 }
 
 mkdir -p "$FEED"
