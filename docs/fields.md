@@ -4,14 +4,14 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**619** total across **22** modules.
+**646** total across **23** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 1 |
 | [Debug](#debug) | 25 |
 | [DesktopFPS](#desktopfps) | 10 |
-| [DiscordVoice](#discordvoice) | 2 |
+| [DiscordVoice](#discordvoice) | 23 |
 | [HTTP](#http) | 24 |
 | [HTTPServer](#httpserver) | 20 |
 | [HeartrateStats](#heartratestats) | 31 |
@@ -20,6 +20,7 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [LinuxAudioFx](#linuxaudiofx) | 10 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 31 |
 | [LinuxMedia](#linuxmedia) | 15 |
+| [MCBParity](#mcbparity) | 6 |
 | [Notifications](#notifications) | 37 |
 | [OpenXR](#openxr) | 81 |
 | [Status](#status) | 7 |
@@ -124,12 +125,43 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 
 ## DiscordVoice
 
+### `DiscordVoice/DiscordVoiceModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [22](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L22) | `DiscordVoiceModule` | private | `private static readonly TimeSpan ConnectTimeout = TimeSpan.FromSeconds(2);` |
+| [23](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L23) | `DiscordVoiceModule` | private | `private static readonly TimeSpan CommandTimeout = TimeSpan.FromSeconds(5);` |
+| [25](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L25) | `DiscordVoiceModule` | private | `private DiscordIpcClient? _client;` |
+| [26](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L26) | `DiscordVoiceModule` | private | `private CancellationTokenSource? _lifetime;` |
+| [27](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L27) | `DiscordVoiceModule` | private | `private string _clientId = string.Empty;` |
+| [29](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L29) | `DiscordVoiceModule` | private | `private string _lastGuildId = string.Empty;` |
+| [30](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L30) | `DiscordVoiceModule` | private | `private string _lastChannelId = string.Empty;` |
+| [31](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L31) | `DiscordVoiceModule` | private | `private bool _autoUpdateDefaults;` |
+| [32](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L32) | `DiscordVoiceModule` | private | `private bool _polling;` |
+
 ### `DiscordVoice/Rpc/DiscordAuth.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [19](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordAuth.cs#L19) | `DiscordAuth` | public | `public const string Scopes = "rpc rpc.voice.read rpc.voice.write";` |
 | [20](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordAuth.cs#L20) | `DiscordAuth` | private | `private static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(15) };` |
+
+### `DiscordVoice/Rpc/DiscordIpcClient.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [23](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L23) | `RpcResponse` | private | `private readonly JsonDocument _doc;` |
+| [35](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L35) | `DiscordIpcClient` | private | `private const int OpHandshake = 0, OpFrame = 1, OpClose = 2, OpPing = 3, OpPong = 4;` |
+| [36](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L36) | `DiscordIpcClient` | private | `private static readonly JsonSerializerOptions JsonOptions = new() { DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull };` |
+| [38](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L38) | `DiscordIpcClient` | private | `private readonly SemaphoreSlim _writeLock = new(1, 1);` |
+| [39](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L39) | `DiscordIpcClient` | private | `private readonly ConcurrentDictionary<string, TaskCompletionSource<RpcResponse>> _pending = new();` |
+| [40](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L40) | `DiscordIpcClient` | private | `private readonly CancellationTokenSource _cts = new();` |
+| [41](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L41) | `DiscordIpcClient` | private | `private Stream? _stream;` |
+| [42](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L42) | `DiscordIpcClient` | private | `private IDisposable? _owner;` |
+| [43](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L43) | `DiscordIpcClient` | private | `private TaskCompletionSource<RpcResponse>? _readyTcs;` |
+| [44](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L44) | `DiscordIpcClient` | private | `private int _disposed;` |
+| [47](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L47) | `DiscordIpcClient` | public | `public event Action<JsonElement>? EventReceived;` |
+| [49](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L49) | `DiscordIpcClient` | public | `public event Action<Exception?>? Disconnected;` |
 
 
 ## HTTP
@@ -553,6 +585,20 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [22](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L22) | `LyricsProvider` | private | `private string _trackKey = string.Empty;` |
 | [24](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L24) | `LyricsProvider` | private | `private bool _plainOnly;` |
 | [25](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L25) | `LyricsProvider` | private | `private CancellationTokenSource? _inflight;` |
+
+
+## MCBParity
+
+### `MCBParity/MCBParityModule.Weather.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [17](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L17) | `MCBParityModule` | private | `private static readonly HttpClient Http = CreateHttpClient();` |
+| [20](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L20) | `MCBParityModule` | private | `private const string WeatherApiCurrentUrl = "https://api.weatherapi.com/v1/current.json?key={0}&q={1}";` |
+| [21](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L21) | `MCBParityModule` | private | `private const string OpenMeteoGeocodeUrl = "https://geocoding-api.open-meteo.com/v1/search?count=1&language=en&format=json&name={0}";` |
+| [26](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L26) | `MCBParityModule` | private | `private DateTime _weatherLastFetch = DateTime.MinValue;` |
+| [27](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L27) | `MCBParityModule` | private | `private bool _weatherFetching;` |
+| [28](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L28) | `MCBParityModule` | private | `private bool _weatherLoggedNoKey;` |
 
 
 ## Notifications

@@ -4,14 +4,14 @@
 
 Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
-**313** total across **23** modules.
+**331** total across **24** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 5 |
 | [Debug](#debug) | 15 |
 | [DesktopFPS](#desktopfps) | 8 |
-| [DiscordVoice](#discordvoice) | 3 |
+| [DiscordVoice](#discordvoice) | 12 |
 | [HTTP](#http) | 11 |
 | [HTTPServer](#httpserver) | 17 |
 | [HeartrateStats](#heartratestats) | 13 |
@@ -21,6 +21,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [LinuxHardwareStats](#linuxhardwarestats) | 18 |
 | [LinuxMedia](#linuxmedia) | 7 |
 | [LinuxProcessManager](#linuxprocessmanager) | 2 |
+| [MCBParity](#mcbparity) | 8 |
 | [Notifications](#notifications) | 19 |
 | [OpenXR](#openxr) | 28 |
 | [Status](#status) | 9 |
@@ -30,7 +31,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [VRCExtras](#vrcextras) | 6 |
 | [VRCXBridge](#vrcxbridge) | 12 |
 | [VRChatSettings](#vrchatsettings) | 21 |
-| [Weather](#weather) | 6 |
+| [Weather](#weather) | 7 |
 
 
 ## (root)
@@ -127,11 +128,40 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
 ## DiscordVoice
 
+### `DiscordVoice/DiscordVoiceEnums.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [6](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L6) | public | `public enum DiscordVoiceParameter` |
+| [44](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L44) | public | `public enum DiscordVoiceSetting` |
+| [53](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L53) | public | `public enum DiscordVoiceVariable` |
+| [72](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L72) | public | `public enum DiscordVoiceState` |
+| [77](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L77) | public | `public enum DiscordVoiceEvent` |
+
+### `DiscordVoice/DiscordVoiceModule.Registration.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [11](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L11) | public | `public sealed partial class DiscordVoiceModule` |
+
+### `DiscordVoice/DiscordVoiceModule.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [20](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L20) | public | `public sealed partial class DiscordVoiceModule : Module` |
+
 ### `DiscordVoice/Rpc/DiscordAuth.cs`
 
 | Line | Visibility | Declaration |
 |---|---|---|
 | [17](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordAuth.cs#L17) | public | `public static class DiscordAuth` |
+
+### `DiscordVoice/Rpc/DiscordIpcClient.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [21](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L21) | public | `public sealed class RpcResponse : IDisposable` |
+| [33](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L33) | public | `public sealed class DiscordIpcClient : IDisposable` |
 
 ### `DiscordVoice/Rpc/RpcCommand.cs`
 
@@ -518,6 +548,27 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 |---|---|---|
 | [13](../VRCOSC.Modules/LinuxProcessManager/LinuxProcessManagerModule.cs#L13) | public | `public class LinuxProcessManagerModule : Module` |
 | [53](../VRCOSC.Modules/LinuxProcessManager/LinuxProcessManagerModule.cs#L53) | private | `private enum ProcessManagerParameter { Start, Stop }` |
+
+
+## MCBParity
+
+### `MCBParity/MCBParityModule.Weather.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [15](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L15) | public | `public sealed partial class MCBParityModule` |
+| [135](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L135) | private | `private readonly record struct WeatherReading(float TempC, float FeelsLikeC, int Humidity, float WindKph, string WindDirection, string Condition, string Emoji);` |
+| [259](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L259) | private | `private enum TemperatureUnit { Celsius, Fahrenheit }` |
+| [261](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L261) | private | `private enum WindUnit { Kmh, Mph }` |
+
+### `MCBParity/MCBParityModule.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [17](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L17) | public | `public sealed partial class MCBParityModule : Module` |
+| [38](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L38) | private | `private enum MCBParitySetting` |
+| [44](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L44) | private | `private enum MCBParityVariable` |
+| [49](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L49) | private | `private enum MCBParityState { Default }` |
 
 
 ## Notifications
@@ -979,8 +1030,14 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 |---|---|---|
 | [17](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L17) | public | `public class OpenMeteoWeatherModule : Module` |
 | [184](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L184) | private | `private readonly record struct Current(float TempC, float FeelsLikeC, int Humidity, float WindKph, float WindDirection, int Code, bool IsDay);` |
-| [236](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L236) | private | `private enum WeatherSetting { Location }` |
-| [238](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L238) | private | `private enum WeatherParameter { Code, TempC, FeelsLikeC, WindKph, IsDay }` |
-| [240](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L240) | private | `private enum WeatherVariable` |
-| [246](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L246) | private | `private enum WeatherState { Default, Unavailable }` |
+| [209](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L209) | private | `private enum WeatherSetting { Location }` |
+| [211](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L211) | private | `private enum WeatherParameter { Code, TempC, FeelsLikeC, WindKph, IsDay }` |
+| [213](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L213) | private | `private enum WeatherVariable` |
+| [219](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L219) | private | `private enum WeatherState { Default, Unavailable }` |
+
+### `Weather/WmoWeatherCodes.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [7](../VRCOSC.Modules/Weather/WmoWeatherCodes.cs#L7) | public | `public static class WmoWeatherCodes` |
 

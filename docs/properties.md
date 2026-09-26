@@ -4,13 +4,14 @@
 
 Every property (including expression-bodied and auto-properties), grouped by module and file.
 
-**185** total across **18** modules.
+**192** total across **19** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 1 |
 | [Debug](#debug) | 5 |
 | [DesktopFPS](#desktopfps) | 2 |
+| [DiscordVoice](#discordvoice) | 7 |
 | [HTTP](#http) | 4 |
 | [HTTPServer](#httpserver) | 3 |
 | [HeartrateStats](#heartratestats) | 15 |
@@ -68,6 +69,21 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [63](../VRCOSC.Modules/DesktopFPS/Utils/FPSMeasurementUtils.cs#L63) | `FPSMeasurementUtils` | public | `public static bool IsFpsMeasurementSupported => !LinuxUtils.IsLinux;` |
+
+
+## DiscordVoice
+
+### `DiscordVoice/Rpc/DiscordIpcClient.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [24](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L24) | `RpcResponse` | public | `public JsonElement Root => _doc.RootElement;` |
+| [25](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L25) | `RpcResponse` | public | `public JsonElement Data => Root.TryGetProperty("data", out var d) ? d : default;` |
+| [26](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L26) | `RpcResponse` | public | `public bool IsError => Root.TryGetProperty("evt", out var e) && e.ValueKind == JsonValueKind.String && e.GetString() == "ERROR";` |
+| [27](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L27) | `RpcResponse` | public | `public int ErrorCode => IsError && Data.TryGetProperty("code", out var c) && c.TryGetInt32(out var code) ? code : 0;` |
+| [28](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L28) | `RpcResponse` | public | `public string ErrorMessage => IsError && Data.TryGetProperty("message", out var m) ? m.GetString() ?? string.Empty : string.Empty;` |
+| [51](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L51) | `DiscordIpcClient` | public | `public string Transport { get; private set; } = "none";` |
+| [52](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L52) | `DiscordIpcClient` | public | `public bool IsConnected => _stream is not null && Volatile.Read(ref _disposed) == 0;` |
 
 
 ## HTTP

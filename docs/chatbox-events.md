@@ -6,7 +6,7 @@ User-facing events registered in `OnPostLoad` via `CreateEvent(lookup, title)` a
 
 The Fired column lists every `TriggerEvent` call site; an event with **never** there is declared but not raised. Matching prefers the fully qualified lookup, falling back to a bare name only within the same file — several modules each declare an `OnError`, so a global short-name match would cross-link them.
 
-**39** total.
+**57** total.
 
 ## Debug
 
@@ -14,6 +14,29 @@ The Fired column lists every `TriggerEvent` call site; an event with **never** t
 |---|---|---|---|---|
 | [85](../VRCOSC.Modules/Debug/DebugModule.cs#L85) | `DebugModule` | `DebugEvent.OnDumpComplete` | Dump Complete | [DebugModule.cs:386](../VRCOSC.Modules/Debug/DebugModule.cs#L386) |
 | [86](../VRCOSC.Modules/Debug/DebugModule.cs#L86) | `DebugModule` | `DebugEvent.OnTrackingCleared` | Tracking Cleared | [DebugModule.cs:432](../VRCOSC.Modules/Debug/DebugModule.cs#L432) |
+
+## DiscordVoice
+
+| Line | Owner | Lookup | Title | Fired |
+|---|---|---|---|---|
+| [71](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L71) | `DiscordVoiceModule` | `DiscordVoiceEvent.ReadyEvent` | Ready | **never** |
+| [72](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L72) | `DiscordVoiceModule` | `DiscordVoiceEvent.ErrorEvent` | Error | **never** |
+| [73](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L73) | `DiscordVoiceModule` | `DiscordVoiceEvent.GuildStatusEvent` | Guild Status | **never** |
+| [74](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L74) | `DiscordVoiceModule` | `DiscordVoiceEvent.GuildCreateEvent` | Guild Created | **never** |
+| [75](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L75) | `DiscordVoiceModule` | `DiscordVoiceEvent.ChannelCreateEvent` | Channel Created | **never** |
+| [76](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L76) | `DiscordVoiceModule` | `DiscordVoiceEvent.VoiceStateCreateEvent` | Voice Join | **never** |
+| [77](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L77) | `DiscordVoiceModule` | `DiscordVoiceEvent.VoiceStateUpdateEvent` | Voice Update | **never** |
+| [78](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L78) | `DiscordVoiceModule` | `DiscordVoiceEvent.VoiceStateDeleteEvent` | Voice Leave | **never** |
+| [79](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L79) | `DiscordVoiceModule` | `DiscordVoiceEvent.VoiceSettingsEvent` | Voice Settings | **never** |
+| [80](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L80) | `DiscordVoiceModule` | `DiscordVoiceEvent.SpeakingStartEvent` | Speaking Start | **never** |
+| [81](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L81) | `DiscordVoiceModule` | `DiscordVoiceEvent.SpeakingStopEvent` | Speaking Stop | **never** |
+| [82](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L82) | `DiscordVoiceModule` | `DiscordVoiceEvent.MessageCreateEvent` | Message Created | **never** |
+| [83](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L83) | `DiscordVoiceModule` | `DiscordVoiceEvent.MessageUpdateEvent` | Message Updated | **never** |
+| [84](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L84) | `DiscordVoiceModule` | `DiscordVoiceEvent.MessageDeleteEvent` | Message Deleted | **never** |
+| [85](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L85) | `DiscordVoiceModule` | `DiscordVoiceEvent.NotificationEvent` | Notification | **never** |
+| [86](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L86) | `DiscordVoiceModule` | `DiscordVoiceEvent.ActivityJoinEvent` | Activity Join | **never** |
+| [87](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L87) | `DiscordVoiceModule` | `DiscordVoiceEvent.ActivitySpectateEvent` | Activity Spectate | **never** |
+| [88](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L88) | `DiscordVoiceModule` | `DiscordVoiceEvent.ActivityJoinRequestEvent` | Join Request | **never** |
 
 ## HTTP
 

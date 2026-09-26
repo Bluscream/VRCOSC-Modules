@@ -117,9 +117,9 @@ public class OpenMeteoWeatherModule : Module
 
     private void Apply(Current w, string locationName)
     {
-        var (condition, emojiDay, emojiNight) = Describe(w.Code);
-        var emoji = w.IsDay ? emojiDay : emojiNight;
-        var direction = Compass(w.WindDirection);
+        var condition = WmoWeatherCodes.Describe(w.Code).Condition;
+        var emoji = WmoWeatherCodes.Emoji(w.Code, w.IsDay);
+        var direction = WmoWeatherCodes.Compass(w.WindDirection);
 
         SetVariableValue(WeatherVariable.Emoji, emoji);
         SetVariableValue(WeatherVariable.Condition, condition);
@@ -204,33 +204,6 @@ public class OpenMeteoWeatherModule : Module
             F(c, "wind_direction_10m"),
             (int)MathF.Round(F(c, "weather_code")),
             F(c, "is_day") >= 0.5f);
-    }
-
-    /// <summary>WMO 4677 weather interpretation codes, as used by Open-Meteo.</summary>
-    private static (string Condition, string Day, string Night) Describe(int code) => code switch
-    {
-        0 => ("Clear", "☀️", "\U0001F319"),
-        1 => ("Mostly clear", "\U0001F324️", "\U0001F319"),
-        2 => ("Partly cloudy", "⛅", "☁️"),
-        3 => ("Overcast", "☁️", "☁️"),
-        45 or 48 => ("Fog", "\U0001F32B️", "\U0001F32B️"),
-        51 or 53 or 55 => ("Drizzle", "\U0001F326️", "\U0001F327️"),
-        56 or 57 => ("Freezing drizzle", "\U0001F328️", "\U0001F328️"),
-        61 or 63 or 65 => ("Rain", "\U0001F327️", "\U0001F327️"),
-        66 or 67 => ("Freezing rain", "\U0001F328️", "\U0001F328️"),
-        71 or 73 or 75 or 77 => ("Snow", "\U0001F328️", "\U0001F328️"),
-        80 or 81 or 82 => ("Rain showers", "\U0001F326️", "\U0001F327️"),
-        85 or 86 => ("Snow showers", "\U0001F328️", "\U0001F328️"),
-        95 => ("Thunderstorm", "⛈️", "⛈️"),
-        96 or 99 => ("Thunderstorm with hail", "⛈️", "⛈️"),
-        _ => ("Unknown", "\U0001F321️", "\U0001F321️")
-    };
-
-    private static string Compass(float degrees)
-    {
-        string[] points = { "N", "NE", "E", "SE", "S", "SW", "W", "NW" };
-        var index = (int)MathF.Round(((degrees % 360f) + 360f) % 360f / 45f) % 8;
-        return points[index];
     }
 
     private enum WeatherSetting { Location }

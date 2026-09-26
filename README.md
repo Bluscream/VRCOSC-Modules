@@ -94,7 +94,7 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 |---|---|---|---|---|---|---|
 | **Debug** | `[VRCOSC.Modules/Debug/README.md](VRCOSC.Modules/Debug/README.md)` | `16` | `4` | 2 | 2 | Debug tools for tracking and exporting OSC parameters |
 | **Desktop FPS** | `[VRCOSC.Modules/DesktopFPS/README.md](VRCOSC.Modules/DesktopFPS/README.md)` | `0` | `1` | 0 | 0 | Monitors VRChat FPS using Windows Performance Counters |
-| **DiscordVoice** | `[VRCOSC.Modules/DiscordVoice/README.md](VRCOSC.Modules/DiscordVoice/README.md)` | `0` | `0` | 0 | 0 | DiscordVoice module for VRCOSC. |
+| **Discord Voice** | `[VRCOSC.Modules/DiscordVoice/README.md](VRCOSC.Modules/DiscordVoice/README.md)` | `4` | `15` | 1 | 18 | Mute, deafen and voice-channel state for the running Discord client over its local RPC socket. Fork of Yeusepe's DiscordOSC. |
 | **HTTP** | `[VRCOSC.Modules/HTTP/README.md](VRCOSC.Modules/HTTP/README.md)` | `2` | `4` | 4 | 2 | Send HTTP requests and receive responses for automation |
 | **HTTP/MCP Server** | `[VRCOSC.Modules/HTTPServer/README.md](VRCOSC.Modules/HTTPServer/README.md)` | `9` | `5` | 5 | 5 | HTTP/MCP server to control VRCOSC via HTTP Requests or from a AI Agent via MCP (optional) |
 | **Heartrate Stats** | `[VRCOSC.Modules/HeartrateStats/README.md](VRCOSC.Modules/HeartrateStats/README.md)` | `12` | `6` | 1 | 2 | Heart rate from Pulsoid, HypeRate or any OSC parameter, with session min/max and a trend arrow as ChatBox variables. Sends the same avatar parameters as the official heartrate modules. |
@@ -104,6 +104,7 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | **Linux Hardware Stats** | `[VRCOSC.Modules/LinuxHardwareStats/README.md](VRCOSC.Modules/LinuxHardwareStats/README.md)` | `6` | `39` | 1 | 0 | Sends hardware stats as avatar parameters and allows for displaying them in the ChatBox on Linux hosts |
 | **Linux Media** | `[VRCOSC.Modules/LinuxMedia/README.md](VRCOSC.Modules/LinuxMedia/README.md)` | `1` | `11` | 3 | 3 | Integration with Linux MPRIS Media Players (via D-Bus) |
 | **Linux Process Manager** | `[VRCOSC.Modules/LinuxProcessManager/README.md](VRCOSC.Modules/LinuxProcessManager/README.md)` | `0` | `0` | 0 | 0 | Allows for starting and stopping Linux host processes from avatar parameters |
+| **MagicChatbox Parity** | `[VRCOSC.Modules/MCBParity/README.md](VRCOSC.Modules/MCBParity/README.md)` | `4` | `6` | 1 | 0 | Weather feels-like/wind/emoji as ChatBox variables (MagicChatbox placeholder parity) |
 | **Notifications** | `[VRCOSC.Modules/Notifications/README.md](VRCOSC.Modules/Notifications/README.md)` | `11` | `4` | 0 | 2 | Send notifications to Desktop, XSOverlay, and OVRToolkit |
 | **OpenXR Gesture Extensions** | `[VRCOSC.Modules/OpenXR/README.md](VRCOSC.Modules/OpenXR/README.md)` | `2` | `12` | 2 | 0 | Detect a range of custom gestures from OpenXR hand tracking or controllers |
 | **Status** | `[VRCOSC.Modules/Status/README.md](VRCOSC.Modules/Status/README.md)` | `6` | `6` | 1 | 1 | A list of status texts shown one at a time in the ChatBox, with optional cycling, groups and an icon prefix |

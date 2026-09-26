@@ -10,7 +10,7 @@ For the user-facing VRCOSC ChatBox events (`CreateEvent` / `TriggerEvent`, binda
 
 Members declared with the `event` keyword — the real .NET event slots.
 
-**21** total.
+**23** total.
 
 ### Debug
 
@@ -21,6 +21,13 @@ Members declared with the `event` keyword — the real .NET event slots.
 | [22](../VRCOSC.Modules/Debug/Classes/ParameterTracker.cs#L22) | `ParameterTracker` | `OnParameterTracked` | `Action<ParameterData>?` |
 | [23](../VRCOSC.Modules/Debug/Classes/ParameterTracker.cs#L23) | `ParameterTracker` | `OnMaxLimitReached` | `Action<string>?` |
 | [24](../VRCOSC.Modules/Debug/Classes/ParameterTracker.cs#L24) | `ParameterTracker` | `OnCleared` | `Action?` |
+
+### DiscordVoice
+
+| Line | Owner | Name | Type |
+|---|---|---|---|
+| [47](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L47) | `DiscordIpcClient` | `EventReceived` | `Action<JsonElement>?` |
+| [49](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L49) | `DiscordIpcClient` | `Disconnected` | `Action<Exception?>?` |
 
 ### HeartrateStats
 

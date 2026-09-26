@@ -4,14 +4,14 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**929** total across **23** modules.
+**982** total across **24** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 1 |
 | [Debug](#debug) | 41 |
 | [DesktopFPS](#desktopfps) | 18 |
-| [DiscordVoice](#discordvoice) | 21 |
+| [DiscordVoice](#discordvoice) | 58 |
 | [HTTP](#http) | 9 |
 | [HTTPServer](#httpserver) | 41 |
 | [HeartrateStats](#heartratestats) | 41 |
@@ -21,6 +21,7 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [LinuxHardwareStats](#linuxhardwarestats) | 29 |
 | [LinuxMedia](#linuxmedia) | 14 |
 | [LinuxProcessManager](#linuxprocessmanager) | 4 |
+| [MCBParity](#mcbparity) | 15 |
 | [Notifications](#notifications) | 25 |
 | [OpenXR](#openxr) | 80 |
 | [Status](#status) | 23 |
@@ -30,7 +31,7 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [VRCExtras](#vrcextras) | 6 |
 | [VRCXBridge](#vrcxbridge) | 34 |
 | [VRChatSettings](#vrchatsettings) | 77 |
-| [Weather](#weather) | 11 |
+| [Weather](#weather) | 12 |
 
 
 ## (root)
@@ -149,11 +150,63 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 ## DiscordVoice
 
+### `DiscordVoice/DiscordVoiceModule.Registration.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [13](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L13) | `DiscordVoiceModule` | private | `private void RegisterParameters()` |
+| [51](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L51) | `DiscordVoiceModule` | private | `private void RegisterChatBox()` |
+| [91](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L91) | `DiscordVoiceModule` | private | `private static IEnumerable<ClipVariableReference> Vars(params ClipVariableReference?[] refs) => refs.OfType<ClipVariableReference>();` |
+
+### `DiscordVoice/DiscordVoiceModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [34](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L34) | `DiscordVoiceModule` | protected | `protected override void OnPreLoad()` |
+| [47](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L47) | `DiscordVoiceModule` | protected | `protected override void OnPostLoad() => RegisterChatBox();` |
+| [49](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L49) | `DiscordVoiceModule` | protected | `protected override async Task<bool> OnModuleStart()` |
+| [106](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L106) | `DiscordVoiceModule` | protected | `protected override Task OnModuleStop()` |
+| [134](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L134) | `DiscordVoiceModule` | private | `private async Task<DiscordIpcClient?> ConnectAsync(CancellationToken ct)` |
+| [153](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L153) | `DiscordVoiceModule` | private | `private async Task SubscribeDefaultsAsync(DiscordIpcClient client, CancellationToken ct)` |
+| [165](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L165) | `DiscordVoiceModule` | private | `private async Task SubscribeChannelEventsAsync(DiscordIpcClient client, string channelId, CancellationToken ct)` |
+| [172](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L172) | `DiscordVoiceModule` | private | `private async Task SubscribeAsync(DiscordIpcClient client, string evt, object? args, CancellationToken ct)` |
+| [185](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L185) | `DiscordVoiceModule` | private | `private void OnClientDisconnected(Exception? cause)` |
+| [193](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L193) | `DiscordVoiceModule` | private | `private void Send(RpcCommand command)` |
+| [206](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L206) | `DiscordVoiceModule` | private | `private async Task SendAndLogAsync(DiscordIpcClient client, RpcCommand command, CancellationToken ct)` |
+| [222](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L222) | `DiscordVoiceModule` | private | `private void ApplyCommandResponse(string cmd, JsonElement data)` |
+| [254](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L254) | `DiscordVoiceModule` | private | `private void SetCount(DiscordVoiceParameter parameter, DiscordVoiceVariable variable, int value)` |
+| [260](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L260) | `DiscordVoiceModule` | private | `private void ApplyVoiceSettings(JsonElement data)` |
+| [279](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L279) | `DiscordVoiceModule` | private | `private static int SnowflakeToInt(string? snowflake) => long.TryParse(snowflake, out var id) ? unchecked((int)id) : 0;` |
+| [286](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L286) | `DiscordVoiceModule` | private | `private void ChatBoxUpdate()` |
+| [294](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L294) | `DiscordVoiceModule` | private | `private async Task PollAsync(DiscordIpcClient client, CancellationToken ct)` |
+
 ### `DiscordVoice/Rpc/DiscordAuth.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [22](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordAuth.cs#L22) | `DiscordAuth` | public | `public static async Task<string> FetchAccessTokenAsync(string clientId, string clientSecret, CancellationToken ct)` |
+
+### `DiscordVoice/Rpc/DiscordIpcClient.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [29](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L29) | `RpcResponse` | private | `internal RpcResponse(JsonDocument doc) => _doc = doc;` |
+| [30](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L30) | `RpcResponse` | public | `public void Dispose() => _doc.Dispose();` |
+| [54](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L54) | `DiscordIpcClient` | public | `public async Task ConnectPipeAsync(string pipeName, TimeSpan timeout, CancellationToken ct)` |
+| [71](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L71) | `DiscordIpcClient` | public | `public async Task ConnectTcpAsync(string host, int port, TimeSpan timeout, CancellationToken ct)` |
+| [88](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L88) | `DiscordIpcClient` | private | `private void Attach(Stream stream, IDisposable owner, string transport)` |
+| [97](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L97) | `DiscordIpcClient` | public | `public async Task<RpcResponse> HandshakeAsync(string clientId, TimeSpan timeout, CancellationToken ct)` |
+| [106](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L106) | `DiscordIpcClient` | public | `public async Task<RpcResponse> SendAsync(RpcCommand command, TimeSpan timeout, CancellationToken ct)` |
+| [122](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L122) | `DiscordIpcClient` | public | `public Task SendFireAndForgetAsync(RpcCommand command, CancellationToken ct) => WriteAsync(OpFrame, command, ct);` |
+| [124](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L124) | `DiscordIpcClient` | private | `private static async Task<RpcResponse> AwaitWithTimeout(TaskCompletionSource<RpcResponse> tcs, TimeSpan timeout, string what, CancellationToken ct)` |
+| [138](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L138) | `DiscordIpcClient` | private | `private async Task WriteAsync(int opcode, object payload, CancellationToken ct)` |
+| [159](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L159) | `DiscordIpcClient` | private | `private async Task ReaderLoopAsync()` |
+| [185](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L185) | `DiscordIpcClient` | private | `private async Task<bool> HandleFrameAsync(int opcode, byte[] body)` |
+| [205](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L205) | `DiscordIpcClient` | private | `private void Dispatch(byte[] body)` |
+| [233](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L233) | `DiscordIpcClient` | private | `private async Task WriteRawAsync(int opcode, byte[] body)` |
+| [246](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L246) | `DiscordIpcClient` | private | `private async Task<bool> ReadExactlyAsync(byte[] buffer)` |
+| [260](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L260) | `DiscordIpcClient` | private | `private void FailPending(Exception? cause)` |
+| [270](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcClient.cs#L270) | `DiscordIpcClient` | public | `public void Dispose()` |
 
 ### `DiscordVoice/Rpc/RpcCommand.cs`
 
@@ -714,6 +767,34 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [23](../VRCOSC.Modules/LinuxProcessManager/LinuxProcessManagerModule.cs#L23) | `LinuxProcessManagerModule` | protected | `protected override void OnRegisteredParameterReceived(RegisteredParameter parameter)` |
 | [39](../VRCOSC.Modules/LinuxProcessManager/LinuxProcessManagerModule.cs#L39) | `LinuxProcessManagerModule` | private | `private void StartProcess(string? processName)` |
 | [46](../VRCOSC.Modules/LinuxProcessManager/LinuxProcessManagerModule.cs#L46) | `LinuxProcessManagerModule` | private | `private void StopProcess(string? processName)` |
+
+
+## MCBParity
+
+### `MCBParity/MCBParityModule.Weather.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [30](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L30) | `MCBParityModule` | private | `private static HttpClient CreateHttpClient()` |
+| [37](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L37) | `MCBParityModule` | private | `private void CreateWeatherSettings()` |
+| [59](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L59) | `MCBParityModule` | private | `private void StartWeather()` |
+| [66](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L66) | `MCBParityModule` | private | `private void UpdateWeather()` |
+| [76](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L76) | `MCBParityModule` | private | `private async Task RefreshWeatherAsync()` |
+| [110](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L110) | `MCBParityModule` | private | `private void ApplyWeather(WeatherReading w)` |
+| [123](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L123) | `MCBParityModule` | private | `private static string FormatTemperature(float celsius, bool fahrenheit)` |
+| [129](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L129) | `MCBParityModule` | private | `private static string FormatWind(float kph, string direction, bool mph)` |
+| [139](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L139) | `MCBParityModule` | private | `private async Task<WeatherReading?> FetchWeatherApiAsync(string apiKey, string location)` |
+| [174](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L174) | `MCBParityModule` | private | `private static int WeatherApiCodeToWmo(int code) => code switch` |
+| [209](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L209) | `MCBParityModule` | private | `private async Task<WeatherReading?> FetchOpenMeteoAsync(string location)` |
+| [256](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L256) | `MCBParityModule` | private | `private static float JsonNumber(JsonElement element, string key)` |
+
+### `MCBParity/MCBParityModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [19](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L19) | `MCBParityModule` | protected | `protected override void OnPreLoad()` |
+| [24](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L24) | `MCBParityModule` | protected | `protected override void OnPostLoad()` |
+| [31](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L31) | `MCBParityModule` | protected | `protected override Task<bool> OnModuleStart()` |
 
 
 ## Notifications
@@ -1572,6 +1653,12 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [118](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L118) | `OpenMeteoWeatherModule` | private | `private void Apply(Current w, string locationName)` |
 | [144](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L144) | `OpenMeteoWeatherModule` | private | `private static float Round1(float v) => MathF.Round(v, 1);` |
 | [186](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L186) | `OpenMeteoWeatherModule` | private | `private static async Task<Current?> FetchCurrentAsync(double lat, double lon)` |
-| [210](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L210) | `OpenMeteoWeatherModule` | private | `private static (string Condition, string Day, string Night) Describe(int code) => code switch` |
-| [229](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L229) | `OpenMeteoWeatherModule` | private | `private static string Compass(float degrees)` |
+
+### `Weather/WmoWeatherCodes.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [10](../VRCOSC.Modules/Weather/WmoWeatherCodes.cs#L10) | `WmoWeatherCodes` | private | `public static (string Condition, string Day, string Night) Describe(int code) => code switch` |
+| [30](../VRCOSC.Modules/Weather/WmoWeatherCodes.cs#L30) | `WmoWeatherCodes` | public | `public static string Emoji(int code, bool isDay)` |
+| [37](../VRCOSC.Modules/Weather/WmoWeatherCodes.cs#L37) | `WmoWeatherCodes` | public | `public static string Compass(float degrees)` |
 
