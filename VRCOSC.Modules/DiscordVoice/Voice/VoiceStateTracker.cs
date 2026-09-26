@@ -120,8 +120,10 @@ public sealed class VoiceStateTracker
                 if (!member.Speaking) member.StartedAt = now;
                 member.Speaking = true;
             }
-            else
+            else if (member.Speaking)
             {
+                // Only a real start->stop transition starts the hold; repeated "not speaking"
+                // reports (the polling provider sends one per tick) must not keep it alive.
                 member.Speaking = false;
                 member.StoppedAt = now;
             }

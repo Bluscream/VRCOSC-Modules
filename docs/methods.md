@@ -348,7 +348,7 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [88](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L88) | `VoiceStateTracker` | public | `public void RemoveMember(string userId)` |
 | [94](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L94) | `VoiceStateTracker` | public | `public void ReplaceMembers(IEnumerable<(string UserId, string DisplayName)> members)` |
 | [109](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L109) | `VoiceStateTracker` | public | `public void SetSpeaking(string userId, bool speaking, DateTime now)` |
-| [131](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L131) | `VoiceStateTracker` | public | `public VoiceSnapshot Snapshot(DateTime now)` |
+| [133](../VRCOSC.Modules/DiscordVoice/Voice/VoiceStateTracker.cs#L133) | `VoiceStateTracker` | public | `public VoiceSnapshot Snapshot(DateTime now)` |
 
 
 ## HTTP
