@@ -108,8 +108,9 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | **Notifications** | `[VRCOSC.Modules/Notifications/README.md](VRCOSC.Modules/Notifications/README.md)` | `11` | `4` | 0 | 2 | Send notifications to Desktop, XSOverlay, and OVRToolkit |
 | **OpenXR Gesture Extensions** | `[VRCOSC.Modules/OpenXR/README.md](VRCOSC.Modules/OpenXR/README.md)` | `2` | `12` | 2 | 0 | Detect a range of custom gestures from OpenXR hand tracking or controllers |
 | **Status** | `[VRCOSC.Modules/Status/README.md](VRCOSC.Modules/Status/README.md)` | `6` | `6` | 1 | 1 | A list of status texts shown one at a time in the ChatBox, with optional cycling, groups and an icon prefix |
-| **TikTok Live** | `[VRCOSC.Modules/TikTokLive/README.md](VRCOSC.Modules/TikTokLive/README.md)` | `5` | `5` | 2 | 2 | Viewer, like and follower counts plus a live flag for a TikTok host, polled from TikTok's public pages (no login needed) |
-| **Twitch Stats** | `[VRCOSC.Modules/TwitchStats/README.md](VRCOSC.Modules/TwitchStats/README.md)` | `4` | `7` | 2 | 2 | Live status, game, title, viewers, followers and uptime of a Twitch channel for the ChatBox. Logs in through the Twitch device code flow. |
+| **TikTok Live** | `[VRCOSC.Modules/StreamStats/README.md](VRCOSC.Modules/StreamStats/README.md)` | `9` | `12` | 4 | 4 | Viewer, like and follower counts plus a live flag for a TikTok host, polled from TikTok's public pages (no login needed) |
+| **TikTokLive** | `[VRCOSC.Modules/TikTokLive/README.md](VRCOSC.Modules/TikTokLive/README.md)` | `0` | `0` | 0 | 0 | TikTokLive module for VRCOSC. |
+| **TwitchStats** | `[VRCOSC.Modules/TwitchStats/README.md](VRCOSC.Modules/TwitchStats/README.md)` | `0` | `0` | 0 | 0 | TwitchStats module for VRCOSC. |
 | **VRChat Extras** | `[VRCOSC.Modules/VRCExtras/README.md](VRCOSC.Modules/VRCExtras/README.md)` | `1` | `10` | 1 | 1 | Current world, instance type, region and player count as ChatBox variables, straight from VRCOSC's VRChat log reader |
 | **VRCX Bridge** | `[VRCOSC.Modules/VRCXBridge/README.md](VRCOSC.Modules/VRCXBridge/README.md)` | `10` | `0` | 0 | 0 | Bidirectional bridge between VRCOSC and VRCX for OSC + VRChat API integration |
 | **VRChat Settings** | `[VRCOSC.Modules/VRChatSettings/README.md](VRCOSC.Modules/VRChatSettings/README.md)` | `7` | `4` | 3 | 3 | Read and write VRChat registry settings and config file values |

@@ -7,7 +7,7 @@ using System.Net;
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Parameters;
 
-namespace Bluscream.Modules.TwitchStats;
+namespace Bluscream.Modules.StreamStats;
 
 [ModuleTitle("Twitch Stats")]
 [ModuleDescription("Live status, game, title, viewers, followers and uptime of a Twitch channel for the ChatBox. Logs in through the Twitch device code flow.")]

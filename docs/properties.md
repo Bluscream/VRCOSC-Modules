@@ -24,7 +24,7 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | [Notifications](#notifications) | 16 |
 | [OpenXR](#openxr) | 10 |
 | [Status](#status) | 5 |
-| [TwitchStats](#twitchstats) | 4 |
+| [StreamStats](#streamstats) | 4 |
 | [Utilities](#utilities) | 7 |
 | [VRCXBridge](#vrcxbridge) | 7 |
 | [VRChatSettings](#vrchatsettings) | 31 |
@@ -452,21 +452,21 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | [24](../VRCOSC.Modules/Status/StatusModule.cs#L24) | `StatusModule` | public | `public Dictionary<string, DateTime> LastUsed { get; set; } = new();` |
 
 
-## TwitchStats
+## StreamStats
 
-### `TwitchStats/TwitchHelixClient.cs`
-
-| Line | Owner | Visibility | Declaration |
-|---|---|---|---|
-| [31](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L31) | `HelixException` | public | `public HttpStatusCode StatusCode { get; }` |
-| [34](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L34) | `HelixException` | public | `public DateTime? RateLimitReset { get; }` |
-
-### `TwitchStats/TwitchStatsModule.cs`
+### `StreamStats/StreamStatsModule.Twitch.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [32](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L32) | `TwitchStatsModule` | public | `public string AccessToken { get; set; } = string.Empty;` |
-| [35](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L35) | `TwitchStatsModule` | public | `public string RefreshToken { get; set; } = string.Empty;` |
+| [32](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L32) | `TwitchStatsModule` | public | `public string AccessToken { get; set; } = string.Empty;` |
+| [35](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L35) | `TwitchStatsModule` | public | `public string RefreshToken { get; set; } = string.Empty;` |
+
+### `StreamStats/TwitchHelixClient.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [31](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L31) | `HelixException` | public | `public HttpStatusCode StatusCode { get; }` |
+| [34](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L34) | `HelixException` | public | `public DateTime? RateLimitReset { get; }` |
 
 
 ## Utilities

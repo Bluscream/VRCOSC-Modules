@@ -4,7 +4,7 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**1127** total across **24** modules.
+**1127** total across **23** modules.
 
 | Module | Count |
 |---|---|
@@ -25,8 +25,7 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [Notifications](#notifications) | 25 |
 | [OpenXR](#openxr) | 80 |
 | [Status](#status) | 23 |
-| [TikTokLive](#tiktoklive) | 19 |
-| [TwitchStats](#twitchstats) | 29 |
+| [StreamStats](#streamstats) | 48 |
 | [Utilities](#utilities) | 251 |
 | [VRCExtras](#vrcextras) | 6 |
 | [VRCXBridge](#vrcxbridge) | 34 |
@@ -1244,78 +1243,75 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [20](../VRCOSC.Modules/Status/UI/StatusListModuleSettingView.xaml.cs#L20) | `StatusListModuleSettingView` | private | `private void RemoveButton_OnClick(object sender, RoutedEventArgs e)` |
 
 
-## TikTokLive
+## StreamStats
 
-### `TikTokLive/TikTokLiveModule.cs`
-
-| Line | Owner | Visibility | Declaration |
-|---|---|---|---|
-| [39](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L39) | `TikTokLiveModule` | protected | `protected override void OnPreLoad()` |
-| [52](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L52) | `TikTokLiveModule` | protected | `protected override void OnPostLoad()` |
-| [67](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L67) | `TikTokLiveModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [95](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L95) | `TikTokLiveModule` | protected | `protected override async Task OnModuleStop()` |
-| [117](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L117) | `TikTokLiveModule` | private | `private async Task RunAsync(CancellationToken token)` |
-| [144](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L144) | `TikTokLiveModule` | private | `private TimeSpan Backoff()` |
-| [151](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L151) | `TikTokLiveModule` | private | `private async Task PollOnceAsync(CancellationToken token)` |
-| [183](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L183) | `TikTokLiveModule` | private | `private async Task RefreshFollowersFromProfileAsync(CancellationToken token)` |
-| [202](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L202) | `TikTokLiveModule` | private | `private void ApplyFollowers(int followers, FollowerSource source)` |
-| [211](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L211) | `TikTokLiveModule` | private | `private void PublishLive(TikTokRoomInfo info)` |
-| [226](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L226) | `TikTokLiveModule` | private | `private void PublishOffline()` |
-
-### `TikTokLive/TikTokPublicClient.cs`
+### `StreamStats/StreamStatsModule.TikTok.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [26](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L26) | `TikTokPublicClient` | private | `private static HttpClient CreateClient()` |
-| [36](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L36) | `TikTokPublicClient` | private | `private static partial Regex RoomIdRegex();` |
-| [39](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L39) | `TikTokPublicClient` | private | `private static partial Regex FollowerCountRegex();` |
-| [42](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L42) | `TikTokPublicClient` | public | `public static string NormaliseHost(string? raw)` |
-| [56](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L56) | `TikTokPublicClient` | public | `public async Task<string?> GetRoomIdAsync(string host, CancellationToken token)` |
-| [64](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L64) | `TikTokPublicClient` | public | `public async Task<TikTokRoomInfo?> GetRoomInfoAsync(string roomId, CancellationToken token)` |
-| [91](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L91) | `TikTokPublicClient` | public | `public async Task<int?> GetProfileFollowersAsync(string host, CancellationToken token)` |
-| [98](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L98) | `TikTokPublicClient` | private | `private static int? ReadInt(JsonElement element, string key)` |
+| [39](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L39) | `TikTokLiveModule` | protected | `protected override void OnPreLoad()` |
+| [52](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L52) | `TikTokLiveModule` | protected | `protected override void OnPostLoad()` |
+| [67](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L67) | `TikTokLiveModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [95](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L95) | `TikTokLiveModule` | protected | `protected override async Task OnModuleStop()` |
+| [117](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L117) | `TikTokLiveModule` | private | `private async Task RunAsync(CancellationToken token)` |
+| [144](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L144) | `TikTokLiveModule` | private | `private TimeSpan Backoff()` |
+| [151](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L151) | `TikTokLiveModule` | private | `private async Task PollOnceAsync(CancellationToken token)` |
+| [183](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L183) | `TikTokLiveModule` | private | `private async Task RefreshFollowersFromProfileAsync(CancellationToken token)` |
+| [202](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L202) | `TikTokLiveModule` | private | `private void ApplyFollowers(int followers, FollowerSource source)` |
+| [211](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L211) | `TikTokLiveModule` | private | `private void PublishLive(TikTokRoomInfo info)` |
+| [226](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L226) | `TikTokLiveModule` | private | `private void PublishOffline()` |
 
-
-## TwitchStats
-
-### `TwitchStats/TwitchHelixClient.cs`
-
-| Line | Owner | Visibility | Declaration |
-|---|---|---|---|
-| [36](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L36) | `HelixException` | private | `public HelixException(HttpStatusCode statusCode, string message, DateTime? rateLimitReset = null) : base(message)` |
-| [53](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L53) | `TwitchHelixClient` | private | `public TwitchHelixClient(string clientId)` |
-| [58](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L58) | `TwitchHelixClient` | private | `private static HttpClient CreateClient()` |
-| [129](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L129) | `TwitchHelixClient` | public | `public async Task<TokenInfo?> ValidateAsync(string accessToken, CancellationToken ct)` |
-| [150](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L150) | `TwitchHelixClient` | private | `private static TokenSet ParseToken(string body)` |
-| [160](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L160) | `TwitchHelixClient` | private | `private static string ErrorMessage(string body)` |
-| [179](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L179) | `TwitchHelixClient` | public | `public async Task<HelixUser?> GetUserAsync(string accessToken, string? login, CancellationToken ct)` |
-| [190](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L190) | `TwitchHelixClient` | public | `public async Task<HelixStream?> GetStreamAsync(string accessToken, string login, CancellationToken ct)` |
-| [202](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L202) | `TwitchHelixClient` | public | `public async Task<HelixChannel?> GetChannelAsync(string accessToken, string broadcasterId, CancellationToken ct)` |
-| [212](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L212) | `TwitchHelixClient` | public | `public async Task<int> GetFollowerTotalAsync(string accessToken, string broadcasterId, CancellationToken ct)` |
-| [218](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L218) | `TwitchHelixClient` | private | `private async Task<JsonDocument> GetAsync(string accessToken, string path, CancellationToken ct)` |
-| [237](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L237) | `TwitchHelixClient` | private | `private static string Str(JsonElement e, string key) => e.TryGetProperty(key, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() ?? string.Empty : string.Empty;` |
-
-### `TwitchStats/TwitchStatsModule.cs`
+### `StreamStats/StreamStatsModule.Twitch.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [48](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L48) | `TwitchStatsModule` | protected | `protected override void OnPreLoad()` |
-| [61](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L61) | `TwitchStatsModule` | protected | `protected override void OnPostLoad()` |
-| [79](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L79) | `TwitchStatsModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [103](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L103) | `TwitchStatsModule` | protected | `protected override Task OnModuleStop()` |
-| [113](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L113) | `TwitchStatsModule` | private | `private void Tick()` |
-| [131](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L131) | `TwitchStatsModule` | private | `private async Task RunGuarded(Func<Task> work, Action done)` |
-| [154](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L154) | `TwitchStatsModule` | private | `private async Task AuthenticateAsync(CancellationToken ct)` |
-| [166](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L166) | `TwitchStatsModule` | private | `private async Task<bool> TryUseTokenAsync(string token, string source, CancellationToken ct)` |
-| [185](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L185) | `TwitchStatsModule` | private | `private async Task<bool> TryRefreshAsync(CancellationToken ct)` |
-| [199](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L199) | `TwitchStatsModule` | private | `private async Task DeviceCodeLoginAsync(CancellationToken ct)` |
-| [252](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L252) | `TwitchStatsModule` | private | `private async Task PollAsync(CancellationToken ct)` |
-| [274](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L274) | `TwitchStatsModule` | private | `private async Task PollOnceAsync(CancellationToken ct)` |
-| [302](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L302) | `TwitchStatsModule` | private | `private async Task<int?> FetchFollowersAsync(string token, string broadcasterId, CancellationToken ct)` |
-| [317](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L317) | `TwitchStatsModule` | private | `private void Apply(HelixStream? stream, HelixChannel? channel, int? followers)` |
-| [337](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L337) | `TwitchStatsModule` | private | `private static string FormatUptime(TimeSpan uptime)` |
-| [343](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L343) | `TwitchStatsModule` | private | `private TimeSpan Interval() => TimeSpan.FromSeconds(Math.Max(5, GetSettingValue<int>(TwitchSetting.PollInterval)));` |
-| [345](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L345) | `TwitchStatsModule` | private | `private string ClientId()` |
+| [48](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L48) | `TwitchStatsModule` | protected | `protected override void OnPreLoad()` |
+| [61](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L61) | `TwitchStatsModule` | protected | `protected override void OnPostLoad()` |
+| [79](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L79) | `TwitchStatsModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [103](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L103) | `TwitchStatsModule` | protected | `protected override Task OnModuleStop()` |
+| [113](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L113) | `TwitchStatsModule` | private | `private void Tick()` |
+| [131](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L131) | `TwitchStatsModule` | private | `private async Task RunGuarded(Func<Task> work, Action done)` |
+| [154](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L154) | `TwitchStatsModule` | private | `private async Task AuthenticateAsync(CancellationToken ct)` |
+| [166](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L166) | `TwitchStatsModule` | private | `private async Task<bool> TryUseTokenAsync(string token, string source, CancellationToken ct)` |
+| [185](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L185) | `TwitchStatsModule` | private | `private async Task<bool> TryRefreshAsync(CancellationToken ct)` |
+| [199](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L199) | `TwitchStatsModule` | private | `private async Task DeviceCodeLoginAsync(CancellationToken ct)` |
+| [252](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L252) | `TwitchStatsModule` | private | `private async Task PollAsync(CancellationToken ct)` |
+| [274](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L274) | `TwitchStatsModule` | private | `private async Task PollOnceAsync(CancellationToken ct)` |
+| [302](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L302) | `TwitchStatsModule` | private | `private async Task<int?> FetchFollowersAsync(string token, string broadcasterId, CancellationToken ct)` |
+| [317](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L317) | `TwitchStatsModule` | private | `private void Apply(HelixStream? stream, HelixChannel? channel, int? followers)` |
+| [337](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L337) | `TwitchStatsModule` | private | `private static string FormatUptime(TimeSpan uptime)` |
+| [343](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L343) | `TwitchStatsModule` | private | `private TimeSpan Interval() => TimeSpan.FromSeconds(Math.Max(5, GetSettingValue<int>(TwitchSetting.PollInterval)));` |
+| [345](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L345) | `TwitchStatsModule` | private | `private string ClientId()` |
+
+### `StreamStats/TikTokPublicClient.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [26](../VRCOSC.Modules/StreamStats/TikTokPublicClient.cs#L26) | `TikTokPublicClient` | private | `private static HttpClient CreateClient()` |
+| [36](../VRCOSC.Modules/StreamStats/TikTokPublicClient.cs#L36) | `TikTokPublicClient` | private | `private static partial Regex RoomIdRegex();` |
+| [39](../VRCOSC.Modules/StreamStats/TikTokPublicClient.cs#L39) | `TikTokPublicClient` | private | `private static partial Regex FollowerCountRegex();` |
+| [42](../VRCOSC.Modules/StreamStats/TikTokPublicClient.cs#L42) | `TikTokPublicClient` | public | `public static string NormaliseHost(string? raw)` |
+| [56](../VRCOSC.Modules/StreamStats/TikTokPublicClient.cs#L56) | `TikTokPublicClient` | public | `public async Task<string?> GetRoomIdAsync(string host, CancellationToken token)` |
+| [64](../VRCOSC.Modules/StreamStats/TikTokPublicClient.cs#L64) | `TikTokPublicClient` | public | `public async Task<TikTokRoomInfo?> GetRoomInfoAsync(string roomId, CancellationToken token)` |
+| [91](../VRCOSC.Modules/StreamStats/TikTokPublicClient.cs#L91) | `TikTokPublicClient` | public | `public async Task<int?> GetProfileFollowersAsync(string host, CancellationToken token)` |
+| [98](../VRCOSC.Modules/StreamStats/TikTokPublicClient.cs#L98) | `TikTokPublicClient` | private | `private static int? ReadInt(JsonElement element, string key)` |
+
+### `StreamStats/TwitchHelixClient.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [36](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L36) | `HelixException` | private | `public HelixException(HttpStatusCode statusCode, string message, DateTime? rateLimitReset = null) : base(message)` |
+| [53](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L53) | `TwitchHelixClient` | private | `public TwitchHelixClient(string clientId)` |
+| [58](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L58) | `TwitchHelixClient` | private | `private static HttpClient CreateClient()` |
+| [129](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L129) | `TwitchHelixClient` | public | `public async Task<TokenInfo?> ValidateAsync(string accessToken, CancellationToken ct)` |
+| [150](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L150) | `TwitchHelixClient` | private | `private static TokenSet ParseToken(string body)` |
+| [160](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L160) | `TwitchHelixClient` | private | `private static string ErrorMessage(string body)` |
+| [179](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L179) | `TwitchHelixClient` | public | `public async Task<HelixUser?> GetUserAsync(string accessToken, string? login, CancellationToken ct)` |
+| [190](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L190) | `TwitchHelixClient` | public | `public async Task<HelixStream?> GetStreamAsync(string accessToken, string login, CancellationToken ct)` |
+| [202](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L202) | `TwitchHelixClient` | public | `public async Task<HelixChannel?> GetChannelAsync(string accessToken, string broadcasterId, CancellationToken ct)` |
+| [212](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L212) | `TwitchHelixClient` | public | `public async Task<int> GetFollowerTotalAsync(string accessToken, string broadcasterId, CancellationToken ct)` |
+| [218](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L218) | `TwitchHelixClient` | private | `private async Task<JsonDocument> GetAsync(string accessToken, string path, CancellationToken ct)` |
+| [237](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L237) | `TwitchHelixClient` | private | `private static string Str(JsonElement e, string key) => e.TryGetProperty(key, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() ?? string.Empty : string.Empty;` |
 
 
 ## Utilities

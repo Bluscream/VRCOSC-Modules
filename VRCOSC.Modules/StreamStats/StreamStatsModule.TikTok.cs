@@ -6,7 +6,7 @@
 using VRCOSC.App.SDK.Modules;
 using VRCOSC.App.SDK.Parameters;
 
-namespace Bluscream.Modules.TikTokLive;
+namespace Bluscream.Modules.StreamStats;
 
 [ModuleTitle("TikTok Live")]
 [ModuleDescription("Viewer, like and follower counts plus a live flag for a TikTok host, polled from TikTok's public pages (no login needed)")]

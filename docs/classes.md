@@ -4,7 +4,7 @@
 
 Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
-**354** total across **24** modules.
+**354** total across **23** modules.
 
 | Module | Count |
 |---|---|
@@ -25,8 +25,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [Notifications](#notifications) | 19 |
 | [OpenXR](#openxr) | 28 |
 | [Status](#status) | 9 |
-| [TikTokLive](#tiktoklive) | 8 |
-| [TwitchStats](#twitchstats) | 14 |
+| [StreamStats](#streamstats) | 22 |
 | [Utilities](#utilities) | 32 |
 | [VRCExtras](#vrcextras) | 6 |
 | [VRCXBridge](#vrcxbridge) | 12 |
@@ -824,52 +823,49 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [7](../VRCOSC.Modules/Status/UI/StatusListModuleSettingView.xaml.cs#L7) | public | `public partial class StatusListModuleSettingView` |
 
 
-## TikTokLive
+## StreamStats
 
-### `TikTokLive/TikTokLiveModule.cs`
-
-| Line | Visibility | Declaration |
-|---|---|---|
-| [14](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L14) | public | `public class TikTokLiveModule : Module` |
-| [238](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L238) | private | `private enum TikTokSetting { Host, LivePollSeconds, OfflinePollSeconds, FollowersRefreshMinutes, MaxBackoffSeconds }` |
-| [240](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L240) | private | `private enum TikTokParameter { Live, Viewers }` |
-| [242](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L242) | private | `private enum TikTokState { Live, Offline }` |
-| [244](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L244) | private | `private enum TikTokEvent { Follow, Like }` |
-
-### `TikTokLive/TikTokPublicClient.cs`
+### `StreamStats/StreamStatsModule.TikTok.cs`
 
 | Line | Visibility | Declaration |
 |---|---|---|
-| [14](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L14) | public | `public readonly record struct TikTokRoomInfo(string RoomId, bool IsLive, int Viewers, int Likes, int? Followers, string Title);` |
-| [17](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L17) | public | `public enum FollowerSource { None, RoomInfo, ProfilePage }` |
-| [19](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L19) | public | `public sealed partial class TikTokPublicClient` |
+| [14](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L14) | public | `public class TikTokLiveModule : Module` |
+| [238](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L238) | private | `private enum TikTokSetting { Host, LivePollSeconds, OfflinePollSeconds, FollowersRefreshMinutes, MaxBackoffSeconds }` |
+| [240](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L240) | private | `private enum TikTokParameter { Live, Viewers }` |
+| [242](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L242) | private | `private enum TikTokState { Live, Offline }` |
+| [244](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L244) | private | `private enum TikTokEvent { Follow, Like }` |
 
-
-## TwitchStats
-
-### `TwitchStats/TwitchHelixClient.cs`
-
-| Line | Visibility | Declaration |
-|---|---|---|
-| [14](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L14) | internal | `internal enum DevicePollStatus { Pending, SlowDown, Granted, Denied, Expired, Error }` |
-| [16](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L16) | internal | `internal sealed record DeviceCode(string Code, string UserCode, string VerificationUri, TimeSpan ExpiresIn, TimeSpan Interval);` |
-| [18](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L18) | internal | `internal sealed record TokenSet(string AccessToken, string? RefreshToken, TimeSpan ExpiresIn);` |
-| [20](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L20) | internal | `internal sealed record TokenInfo(string Login, string UserId, IReadOnlyList<string> Scopes, TimeSpan ExpiresIn);` |
-| [22](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L22) | internal | `internal sealed record HelixUser(string Id, string Login, string DisplayName);` |
-| [24](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L24) | internal | `internal sealed record HelixStream(string GameName, string Title, int ViewerCount, DateTime StartedAt);` |
-| [26](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L26) | internal | `internal sealed record HelixChannel(string DisplayName, string GameName, string Title);` |
-| [29](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L29) | internal | `internal sealed class HelixException : Exception` |
-| [43](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L43) | internal | `internal sealed class TwitchHelixClient` |
-
-### `TwitchStats/TwitchStatsModule.cs`
+### `StreamStats/StreamStatsModule.Twitch.cs`
 
 | Line | Visibility | Declaration |
 |---|---|---|
-| [15](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L15) | public | `public class TwitchStatsModule : Module` |
-| [351](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L351) | private | `private enum TwitchSetting { Channel, PollInterval, ClientId, ManualToken, ForgetToken }` |
-| [353](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L353) | private | `private enum TwitchParameter { Live }` |
-| [355](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L355) | private | `private enum TwitchState { Live, Offline, Unauthenticated }` |
-| [357](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L357) | private | `private enum TwitchEvent { WentLive, WentOffline }` |
+| [15](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L15) | public | `public class TwitchStatsModule : Module` |
+| [351](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L351) | private | `private enum TwitchSetting { Channel, PollInterval, ClientId, ManualToken, ForgetToken }` |
+| [353](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L353) | private | `private enum TwitchParameter { Live }` |
+| [355](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L355) | private | `private enum TwitchState { Live, Offline, Unauthenticated }` |
+| [357](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L357) | private | `private enum TwitchEvent { WentLive, WentOffline }` |
+
+### `StreamStats/TikTokPublicClient.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [14](../VRCOSC.Modules/StreamStats/TikTokPublicClient.cs#L14) | public | `public readonly record struct TikTokRoomInfo(string RoomId, bool IsLive, int Viewers, int Likes, int? Followers, string Title);` |
+| [17](../VRCOSC.Modules/StreamStats/TikTokPublicClient.cs#L17) | public | `public enum FollowerSource { None, RoomInfo, ProfilePage }` |
+| [19](../VRCOSC.Modules/StreamStats/TikTokPublicClient.cs#L19) | public | `public sealed partial class TikTokPublicClient` |
+
+### `StreamStats/TwitchHelixClient.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [14](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L14) | internal | `internal enum DevicePollStatus { Pending, SlowDown, Granted, Denied, Expired, Error }` |
+| [16](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L16) | internal | `internal sealed record DeviceCode(string Code, string UserCode, string VerificationUri, TimeSpan ExpiresIn, TimeSpan Interval);` |
+| [18](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L18) | internal | `internal sealed record TokenSet(string AccessToken, string? RefreshToken, TimeSpan ExpiresIn);` |
+| [20](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L20) | internal | `internal sealed record TokenInfo(string Login, string UserId, IReadOnlyList<string> Scopes, TimeSpan ExpiresIn);` |
+| [22](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L22) | internal | `internal sealed record HelixUser(string Id, string Login, string DisplayName);` |
+| [24](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L24) | internal | `internal sealed record HelixStream(string GameName, string Title, int ViewerCount, DateTime StartedAt);` |
+| [26](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L26) | internal | `internal sealed record HelixChannel(string DisplayName, string GameName, string Title);` |
+| [29](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L29) | internal | `internal sealed class HelixException : Exception` |
+| [43](../VRCOSC.Modules/StreamStats/TwitchHelixClient.cs#L43) | internal | `internal sealed class TwitchHelixClient` |
 
 
 ## Utilities

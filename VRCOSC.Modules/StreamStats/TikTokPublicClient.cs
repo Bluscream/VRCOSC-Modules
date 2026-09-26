@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-namespace Bluscream.Modules.TikTokLive;
+namespace Bluscream.Modules.StreamStats;
 
 /// <summary>Snapshot of a TikTok LIVE room from the public room-info endpoint.</summary>
 public readonly record struct TikTokRoomInfo(string RoomId, bool IsLive, int Viewers, int Likes, int? Followers, string Title);

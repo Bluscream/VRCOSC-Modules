@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 
-namespace Bluscream.Modules.TwitchStats;
+namespace Bluscream.Modules.StreamStats;
 
 /// <summary>Outcome of a device-code token poll.</summary>
 internal enum DevicePollStatus { Pending, SlowDown, Granted, Denied, Expired, Error }
