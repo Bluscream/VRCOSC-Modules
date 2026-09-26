@@ -46,21 +46,71 @@ public static class LinuxUtils
     {
         var home = Environment.GetEnvironmentVariable("HOME");
 
-        // Only a POSIX path needs translating; anything else is already Windows-shaped.
+        // 1. If HOME is set to a POSIX path, translate to Z:\...
         if (!string.IsNullOrEmpty(home) && home.StartsWith('/'))
             return "Z:" + home.Replace('/', '\\');
 
+        // 2. Try to match USER / USERNAME if set in the environment
+        var hostUser = Environment.GetEnvironmentVariable("USER") ?? Environment.GetEnvironmentVariable("USERNAME");
+        if (!string.IsNullOrEmpty(hostUser) && !hostUser.Equals("steamuser", StringComparison.OrdinalIgnoreCase))
+        {
+            var userHome = $@"Z:\home\{hostUser}";
+            if (System.IO.Directory.Exists(userHome) && CanWriteToDirectory(userHome))
+                return userHome;
+        }
+
+        // 3. Scan Z:\home for real user directories (skip hidden, verify write access & typical user markers)
         if (System.IO.Directory.Exists(@"Z:\home"))
         {
             try
             {
-                var dirs = System.IO.Directory.GetDirectories(@"Z:\home");
-                if (dirs.Length > 0) return dirs[0];
+                var candidateDirs = System.IO.Directory.GetDirectories(@"Z:\home");
+
+                // Pass 1: Find a writable directory that has user markers (.local or .config)
+                foreach (var dir in candidateDirs)
+                {
+                    var name = System.IO.Path.GetFileName(dir);
+                    if (string.IsNullOrEmpty(name) || name.StartsWith('.'))
+                        continue;
+
+                    if (System.IO.Directory.Exists(System.IO.Path.Combine(dir, ".local")) ||
+                        System.IO.Directory.Exists(System.IO.Path.Combine(dir, ".config")))
+                    {
+                        if (CanWriteToDirectory(dir))
+                            return dir;
+                    }
+                }
+
+                // Pass 2: Fall back to any writable, non-hidden directory
+                foreach (var dir in candidateDirs)
+                {
+                    var name = System.IO.Path.GetFileName(dir);
+                    if (!string.IsNullOrEmpty(name) && !name.StartsWith('.') && CanWriteToDirectory(dir))
+                        return dir;
+                }
             }
             catch { }
         }
 
         return Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+    }
+
+    /// <summary>
+    /// Checks whether the process has write access to a directory by attempting to touch a temporary file.
+    /// </summary>
+    private static bool CanWriteToDirectory(string dirPath)
+    {
+        try
+        {
+            var testFile = System.IO.Path.Combine(dirPath, $".vrcosc_probe_{Guid.NewGuid():N}.tmp");
+            System.IO.File.WriteAllText(testFile, "1");
+            System.IO.File.Delete(testFile);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════
