@@ -97,7 +97,7 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | [41](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L41) | `OrbolayBridgeProvider` | public | `public string Name => "OrbolayBridge";` |
 | [42](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L42) | `OrbolayBridgeProvider` | public | `public bool IsAvailable => _socket?.HasClient == true;` |
 | [43](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L43) | `OrbolayBridgeProvider` | public | `public VoiceStateTracker Tracker { get; } = new();` |
-| [177](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L177) | `BridgeSocket` | public | `public bool HasClient => Volatile.Read(ref _clients) > 0;` |
+| [191](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L191) | `BridgeSocket` | public | `public bool HasClient => Volatile.Read(ref _clients) > 0;` |
 
 ### `DiscordVoice/Rpc/DiscordIpcClient.cs`
 

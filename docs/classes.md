@@ -186,7 +186,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [29](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L29) | public | `public sealed class OrbolayBridgeProvider : IVoiceProvider` |
-| [170](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L170) | private | `private sealed class BridgeSocket : WebSocketModule` |
+| [184](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L184) | private | `private sealed class BridgeSocket : WebSocketModule` |
 
 ### `DiscordVoice/Rpc/DiscordAuth.cs`
 

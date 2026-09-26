@@ -7,6 +7,7 @@
 // events.
 
 using System.Text.Json;
+using Bluscream.Modules.DiscordVoice.Providers;
 using Bluscream.Modules.DiscordVoice.Rpc;
 using VRCOSC.App.SDK.Modules;
 
@@ -22,6 +23,8 @@ public sealed partial class DiscordVoiceModule : Module
     private static readonly TimeSpan CommandTimeout = TimeSpan.FromSeconds(5);
 
     private DiscordIpcClient? _client;
+    private bool _rpcReady;
+    private readonly List<IVoiceProvider> _providers = [];
     private CancellationTokenSource? _lifetime;
     private string _clientId = string.Empty;
 
@@ -40,6 +43,11 @@ public sealed partial class DiscordVoiceModule : Module
 
         CreateSlider(DiscordVoiceSetting.MaxSpeakingNames, "Max Speaking Names", "How many speakers the Speaking variable lists before collapsing the rest into \"+N\". 0 = unlimited.", 3, 0, 10);
         CreateTextBox(DiscordVoiceSetting.SpeakingHoldMs, "Speaking Hold (ms)", "How long a speaker stays listed after they stop talking, so short pauses do not flicker.", 300);
+
+        CreateDropdown(DiscordVoiceSetting.VoiceSource, "Voice Source", "Auto uses Discord RPC when it is authenticated and falls back to an Equicord plugin bridge otherwise. See README for what each fallback can and cannot provide.", VoiceSource.Auto);
+        CreateTextBox(DiscordVoiceSetting.OrbolayPort, "OrbolayBridge Port", "Port the Equicord OrbolayBridge plugin connects to (its 'Port to connect to' setting).", OrbolayBridgeProvider.DefaultPort);
+        CreateTextBox(DiscordVoiceSetting.DevCompanionPort, "DevCompanion MCP Port", "Port of the devcompanionExtended plugin's in-app MCP HTTP server.", DevCompanionProvider.DefaultPort);
+        CreateGroup("Fallback Sources", "Used when Discord RPC is unavailable (no application credentials, Vesktop/Equibop, or Wine without the IPC bridge).", DiscordVoiceSetting.VoiceSource, DiscordVoiceSetting.OrbolayPort, DiscordVoiceSetting.DevCompanionPort);
 
         CreateTextBox(DiscordVoiceSetting.ClientId, "Client ID", "Client ID of your Discord application (Developer Portal, OAuth2 tab). Required for RPC.", string.Empty);
         CreatePasswordTextBox(DiscordVoiceSetting.ClientSecret, "Client Secret", "Client secret of the same application. Required for RPC.", string.Empty);
@@ -60,19 +68,44 @@ public sealed partial class DiscordVoiceModule : Module
         _lastChannelId = GetSettingValue<string>(DiscordVoiceSetting.DefaultChannelId) ?? string.Empty;
         _voice.SpeakingHold = TimeSpan.FromMilliseconds(Math.Max(0, GetSettingValue<int>(DiscordVoiceSetting.SpeakingHoldMs)));
         ResetVoice();
+        await StartProvidersAsync(_lifetime.Token).ConfigureAwait(false);
 
+        var source = GetSettingValue<VoiceSource>(DiscordVoiceSetting.VoiceSource);
+        var rpc = source is VoiceSource.Auto or VoiceSource.Rpc && await ConnectRpcAsync(_lifetime.Token).ConfigureAwait(false);
+        if (!rpc && _providers.Count == 0)
+        {
+            Log("Neither Discord RPC nor a fallback source is available; stopping.");
+            return false;
+        }
+        return true;
+    }
+
+    private async Task StartProvidersAsync(CancellationToken ct)
+    {
+        var source = GetSettingValue<VoiceSource>(DiscordVoiceSetting.VoiceSource);
+        if (source is VoiceSource.Auto or VoiceSource.OrbolayBridge)
+            _providers.Add(new OrbolayBridgeProvider(GetSettingValue<int>(DiscordVoiceSetting.OrbolayPort)));
+        if (source is VoiceSource.Auto or VoiceSource.DevCompanion)
+            _providers.Add(new DevCompanionProvider(GetSettingValue<int>(DiscordVoiceSetting.DevCompanionPort)));
+
+        foreach (var provider in _providers)
+            await provider.StartAsync(Log, ct).ConfigureAwait(false);
+    }
+
+    /// <summary>Token, IPC connect, handshake, authenticate, subscriptions. False (with a log line) on any failure.</summary>
+    private async Task<bool> ConnectRpcAsync(CancellationToken ct)
+    {
         var clientId = GetSettingValue<string>(DiscordVoiceSetting.ClientId)?.Trim() ?? string.Empty;
         var clientSecret = GetSettingValue<string>(DiscordVoiceSetting.ClientSecret)?.Trim() ?? string.Empty;
         if (clientId.Length == 0 || clientSecret.Length == 0)
         {
-            Log("Set a Discord application Client ID and Client Secret in the module settings (https://discord.com/developers/applications, OAuth2 tab).");
+            Log("RPC disabled: set a Discord application Client ID and Client Secret in the module settings (https://discord.com/developers/applications, OAuth2 tab).");
             return false;
         }
         _clientId = clientId;
 
         try
         {
-            var ct = _lifetime.Token;
             var token = await DiscordAuth.FetchAccessTokenAsync(clientId, clientSecret, ct).ConfigureAwait(false);
             LogDebug("Access token retrieved.");
 
@@ -103,6 +136,7 @@ public sealed partial class DiscordVoiceModule : Module
             await SubscribeDefaultsAsync(client, ct).ConfigureAwait(false);
             await SendAndLogAsync(client, Payload.GetVoiceSettings(), ct).ConfigureAwait(false);
             await SendAndLogAsync(client, Payload.GetSelectedVoiceChannel(), ct).ConfigureAwait(false);
+            _rpcReady = true;
             SendParameter(DiscordVoiceParameter.Ready, true);
             SetVariableValue(DiscordVoiceVariable.Ready, true);
             ChangeState(DiscordVoiceState.VoiceState);
@@ -122,6 +156,9 @@ public sealed partial class DiscordVoiceModule : Module
     protected override Task OnModuleStop()
     {
         _lifetime?.Cancel();
+        _rpcReady = false;
+        foreach (var provider in _providers) provider.Dispose();
+        _providers.Clear();
         var client = _client;
         _client = null;
         if (client is not null)
@@ -191,6 +228,7 @@ public sealed partial class DiscordVoiceModule : Module
 
     private void OnClientDisconnected(Exception? cause)
     {
+        _rpcReady = false;
         Log(cause is null ? "Discord closed the RPC connection." : $"Discord RPC connection lost: {cause.Message}");
         SendParameter(DiscordVoiceParameter.Ready, false);
         SetVariableValue(DiscordVoiceVariable.Ready, false);

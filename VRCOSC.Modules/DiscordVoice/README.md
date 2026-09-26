@@ -32,6 +32,36 @@ own Client ID / Client Secret).
 Note: Vesktop / Equibop implement RPC through arRPC, which only handles Rich Presence
 (SET_ACTIVITY) and none of the voice commands. Use the official Discord client for RPC.
 
+## Fallback sources when RPC is unavailable
+
+RPC needs application credentials, the official Discord client (Vesktop/Equibop's arRPC only
+implements Rich Presence), and on Linux a way for the Wine-hosted VRCOSC to reach the native
+IPC socket. The *Voice Source* setting therefore offers two Equicord-plugin bridges; *Auto*
+uses RPC while it is authenticated and the first live fallback otherwise.
+
+| Source | How | Gives | Cannot give |
+|---|---|---|---|
+| **OrbolayBridge** (`src/equicordplugins/orbolayBridge`) | The plugin is a WebSocket client that connects to `ws://127.0.0.1:6888` (its *Port to connect to*). The module hosts that server and speaks the Orbolay protocol. Push-based, instant. | members, speaking, own mute/deafen, `TOGGLE_MUTE` / `TOGGLE_DEAF` | the channel **name** (only the id, so `discord_channel` reads `Voice`), DM/group calls (the plugin only reports guild channels). The plugin connects once at start and never retries: toggle it off/on after VRCOSC is running. |
+| **DevCompanion** (`src/userplugins/devcompanionExtended`) | With *Host an in-app MCP HTTP server* enabled the plugin serves MCP JSON-RPC on `http://127.0.0.1:8486`; its `store` tool calls Flux store methods. The module polls once per second. | channel name, members with display names, speaking (via `SpeakingStore.getSpeakers`), own self-mute/self-deafen, `AUDIO_TOGGLE_SELF_MUTE` / `_DEAF` via the `flux` tool | speaking changes faster than the poll, mute/deafen while **not** in a channel (`MediaEngineStore`'s state is too large for the tool's inline reply). It is a debugging tool that can run arbitrary store calls, so keep it bound to localhost. |
+
+### Equicord plugins evaluated
+
+Surveyed `src/equicordplugins/`, `src/plugins/` and `src/userplugins/` for anything exposing
+voice state or remote control over a local socket, HTTP or WebSocket:
+
+| Plugin | Exposes | Usable? |
+|---|---|---|
+| `equicordplugins/orbolayBridge` | WebSocket client to a local Orbolay server: voice state push + toggle commands | **Yes, implemented** (above) |
+| `userplugins/devcompanionExtended` | MCP over HTTP on 8486 (+ WebSocket client to a companion on 8487): `store`, `flux`, `evaluateCode`... | **Yes, implemented** (above) |
+| `plugins/arRPC.web` | WebSocket client to `ws://127.0.0.1:1337` receiving Rich Presence *from* an arRPC server | No, activity only, no voice state |
+| `plugins/devCompanion.dev` | WebSocket client to `ws://127.0.0.1:8485` for the VS Code companion (webpack module lookup) | No, no voice state or store access |
+| `plugins/xsOverlay` | UDP to XSOverlay on 42069, outbound notifications only | No |
+| `equicordplugins/voiceStats` | Time-in-voice totals in the client's own DataStore, UI only | No endpoint |
+| `equicordplugins/voiceChatUtils` | Context-menu bulk server mute/move via REST, UI only | No endpoint |
+| `plugins/userVoiceShow` | Voice-channel indicator next to names, UI only | No endpoint |
+| `equicordplugins/_api`, `plugins/_api` | Internal decorator/UI APIs for other plugins | No endpoint |
+| `equicordplugins/musicControls` (Tidal), `equicordplugins/richPresence` (tosu) | WebSocket clients to media players | Not voice related |
+
 ## Module Settings
 
 <!-- SETTINGS_TABLE_START -->

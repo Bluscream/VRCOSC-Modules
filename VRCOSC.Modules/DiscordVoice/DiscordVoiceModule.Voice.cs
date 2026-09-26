@@ -4,6 +4,7 @@
 // VOICE_CHANNEL_SELECT / VOICE_STATE_* / SPEAKING_* / VOICE_SETTINGS_UPDATE events.
 
 using System.Text.Json;
+using Bluscream.Modules.DiscordVoice.Providers;
 using Bluscream.Modules.DiscordVoice.Rpc;
 using Bluscream.Modules.DiscordVoice.Voice;
 using VRCOSC.App.SDK.Modules;
@@ -26,6 +27,7 @@ public sealed partial class DiscordVoiceModule
     private string _trackedChannelId = string.Empty;
     private VoiceSnapshot _lastPublished;
     private string _lastSpeakingText = string.Empty;
+    private string _lastSource = string.Empty;
 
     private void RegisterVoiceVariables()
     {
@@ -49,9 +51,27 @@ public sealed partial class DiscordVoiceModule
     [ModuleUpdate(ModuleUpdateMode.Custom, true, 250)]
     private void VoiceTick() => PublishVoice(force: false);
 
+    /// <summary>The tracker the variables are rendered from: RPC while authenticated, else the first live fallback.</summary>
+    private (VoiceStateTracker Tracker, string Source) ActiveVoiceSource()
+    {
+        if (_rpcReady) return (_voice, "RPC");
+        foreach (var provider in _providers)
+        {
+            if (provider.IsAvailable) return (provider.Tracker, provider.Name);
+        }
+        return (_voice, "none");
+    }
+
     private void PublishVoice(bool force)
     {
-        var snapshot = _voice.Snapshot(DateTime.UtcNow);
+        var (tracker, source) = ActiveVoiceSource();
+        if (source != _lastSource)
+        {
+            _lastSource = source;
+            Log($"Voice variables now come from: {source}");
+            force = true;
+        }
+        var snapshot = tracker.Snapshot(DateTime.UtcNow);
         var speakingText = snapshot.SpeakingText(GetSettingValue<int>(DiscordVoiceSetting.MaxSpeakingNames));
         var changed = force
                       || snapshot.ChannelId != _lastPublished.ChannelId
@@ -71,6 +91,37 @@ public sealed partial class DiscordVoiceModule
         SetVariableValue(VarMuted, snapshot.Muted);
         SetVariableValue(VarDeafened, snapshot.Deafened);
         SetVariableValue(VarUsers, snapshot.UserCount);
+    }
+
+    /// <summary>Mute/deafen requests go over RPC when authenticated, else to the live fallback provider.</summary>
+    private void SetSelfVoiceFlag(bool deafen, bool value)
+    {
+        if (_rpcReady)
+        {
+            Send(deafen ? Payload.SetDeafenOnly(value) : Payload.SetMuteOnly(value));
+            return;
+        }
+        var provider = _providers.FirstOrDefault(p => p.IsAvailable);
+        if (provider is null)
+        {
+            LogDebug($"{(deafen ? "Deafen" : "Mute")} ignored: no voice source is connected.");
+            return;
+        }
+        _ = SetSelfViaProviderAsync(provider, deafen, value, _lifetime?.Token ?? CancellationToken.None);
+    }
+
+    private async Task SetSelfViaProviderAsync(IVoiceProvider provider, bool deafen, bool value, CancellationToken ct)
+    {
+        try
+        {
+            var ok = deafen ? await provider.SetDeafenAsync(value, ct).ConfigureAwait(false) : await provider.SetMuteAsync(value, ct).ConfigureAwait(false);
+            if (!ok) Log($"{provider.Name} could not set {(deafen ? "deafen" : "mute")}.");
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex) when (ex is System.Net.Http.HttpRequestException || ex is System.IO.IOException || ex is InvalidOperationException || ex is JsonException)
+        {
+            Log($"{provider.Name} set {(deafen ? "deafen" : "mute")} failed: {ex.Message}");
+        }
     }
 
     // ── RPC event feed ─────────────────────────────────────────────────────────────

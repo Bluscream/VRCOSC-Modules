@@ -14,10 +14,10 @@ public sealed partial class DiscordVoiceModule
         switch (parameter.Lookup)
         {
             case DiscordVoiceParameter.Mute:
-                Send(Payload.SetMuteOnly(parameter.GetValue<bool>()));
+                SetSelfVoiceFlag(deafen: false, parameter.GetValue<bool>());
                 break;
             case DiscordVoiceParameter.Deafen:
-                Send(Payload.SetDeafenOnly(parameter.GetValue<bool>()));
+                SetSelfVoiceFlag(deafen: true, parameter.GetValue<bool>());
                 break;
             case DiscordVoiceParameter.RequestGuildCount when parameter.GetValue<bool>():
                 Send(Payload.GetGuilds());

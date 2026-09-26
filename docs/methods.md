@@ -4,14 +4,14 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**1119** total across **24** modules.
+**1120** total across **24** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 1 |
 | [Debug](#debug) | 41 |
 | [DesktopFPS](#desktopfps) | 18 |
-| [DiscordVoice](#discordvoice) | 127 |
+| [DiscordVoice](#discordvoice) | 128 |
 | [HTTP](#http) | 9 |
 | [HTTPServer](#httpserver) | 41 |
 | [HeartrateStats](#heartratestats) | 41 |
@@ -255,20 +255,21 @@ Every method and constructor, grouped by module and file. The Owner column is th
 |---|---|---|---|
 | [39](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L39) | `OrbolayBridgeProvider` | private | `public OrbolayBridgeProvider(int port) => _port = port;` |
 | [45](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L45) | `OrbolayBridgeProvider` | public | `public Task StartAsync(Action<string> log, CancellationToken ct)` |
-| [66](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L66) | `OrbolayBridgeProvider` | public | `public async Task<bool> SetMuteAsync(bool mute, CancellationToken ct)` |
-| [75](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L75) | `OrbolayBridgeProvider` | public | `public async Task<bool> SetDeafenAsync(bool deafen, CancellationToken ct)` |
-| [83](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L83) | `OrbolayBridgeProvider` | private | `private Task Send(object payload) => _socket?.SendToAllAsync(JsonSerializer.Serialize(payload)) ?? Task.CompletedTask;` |
-| [85](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L85) | `OrbolayBridgeProvider` | private | `private void HandleMessage(string json)` |
-| [116](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L116) | `OrbolayBridgeProvider` | private | `private void OnChannelJoined(JsonElement root)` |
-| [134](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L134) | `OrbolayBridgeProvider` | private | `private void OnVoiceStateUpdate(JsonElement state)` |
-| [156](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L156) | `OrbolayBridgeProvider` | private | `private static string Str(JsonElement e, string key) => e.TryGetProperty(key, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() ?? string.Empty : string.Empty;` |
-| [157](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L157) | `OrbolayBridgeProvider` | private | `private static bool? Bool(JsonElement e, string key) => e.TryGetProperty(key, out var v) && v.ValueKind is JsonValueKind.True or JsonValueKind.False ? v.GetBoolean() : null;` |
-| [159](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L159) | `OrbolayBridgeProvider` | public | `public void Dispose()` |
-| [175](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L175) | `BridgeSocket` | private | `public BridgeSocket(OrbolayBridgeProvider owner) : base("/", true) => _owner = owner;` |
-| [179](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L179) | `BridgeSocket` | public | `public Task SendToAllAsync(string payload) => BroadcastAsync(payload);` |
-| [181](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L181) | `BridgeSocket` | protected | `protected override Task OnClientConnectedAsync(IWebSocketContext context)` |
-| [188](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L188) | `BridgeSocket` | protected | `protected override Task OnClientDisconnectedAsync(IWebSocketContext context)` |
-| [199](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L199) | `BridgeSocket` | protected | `protected override Task OnMessageReceivedAsync(IWebSocketContext context, byte[] buffer, IWebSocketReceiveResult result)` |
+| [67](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L67) | `OrbolayBridgeProvider` | private | `private async Task RunServerAsync(WebServer server, CancellationToken ct)` |
+| [80](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L80) | `OrbolayBridgeProvider` | public | `public async Task<bool> SetMuteAsync(bool mute, CancellationToken ct)` |
+| [89](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L89) | `OrbolayBridgeProvider` | public | `public async Task<bool> SetDeafenAsync(bool deafen, CancellationToken ct)` |
+| [97](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L97) | `OrbolayBridgeProvider` | private | `private Task Send(object payload) => _socket?.SendToAllAsync(JsonSerializer.Serialize(payload)) ?? Task.CompletedTask;` |
+| [99](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L99) | `OrbolayBridgeProvider` | private | `private void HandleMessage(string json)` |
+| [130](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L130) | `OrbolayBridgeProvider` | private | `private void OnChannelJoined(JsonElement root)` |
+| [148](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L148) | `OrbolayBridgeProvider` | private | `private void OnVoiceStateUpdate(JsonElement state)` |
+| [170](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L170) | `OrbolayBridgeProvider` | private | `private static string Str(JsonElement e, string key) => e.TryGetProperty(key, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() ?? string.Empty : string.Empty;` |
+| [171](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L171) | `OrbolayBridgeProvider` | private | `private static bool? Bool(JsonElement e, string key) => e.TryGetProperty(key, out var v) && v.ValueKind is JsonValueKind.True or JsonValueKind.False ? v.GetBoolean() : null;` |
+| [173](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L173) | `OrbolayBridgeProvider` | public | `public void Dispose()` |
+| [189](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L189) | `BridgeSocket` | private | `public BridgeSocket(OrbolayBridgeProvider owner) : base("/", true) => _owner = owner;` |
+| [193](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L193) | `BridgeSocket` | public | `public Task SendToAllAsync(string payload) => BroadcastAsync(payload);` |
+| [195](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L195) | `BridgeSocket` | protected | `protected override Task OnClientConnectedAsync(IWebSocketContext context)` |
+| [202](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L202) | `BridgeSocket` | protected | `protected override Task OnClientDisconnectedAsync(IWebSocketContext context)` |
+| [213](../VRCOSC.Modules/DiscordVoice/Providers/OrbolayBridgeProvider.cs#L213) | `BridgeSocket` | protected | `protected override Task OnMessageReceivedAsync(IWebSocketContext context, byte[] buffer, IWebSocketReceiveResult result)` |
 
 ### `DiscordVoice/Rpc/DiscordAuth.cs`
 

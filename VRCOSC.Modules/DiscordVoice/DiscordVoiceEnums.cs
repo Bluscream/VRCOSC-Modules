@@ -49,7 +49,19 @@ public enum DiscordVoiceSetting
     DefaultChannelId,
     AutoUpdateDefaults,
     MaxSpeakingNames,
-    SpeakingHoldMs
+    SpeakingHoldMs,
+    VoiceSource,
+    OrbolayPort,
+    DevCompanionPort
+}
+
+/// <summary>Where the voice variables come from. Auto: RPC when authenticated, else whichever fallback is live.</summary>
+public enum VoiceSource
+{
+    Auto,
+    Rpc,
+    OrbolayBridge,
+    DevCompanion
 }
 
 public enum DiscordVoiceVariable
