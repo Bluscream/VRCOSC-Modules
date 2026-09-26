@@ -22,9 +22,14 @@ public class LinuxMediaModule : Module
     private long _durationMicroseconds = 0;
     private long _positionMicroseconds = 0;
     private float _volume = 1f;
+    private readonly System.Diagnostics.Stopwatch _sincePositionSample = new();
+    private readonly LyricsProvider _lyrics = new();
 
     protected override void OnPreLoad()
     {
+        CreateToggle(MediaSetting.Lyrics, "Synced lyrics",
+            "Look up time-synced lyrics for the current track on LRCLIB (lrclib.net) and expose the current line as the Lyrics variable. Sends artist, title and duration to lrclib.net.", false);
+
         RegisterParameter<bool>(MediaParameter.Play, "VRCOSC/Media/Play", ParameterMode.ReadWrite, "Play/Pause", "True for playing. False for paused");
         RegisterParameter<bool>(MediaParameter.Next, "VRCOSC/Media/Next", ParameterMode.Read, "Next", "Becoming true causes the next track to play");
         RegisterParameter<bool>(MediaParameter.Previous, "VRCOSC/Media/Previous", ParameterMode.Read, "Previous", "Becoming true causes the previous track to play");
@@ -41,6 +46,9 @@ public class LinuxMediaModule : Module
         CreateVariable<TimeSpan>(MediaVariable.TimeRemaining, "Time Remaining");
         var durationReference = CreateVariable<TimeSpan>(MediaVariable.Duration, "Duration")!;
         var progressVisualReference = CreateVariable<float>(MediaVariable.ProgressVisual, "Progress Visual", typeof(ProgressClipVariable))!;
+        CreateVariable<int>(MediaVariable.ProgressPercent, "Progress (%)");
+        CreateVariable<string>(MediaVariable.PlayIcon, "Play Icon");
+        CreateVariable<string>(MediaVariable.Lyrics, "Lyrics (current line)");
         CreateVariable<int>(MediaVariable.Volume, "Volume");
 
         CreateState(MediaState.Playing, "Playing", "[{0}/{1}]\n{2} - {3}\n{4}", new[] { currentTimeReference, durationReference, artistReference, titleReference, progressVisualReference });
@@ -55,6 +63,7 @@ public class LinuxMediaModule : Module
     protected override Task<bool> OnModuleStart()
     {
         DeployHelperScript();
+        _lyrics.Clear();
         ChangeState(MediaState.Stopped);
         return Task.FromResult(true);
     }
@@ -129,6 +138,7 @@ public class LinuxMediaModule : Module
                 _durationMicroseconds = 0;
                 _positionMicroseconds = 0;
                 _activePlayer = null;
+                _lyrics.Clear();
                 ChangeState(MediaState.Stopped);
                 return;
             }
@@ -144,6 +154,7 @@ public class LinuxMediaModule : Module
                 _artist = lines[2].Trim();
                 long.TryParse(lines[3].Trim(), out _durationMicroseconds);
                 long.TryParse(lines[4].Trim(), out _positionMicroseconds);
+                _sincePositionSample.Restart();
                 if (lines.Length >= 6) _activePlayer = lines[5].Trim();
                 if (lines.Length >= 7) float.TryParse(lines[6].Trim(), out _volume);
 
@@ -152,6 +163,11 @@ public class LinuxMediaModule : Module
                     Log($"Track changed: {(string.IsNullOrEmpty(_artist) ? _title : $"{_artist} - {_title}")}");
                     TriggerEvent(MediaEvent.OnTrackChange);
                 }
+
+                if (GetSettingValue<bool>(MediaSetting.Lyrics))
+                    _lyrics.TrackChanged(_artist, _title, TimeSpan.FromMilliseconds(_durationMicroseconds / 1000.0), Log);
+                else
+                    _lyrics.Clear();
 
                 if (_playbackStatus != oldStatus)
                 {
@@ -182,9 +198,14 @@ public class LinuxMediaModule : Module
     private void UpdateChatBoxVariables()
     {
         var positionTime = TimeSpan.FromMilliseconds(_positionMicroseconds / 1000.0);
+        // MPRIS is polled once a second; while playing, extrapolate so lyrics and progress
+        // advance smoothly between polls instead of stepping.
+        if (_playbackStatus == "Playing" && _sincePositionSample.IsRunning)
+            positionTime += _sincePositionSample.Elapsed;
         var durationTime = TimeSpan.FromMilliseconds(_durationMicroseconds / 1000.0);
+        if (durationTime > TimeSpan.Zero && positionTime > durationTime) positionTime = durationTime;
         var remainingTime = durationTime >= positionTime ? durationTime - positionTime : TimeSpan.Zero;
-        float progress = _durationMicroseconds > 0 ? (float)_positionMicroseconds / _durationMicroseconds : 0f;
+        float progress = durationTime > TimeSpan.Zero ? (float)(positionTime.TotalMilliseconds / durationTime.TotalMilliseconds) : 0f;
 
         SetVariableValue(MediaVariable.Title, _title);
         SetVariableValue(MediaVariable.Artist, _artist);
@@ -193,6 +214,9 @@ public class LinuxMediaModule : Module
         SetVariableValue(MediaVariable.Duration, durationTime);
         SetVariableValue(MediaVariable.TimeRemaining, remainingTime);
         SetVariableValue(MediaVariable.ProgressVisual, progress);
+        SetVariableValue(MediaVariable.ProgressPercent, (int)Math.Round(Math.Clamp(progress, 0f, 1f) * 100f));
+        SetVariableValue(MediaVariable.PlayIcon, _playbackStatus switch { "Playing" => "\u25B6", "Paused" => "\u23F8", _ => "\u23F9" });
+        SetVariableValue(MediaVariable.Lyrics, _lyrics.LineAt(positionTime));
         SetVariableValue(MediaVariable.Volume, (int)Math.Round(_volume * 100));
 
         SendParameter(MediaParameter.Position, progress);
@@ -238,6 +262,11 @@ public class LinuxMediaModule : Module
 
 
 
+    private enum MediaSetting
+    {
+        Lyrics
+    }
+
     private enum MediaParameter
     {
         Play,
@@ -256,6 +285,9 @@ public class LinuxMediaModule : Module
         TimeRemaining,
         Duration,
         ProgressVisual,
+        ProgressPercent,
+        PlayIcon,
+        Lyrics,
         Volume
     }
 
