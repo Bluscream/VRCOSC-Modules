@@ -45,6 +45,7 @@ internal sealed unsafe partial class OpenXRRuntime
         _sinceLastFrame.Restart();
         _lastPredictedTime = 0;
         _waitFrameWorks = true;
+        _submitFrames = true;
         Log($"OpenXR ready: runtime '{_runtimeName}', system '{_systemName}', overlay={_overlaySession}. Waiting for the session to become ready.");
         return true;
     }

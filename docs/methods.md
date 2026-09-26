@@ -4,7 +4,7 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**802** total across **18** modules.
+**804** total across **18** modules.
 
 | Module | Count |
 |---|---|
@@ -21,7 +21,7 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [Notifications](#notifications) | 25 |
 | [OpenXR](#openxr) | 79 |
 | [Status](#status) | 23 |
-| [Utilities](#utilities) | 245 |
+| [Utilities](#utilities) | 247 |
 | [VRCExtras](#vrcextras) | 6 |
 | [VRCXBridge](#vrcxbridge) | 34 |
 | [VRChatSettings](#vrchatsettings) | 77 |
@@ -72,30 +72,30 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [27](../VRCOSC.Modules/Debug/DebugModule.cs#L27) | `DebugModule` | protected | `protected override void OnPreLoad()` |
-| [66](../VRCOSC.Modules/Debug/DebugModule.cs#L66) | `DebugModule` | protected | `protected override void OnPostLoad()` |
-| [153](../VRCOSC.Modules/Debug/DebugModule.cs#L153) | `DebugModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [188](../VRCOSC.Modules/Debug/DebugModule.cs#L188) | `DebugModule` | protected | `protected override Task OnModuleStop()` |
-| [196](../VRCOSC.Modules/Debug/DebugModule.cs#L196) | `DebugModule` | private | `private void OnIncomingTracked(ParameterData data)` |
-| [201](../VRCOSC.Modules/Debug/DebugModule.cs#L201) | `DebugModule` | private | `private void OnOutgoingTracked(ParameterData data)` |
-| [206](../VRCOSC.Modules/Debug/DebugModule.cs#L206) | `DebugModule` | private | `private void OnIncomingReceived(string path, string type, object? value)` |
-| [214](../VRCOSC.Modules/Debug/DebugModule.cs#L214) | `DebugModule` | private | `private void OnOutgoingSent(string path, string type, object? value)` |
-| [222](../VRCOSC.Modules/Debug/DebugModule.cs#L222) | `DebugModule` | private | `private void OnMaxLimitReached(string path)` |
-| [227](../VRCOSC.Modules/Debug/DebugModule.cs#L227) | `DebugModule` | private | `private void OnTrackingCleared()` |
-| [232](../VRCOSC.Modules/Debug/DebugModule.cs#L232) | `DebugModule` | protected | `protected override void OnAnyParameterReceived(VRChatParameter parameter)` |
-| [240](../VRCOSC.Modules/Debug/DebugModule.cs#L240) | `DebugModule` | protected | `protected void SendParameter(string name, object value)` |
-| [242](../VRCOSC.Modules/Debug/DebugModule.cs#L242) | `DebugModule` | protected | `protected new void SendParameter(string name, object value)` |
-| [256](../VRCOSC.Modules/Debug/DebugModule.cs#L256) | `DebugModule` | protected | `protected void SendParameter(Enum lookup, object value)` |
-| [258](../VRCOSC.Modules/Debug/DebugModule.cs#L258) | `DebugModule` | protected | `protected new void SendParameter(Enum lookup, object value)` |
-| [287](../VRCOSC.Modules/Debug/DebugModule.cs#L287) | `DebugModule` | protected | `protected override void OnRegisteredParameterReceived(RegisteredParameter parameter)` |
-| [302](../VRCOSC.Modules/Debug/DebugModule.cs#L302) | `DebugModule` | public | `public async Task<string> DumpParametersAsync(bool includeIncoming = true, bool includeOutgoing = true, string? customFilePath = null)` |
-| [416](../VRCOSC.Modules/Debug/DebugModule.cs#L416) | `DebugModule` | public | `public void ClearTracking()` |
-| [429](../VRCOSC.Modules/Debug/DebugModule.cs#L429) | `DebugModule` | private | `private void UpdateCounts()` |
-| [445](../VRCOSC.Modules/Debug/DebugModule.cs#L445) | `DebugModule` | public | `public Dictionary<string, ParameterData> GetIncomingParameters()` |
-| [450](../VRCOSC.Modules/Debug/DebugModule.cs#L450) | `DebugModule` | public | `public Dictionary<string, ParameterData> GetOutgoingParameters()` |
-| [456](../VRCOSC.Modules/Debug/DebugModule.cs#L456) | `DebugModule` | private | `private string GetDumpDirectory()` |
-| [467](../VRCOSC.Modules/Debug/DebugModule.cs#L467) | `DebugModule` | private | `private CsvSortBy GetSortColumn() => GetSettingValue<CsvSortBy>(DebugSetting.SortBy);` |
-| [468](../VRCOSC.Modules/Debug/DebugModule.cs#L468) | `DebugModule` | private | `private CsvSortDirection GetSortDirection() => GetSettingValue<CsvSortDirection>(DebugSetting.SortDirection);` |
-| [476](../VRCOSC.Modules/Debug/DebugModule.cs#L476) | `DebugModule` | private | `private bool IsLoggingEnabled() => GetSettingValue<bool>(DebugSetting.LogParameterUpdates);` |
+| [68](../VRCOSC.Modules/Debug/DebugModule.cs#L68) | `DebugModule` | protected | `protected override void OnPostLoad()` |
+| [155](../VRCOSC.Modules/Debug/DebugModule.cs#L155) | `DebugModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [190](../VRCOSC.Modules/Debug/DebugModule.cs#L190) | `DebugModule` | protected | `protected override Task OnModuleStop()` |
+| [198](../VRCOSC.Modules/Debug/DebugModule.cs#L198) | `DebugModule` | private | `private void OnIncomingTracked(ParameterData data)` |
+| [203](../VRCOSC.Modules/Debug/DebugModule.cs#L203) | `DebugModule` | private | `private void OnOutgoingTracked(ParameterData data)` |
+| [208](../VRCOSC.Modules/Debug/DebugModule.cs#L208) | `DebugModule` | private | `private void OnIncomingReceived(string path, string type, object? value)` |
+| [216](../VRCOSC.Modules/Debug/DebugModule.cs#L216) | `DebugModule` | private | `private void OnOutgoingSent(string path, string type, object? value)` |
+| [224](../VRCOSC.Modules/Debug/DebugModule.cs#L224) | `DebugModule` | private | `private void OnMaxLimitReached(string path)` |
+| [229](../VRCOSC.Modules/Debug/DebugModule.cs#L229) | `DebugModule` | private | `private void OnTrackingCleared()` |
+| [234](../VRCOSC.Modules/Debug/DebugModule.cs#L234) | `DebugModule` | protected | `protected override void OnAnyParameterReceived(VRChatParameter parameter)` |
+| [242](../VRCOSC.Modules/Debug/DebugModule.cs#L242) | `DebugModule` | protected | `protected void SendParameter(string name, object value)` |
+| [244](../VRCOSC.Modules/Debug/DebugModule.cs#L244) | `DebugModule` | protected | `protected new void SendParameter(string name, object value)` |
+| [258](../VRCOSC.Modules/Debug/DebugModule.cs#L258) | `DebugModule` | protected | `protected void SendParameter(Enum lookup, object value)` |
+| [260](../VRCOSC.Modules/Debug/DebugModule.cs#L260) | `DebugModule` | protected | `protected new void SendParameter(Enum lookup, object value)` |
+| [289](../VRCOSC.Modules/Debug/DebugModule.cs#L289) | `DebugModule` | protected | `protected override void OnRegisteredParameterReceived(RegisteredParameter parameter)` |
+| [304](../VRCOSC.Modules/Debug/DebugModule.cs#L304) | `DebugModule` | public | `public async Task<string> DumpParametersAsync(bool includeIncoming = true, bool includeOutgoing = true, string? customFilePath = null)` |
+| [418](../VRCOSC.Modules/Debug/DebugModule.cs#L418) | `DebugModule` | public | `public void ClearTracking()` |
+| [431](../VRCOSC.Modules/Debug/DebugModule.cs#L431) | `DebugModule` | private | `private void UpdateCounts()` |
+| [447](../VRCOSC.Modules/Debug/DebugModule.cs#L447) | `DebugModule` | public | `public Dictionary<string, ParameterData> GetIncomingParameters()` |
+| [452](../VRCOSC.Modules/Debug/DebugModule.cs#L452) | `DebugModule` | public | `public Dictionary<string, ParameterData> GetOutgoingParameters()` |
+| [458](../VRCOSC.Modules/Debug/DebugModule.cs#L458) | `DebugModule` | private | `private string GetDumpDirectory()` |
+| [469](../VRCOSC.Modules/Debug/DebugModule.cs#L469) | `DebugModule` | private | `private CsvSortBy GetSortColumn() => GetSettingValue<CsvSortBy>(DebugSetting.SortBy);` |
+| [470](../VRCOSC.Modules/Debug/DebugModule.cs#L470) | `DebugModule` | private | `private CsvSortDirection GetSortDirection() => GetSettingValue<CsvSortDirection>(DebugSetting.SortDirection);` |
+| [478](../VRCOSC.Modules/Debug/DebugModule.cs#L478) | `DebugModule` | private | `private bool IsLoggingEnabled() => GetSettingValue<bool>(DebugSetting.LogParameterUpdates);` |
 
 ### `Debug/Nodes.cs`
 
@@ -731,34 +731,34 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [13](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L13) | `OpenXRRuntime` | private | `private bool TryInitialise()` |
-| [52](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L52) | `OpenXRRuntime` | private | `private HashSet<string>? EnumerateExtensions()` |
-| [85](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L85) | `OpenXRRuntime` | private | `private bool CreateInstance(IReadOnlyList<string> extensions)` |
-| [125](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L125) | `OpenXRRuntime` | private | `private bool QuerySystem()` |
-| [144](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L144) | `OpenXRRuntime` | private | `private bool CreateSession(bool overlay)` |
-| [181](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L181) | `OpenXRRuntime` | private | `private bool CreateSpaces()` |
-| [203](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L203) | `OpenXRRuntime` | private | `private void ResolveExtensionFunctions(IReadOnlyCollection<string> enabled)` |
-| [221](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L221) | `OpenXRRuntime` | private | `private nint GetProc(string name)` |
+| [53](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L53) | `OpenXRRuntime` | private | `private HashSet<string>? EnumerateExtensions()` |
+| [86](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L86) | `OpenXRRuntime` | private | `private bool CreateInstance(IReadOnlyList<string> extensions)` |
+| [126](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L126) | `OpenXRRuntime` | private | `private bool QuerySystem()` |
+| [145](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L145) | `OpenXRRuntime` | private | `private bool CreateSession(bool overlay)` |
+| [182](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L182) | `OpenXRRuntime` | private | `private bool CreateSpaces()` |
+| [204](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L204) | `OpenXRRuntime` | private | `private void ResolveExtensionFunctions(IReadOnlyCollection<string> enabled)` |
+| [222](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L222) | `OpenXRRuntime` | private | `private nint GetProc(string name)` |
 
 ### `OpenXR/OpenXRRuntime.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [81](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L81) | `OpenXRRuntime` | public | `public void Acquire(Action<string> log)` |
-| [95](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L95) | `OpenXRRuntime` | public | `public void Release(Action<string> log)` |
-| [113](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L113) | `OpenXRRuntime` | private | `private void Log(string message)` |
-| [121](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L121) | `OpenXRRuntime` | private | `private void LogOnce(string message)` |
-| [135](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L135) | `OpenXRRuntime` | private | `private void LogThrottled(string key, string message, TimeSpan every)` |
-| [147](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L147) | `OpenXRRuntime` | private | `private void ThreadMain(CancellationToken ct)` |
-| [187](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L187) | `OpenXRRuntime` | private | `private void PumpEvents()` |
-| [219](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L219) | `OpenXRRuntime` | private | `private void OnSessionStateChanged(SessionState state)` |
-| [255](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L255) | `OpenXRRuntime` | private | `private void FrameStep()` |
-| [306](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L306) | `OpenXRRuntime` | private | `private TimeSpan FramePeriod()` |
-| [313](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L313) | `OpenXRRuntime` | private | `private long EstimateNow()` |
-| [328](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L328) | `OpenXRRuntime` | private | `private void UpdateFrameData(long time)` |
-| [337](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L337) | `OpenXRRuntime` | private | `private bool LocateHead(long time)` |
-| [345](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L345) | `OpenXRRuntime` | private | `private void PollRefreshRate()` |
-| [357](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L357) | `OpenXRRuntime` | private | `private void Publish()` |
-| [376](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L376) | `OpenXRRuntime` | private | `private void TearDown()` |
+| [82](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L82) | `OpenXRRuntime` | public | `public void Acquire(Action<string> log)` |
+| [96](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L96) | `OpenXRRuntime` | public | `public void Release(Action<string> log)` |
+| [114](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L114) | `OpenXRRuntime` | private | `private void Log(string message)` |
+| [122](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L122) | `OpenXRRuntime` | private | `private void LogOnce(string message)` |
+| [136](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L136) | `OpenXRRuntime` | private | `private void LogThrottled(string key, string message, TimeSpan every)` |
+| [148](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L148) | `OpenXRRuntime` | private | `private void ThreadMain(CancellationToken ct)` |
+| [188](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L188) | `OpenXRRuntime` | private | `private void PumpEvents()` |
+| [220](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L220) | `OpenXRRuntime` | private | `private void OnSessionStateChanged(SessionState state)` |
+| [256](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L256) | `OpenXRRuntime` | private | `private void FrameStep()` |
+| [320](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L320) | `OpenXRRuntime` | private | `private TimeSpan FramePeriod()` |
+| [327](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L327) | `OpenXRRuntime` | private | `private long EstimateNow()` |
+| [342](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L342) | `OpenXRRuntime` | private | `private void UpdateFrameData(long time)` |
+| [351](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L351) | `OpenXRRuntime` | private | `private bool LocateHead(long time)` |
+| [359](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L359) | `OpenXRRuntime` | private | `private void PollRefreshRate()` |
+| [371](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L371) | `OpenXRRuntime` | private | `private void Publish()` |
+| [390](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L390) | `OpenXRRuntime` | private | `private void TearDown()` |
 
 ### `OpenXR/OpenXRStatisticsModule.cs`
 
@@ -1035,6 +1035,13 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [20](../VRCOSC.Modules/Utilities/NumericUtils.cs#L20) | `NumericUtils` | public | `public static bool IsBetween<T>(T value, T min, T max) where T : IComparable<T>` |
 | [23](../VRCOSC.Modules/Utilities/NumericUtils.cs#L23) | `NumericUtils` | public | `public static double Map(double value, double fromMin, double fromMax, double toMin, double toMax)` |
 | [26](../VRCOSC.Modules/Utilities/NumericUtils.cs#L26) | `NumericUtils` | public | `public static double RoundTo(double value, int decimals)` |
+
+### `Utilities/OpenVRCompatFix.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [22](../VRCOSC.Modules/Utilities/OpenVRCompatFix.cs#L22) | `OpenVRCompatFix` | public | `public static void ApplySkipAutoLaunch(Action<string>? log = null)` |
+| [56](../VRCOSC.Modules/Utilities/OpenVRCompatFix.cs#L56) | `SetApplicationAutoLaunchPatch` | public | `public static bool Prefix(ref Valve.VR.EVRApplicationError __result)` |
 
 ### `Utilities/OscUtils.cs`
 

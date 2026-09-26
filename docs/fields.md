@@ -4,7 +4,7 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**521** total across **17** modules.
+**524** total across **17** modules.
 
 | Module | Count |
 |---|---|
@@ -18,9 +18,9 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [LinuxHardwareStats](#linuxhardwarestats) | 31 |
 | [LinuxMedia](#linuxmedia) | 15 |
 | [Notifications](#notifications) | 37 |
-| [OpenXR](#openxr) | 76 |
+| [OpenXR](#openxr) | 77 |
 | [Status](#status) | 7 |
-| [Utilities](#utilities) | 30 |
+| [Utilities](#utilities) | 32 |
 | [VRCExtras](#vrcextras) | 1 |
 | [VRCXBridge](#vrcxbridge) | 48 |
 | [VRChatSettings](#vrchatsettings) | 48 |
@@ -626,17 +626,18 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [54](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L54) | `OpenXRRuntime` | private | `private bool _running;` |
 | [55](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L55) | `OpenXRRuntime` | private | `private bool _overlaySession;` |
 | [56](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L56) | `OpenXRRuntime` | private | `private bool _waitFrameWorks = true;` |
-| [57](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L57) | `OpenXRRuntime` | private | `private long _lastPredictedTime;` |
-| [58](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L58) | `OpenXRRuntime` | private | `private long _lastPredictedPeriod;` |
-| [59](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L59) | `OpenXRRuntime` | private | `private readonly Stopwatch _sinceLastFrame = new();` |
-| [60](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L60) | `OpenXRRuntime` | private | `private DateTime _nextRetry = DateTime.MinValue;` |
-| [61](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L61) | `OpenXRRuntime` | private | `private DateTime _nextRefreshRatePoll = DateTime.MinValue;` |
-| [62](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L62) | `OpenXRRuntime` | private | `private string _runtimeName = string.Empty;` |
-| [63](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L63) | `OpenXRRuntime` | private | `private string _systemName = string.Empty;` |
-| [64](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L64) | `OpenXRRuntime` | private | `private float _refreshRate;` |
-| [65](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L65) | `OpenXRRuntime` | private | `private bool _headTracked;` |
-| [69](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L69) | `OpenXRRuntime` | private | `private volatile OpenXRSnapshot _snapshot = OpenXRSnapshot.Empty;` |
-| [128](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L128) | `OpenXRRuntime` | private | `private readonly Dictionary<string, DateTime> _lastLogged = new();` |
+| [57](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L57) | `OpenXRRuntime` | private | `private bool _submitFrames = true;` |
+| [58](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L58) | `OpenXRRuntime` | private | `private long _lastPredictedTime;` |
+| [59](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L59) | `OpenXRRuntime` | private | `private long _lastPredictedPeriod;` |
+| [60](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L60) | `OpenXRRuntime` | private | `private readonly Stopwatch _sinceLastFrame = new();` |
+| [61](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L61) | `OpenXRRuntime` | private | `private DateTime _nextRetry = DateTime.MinValue;` |
+| [62](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L62) | `OpenXRRuntime` | private | `private DateTime _nextRefreshRatePoll = DateTime.MinValue;` |
+| [63](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L63) | `OpenXRRuntime` | private | `private string _runtimeName = string.Empty;` |
+| [64](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L64) | `OpenXRRuntime` | private | `private string _systemName = string.Empty;` |
+| [65](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L65) | `OpenXRRuntime` | private | `private float _refreshRate;` |
+| [66](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L66) | `OpenXRRuntime` | private | `private bool _headTracked;` |
+| [70](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L70) | `OpenXRRuntime` | private | `private volatile OpenXRSnapshot _snapshot = OpenXRSnapshot.Empty;` |
+| [129](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L129) | `OpenXRRuntime` | private | `private readonly Dictionary<string, DateTime> _lastLogged = new();` |
 
 ### `OpenXR/OpenXRStatisticsModule.cs`
 
@@ -700,6 +701,13 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [19](../VRCOSC.Modules/Utilities/ModuleUtils.cs#L19) | `ModuleUtils` | private | `private static MethodInfo? _sendParameterStringMethod;` |
 | [20](../VRCOSC.Modules/Utilities/ModuleUtils.cs#L20) | `ModuleUtils` | private | `private static bool _resolverRegistered = false;` |
 | [21](../VRCOSC.Modules/Utilities/ModuleUtils.cs#L21) | `ModuleUtils` | private | `private static readonly object _lockObj = new object();` |
+
+### `Utilities/OpenVRCompatFix.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [19](../VRCOSC.Modules/Utilities/OpenVRCompatFix.cs#L19) | `OpenVRCompatFix` | private | `private static readonly object Lock = new();` |
+| [20](../VRCOSC.Modules/Utilities/OpenVRCompatFix.cs#L20) | `OpenVRCompatFix` | private | `private static bool _patched;` |
 
 ### `Utilities/ReflectionUtils.cs`
 

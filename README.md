@@ -92,7 +92,7 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 <!-- SUBMODULES_TABLE_START -->
 | Module Name | Folder / Docs | Settings | Variables | States | Events | Description |
 |---|---|---|---|---|---|---|
-| **Debug** | `[VRCOSC.Modules/Debug/README.md](VRCOSC.Modules/Debug/README.md)` | `13` | `4` | 2 | 2 | Debug tools for tracking and exporting OSC parameters |
+| **Debug** | `[VRCOSC.Modules/Debug/README.md](VRCOSC.Modules/Debug/README.md)` | `14` | `4` | 2 | 2 | Debug tools for tracking and exporting OSC parameters |
 | **Desktop FPS** | `[VRCOSC.Modules/DesktopFPS/README.md](VRCOSC.Modules/DesktopFPS/README.md)` | `0` | `1` | 0 | 0 | Monitors VRChat FPS using Windows Performance Counters |
 | **HTTP** | `[VRCOSC.Modules/HTTP/README.md](VRCOSC.Modules/HTTP/README.md)` | `2` | `4` | 4 | 2 | Send HTTP requests and receive responses for automation |
 | **HTTP/MCP Server** | `[VRCOSC.Modules/HTTPServer/README.md](VRCOSC.Modules/HTTPServer/README.md)` | `9` | `5` | 5 | 5 | HTTP/MCP server to control VRCOSC via HTTP Requests or from a AI Agent via MCP (optional) |

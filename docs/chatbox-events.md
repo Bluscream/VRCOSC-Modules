@@ -12,8 +12,8 @@ The Fired column lists every `TriggerEvent` call site; an event with **never** t
 
 | Line | Owner | Lookup | Title | Fired |
 |---|---|---|---|---|
-| [79](../VRCOSC.Modules/Debug/DebugModule.cs#L79) | `DebugModule` | `DebugEvent.OnDumpComplete` | Dump Complete | [DebugModule.cs:380](../VRCOSC.Modules/Debug/DebugModule.cs#L380) |
-| [80](../VRCOSC.Modules/Debug/DebugModule.cs#L80) | `DebugModule` | `DebugEvent.OnTrackingCleared` | Tracking Cleared | [DebugModule.cs:426](../VRCOSC.Modules/Debug/DebugModule.cs#L426) |
+| [81](../VRCOSC.Modules/Debug/DebugModule.cs#L81) | `DebugModule` | `DebugEvent.OnDumpComplete` | Dump Complete | [DebugModule.cs:382](../VRCOSC.Modules/Debug/DebugModule.cs#L382) |
+| [82](../VRCOSC.Modules/Debug/DebugModule.cs#L82) | `DebugModule` | `DebugEvent.OnTrackingCleared` | Tracking Cleared | [DebugModule.cs:428](../VRCOSC.Modules/Debug/DebugModule.cs#L428) |
 
 ## HTTP
 

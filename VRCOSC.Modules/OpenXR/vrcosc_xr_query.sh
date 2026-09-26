@@ -24,8 +24,11 @@ fi
 PY=$(cat <<'PYEOF'
 import ctypes, json, os, sys, time
 
+import glob
 candidates = [a for a in sys.argv[1:] if a] + [
     "/app/lib/wivrn/libmonado_wivrn.so",
+] + sorted(glob.glob("/var/lib/flatpak/app/io.github.wivrn.wivrn/x86_64/*/active/files/lib/wivrn/libmonado_wivrn.so")) \
+  + sorted(glob.glob(os.path.expanduser("~/.local/share/flatpak/app/io.github.wivrn.wivrn/x86_64/*/active/files/lib/wivrn/libmonado_wivrn.so"))) + [
     "/usr/lib64/libmonado_wivrn.so", "/usr/lib/libmonado_wivrn.so",
     "/usr/lib/x86_64-linux-gnu/libmonado_wivrn.so",
     "/usr/lib64/libmonado.so", "/usr/lib/libmonado.so",
@@ -98,7 +101,14 @@ PYEOF
 )
 
 run_in_wivrn_flatpak() {
-    printf '%s' "$PY" | timeout -s KILL "$PROBE_TIMEOUT" flatpak run --command=python3 io.github.wivrn.wivrn - /app/lib/wivrn/libmonado_wivrn.so
+    # "flatpak" is absent inside Steam's pressure-vessel container (where VRCOSC lands when it
+    # joins VRChat's session), but flatpak-spawn --host reaches the host's flatpak from there.
+    local fp=""
+    if command -v flatpak >/dev/null 2>&1; then fp="flatpak"
+    elif command -v flatpak-spawn >/dev/null 2>&1; then fp="flatpak-spawn --host flatpak"
+    else return 1; fi
+    $fp info io.github.wivrn.wivrn >/dev/null 2>&1 || return 1
+    printf '%s' "$PY" | timeout -s KILL "$PROBE_TIMEOUT" $fp run --command=python3 io.github.wivrn.wivrn - /app/lib/wivrn/libmonado_wivrn.so
 }
 
 run_on_host() {
@@ -106,13 +116,12 @@ run_on_host() {
     printf '%s' "$PY" | timeout -s KILL "$PROBE_TIMEOUT" python3 -
 }
 
-# The WiVRn flatpak carries its own libmonado and python; when it is installed it is the
-# runtime we are talking to, so it is authoritative and the host path is only for native
-# Monado/WiVRn installs.
-if command -v flatpak >/dev/null 2>&1 && flatpak info io.github.wivrn.wivrn >/dev/null 2>&1; then
-    run_in_wivrn_flatpak > "$TMP" 2>/dev/null
-else
-    run_on_host > "$TMP" 2>/dev/null
+# Cheapest first: the host python can load the WiVRn flatpak's libmonado directly (the
+# flatpak tree is world-readable and the IPC socket lives in $XDG_RUNTIME_DIR). Fall back
+# to running python inside the flatpak when that fails (e.g. the library refuses to load).
+if ! run_on_host > "$TMP" 2>/dev/null || ! grep -q '"ok": true' "$TMP"; then
+    run_in_wivrn_flatpak > "$TMP.2" 2>/dev/null && [ -s "$TMP.2" ] && mv -f "$TMP.2" "$TMP"
+    rm -f "$TMP.2"
 fi
 
 if [ -s "$TMP" ]; then

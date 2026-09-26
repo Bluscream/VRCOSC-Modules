@@ -4,7 +4,7 @@
 
 Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
-**263** total across **18** modules.
+**265** total across **18** modules.
 
 | Module | Count |
 |---|---|
@@ -21,7 +21,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [Notifications](#notifications) | 19 |
 | [OpenXR](#openxr) | 28 |
 | [Status](#status) | 9 |
-| [Utilities](#utilities) | 28 |
+| [Utilities](#utilities) | 30 |
 | [VRCExtras](#vrcextras) | 6 |
 | [VRCXBridge](#vrcxbridge) | 12 |
 | [VRChatSettings](#vrchatsettings) | 21 |
@@ -72,13 +72,13 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [21](../VRCOSC.Modules/Debug/DebugModule.cs#L21) | public | `public class DebugModule : VRCOSC.App.SDK.Modules.Module` |
-| [478](../VRCOSC.Modules/Debug/DebugModule.cs#L478) | private | `private enum DebugSetting` |
-| [495](../VRCOSC.Modules/Debug/DebugModule.cs#L495) | private | `private enum CsvSortBy` |
-| [507](../VRCOSC.Modules/Debug/DebugModule.cs#L507) | private | `private enum CsvSortDirection` |
-| [513](../VRCOSC.Modules/Debug/DebugModule.cs#L513) | private | `private enum DebugParameter` |
-| [522](../VRCOSC.Modules/Debug/DebugModule.cs#L522) | private | `private enum DebugVariable` |
-| [530](../VRCOSC.Modules/Debug/DebugModule.cs#L530) | private | `private enum DebugState` |
-| [536](../VRCOSC.Modules/Debug/DebugModule.cs#L536) | private | `private enum DebugEvent` |
+| [480](../VRCOSC.Modules/Debug/DebugModule.cs#L480) | private | `private enum DebugSetting` |
+| [498](../VRCOSC.Modules/Debug/DebugModule.cs#L498) | private | `private enum CsvSortBy` |
+| [510](../VRCOSC.Modules/Debug/DebugModule.cs#L510) | private | `private enum CsvSortDirection` |
+| [516](../VRCOSC.Modules/Debug/DebugModule.cs#L516) | private | `private enum DebugParameter` |
+| [525](../VRCOSC.Modules/Debug/DebugModule.cs#L525) | private | `private enum DebugVariable` |
+| [533](../VRCOSC.Modules/Debug/DebugModule.cs#L533) | private | `private enum DebugState` |
+| [539](../VRCOSC.Modules/Debug/DebugModule.cs#L539) | private | `private enum DebugEvent` |
 
 ### `Debug/Nodes.cs`
 
@@ -693,6 +693,13 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [11](../VRCOSC.Modules/Utilities/NumericUtils.cs#L11) | public | `public static class NumericUtils` |
+
+### `Utilities/OpenVRCompatFix.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [17](../VRCOSC.Modules/Utilities/OpenVRCompatFix.cs#L17) | public | `public static class OpenVRCompatFix` |
+| [53](../VRCOSC.Modules/Utilities/OpenVRCompatFix.cs#L53) | public | `public static class SetApplicationAutoLaunchPatch` |
 
 ### `Utilities/OscUtils.cs`
 
