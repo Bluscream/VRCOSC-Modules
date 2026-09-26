@@ -115,10 +115,10 @@ The Fired column lists every `TriggerEvent` call site; an event with **never** t
 
 | Line | Owner | Lookup | Title | Fired |
 |---|---|---|---|---|
-| [63](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L63) | `TikTokLiveModule` | `TikTokEvent.Follow` | New follower(s) | [StreamStatsModule.TikTok.cs:204](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L204) |
-| [64](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L64) | `TikTokLiveModule` | `TikTokEvent.Like` | New like(s) | [StreamStatsModule.TikTok.cs:213](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L213) |
-| [75](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L75) | `TwitchStatsModule` | `TwitchEvent.WentLive` | Went live | **never** |
-| [76](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L76) | `TwitchStatsModule` | `TwitchEvent.WentOffline` | Went offline | **never** |
+| [53](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L53) | `StreamStatsModule` | `StreamEvent.WentLive` | Twitch went live | **never** |
+| [54](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L54) | `StreamStatsModule` | `StreamEvent.WentOffline` | Twitch went offline | **never** |
+| [55](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L55) | `StreamStatsModule` | `StreamEvent.Follow` | TikTok new follower(s) | [StreamStatsModule.TikTok.cs:197](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L197) |
+| [56](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L56) | `StreamStatsModule` | `StreamEvent.Like` | TikTok new like(s) | [StreamStatsModule.TikTok.cs:206](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L206) |
 
 ## VRCExtras
 

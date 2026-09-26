@@ -108,7 +108,7 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | **Notifications** | `[VRCOSC.Modules/Notifications/README.md](VRCOSC.Modules/Notifications/README.md)` | `11` | `4` | 0 | 2 | Send notifications to Desktop, XSOverlay, and OVRToolkit |
 | **OpenXR Gesture Extensions** | `[VRCOSC.Modules/OpenXR/README.md](VRCOSC.Modules/OpenXR/README.md)` | `2` | `12` | 2 | 0 | Detect a range of custom gestures from OpenXR hand tracking or controllers |
 | **Status** | `[VRCOSC.Modules/Status/README.md](VRCOSC.Modules/Status/README.md)` | `6` | `6` | 1 | 1 | A list of status texts shown one at a time in the ChatBox, with optional cycling, groups and an icon prefix |
-| **TikTok Live** | `[VRCOSC.Modules/StreamStats/README.md](VRCOSC.Modules/StreamStats/README.md)` | `9` | `12` | 4 | 4 | Viewer, like and follower counts plus a live flag for a TikTok host, polled from TikTok's public pages (no login needed) |
+| **Stream Stats** | `[VRCOSC.Modules/StreamStats/README.md](VRCOSC.Modules/StreamStats/README.md)` | `11` | `15` | 2 | 4 | Live status, viewers, followers and more for a Twitch channel (device code login) and a TikTok LIVE host (public pages, no login) for the ChatBox, plus combined stream_* variables |
 | **TikTokLive** | `[VRCOSC.Modules/TikTokLive/README.md](VRCOSC.Modules/TikTokLive/README.md)` | `0` | `0` | 0 | 0 | TikTokLive module for VRCOSC. |
 | **TwitchStats** | `[VRCOSC.Modules/TwitchStats/README.md](VRCOSC.Modules/TwitchStats/README.md)` | `0` | `0` | 0 | 0 | TwitchStats module for VRCOSC. |
 | **VRChat Extras** | `[VRCOSC.Modules/VRCExtras/README.md](VRCOSC.Modules/VRCExtras/README.md)` | `1` | `10` | 1 | 1 | Current world, instance type, region and player count as ChatBox variables, straight from VRCOSC's VRChat log reader |

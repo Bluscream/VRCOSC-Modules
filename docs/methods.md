@@ -4,7 +4,7 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**1127** total across **23** modules.
+**1131** total across **23** modules.
 
 | Module | Count |
 |---|---|
@@ -25,7 +25,7 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [Notifications](#notifications) | 25 |
 | [OpenXR](#openxr) | 80 |
 | [Status](#status) | 23 |
-| [StreamStats](#streamstats) | 48 |
+| [StreamStats](#streamstats) | 52 |
 | [Utilities](#utilities) | 251 |
 | [VRCExtras](#vrcextras) | 6 |
 | [VRCXBridge](#vrcxbridge) | 34 |
@@ -1249,39 +1249,48 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [39](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L39) | `TikTokLiveModule` | protected | `protected override void OnPreLoad()` |
-| [52](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L52) | `TikTokLiveModule` | protected | `protected override void OnPostLoad()` |
-| [67](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L67) | `TikTokLiveModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [95](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L95) | `TikTokLiveModule` | protected | `protected override async Task OnModuleStop()` |
-| [117](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L117) | `TikTokLiveModule` | private | `private async Task RunAsync(CancellationToken token)` |
-| [144](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L144) | `TikTokLiveModule` | private | `private TimeSpan Backoff()` |
-| [151](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L151) | `TikTokLiveModule` | private | `private async Task PollOnceAsync(CancellationToken token)` |
-| [183](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L183) | `TikTokLiveModule` | private | `private async Task RefreshFollowersFromProfileAsync(CancellationToken token)` |
-| [202](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L202) | `TikTokLiveModule` | private | `private void ApplyFollowers(int followers, FollowerSource source)` |
-| [211](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L211) | `TikTokLiveModule` | private | `private void PublishLive(TikTokRoomInfo info)` |
-| [226](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L226) | `TikTokLiveModule` | private | `private void PublishOffline()` |
+| [36](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L36) | `StreamStatsModule` | private | `private void CreateTikTokSettings()` |
+| [57](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L57) | `StreamStatsModule` | private | `private bool StartTikTok()` |
+| [88](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L88) | `StreamStatsModule` | private | `private async Task StopTikTokAsync()` |
+| [110](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L110) | `StreamStatsModule` | private | `private async Task RunTikTokAsync(CancellationToken token)` |
+| [137](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L137) | `StreamStatsModule` | private | `private TimeSpan TikTokBackoff()` |
+| [144](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L144) | `StreamStatsModule` | private | `private async Task PollTikTokOnceAsync(CancellationToken token)` |
+| [176](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L176) | `StreamStatsModule` | private | `private async Task RefreshTikTokFollowersFromProfileAsync(CancellationToken token)` |
+| [195](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L195) | `StreamStatsModule` | private | `private void ApplyTikTokFollowers(int followers, FollowerSource source)` |
+| [204](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L204) | `StreamStatsModule` | private | `private void PublishTikTokLive(TikTokRoomInfo info)` |
+| [220](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L220) | `StreamStatsModule` | private | `private void PublishTikTokOffline()` |
 
 ### `StreamStats/StreamStatsModule.Twitch.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [48](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L48) | `TwitchStatsModule` | protected | `protected override void OnPreLoad()` |
-| [61](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L61) | `TwitchStatsModule` | protected | `protected override void OnPostLoad()` |
-| [79](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L79) | `TwitchStatsModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [103](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L103) | `TwitchStatsModule` | protected | `protected override Task OnModuleStop()` |
-| [113](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L113) | `TwitchStatsModule` | private | `private void Tick()` |
-| [131](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L131) | `TwitchStatsModule` | private | `private async Task RunGuarded(Func<Task> work, Action done)` |
-| [154](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L154) | `TwitchStatsModule` | private | `private async Task AuthenticateAsync(CancellationToken ct)` |
-| [166](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L166) | `TwitchStatsModule` | private | `private async Task<bool> TryUseTokenAsync(string token, string source, CancellationToken ct)` |
-| [185](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L185) | `TwitchStatsModule` | private | `private async Task<bool> TryRefreshAsync(CancellationToken ct)` |
-| [199](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L199) | `TwitchStatsModule` | private | `private async Task DeviceCodeLoginAsync(CancellationToken ct)` |
-| [252](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L252) | `TwitchStatsModule` | private | `private async Task PollAsync(CancellationToken ct)` |
-| [274](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L274) | `TwitchStatsModule` | private | `private async Task PollOnceAsync(CancellationToken ct)` |
-| [302](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L302) | `TwitchStatsModule` | private | `private async Task<int?> FetchFollowersAsync(string token, string broadcasterId, CancellationToken ct)` |
-| [317](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L317) | `TwitchStatsModule` | private | `private void Apply(HelixStream? stream, HelixChannel? channel, int? followers)` |
-| [337](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L337) | `TwitchStatsModule` | private | `private static string FormatUptime(TimeSpan uptime)` |
-| [343](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L343) | `TwitchStatsModule` | private | `private TimeSpan Interval() => TimeSpan.FromSeconds(Math.Max(5, GetSettingValue<int>(TwitchSetting.PollInterval)));` |
-| [345](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L345) | `TwitchStatsModule` | private | `private string ClientId()` |
+| [50](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L50) | `StreamStatsModule` | private | `private void CreateTwitchSettings()` |
+| [73](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L73) | `StreamStatsModule` | private | `private bool StartTwitch()` |
+| [110](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L110) | `StreamStatsModule` | private | `private void StopTwitch()` |
+| [123](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L123) | `StreamStatsModule` | private | `private void TwitchTick()` |
+| [142](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L142) | `StreamStatsModule` | private | `private async Task RunTwitchGuarded(Func<Task> work, Action done)` |
+| [165](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L165) | `StreamStatsModule` | private | `private async Task AuthenticateAsync(CancellationToken ct)` |
+| [177](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L177) | `StreamStatsModule` | private | `private async Task<bool> TryUseTokenAsync(string token, string source, CancellationToken ct)` |
+| [201](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L201) | `StreamStatsModule` | private | `private async Task<bool> TryRefreshAsync(CancellationToken ct)` |
+| [218](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L218) | `StreamStatsModule` | private | `private async Task DeviceCodeLoginAsync(CancellationToken ct)` |
+| [274](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L274) | `StreamStatsModule` | private | `private async Task PollTwitchAsync(CancellationToken ct)` |
+| [297](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L297) | `StreamStatsModule` | private | `private async Task PollTwitchOnceAsync(CancellationToken ct)` |
+| [327](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L327) | `StreamStatsModule` | private | `private async Task<int?> FetchTwitchFollowersAsync(TwitchHelixClient client, string token, string broadcasterId, CancellationToken ct)` |
+| [342](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L342) | `StreamStatsModule` | private | `private void ApplyTwitch(HelixStream? stream, HelixChannel? channel, int? followers)` |
+| [365](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L365) | `StreamStatsModule` | private | `private static string FormatUptime(TimeSpan uptime)` |
+| [371](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L371) | `StreamStatsModule` | private | `private TimeSpan TwitchInterval() => TimeSpan.FromSeconds(Math.Max(5, GetSettingValue<int>(TwitchSetting.PollInterval)));` |
+| [373](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L373) | `StreamStatsModule` | private | `private string TwitchChannelSetting() => GetSettingValue<string>(TwitchSetting.Channel)?.Trim() ?? string.Empty;` |
+| [375](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L375) | `StreamStatsModule` | private | `private string ClientId()` |
+
+### `StreamStats/StreamStatsModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [27](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L27) | `StreamStatsModule` | protected | `protected override void OnPreLoad()` |
+| [40](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L40) | `StreamStatsModule` | protected | `protected override void OnPostLoad()` |
+| [59](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L59) | `StreamStatsModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [74](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L74) | `StreamStatsModule` | protected | `protected override async Task OnModuleStop()` |
+| [82](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L82) | `StreamStatsModule` | private | `private void PublishCombined()` |
 
 ### `StreamStats/TikTokPublicClient.cs`
 

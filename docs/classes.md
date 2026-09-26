@@ -4,7 +4,7 @@
 
 Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
-**354** total across **23** modules.
+**352** total across **23** modules.
 
 | Module | Count |
 |---|---|
@@ -25,7 +25,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [Notifications](#notifications) | 19 |
 | [OpenXR](#openxr) | 28 |
 | [Status](#status) | 9 |
-| [StreamStats](#streamstats) | 22 |
+| [StreamStats](#streamstats) | 20 |
 | [Utilities](#utilities) | 32 |
 | [VRCExtras](#vrcextras) | 6 |
 | [VRCXBridge](#vrcxbridge) | 12 |
@@ -829,21 +829,24 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
 | Line | Visibility | Declaration |
 |---|---|---|
-| [14](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L14) | public | `public class TikTokLiveModule : Module` |
-| [238](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L238) | private | `private enum TikTokSetting { Host, LivePollSeconds, OfflinePollSeconds, FollowersRefreshMinutes, MaxBackoffSeconds }` |
-| [240](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L240) | private | `private enum TikTokParameter { Live, Viewers }` |
-| [242](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L242) | private | `private enum TikTokState { Live, Offline }` |
-| [244](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L244) | private | `private enum TikTokEvent { Follow, Like }` |
+| [10](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L10) | public | `public partial class StreamStatsModule` |
+| [233](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L233) | private | `private enum TikTokSetting { TikTokEnabled, Host, LivePollSeconds, OfflinePollSeconds, FollowersRefreshMinutes, MaxBackoffSeconds }` |
 
 ### `StreamStats/StreamStatsModule.Twitch.cs`
 
 | Line | Visibility | Declaration |
 |---|---|---|
-| [15](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L15) | public | `public class TwitchStatsModule : Module` |
-| [351](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L351) | private | `private enum TwitchSetting { Channel, PollInterval, ClientId, ManualToken, ForgetToken }` |
-| [353](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L353) | private | `private enum TwitchParameter { Live }` |
-| [355](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L355) | private | `private enum TwitchState { Live, Offline, Unauthenticated }` |
-| [357](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L357) | private | `private enum TwitchEvent { WentLive, WentOffline }` |
+| [12](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L12) | public | `public partial class StreamStatsModule` |
+| [381](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L381) | private | `private enum TwitchSetting { TwitchEnabled, Channel, PollInterval, ClientId, ManualToken, ForgetToken }` |
+
+### `StreamStats/StreamStatsModule.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [15](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L15) | public | `public partial class StreamStatsModule : Module` |
+| [108](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L108) | private | `private enum StreamParameter { TwitchLive, TikTokLive, TikTokViewers }` |
+| [110](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L110) | private | `private enum StreamState { Live, Offline, Unauthenticated }` |
+| [112](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L112) | private | `private enum StreamEvent { WentLive, WentOffline, Follow, Like }` |
 
 ### `StreamStats/TikTokPublicClient.cs`
 

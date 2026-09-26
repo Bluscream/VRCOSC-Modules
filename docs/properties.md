@@ -458,8 +458,8 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [32](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L32) | `TwitchStatsModule` | public | `public string AccessToken { get; set; } = string.Empty;` |
-| [35](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L35) | `TwitchStatsModule` | public | `public string RefreshToken { get; set; } = string.Empty;` |
+| [30](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L30) | `StreamStatsModule` | public | `public string AccessToken { get; set; } = string.Empty;` |
+| [33](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L33) | `StreamStatsModule` | public | `public string RefreshToken { get; set; } = string.Empty;` |
 
 ### `StreamStats/TwitchHelixClient.cs`
 

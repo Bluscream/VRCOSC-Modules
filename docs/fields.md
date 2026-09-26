@@ -4,7 +4,7 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**737** total across **22** modules.
+**748** total across **22** modules.
 
 | Module | Count |
 |---|---|
@@ -24,7 +24,7 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [Notifications](#notifications) | 37 |
 | [OpenXR](#openxr) | 83 |
 | [Status](#status) | 7 |
-| [StreamStats](#streamstats) | 44 |
+| [StreamStats](#streamstats) | 55 |
 | [Utilities](#utilities) | 36 |
 | [VRCExtras](#vrcextras) | 1 |
 | [VRCXBridge](#vrcxbridge) | 48 |
@@ -956,47 +956,63 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [17](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L17) | `TikTokLiveModule` | private | `private const string VarHost = "tiktok_host";` |
-| [18](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L18) | `TikTokLiveModule` | private | `private const string VarViewers = "tiktok_viewers";` |
-| [19](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L19) | `TikTokLiveModule` | private | `private const string VarLikes = "tiktok_likes";` |
-| [20](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L20) | `TikTokLiveModule` | private | `private const string VarFollowers = "tiktok_followers";` |
-| [21](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L21) | `TikTokLiveModule` | private | `private const string VarLive = "tiktok_live";` |
-| [23](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L23) | `TikTokLiveModule` | private | `private static readonly TimeSpan MinBackoff = TimeSpan.FromSeconds(5);` |
-| [25](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L25) | `TikTokLiveModule` | private | `private readonly TikTokPublicClient _client = new();` |
-| [26](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L26) | `TikTokLiveModule` | private | `private CancellationTokenSource? _cts;` |
-| [27](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L27) | `TikTokLiveModule` | private | `private Task? _worker;` |
-| [29](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L29) | `TikTokLiveModule` | private | `private string _host = string.Empty;` |
-| [30](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L30) | `TikTokLiveModule` | private | `private string? _roomId;` |
-| [31](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L31) | `TikTokLiveModule` | private | `private bool _live;` |
-| [32](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L32) | `TikTokLiveModule` | private | `private int _likes;` |
-| [33](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L33) | `TikTokLiveModule` | private | `private int _followers;` |
-| [34](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L34) | `TikTokLiveModule` | private | `private bool _haveLikes;` |
-| [35](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L35) | `TikTokLiveModule` | private | `private bool _haveFollowers;` |
-| [36](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L36) | `TikTokLiveModule` | private | `private int _failures;` |
-| [37](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L37) | `TikTokLiveModule` | private | `private DateTime _lastProfileFetch = DateTime.MinValue;` |
+| [13](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L13) | `StreamStatsModule` | private | `private const string VarTikTokHost = "tiktok_host";` |
+| [14](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L14) | `StreamStatsModule` | private | `private const string VarTikTokViewers = "tiktok_viewers";` |
+| [15](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L15) | `StreamStatsModule` | private | `private const string VarTikTokLikes = "tiktok_likes";` |
+| [16](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L16) | `StreamStatsModule` | private | `private const string VarTikTokFollowers = "tiktok_followers";` |
+| [17](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L17) | `StreamStatsModule` | private | `private const string VarTikTokLive = "tiktok_live";` |
+| [19](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L19) | `StreamStatsModule` | private | `private static readonly TimeSpan TikTokMinBackoff = TimeSpan.FromSeconds(5);` |
+| [21](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L21) | `StreamStatsModule` | private | `private readonly TikTokPublicClient _tiktokClient = new();` |
+| [22](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L22) | `StreamStatsModule` | private | `private CancellationTokenSource? _tiktokCts;` |
+| [23](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L23) | `StreamStatsModule` | private | `private Task? _tiktokWorker;` |
+| [25](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L25) | `StreamStatsModule` | private | `private string _tiktokHost = string.Empty;` |
+| [26](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L26) | `StreamStatsModule` | private | `private string? _tiktokRoomId;` |
+| [27](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L27) | `StreamStatsModule` | private | `private bool _tiktokLive;` |
+| [28](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L28) | `StreamStatsModule` | private | `private int _tiktokViewers;` |
+| [29](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L29) | `StreamStatsModule` | private | `private int _tiktokLikes;` |
+| [30](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L30) | `StreamStatsModule` | private | `private int _tiktokFollowers;` |
+| [31](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L31) | `StreamStatsModule` | private | `private bool _haveTikTokLikes;` |
+| [32](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L32) | `StreamStatsModule` | private | `private bool _haveTikTokFollowers;` |
+| [33](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L33) | `StreamStatsModule` | private | `private int _tiktokFailures;` |
+| [34](../VRCOSC.Modules/StreamStats/StreamStatsModule.TikTok.cs#L34) | `StreamStatsModule` | private | `private DateTime _lastProfileFetch = DateTime.MinValue;` |
 
 ### `StreamStats/StreamStatsModule.Twitch.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [18](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L18) | `TwitchStatsModule` | private | `private const string DefaultClientId = "6y51jdzkdtlwv56akwerab47wwov1w";` |
-| [20](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L20) | `TwitchStatsModule` | private | `private const string Scopes = "moderator:read:followers";` |
-| [23](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L23) | `TwitchStatsModule` | private | `private const string VarLive = "twitch_live";` |
-| [24](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L24) | `TwitchStatsModule` | private | `private const string VarChannel = "twitch_channel";` |
-| [25](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L25) | `TwitchStatsModule` | private | `private const string VarGame = "twitch_game";` |
-| [26](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L26) | `TwitchStatsModule` | private | `private const string VarTitle = "twitch_title";` |
-| [27](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L27) | `TwitchStatsModule` | private | `private const string VarViewers = "twitch_viewers";` |
-| [28](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L28) | `TwitchStatsModule` | private | `private const string VarFollowers = "twitch_followers";` |
-| [29](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L29) | `TwitchStatsModule` | private | `private const string VarUptime = "twitch_uptime";` |
-| [37](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L37) | `TwitchStatsModule` | private | `private TwitchHelixClient? _client;` |
-| [38](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L38) | `TwitchStatsModule` | private | `private CancellationTokenSource? _cts;` |
-| [39](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L39) | `TwitchStatsModule` | private | `private TokenInfo? _tokenInfo;` |
-| [40](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L40) | `TwitchStatsModule` | private | `private HelixUser? _channelUser;` |
-| [41](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L41) | `TwitchStatsModule` | private | `private string _resolvedChannelFor = string.Empty;` |
-| [43](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L43) | `TwitchStatsModule` | private | `private bool _authenticating;` |
-| [44](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L44) | `TwitchStatsModule` | private | `private bool _polling;` |
-| [45](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L45) | `TwitchStatsModule` | private | `private bool? _wasLive;` |
-| [46](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L46) | `TwitchStatsModule` | private | `private DateTime _nextPoll = DateTime.MinValue;` |
+| [15](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L15) | `StreamStatsModule` | private | `private const string DefaultClientId = "6y51jdzkdtlwv56akwerab47wwov1w";` |
+| [17](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L17) | `StreamStatsModule` | private | `private const string TwitchScopes = "moderator:read:followers";` |
+| [20](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L20) | `StreamStatsModule` | private | `private const string VarTwitchLive = "twitch_live";` |
+| [21](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L21) | `StreamStatsModule` | private | `private const string VarTwitchChannel = "twitch_channel";` |
+| [22](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L22) | `StreamStatsModule` | private | `private const string VarTwitchGame = "twitch_game";` |
+| [23](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L23) | `StreamStatsModule` | private | `private const string VarTwitchTitle = "twitch_title";` |
+| [24](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L24) | `StreamStatsModule` | private | `private const string VarTwitchViewers = "twitch_viewers";` |
+| [25](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L25) | `StreamStatsModule` | private | `private const string VarTwitchFollowers = "twitch_followers";` |
+| [26](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L26) | `StreamStatsModule` | private | `private const string VarTwitchUptime = "twitch_uptime";` |
+| [35](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L35) | `StreamStatsModule` | private | `private TwitchHelixClient? _twitchClient;` |
+| [36](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L36) | `StreamStatsModule` | private | `private CancellationTokenSource? _twitchCts;` |
+| [37](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L37) | `StreamStatsModule` | private | `private TokenInfo? _tokenInfo;` |
+| [38](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L38) | `StreamStatsModule` | private | `private HelixUser? _channelUser;` |
+| [39](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L39) | `StreamStatsModule` | private | `private string _resolvedChannelFor = string.Empty;` |
+| [41](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L41) | `StreamStatsModule` | private | `private bool _twitchActive;` |
+| [42](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L42) | `StreamStatsModule` | private | `private bool _twitchAuthenticated;` |
+| [43](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L43) | `StreamStatsModule` | private | `private bool _twitchLive;` |
+| [44](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L44) | `StreamStatsModule` | private | `private int _twitchViewers;` |
+| [45](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L45) | `StreamStatsModule` | private | `private bool _authenticating;` |
+| [46](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L46) | `StreamStatsModule` | private | `private bool _twitchPolling;` |
+| [47](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L47) | `StreamStatsModule` | private | `private bool? _twitchWasLive;` |
+| [48](../VRCOSC.Modules/StreamStats/StreamStatsModule.Twitch.cs#L48) | `StreamStatsModule` | private | `private DateTime _nextTwitchPoll = DateTime.MinValue;` |
+
+### `StreamStats/StreamStatsModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [17](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L17) | `StreamStatsModule` | private | `private const string PlatformTwitch = "Twitch";` |
+| [18](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L18) | `StreamStatsModule` | private | `private const string PlatformTikTok = "TikTok";` |
+| [21](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L21) | `StreamStatsModule` | private | `private const string VarStreamLive = "stream_live";` |
+| [22](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L22) | `StreamStatsModule` | private | `private const string VarStreamViewers = "stream_viewers";` |
+| [23](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L23) | `StreamStatsModule` | private | `private const string VarStreamPlatform = "stream_platform";` |
+| [25](../VRCOSC.Modules/StreamStats/StreamStatsModule.cs#L25) | `StreamStatsModule` | private | `private readonly object _combinedLock = new();` |
 
 ### `StreamStats/TikTokPublicClient.cs`
 
