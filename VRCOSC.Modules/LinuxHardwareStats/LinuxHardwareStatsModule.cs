@@ -98,6 +98,10 @@ public sealed class LinuxHardwareStatsModule : Module
         var netUploadReference = CreateVariable<string>(HardwareStatsVariable.NetworkUpload, "Network Upload")!;
         CreateVariable<string>(HardwareStatsVariable.NetworkRxTotal, "Network Received Total");
         CreateVariable<string>(HardwareStatsVariable.NetworkTxTotal, "Network Sent Total");
+        CreateVariable<float>(HardwareStatsVariable.NetworkMaxDown, "Network Max Download (Mbps, session)");
+        CreateVariable<float>(HardwareStatsVariable.NetworkMaxUp, "Network Max Upload (Mbps, session)");
+        CreateVariable<int>(HardwareStatsVariable.NetworkUtilization, "Network Utilization (%)");
+        CreateVariable<int>(HardwareStatsVariable.NetworkLinkSpeed, "Network Link Speed (Mbps)");
         CreateVariable<int>(HardwareStatsVariable.SystemTemp, "System Temp (C)");
         CreateVariable<int>(HardwareStatsVariable.MaxTemp, "Max Temp (C)");
 
@@ -131,6 +135,7 @@ public sealed class LinuxHardwareStatsModule : Module
     {
         DeployHelperScript();
         _firstUpdateDone = false;
+        _network.ResetSession();
         ChangeState(HardwareStatsState.Default);
         return Task.FromResult(true);
     }
@@ -333,6 +338,17 @@ public sealed class LinuxHardwareStatsModule : Module
                     SetVariableValue(
                         HardwareStatsVariable.NetworkTxTotal,
                         FormatBytes(netTxTotalMb));
+
+                    // Link speed arrives later in the file (line 32); parse it first so the
+                    // utilization ceiling is right on the same tick.
+                    if (lines.Length >= 33 && int.TryParse(lines[32].Trim(), out var linkMbps))
+                        _network.LinkMbps = linkMbps;
+
+                    _network.RecordSample();
+                    SetVariableValue(HardwareStatsVariable.NetworkMaxDown, MathF.Round(_network.MaxDownMbps, 1));
+                    SetVariableValue(HardwareStatsVariable.NetworkMaxUp, MathF.Round(_network.MaxUpMbps, 1));
+                    SetVariableValue(HardwareStatsVariable.NetworkUtilization, _network.UtilizationPercent);
+                    SetVariableValue(HardwareStatsVariable.NetworkLinkSpeed, _network.LinkMbps);
                 }
 
                 var systemTemp = 0;
@@ -612,6 +628,10 @@ public sealed class LinuxHardwareStatsModule : Module
         NetworkUpload,
         NetworkRxTotal,
         NetworkTxTotal,
+        NetworkMaxDown,
+        NetworkMaxUp,
+        NetworkUtilization,
+        NetworkLinkSpeed,
         SystemTemp,
         MaxTemp,
         WindowTitle,
@@ -668,6 +688,45 @@ public class LinuxNetwork
     public float TxKbps { get; set; }
     public float RxTotalMb { get; set; }
     public float TxTotalMb { get; set; }
+
+    /// <summary>Link speed reported by the kernel for the monitored interface; 0 when unknown.</summary>
+    public int LinkMbps { get; set; }
+
+    /// <summary>Highest download rate seen since the module started, in Mbps.</summary>
+    public float MaxDownMbps { get; private set; }
+
+    /// <summary>Highest upload rate seen since the module started, in Mbps.</summary>
+    public float MaxUpMbps { get; private set; }
+
+    public float DownMbps => RxKbps * 1024f * 8f / 1_000_000f;
+    public float UpMbps => TxKbps * 1024f * 8f / 1_000_000f;
+
+    /// <summary>
+    /// Download share of the link, 0-100. The ceiling is the kernel link speed when it is
+    /// known, otherwise the session peak, which makes the first sample read 100 % and
+    /// later ones scale against the best seen so far (same convention as MagicChatbox).
+    /// </summary>
+    public int UtilizationPercent
+    {
+        get
+        {
+            var ceiling = LinkMbps > 0 ? LinkMbps : MaxDownMbps;
+            if (ceiling <= 0f) return 0;
+            return (int)Math.Min(100f, MathF.Round(DownMbps / ceiling * 100f));
+        }
+    }
+
+    public void RecordSample()
+    {
+        MaxDownMbps = MathF.Max(MaxDownMbps, DownMbps);
+        MaxUpMbps = MathF.Max(MaxUpMbps, UpMbps);
+    }
+
+    public void ResetSession()
+    {
+        MaxDownMbps = 0f;
+        MaxUpMbps = 0f;
+    }
 }
 
 public class LinuxOS

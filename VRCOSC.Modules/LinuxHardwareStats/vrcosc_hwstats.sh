@@ -437,7 +437,7 @@ os_variant="${VARIANT:-${VARIANT_ID:-}}"
 os_kernel=$(uname -r 2>/dev/null || echo "Unknown Kernel")
 
 # ---------------------------------------------------------------------------
-# Output (32 lines, 0-indexed)
+# Output (33 lines, 0-indexed)
 # 0-15  : original fields (backward compatible)
 # 16-19 : network speeds and totals
 # 20    : system_temp (ACPI / motherboard)
@@ -452,7 +452,22 @@ os_kernel=$(uname -r 2>/dev/null || echo "Unknown Kernel")
 # 29    : os_kernel (e.g. "7.1.5-ogc5.1.fc44.x86_64")
 # 30    : os_pretty (e.g. "Bazzite 44" or "CachyOS Linux")
 # 31    : os_variant (e.g. "Kinoite" or "KDE Plasma")
+# 32    : net_link_mbps (link speed of NET_IFACE, or the fastest non-lo interface
+#         that reports one; 0 when unknown, e.g. Wi-Fi and virtual interfaces)
 # ---------------------------------------------------------------------------
+net_link_mbps=0
+if [ -n "$NET_IFACE" ]; then
+    _spd=$(cat "/sys/class/net/$NET_IFACE/speed" 2>/dev/null || echo 0)
+    [ "${_spd:-0}" -gt 0 ] 2>/dev/null && net_link_mbps=$_spd
+else
+    for _d in /sys/class/net/*; do
+        _n=$(basename "$_d")
+        [ "$_n" = "lo" ] && continue
+        [ "$(cat "$_d/operstate" 2>/dev/null)" = "up" ] || continue
+        _spd=$(cat "$_d/speed" 2>/dev/null || echo 0)
+        if [ "${_spd:-0}" -gt "$net_link_mbps" ] 2>/dev/null; then net_link_mbps=$_spd; fi
+    done
+fi
 cat <<EOF > ~/.vrcosc_hwstats.txt
 $cpu_usage
 $cpu_power
@@ -486,4 +501,5 @@ $os_version
 $os_kernel
 $os_pretty
 $os_variant
+$net_link_mbps
 EOF

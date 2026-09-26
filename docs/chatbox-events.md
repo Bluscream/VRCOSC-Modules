@@ -6,7 +6,7 @@ User-facing events registered in `OnPostLoad` via `CreateEvent(lookup, title)` a
 
 The Fired column lists every `TriggerEvent` call site; an event with **never** there is declared but not raised. Matching prefers the fully qualified lookup, falling back to a bare name only within the same file — several modules each declare an `OnError`, so a global short-name match would cross-link them.
 
-**30** total.
+**31** total.
 
 ## Debug
 
@@ -58,9 +58,9 @@ The Fired column lists every `TriggerEvent` call site; an event with **never** t
 
 | Line | Owner | Lookup | Title | Fired |
 |---|---|---|---|---|
-| [50](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L50) | `LinuxMediaModule` | `MediaEvent.OnTrackChange` | On Track Change | [LinuxMediaModule.cs:153](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L153) |
-| [51](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L51) | `LinuxMediaModule` | `MediaEvent.OnPlay` | On Play | [LinuxMediaModule.cs:161](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L161) |
-| [52](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L52) | `LinuxMediaModule` | `MediaEvent.OnPause` | On Pause | [LinuxMediaModule.cs:166](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L166) |
+| [58](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L58) | `LinuxMediaModule` | `MediaEvent.OnTrackChange` | On Track Change | [LinuxMediaModule.cs:164](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L164) |
+| [59](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L59) | `LinuxMediaModule` | `MediaEvent.OnPlay` | On Play | [LinuxMediaModule.cs:177](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L177) |
+| [60](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L60) | `LinuxMediaModule` | `MediaEvent.OnPause` | On Pause | [LinuxMediaModule.cs:182](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L182) |
 
 ## Notifications
 
@@ -68,6 +68,12 @@ The Fired column lists every `TriggerEvent` call site; an event with **never** t
 |---|---|---|---|---|
 | [116](../VRCOSC.Modules/Notifications/NotificationsModule.cs#L116) | `NotificationsModule` | `NotificationsEvent.OnNotificationSent` | On Notification Sent | [NotificationsModule.cs:142](../VRCOSC.Modules/Notifications/NotificationsModule.cs#L142) |
 | [117](../VRCOSC.Modules/Notifications/NotificationsModule.cs#L117) | `NotificationsModule` | `NotificationsEvent.OnNotificationFailed` | On Notification Failed | [NotificationsModule.cs:151](../VRCOSC.Modules/Notifications/NotificationsModule.cs#L151) |
+
+## VRCExtras
+
+| Line | Owner | Lookup | Title | Fired |
+|---|---|---|---|---|
+| [49](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L49) | `VRCExtrasModule` | `VRCExtrasEvent.WorldChanged` | World Changed | [VRCExtrasModule.cs:93](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L93) |
 
 ## VRCXBridge
 

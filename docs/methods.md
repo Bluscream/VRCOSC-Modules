@@ -4,7 +4,7 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**755** total across **15** modules.
+**778** total across **17** modules.
 
 | Module | Count |
 |---|---|
@@ -16,13 +16,15 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [HomeAssistant](#homeassistant) | 42 |
 | [IRCBridge](#ircbridge) | 103 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 29 |
-| [LinuxMedia](#linuxmedia) | 8 |
+| [LinuxMedia](#linuxmedia) | 14 |
 | [LinuxProcessManager](#linuxprocessmanager) | 4 |
 | [Notifications](#notifications) | 25 |
 | [OpenXR](#openxr) | 78 |
 | [Utilities](#utilities) | 245 |
+| [VRCExtras](#vrcextras) | 6 |
 | [VRCXBridge](#vrcxbridge) | 34 |
 | [VRChatSettings](#vrchatsettings) | 77 |
+| [Weather](#weather) | 11 |
 
 
 ## (root)
@@ -554,14 +556,25 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [26](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L26) | `LinuxMediaModule` | protected | `protected override void OnPreLoad()` |
-| [35](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L35) | `LinuxMediaModule` | protected | `protected override void OnPostLoad()` |
-| [55](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L55) | `LinuxMediaModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [62](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L62) | `LinuxMediaModule` | private | `private void DeployHelperScript()` |
-| [100](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L100) | `LinuxMediaModule` | protected | `protected override Task OnModuleStop()` |
-| [106](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L106) | `LinuxMediaModule` | private | `private void UpdateMediaState()` |
-| [182](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L182) | `LinuxMediaModule` | private | `private void UpdateChatBoxVariables()` |
-| [203](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L203) | `LinuxMediaModule` | protected | `protected override void OnRegisteredParameterReceived(RegisteredParameter parameter)` |
+| [28](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L28) | `LinuxMediaModule` | protected | `protected override void OnPreLoad()` |
+| [40](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L40) | `LinuxMediaModule` | protected | `protected override void OnPostLoad()` |
+| [63](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L63) | `LinuxMediaModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [71](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L71) | `LinuxMediaModule` | private | `private void DeployHelperScript()` |
+| [109](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L109) | `LinuxMediaModule` | protected | `protected override Task OnModuleStop()` |
+| [115](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L115) | `LinuxMediaModule` | private | `private void UpdateMediaState()` |
+| [198](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L198) | `LinuxMediaModule` | private | `private void UpdateChatBoxVariables()` |
+| [227](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L227) | `LinuxMediaModule` | protected | `protected override void OnRegisteredParameterReceived(RegisteredParameter parameter)` |
+
+### `LinuxMedia/LyricsProvider.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [33](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L33) | `LyricsProvider` | private | `private static HttpClient CreateClient()` |
+| [45](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L45) | `LyricsProvider` | public | `public void TrackChanged(string artist, string title, TimeSpan duration, Action<string> log)` |
+| [65](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L65) | `LyricsProvider` | public | `public void Clear()` |
+| [78](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L78) | `LyricsProvider` | public | `public string LineAt(TimeSpan position)` |
+| [99](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L99) | `LyricsProvider` | private | `private async Task FetchAsync(string key, string artist, string title, TimeSpan duration, Action<string> log, CancellationToken ct)` |
+| [140](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L140) | `LyricsProvider` | private | `private static partial Regex LrcLine();` |
 
 
 ## LinuxProcessManager
@@ -751,13 +764,13 @@ Every method and constructor, grouped by module and file. The Owner column is th
 |---|---|---|---|
 | [20](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L20) | `OpenXRStatisticsModule` | protected | `protected override void OnPreLoad()` |
 | [64](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L64) | `OpenXRStatisticsModule` | protected | `protected override void OnPostLoad()` |
-| [83](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L83) | `OpenXRStatisticsModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [93](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L93) | `OpenXRStatisticsModule` | protected | `protected override Task OnModuleStop()` |
-| [100](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L100) | `OpenXRStatisticsModule` | private | `private void UpdateVariables()` |
-| [120](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L120) | `OpenXRStatisticsModule` | private | `private void UpdateMetadataParameters()` |
-| [151](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L151) | `OpenXRStatisticsModule` | private | `private void UpdateRealtimeParameters()` |
-| [185](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L185) | `OpenXRStatisticsModule` | private | `private static bool IsDashboardVisible(DeviceProbeResult probe)` |
-| [188](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L188) | `OpenXRStatisticsModule` | private | `private static int Percent(DeviceBattery battery) => battery.Present ? (int)MathF.Round(battery.Charge * 100f) : 0;` |
+| [84](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L84) | `OpenXRStatisticsModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [94](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L94) | `OpenXRStatisticsModule` | protected | `protected override Task OnModuleStop()` |
+| [101](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L101) | `OpenXRStatisticsModule` | private | `private void UpdateVariables()` |
+| [122](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L122) | `OpenXRStatisticsModule` | private | `private void UpdateMetadataParameters()` |
+| [153](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L153) | `OpenXRStatisticsModule` | private | `private void UpdateRealtimeParameters()` |
+| [187](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L187) | `OpenXRStatisticsModule` | private | `private static bool IsDashboardVisible(DeviceProbeResult probe)` |
+| [190](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L190) | `OpenXRStatisticsModule` | private | `private static int Percent(DeviceBattery battery) => battery.Present ? (int)MathF.Round(battery.Charge * 100f) : 0;` |
 
 
 ## Utilities
@@ -1118,6 +1131,20 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [29](../VRCOSC.Modules/Utilities/ValidationUtils.cs#L29) | `ValidationUtils` | public | `public static TResult? IfNotNull<T, TResult>(T? value, Func<T, TResult> func) where T : class` |
 
 
+## VRCExtras
+
+### `VRCExtras/VRCExtrasModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [19](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L19) | `VRCExtrasModule` | protected | `protected override void OnPreLoad()` |
+| [33](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L33) | `VRCExtrasModule` | protected | `protected override void OnPostLoad()` |
+| [52](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L52) | `VRCExtrasModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [60](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L60) | `VRCExtrasModule` | private | `private void Update()` |
+| [119](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L119) | `VRCExtrasModule` | private | `private static string TypeText(InstanceType type) => type switch` |
+| [132](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L132) | `VRCExtrasModule` | private | `private static string RegionText(InstanceRegion region) => region switch` |
+
+
 ## VRCXBridge
 
 ### `VRCXBridge/Nodes.cs`
@@ -1273,4 +1300,23 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [102](../VRCOSC.Modules/VRChatSettings/VRChatSettingsModule.cs#L102) | `VRChatSettingsModule` | public | `public async Task SendSuccessParameter()` |
 | [109](../VRCOSC.Modules/VRChatSettings/VRChatSettingsModule.cs#L109) | `VRChatSettingsModule` | public | `public async Task SendFailedParameter(string error)` |
 | [120](../VRCOSC.Modules/VRChatSettings/VRChatSettingsModule.cs#L120) | `VRChatSettingsModule` | public | `public void UpdateVariables(string key, string value, bool isWrite)` |
+
+
+## Weather
+
+### `Weather/OpenMeteoWeatherModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [27](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L27) | `OpenMeteoWeatherModule` | private | `private static HttpClient CreateClient()` |
+| [34](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L34) | `OpenMeteoWeatherModule` | protected | `protected override void OnPreLoad()` |
+| [46](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L46) | `OpenMeteoWeatherModule` | protected | `protected override void OnPostLoad()` |
+| [65](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L65) | `OpenMeteoWeatherModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [79](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L79) | `OpenMeteoWeatherModule` | private | `private void Update()` |
+| [86](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L86) | `OpenMeteoWeatherModule` | private | `private async Task RefreshAsync()` |
+| [118](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L118) | `OpenMeteoWeatherModule` | private | `private void Apply(Current w, string locationName)` |
+| [144](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L144) | `OpenMeteoWeatherModule` | private | `private static float Round1(float v) => MathF.Round(v, 1);` |
+| [186](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L186) | `OpenMeteoWeatherModule` | private | `private static async Task<Current?> FetchCurrentAsync(double lat, double lon)` |
+| [210](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L210) | `OpenMeteoWeatherModule` | private | `private static (string Condition, string Day, string Night) Describe(int code) => code switch` |
+| [229](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L229) | `OpenMeteoWeatherModule` | private | `private static string Compass(float degrees)` |
 

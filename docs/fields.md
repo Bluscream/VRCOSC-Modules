@@ -4,7 +4,7 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**499** total across **14** modules.
+**513** total across **16** modules.
 
 | Module | Count |
 |---|---|
@@ -16,12 +16,14 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [HomeAssistant](#homeassistant) | 34 |
 | [IRCBridge](#ircbridge) | 109 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 31 |
-| [LinuxMedia](#linuxmedia) | 7 |
+| [LinuxMedia](#linuxmedia) | 15 |
 | [Notifications](#notifications) | 37 |
 | [OpenXR](#openxr) | 75 |
 | [Utilities](#utilities) | 30 |
+| [VRCExtras](#vrcextras) | 1 |
 | [VRCXBridge](#vrcxbridge) | 48 |
 | [VRChatSettings](#vrchatsettings) | 48 |
+| [Weather](#weather) | 5 |
 
 
 ## (root)
@@ -445,6 +447,19 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [22](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L22) | `LinuxMediaModule` | private | `private long _durationMicroseconds = 0;` |
 | [23](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L23) | `LinuxMediaModule` | private | `private long _positionMicroseconds = 0;` |
 | [24](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L24) | `LinuxMediaModule` | private | `private float _volume = 1f;` |
+| [25](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L25) | `LinuxMediaModule` | private | `private readonly System.Diagnostics.Stopwatch _sincePositionSample = new();` |
+| [26](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L26) | `LinuxMediaModule` | private | `private readonly LyricsProvider _lyrics = new();` |
+
+### `LinuxMedia/LyricsProvider.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [18](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L18) | `LyricsProvider` | private | `private static readonly HttpClient Http = CreateClient();` |
+| [19](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L19) | `LyricsProvider` | private | `private static readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(8);` |
+| [21](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L21) | `LyricsProvider` | private | `private readonly object _sync = new();` |
+| [22](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L22) | `LyricsProvider` | private | `private string _trackKey = string.Empty;` |
+| [24](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L24) | `LyricsProvider` | private | `private bool _plainOnly;` |
+| [25](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L25) | `LyricsProvider` | private | `private CancellationTokenSource? _inflight;` |
 
 
 ## Notifications
@@ -693,6 +708,15 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [15](../VRCOSC.Modules/Utilities/VRCUtils.cs#L15) | `VRCUtils` | private | `private static readonly Regex UserIdPattern = new(@"usr_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", RegexOptions.IgnoreCase);` |
 
 
+## VRCExtras
+
+### `VRCExtras/VRCExtrasModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [17](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L17) | `VRCExtrasModule` | private | `private string? _lastInstanceId;` |
+
+
 ## VRCXBridge
 
 ### `VRCXBridge/Nodes.cs`
@@ -833,4 +857,17 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 |---|---|---|---|
 | [15](../VRCOSC.Modules/VRChatSettings/VRChatSettingsModule.cs#L15) | `VRChatSettingsModule` | private | `private VRChatSettings? _settings;` |
 | [146](../VRCOSC.Modules/VRChatSettings/VRChatSettingsModule.cs#L146) | `VRChatSettingsModule` | private | `private int _operationsCount = 0;` |
+
+
+## Weather
+
+### `Weather/OpenMeteoWeatherModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [19](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L19) | `OpenMeteoWeatherModule` | private | `private static readonly HttpClient Http = CreateClient();` |
+| [20](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L20) | `OpenMeteoWeatherModule` | private | `private static readonly TimeSpan RefreshInterval = TimeSpan.FromMinutes(10);` |
+| [23](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L23) | `OpenMeteoWeatherModule` | private | `private string _resolvedFor = string.Empty;` |
+| [24](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L24) | `OpenMeteoWeatherModule` | private | `private DateTime _lastFetch = DateTime.MinValue;` |
+| [25](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L25) | `OpenMeteoWeatherModule` | private | `private bool _fetching;` |
 

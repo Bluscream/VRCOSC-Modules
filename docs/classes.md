@@ -4,7 +4,7 @@
 
 Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
-**240** total across **15** modules.
+**254** total across **17** modules.
 
 | Module | Count |
 |---|---|
@@ -16,13 +16,15 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [HomeAssistant](#homeassistant) | 12 |
 | [IRCBridge](#ircbridge) | 39 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 18 |
-| [LinuxMedia](#linuxmedia) | 5 |
+| [LinuxMedia](#linuxmedia) | 7 |
 | [LinuxProcessManager](#linuxprocessmanager) | 2 |
 | [Notifications](#notifications) | 19 |
 | [OpenXR](#openxr) | 28 |
 | [Utilities](#utilities) | 28 |
+| [VRCExtras](#vrcextras) | 6 |
 | [VRCXBridge](#vrcxbridge) | 12 |
 | [VRChatSettings](#vrchatsettings) | 21 |
+| [Weather](#weather) | 6 |
 
 
 ## (root)
@@ -416,10 +418,17 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [16](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L16) | public | `public class LinuxMediaModule : Module` |
-| [241](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L241) | private | `private enum MediaParameter` |
-| [250](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L250) | private | `private enum MediaVariable` |
-| [262](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L262) | private | `private enum MediaState` |
-| [269](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L269) | private | `private enum MediaEvent` |
+| [265](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L265) | private | `private enum MediaSetting` |
+| [270](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L270) | private | `private enum MediaParameter` |
+| [279](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L279) | private | `private enum MediaVariable` |
+| [294](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L294) | private | `private enum MediaState` |
+| [301](../VRCOSC.Modules/LinuxMedia/LinuxMediaModule.cs#L301) | private | `private enum MediaEvent` |
+
+### `LinuxMedia/LyricsProvider.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [16](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L16) | internal | `internal sealed partial class LyricsProvider` |
 
 
 ## LinuxProcessManager
@@ -554,10 +563,10 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [14](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L14) | public | `public class OpenXRStatisticsModule : Module` |
-| [190](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L190) | private | `private enum OpenXRSetting { OverlaySession }` |
-| [192](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L192) | private | `private enum OpenXRParameter` |
-| [204](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L204) | private | `private enum OpenXRVariable` |
-| [212](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L212) | private | `private enum OpenXRState { Default, NoRuntime }` |
+| [192](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L192) | private | `private enum OpenXRSetting { OverlaySession }` |
+| [194](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L194) | private | `private enum OpenXRParameter` |
+| [206](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L206) | private | `private enum OpenXRVariable` |
+| [214](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L214) | private | `private enum OpenXRState { Default, NoRuntime }` |
 
 
 ## Utilities
@@ -706,6 +715,20 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [11](../VRCOSC.Modules/Utilities/ValidationUtils.cs#L11) | public | `public static class ValidationUtils` |
 
 
+## VRCExtras
+
+### `VRCExtras/VRCExtrasModule.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [15](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L15) | public | `public class VRCExtrasModule : Module` |
+| [141](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L141) | private | `private enum VRCExtrasSetting { MasterIcon }` |
+| [143](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L143) | private | `private enum VRCExtrasParameter { InstanceType, Region, PlayerCount, InInstance, AgeGated }` |
+| [145](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L145) | private | `private enum VRCExtrasVariable` |
+| [151](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L151) | private | `private enum VRCExtrasState { InInstance, NotInInstance }` |
+| [153](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L153) | private | `private enum VRCExtrasEvent { WorldChanged }` |
+
+
 ## VRCXBridge
 
 ### `VRCXBridge/Nodes.cs`
@@ -783,4 +806,18 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [166](../VRCOSC.Modules/VRChatSettings/VRChatSettingsModule.cs#L166) | public | `public enum VRChatSettingsState` |
 | [173](../VRCOSC.Modules/VRChatSettings/VRChatSettingsModule.cs#L173) | public | `public enum VRChatSettingsVariable` |
 | [181](../VRCOSC.Modules/VRChatSettings/VRChatSettingsModule.cs#L181) | public | `public enum VRChatSettingsEvent` |
+
+
+## Weather
+
+### `Weather/OpenMeteoWeatherModule.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [17](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L17) | public | `public class OpenMeteoWeatherModule : Module` |
+| [184](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L184) | private | `private readonly record struct Current(float TempC, float FeelsLikeC, int Humidity, float WindKph, float WindDirection, int Code, bool IsDay);` |
+| [236](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L236) | private | `private enum WeatherSetting { Location }` |
+| [238](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L238) | private | `private enum WeatherParameter { Code, TempC, FeelsLikeC, WindKph, IsDay }` |
+| [240](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L240) | private | `private enum WeatherVariable` |
+| [246](../VRCOSC.Modules/Weather/OpenMeteoWeatherModule.cs#L246) | private | `private enum WeatherState { Default, Unavailable }` |
 

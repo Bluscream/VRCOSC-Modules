@@ -99,10 +99,12 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | **HomeAssistant** | `[VRCOSC.Modules/HomeAssistant/README.md](VRCOSC.Modules/HomeAssistant/README.md)` | `10` | `4` | 4 | 3 | Integrate Home Assistant entity states, Jinja templates, avatar parameters, and flow nodes |
 | **IRC Bridge** | `[VRCOSC.Modules/IRCBridge/README.md](VRCOSC.Modules/IRCBridge/README.md)` | `16` | `9` | 6 | 9 | Connect to IRC servers and receive events for channel activity |
 | **Linux Hardware Stats** | `[VRCOSC.Modules/LinuxHardwareStats/README.md](VRCOSC.Modules/LinuxHardwareStats/README.md)` | `6` | `39` | 1 | 0 | Sends hardware stats as avatar parameters and allows for displaying them in the ChatBox on Linux hosts |
-| **Linux Media** | `[VRCOSC.Modules/LinuxMedia/README.md](VRCOSC.Modules/LinuxMedia/README.md)` | `0` | `8` | 3 | 3 | Integration with Linux MPRIS Media Players (via D-Bus) |
+| **Linux Media** | `[VRCOSC.Modules/LinuxMedia/README.md](VRCOSC.Modules/LinuxMedia/README.md)` | `1` | `11` | 3 | 3 | Integration with Linux MPRIS Media Players (via D-Bus) |
 | **Linux Process Manager** | `[VRCOSC.Modules/LinuxProcessManager/README.md](VRCOSC.Modules/LinuxProcessManager/README.md)` | `0` | `0` | 0 | 0 | Allows for starting and stopping Linux host processes from avatar parameters |
 | **Notifications** | `[VRCOSC.Modules/Notifications/README.md](VRCOSC.Modules/Notifications/README.md)` | `11` | `4` | 0 | 2 | Send notifications to Desktop, XSOverlay, and OVRToolkit |
-| **OpenXR Gesture Extensions** | `[VRCOSC.Modules/OpenXR/README.md](VRCOSC.Modules/OpenXR/README.md)` | `2` | `11` | 2 | 0 | Detect a range of custom gestures from OpenXR hand tracking or controllers |
+| **OpenXR Gesture Extensions** | `[VRCOSC.Modules/OpenXR/README.md](VRCOSC.Modules/OpenXR/README.md)` | `2` | `12` | 2 | 0 | Detect a range of custom gestures from OpenXR hand tracking or controllers |
+| **VRChat Extras** | `[VRCOSC.Modules/VRCExtras/README.md](VRCOSC.Modules/VRCExtras/README.md)` | `1` | `10` | 1 | 1 | Current world, instance type, region and player count as ChatBox variables, straight from VRCOSC's VRChat log reader |
 | **VRCX Bridge** | `[VRCOSC.Modules/VRCXBridge/README.md](VRCOSC.Modules/VRCXBridge/README.md)` | `10` | `0` | 0 | 0 | Bidirectional bridge between VRCOSC and VRCX for OSC + VRChat API integration |
 | **VRChat Settings** | `[VRCOSC.Modules/VRChatSettings/README.md](VRCOSC.Modules/VRChatSettings/README.md)` | `7` | `4` | 3 | 3 | Read and write VRChat registry settings and config file values |
+| **Open-Meteo Weather** | `[VRCOSC.Modules/Weather/README.md](VRCOSC.Modules/Weather/README.md)` | `1` | `12` | 2 | 0 | Temperature, feels-like, wind, humidity, condition and a weather emoji from Open-Meteo. No API key needed. |
 <!-- SUBMODULES_TABLE_END -->

@@ -70,6 +70,7 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | Variable Name | Lookup Key | Type | Description |
 |---|---|---|---|
 | **FPS** | `fps` | `float` | `ChatBox variable FPS` |
+| **Target Hz (headset refresh rate)** | `targethz` | `int` | `ChatBox variable Target Hz (headset refresh rate)` |
 | **Dashboard Visible** | `dashboardvisible` | `bool` | `ChatBox variable Dashboard Visible` |
 | **Runtime Name** | `runtimename` | `string` | `ChatBox variable Runtime Name` |
 | **System Name** | `systemname` | `string` | `ChatBox variable System Name` |

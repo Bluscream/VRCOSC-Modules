@@ -144,7 +144,7 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 <!-- SETTINGS_TABLE_START -->
 | Setting Name | Type | Description | Default |
 |---|---|---|---|
-| _None_ | — | — | — |
+| **Synced lyrics** | `Toggle` | `Look up time-synced lyrics for the current track on LRCLIB (lrclib.net) and expose the current line as the Lyrics variable. Sends artist, title and duration to lrclib.net.` | `false` |
 <!-- SETTINGS_TABLE_END -->
 
 ## ChatBox Variables
@@ -159,6 +159,9 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | **Time Remaining** | `timeremaining` | `TimeSpan` | `ChatBox variable Time Remaining` |
 | **Duration** | `duration` | `TimeSpan` | `ChatBox variable Duration` |
 | **Progress Visual** | `progressvisual` | `float` | `ChatBox variable Progress Visual` |
+| **Progress (%)** | `progresspercent` | `int` | `ChatBox variable Progress (%)` |
+| **Play Icon** | `playicon` | `string` | `ChatBox variable Play Icon` |
+| **Lyrics (current line)** | `lyrics` | `string` | `ChatBox variable Lyrics (current line)` |
 | **Volume** | `volume` | `int` | `ChatBox variable Volume` |
 <!-- VARIABLES_TABLE_END -->
 

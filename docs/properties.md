@@ -4,7 +4,7 @@
 
 Every property (including expression-bodied and auto-properties), grouped by module and file.
 
-**148** total across **13** modules.
+**150** total across **14** modules.
 
 | Module | Count |
 |---|---|
@@ -16,6 +16,7 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | [HomeAssistant](#homeassistant) | 10 |
 | [IRCBridge](#ircbridge) | 14 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 40 |
+| [LinuxMedia](#linuxmedia) | 2 |
 | [Notifications](#notifications) | 16 |
 | [OpenXR](#openxr) | 8 |
 | [Utilities](#utilities) | 7 |
@@ -219,6 +220,16 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | [58](../VRCOSC.Modules/LinuxHardwareStats/Nodes.cs#L58) | `LinuxRAMInfoSourceNode` | public | `public int UpdateOffset => 0;` |
 | [82](../VRCOSC.Modules/LinuxHardwareStats/Nodes.cs#L82) | `LinuxVRAMInfoSourceNode` | public | `public int UpdateOffset => 0;` |
 | [106](../VRCOSC.Modules/LinuxHardwareStats/Nodes.cs#L106) | `LinuxNetworkInfoSourceNode` | public | `public int UpdateOffset => 0;` |
+
+
+## LinuxMedia
+
+### `LinuxMedia/LyricsProvider.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [28](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L28) | `LyricsProvider` | public | `public bool HasSyncedLyrics { get { lock (_sync) return _lines.Count > 0; } }` |
+| [31](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L31) | `LyricsProvider` | public | `public bool HasPlainLyricsOnly { get { lock (_sync) return _plainOnly; } }` |
 
 
 ## Notifications
