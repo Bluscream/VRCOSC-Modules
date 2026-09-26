@@ -4,14 +4,14 @@
 
 Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
-**353** total across **24** modules.
+**354** total across **24** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 5 |
 | [Debug](#debug) | 15 |
 | [DesktopFPS](#desktopfps) | 8 |
-| [DiscordVoice](#discordvoice) | 23 |
+| [DiscordVoice](#discordvoice) | 24 |
 | [HTTP](#http) | 11 |
 | [HTTPServer](#httpserver) | 17 |
 | [HeartrateStats](#heartratestats) | 13 |
@@ -134,10 +134,10 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 |---|---|---|
 | [6](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L6) | public | `public enum DiscordVoiceParameter` |
 | [46](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L46) | public | `public enum DiscordVoiceSetting` |
-| [61](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L61) | public | `public enum VoiceSource` |
-| [69](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L69) | public | `public enum DiscordVoiceVariable` |
-| [88](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L88) | public | `public enum DiscordVoiceState` |
-| [95](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L95) | public | `public enum DiscordVoiceEvent` |
+| [62](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L62) | public | `public enum VoiceSource` |
+| [70](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L70) | public | `public enum DiscordVoiceVariable` |
+| [89](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L89) | public | `public enum DiscordVoiceState` |
+| [96](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L96) | public | `public enum DiscordVoiceEvent` |
 
 ### `DiscordVoice/DiscordVoiceModule.Events.cs`
 
@@ -167,7 +167,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
 | Line | Visibility | Declaration |
 |---|---|---|
-| [20](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L20) | public | `public sealed partial class DiscordVoiceModule : Module` |
+| [21](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L21) | public | `public sealed partial class DiscordVoiceModule : Module` |
 
 ### `DiscordVoice/Providers/DevCompanionProvider.cs`
 
@@ -193,6 +193,12 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [17](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordAuth.cs#L17) | public | `public static class DiscordAuth` |
+
+### `DiscordVoice/Rpc/DiscordIpcBridge.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [12](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcBridge.cs#L12) | public | `public static class DiscordIpcBridge` |
 
 ### `DiscordVoice/Rpc/DiscordIpcClient.cs`
 

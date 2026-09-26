@@ -29,6 +29,13 @@ own Client ID / Client Secret).
    (`rpc` for the connection and channel events, `rpc.voice.read` for voice settings,
    `rpc.voice.write` for SET_VOICE_SETTINGS).
 
+On Linux, VRCOSC runs under Wine and Wine's named pipes never reach the native client's
+`$XDG_RUNTIME_DIR/discord-ipc-N` socket. The module therefore deploys
+`vrcosc_discord_ipc_bridge.sh` to `~/.local/bin` and runs it on the host; it forwards
+`127.0.0.1:<Wine IPC Bridge Port>` (default 6890) to the first `discord-ipc-*` socket it finds
+(`$XDG_RUNTIME_DIR`, the Discord flatpak and snap subdirectories, `/tmp`) with `socat`, which
+must be installed. The module then connects over TCP with the same framing.
+
 Note: Vesktop / Equibop implement RPC through arRPC, which only handles Rich Presence
 (SET_ACTIVITY) and none of the voice commands. Use the official Discord client for RPC.
 
@@ -76,6 +83,7 @@ voice state or remote control over a local socket, HTTP or WebSocket:
 | **OrbolayBridge Port** | `TextBox` | `Port the Equicord OrbolayBridge plugin connects to (its 'Port to connect to' setting).` | `OrbolayBridgeProvider.DefaultPort` |
 | **DevCompanion MCP Port** | `TextBox` | `Port of the devcompanionExtended plugin's in-app MCP HTTP server.` | `DevCompanionProvider.DefaultPort` |
 | **Client ID** | `TextBox` | `Client ID of your Discord application (Developer Portal, OAuth2 tab). Required for RPC.` | `empty` |
+| **Wine IPC Bridge Port** | `TextBox` | `Linux/Wine only: the module deploys vrcosc_discord_ipc_bridge.sh to ~/.local/bin, which forwards 127.0.0.1:<port> to Discord's native discord-ipc socket with socat, because Wine's named pipes never reach it.` | `DiscordIpcBridge.DefaultPort` |
 <!-- SETTINGS_TABLE_END -->
 
 ## ChatBox Variables

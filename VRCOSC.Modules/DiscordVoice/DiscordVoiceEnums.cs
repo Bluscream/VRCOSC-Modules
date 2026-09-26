@@ -54,7 +54,8 @@ public enum DiscordVoiceSetting
     SpeakingHoldMs,
     VoiceSource,
     OrbolayPort,
-    DevCompanionPort
+    DevCompanionPort,
+    IpcBridgePort
 }
 
 /// <summary>Where the voice variables come from. Auto: RPC when authenticated, else whichever fallback is live.</summary>

@@ -8,6 +8,7 @@
 
 using System.Text.Json;
 using Bluscream.Modules.DiscordVoice.Providers;
+using Bluscream.Modules.Utilities;
 using Bluscream.Modules.DiscordVoice.Rpc;
 using VRCOSC.App.SDK.Modules;
 
@@ -54,7 +55,8 @@ public sealed partial class DiscordVoiceModule : Module
 
         CreateTextBox(DiscordVoiceSetting.ClientId, "Client ID", "Client ID of your Discord application (Developer Portal, OAuth2 tab). Required for RPC.", string.Empty);
         CreatePasswordTextBox(DiscordVoiceSetting.ClientSecret, "Client Secret", "Client secret of the same application. Required for RPC.", string.Empty);
-        CreateGroup("Discord Application", "OAuth2 credentials of the application used for the RPC connection.", DiscordVoiceSetting.ClientId, DiscordVoiceSetting.ClientSecret);
+        CreateTextBox(DiscordVoiceSetting.IpcBridgePort, "Wine IPC Bridge Port", "Linux/Wine only: the module deploys vrcosc_discord_ipc_bridge.sh to ~/.local/bin, which forwards 127.0.0.1:<port> to Discord's native discord-ipc socket with socat, because Wine's named pipes never reach it.", DiscordIpcBridge.DefaultPort);
+        CreateGroup("Discord Application", "OAuth2 credentials of the application used for the RPC connection.", DiscordVoiceSetting.ClientId, DiscordVoiceSetting.ClientSecret, DiscordVoiceSetting.IpcBridgePort);
     }
 
     protected override void OnPostLoad()
@@ -218,23 +220,35 @@ public sealed partial class DiscordVoiceModule : Module
         return Task.CompletedTask;
     }
 
+    /// <summary>Named pipes first (Windows, or Wine with a pipe bridge), then the socat TCP bridge on Wine.</summary>
     private async Task<DiscordIpcClient?> ConnectAsync(CancellationToken ct)
     {
         for (var i = 0; i < 10; i++)
         {
-            var client = new DiscordIpcClient();
-            try
-            {
-                await client.ConnectPipeAsync($"discord-ipc-{i}", ConnectTimeout, ct).ConfigureAwait(false);
-                return client;
-            }
-            catch (Exception ex) when (ex is TimeoutException || ex is System.IO.IOException || ex is UnauthorizedAccessException || (ex is OperationCanceledException && !ct.IsCancellationRequested))
-            {
-                LogDebug($"discord-ipc-{i}: {ex.Message}");
-                client.Dispose();
-            }
+            var client = await TryConnectAsync(c => c.ConnectPipeAsync($"discord-ipc-{i}", ConnectTimeout, ct), $"discord-ipc-{i}").ConfigureAwait(false);
+            if (client is not null) return client;
         }
-        return null;
+
+        if (!LinuxUtils.IsWineOnLinux) return null;
+        var port = GetSettingValue<int>(DiscordVoiceSetting.IpcBridgePort);
+        if (!await DiscordIpcBridge.EnsureRunningAsync(port, Log, ct).ConfigureAwait(false)) return null;
+        return await TryConnectAsync(c => c.ConnectTcpAsync("127.0.0.1", port, ConnectTimeout, ct), $"tcp bridge :{port}").ConfigureAwait(false);
+    }
+
+    private async Task<DiscordIpcClient?> TryConnectAsync(Func<DiscordIpcClient, Task> connect, string what)
+    {
+        var client = new DiscordIpcClient();
+        try
+        {
+            await connect(client).ConfigureAwait(false);
+            return client;
+        }
+        catch (Exception ex) when (ex is TimeoutException || ex is System.IO.IOException || ex is UnauthorizedAccessException || ex is System.Net.Sockets.SocketException || ex is OperationCanceledException)
+        {
+            LogDebug($"{what}: {ex.Message}");
+            client.Dispose();
+            return null;
+        }
     }
 
     private async Task SubscribeDefaultsAsync(DiscordIpcClient client, CancellationToken ct)

@@ -4,14 +4,14 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**1124** total across **24** modules.
+**1127** total across **24** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 1 |
 | [Debug](#debug) | 41 |
 | [DesktopFPS](#desktopfps) | 18 |
-| [DiscordVoice](#discordvoice) | 132 |
+| [DiscordVoice](#discordvoice) | 135 |
 | [HTTP](#http) | 9 |
 | [HTTPServer](#httpserver) | 41 |
 | [HeartrateStats](#heartratestats) | 41 |
@@ -202,29 +202,30 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [39](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L39) | `DiscordVoiceModule` | protected | `protected override void OnPreLoad()` |
-| [60](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L60) | `DiscordVoiceModule` | protected | `protected override void OnPostLoad()` |
-| [66](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L66) | `DiscordVoiceModule` | protected | `protected override async Task<bool> OnModuleStart()` |
-| [89](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L89) | `DiscordVoiceModule` | private | `private bool HasRpcCredentials()` |
-| [100](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L100) | `DiscordVoiceModule` | private | `private void ReconnectTick()` |
-| [109](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L109) | `DiscordVoiceModule` | private | `private async Task ReconnectAsync(CancellationToken ct)` |
-| [122](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L122) | `DiscordVoiceModule` | private | `private void DisposeClient()` |
-| [132](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L132) | `DiscordVoiceModule` | private | `private async Task StartProvidersAsync(CancellationToken ct)` |
-| [145](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L145) | `DiscordVoiceModule` | private | `private async Task<bool> ConnectRpcAsync(CancellationToken ct)` |
-| [205](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L205) | `DiscordVoiceModule` | protected | `protected override Task OnModuleStop()` |
-| [221](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L221) | `DiscordVoiceModule` | private | `private async Task<DiscordIpcClient?> ConnectAsync(CancellationToken ct)` |
-| [240](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L240) | `DiscordVoiceModule` | private | `private async Task SubscribeDefaultsAsync(DiscordIpcClient client, CancellationToken ct)` |
-| [252](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L252) | `DiscordVoiceModule` | private | `private async Task SubscribeChannelEventsAsync(DiscordIpcClient client, string channelId, CancellationToken ct)` |
-| [259](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L259) | `DiscordVoiceModule` | private | `private async Task SubscribeAsync(DiscordIpcClient client, string evt, object? args, CancellationToken ct)` |
-| [272](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L272) | `DiscordVoiceModule` | private | `private void OnClientDisconnected(Exception? cause)` |
-| [283](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L283) | `DiscordVoiceModule` | private | `private void Send(RpcCommand command)` |
-| [296](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L296) | `DiscordVoiceModule` | private | `private async Task SendAndLogAsync(DiscordIpcClient client, RpcCommand command, CancellationToken ct)` |
-| [312](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L312) | `DiscordVoiceModule` | private | `private void ApplyCommandResponse(string cmd, JsonElement data)` |
-| [347](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L347) | `DiscordVoiceModule` | private | `private void SetCount(DiscordVoiceParameter parameter, DiscordVoiceVariable variable, int value)` |
-| [353](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L353) | `DiscordVoiceModule` | private | `private void ApplyVoiceSettings(JsonElement data)` |
-| [368](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L368) | `DiscordVoiceModule` | private | `private static int SnowflakeToInt(string? snowflake) => long.TryParse(snowflake, out var id) ? unchecked((int)id) : 0;` |
-| [375](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L375) | `DiscordVoiceModule` | private | `private void ChatBoxUpdate()` |
-| [383](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L383) | `DiscordVoiceModule` | private | `private async Task PollAsync(DiscordIpcClient client, CancellationToken ct)` |
+| [40](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L40) | `DiscordVoiceModule` | protected | `protected override void OnPreLoad()` |
+| [62](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L62) | `DiscordVoiceModule` | protected | `protected override void OnPostLoad()` |
+| [68](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L68) | `DiscordVoiceModule` | protected | `protected override async Task<bool> OnModuleStart()` |
+| [91](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L91) | `DiscordVoiceModule` | private | `private bool HasRpcCredentials()` |
+| [102](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L102) | `DiscordVoiceModule` | private | `private void ReconnectTick()` |
+| [111](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L111) | `DiscordVoiceModule` | private | `private async Task ReconnectAsync(CancellationToken ct)` |
+| [124](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L124) | `DiscordVoiceModule` | private | `private void DisposeClient()` |
+| [134](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L134) | `DiscordVoiceModule` | private | `private async Task StartProvidersAsync(CancellationToken ct)` |
+| [147](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L147) | `DiscordVoiceModule` | private | `private async Task<bool> ConnectRpcAsync(CancellationToken ct)` |
+| [207](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L207) | `DiscordVoiceModule` | protected | `protected override Task OnModuleStop()` |
+| [224](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L224) | `DiscordVoiceModule` | private | `private async Task<DiscordIpcClient?> ConnectAsync(CancellationToken ct)` |
+| [238](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L238) | `DiscordVoiceModule` | private | `private async Task<DiscordIpcClient?> TryConnectAsync(Func<DiscordIpcClient, Task> connect, string what)` |
+| [254](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L254) | `DiscordVoiceModule` | private | `private async Task SubscribeDefaultsAsync(DiscordIpcClient client, CancellationToken ct)` |
+| [266](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L266) | `DiscordVoiceModule` | private | `private async Task SubscribeChannelEventsAsync(DiscordIpcClient client, string channelId, CancellationToken ct)` |
+| [273](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L273) | `DiscordVoiceModule` | private | `private async Task SubscribeAsync(DiscordIpcClient client, string evt, object? args, CancellationToken ct)` |
+| [286](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L286) | `DiscordVoiceModule` | private | `private void OnClientDisconnected(Exception? cause)` |
+| [297](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L297) | `DiscordVoiceModule` | private | `private void Send(RpcCommand command)` |
+| [310](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L310) | `DiscordVoiceModule` | private | `private async Task SendAndLogAsync(DiscordIpcClient client, RpcCommand command, CancellationToken ct)` |
+| [326](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L326) | `DiscordVoiceModule` | private | `private void ApplyCommandResponse(string cmd, JsonElement data)` |
+| [361](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L361) | `DiscordVoiceModule` | private | `private void SetCount(DiscordVoiceParameter parameter, DiscordVoiceVariable variable, int value)` |
+| [367](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L367) | `DiscordVoiceModule` | private | `private void ApplyVoiceSettings(JsonElement data)` |
+| [382](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L382) | `DiscordVoiceModule` | private | `private static int SnowflakeToInt(string? snowflake) => long.TryParse(snowflake, out var id) ? unchecked((int)id) : 0;` |
+| [389](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L389) | `DiscordVoiceModule` | private | `private void ChatBoxUpdate()` |
+| [397](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L397) | `DiscordVoiceModule` | private | `private async Task PollAsync(DiscordIpcClient client, CancellationToken ct)` |
 
 ### `DiscordVoice/Providers/DevCompanionProvider.cs`
 
@@ -280,6 +281,13 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [22](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordAuth.cs#L22) | `DiscordAuth` | public | `public static async Task<string> FetchAccessTokenAsync(string clientId, string clientSecret, CancellationToken ct)` |
+
+### `DiscordVoice/Rpc/DiscordIpcBridge.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [19](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcBridge.cs#L19) | `DiscordIpcBridge` | public | `public static async Task<bool> EnsureRunningAsync(int port, Action<string> log, CancellationToken ct)` |
+| [40](../VRCOSC.Modules/DiscordVoice/Rpc/DiscordIpcBridge.cs#L40) | `DiscordIpcBridge` | private | `private static bool Deploy(Action<string> log)` |
 
 ### `DiscordVoice/Rpc/DiscordIpcClient.cs`
 
