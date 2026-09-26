@@ -264,13 +264,10 @@ if [ ! -f "$DLL_PATH" ]; then
     fi
 fi
 
-# Deploy locally
-if [ "$DEPLOY_LOCALLY" = true ]; then
-mkdir -p "$REMOTE_PKG_DIR"
-cp "$DLL_PATH" "$REMOTE_PKG_DIR/Bluscream.Modules.dll"
-echo "[OK] Deployed DLL to $REMOTE_PKG_DIR"
-
-# Deploy Silk.NET dependency DLLs (not copied by the build since VRCOSC is the host app)
+# Silk.NET dependency DLLs. The build does not copy these (VRCOSC is the host app), and
+# both the local deploy and the release zip need them, so they are resolved once here --
+# inside the deploy branch they were invisible to the zip whenever the deploy was skipped,
+# and 2026.0926.0 shipped without them.
 NUGET_CACHE="${NUGET_PACKAGES:-$HOME/.nuget/packages}"
 SILK_VERSION="2.22.0"
 SILK_TFM="net5.0"   # best available target under the Silk 2.22.0 packages
@@ -280,19 +277,32 @@ declare -A SILK_PKGS=(
     ["Silk.NET.Core"]="silk.net.core"
     ["Silk.NET.Maths"]="silk.net.maths"
 )
-for NAME in "${!SILK_PKGS[@]}"; do
-    PKG="${SILK_PKGS[$NAME]}"
-    SRC="$NUGET_CACHE/$PKG/$SILK_VERSION/lib/$SILK_TFM/$NAME.dll"
-    if [ -f "$SRC" ]; then
-        cp "$SRC" "$REMOTE_PKG_DIR/$NAME.dll"
-        echo "[OK] Deployed $NAME.dll"
-    else
-        echo "[WARN] $NAME.dll not found at $SRC"
-    fi
-done
+silk_source() { echo "$NUGET_CACHE/${SILK_PKGS[$1]}/$SILK_VERSION/lib/$SILK_TFM/$1.dll"; }
 
-# Clean up any native dll from packages/remote that shouldn't be there (causes BadImageFormatException)
-rm -f "$REMOTE_PKG_DIR/openxr_loader.dll"
+# Every Silk DLL must exist before anything is published: a release missing one fails at
+# module import with a FileNotFoundException that names a type, not the package.
+MISSING_SILK=0
+for NAME in "${!SILK_PKGS[@]}"; do
+    [ -f "$(silk_source "$NAME")" ] || { echo "[ERROR] $NAME.dll not found at $(silk_source "$NAME")"; MISSING_SILK=1; }
+done
+if [ "$MISSING_SILK" -eq 1 ]; then
+    echo "Error: Silk.NET dependencies are missing from the NuGet cache; refusing to build a partial package."
+    exit 1
+fi
+
+# Deploy locally
+if [ "$DEPLOY_LOCALLY" = true ]; then
+    mkdir -p "$REMOTE_PKG_DIR"
+    cp "$DLL_PATH" "$REMOTE_PKG_DIR/Bluscream.Modules.dll"
+    echo "[OK] Deployed DLL to $REMOTE_PKG_DIR"
+
+    for NAME in "${!SILK_PKGS[@]}"; do
+        cp "$(silk_source "$NAME")" "$REMOTE_PKG_DIR/$NAME.dll"
+        echo "[OK] Deployed $NAME.dll"
+    done
+
+    # Clean up any native dll from packages/remote that shouldn't be there (causes BadImageFormatException)
+    rm -f "$REMOTE_PKG_DIR/openxr_loader.dll"
 fi
 
 # Deploy openxr_loader.dll to the VRCOSC main AppData Local folder (where VRCOSC.exe resides)
@@ -326,18 +336,21 @@ mkdir -p "$STAGING_DIR"
 cp "$DLL_PATH" "$STAGING_DIR/Bluscream.Modules.dll"
 
 for NAME in "${!SILK_PKGS[@]}"; do
-    PKG="${SILK_PKGS[$NAME]}"
-    SRC="$NUGET_CACHE/$PKG/$SILK_VERSION/lib/$SILK_TFM/$NAME.dll"
-    if [ -f "$SRC" ]; then
-        cp "$SRC" "$STAGING_DIR/$NAME.dll"
-    fi
+    cp "$(silk_source "$NAME")" "$STAGING_DIR/$NAME.dll"
 done
 
 ZIP_PATH="$(dirname "$DLL_PATH")/Bluscream.Modules.zip"
 rm -f "$ZIP_PATH"
 (cd "$STAGING_DIR" && zip -q -r "../$(basename "$ZIP_PATH")" .)
 rm -rf "$STAGING_DIR"
-echo "[OK] Created release zip at $ZIP_PATH"
+ZIP_COUNT=$(unzip -l "$ZIP_PATH" | tail -n 1 | awk '{print $2}')
+EXPECTED_COUNT=$(( ${#SILK_PKGS[@]} + 1 ))
+if [ "$ZIP_COUNT" != "$EXPECTED_COUNT" ]; then
+    echo "Error: release zip has $ZIP_COUNT files, expected $EXPECTED_COUNT (the module plus ${#SILK_PKGS[@]} Silk.NET DLLs)."
+    unzip -l "$ZIP_PATH"
+    exit 1
+fi
+echo "[OK] Created release zip at $ZIP_PATH ($ZIP_COUNT files)"
 
 # Git operations
 if [ "$SKIP_COMMIT" = false ]; then
