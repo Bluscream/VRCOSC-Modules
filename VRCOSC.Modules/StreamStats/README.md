@@ -1,8 +1,77 @@
-# Twitch Stats
+# Stream Stats
 
-Live status, game, title, viewers, followers and uptime of a Twitch channel for the ChatBox. Logs in through the Twitch device code flow.
+MagicChatbox-parity stream stats for the ChatBox in one module: a **Twitch** channel (Helix,
+device code login) and a **TikTok LIVE** host (public pages, no login). Each platform has its
+own settings group and Enabled toggle and only runs when its channel/host is set; both can run
+at the same time.
 
 **Repository**: https://github.com/Bluscream/VRCOSC-Modules
+
+## ChatBox keys
+
+Module id: `streamstatsmodule` (placeholders look like `{bluscream.vrcosc.modules.streamstatsmodule_<key>}`).
+
+- Combined: `stream_live` (bool, any platform live), `stream_viewers` (int, sum of the live
+  platforms), `stream_platform` (string: `Twitch`, `TikTok`, `Twitch+TikTok` or empty)
+- Twitch: `twitch_live` (bool), `twitch_channel`, `twitch_game`, `twitch_title` (string),
+  `twitch_viewers`, `twitch_followers` (int), `twitch_uptime` (string, `h:mm`)
+- TikTok: `tiktok_host` (string), `tiktok_viewers`, `tiktok_likes`, `tiktok_followers` (int),
+  `tiktok_live` (bool)
+- States: `live` (either platform live), `offline`, `unauthenticated` (Twitch enabled but not
+  logged in while TikTok is not live)
+- Events: `wentlive` / `wentoffline` (Twitch), `follow` / `like` (TikTok counter increased)
+
+## Twitch login
+
+Modules cannot share the official Twitch module's token, so this module logs in on its own
+through the **device code grant** flow: on the first start it logs a line like
+`Twitch login: open https://www.twitch.tv/activate and enter the code XXXX-XXXX`. Enter the code in a
+browser while logged into Twitch; the access and refresh tokens are then stored in the module's
+persistent data (`twitch_access_token` / `twitch_refresh_token`) and refreshed automatically.
+
+- **Client ID** defaults to the official VRCOSC Twitch app. Any Twitch app with the device code
+  grant enabled works; use your own if the login fails.
+- **Access token (manual)**: pasting a user access token skips the device code flow. The
+  follower count needs the `moderator:read:followers` scope; without it the count stays 0 and
+  everything else still works.
+- **Forget saved login**: drops the stored tokens on the next start. Turn it off again
+  afterwards or every start will ask for a new login.
+- A `401` from Helix (revoked token) drops the token and starts a new login; `429` waits until
+  the rate-limit window resets.
+
+## TikTok: how it works (and why polling)
+
+| Data | Source |
+|---|---|
+| Room id | `https://www.tiktok.com/@<host>/live` page (`"roomId":"..."`) |
+| Live status, viewers, likes, exact follower count | `https://webcast.tiktok.com/webcast/room/info/?aid=1988&room_id=<id>` |
+| Follower count fallback (rounded by TikTok, e.g. `95900000`) | `https://www.tiktok.com/@<host>` profile page (`"followerCount":N`) |
+
+Options evaluated on 2026-09-26:
+
+- **TikTokLiveSharp (NuGet)**: latest version 0.1.4, published 2022-08, `netstandard2.0`,
+  depends on Newtonsoft.Json + protobuf-net. It predates TikTok's signed websocket URLs, so
+  its websocket connection no longer works against current TikTok, and it would drag two
+  extra assemblies into the Costura bundle for nothing. Rejected.
+- **Own webcast websocket**: the websocket URL must be signed by a third-party sign server
+  (Euler Stream) with an API key, and the protobuf message schema changes without notice.
+  Not something a chatbox module should depend on. Rejected.
+- **Polling the public room-info endpoint** (this module): stable JSON, exact counters, no
+  auth. The only cost is granularity, see below.
+
+### TikTok limitations
+
+- Counters update on the poll interval (default 15 s while live, 60 s while offline), not
+  per event. Likes/followers jump in steps.
+- The **Follow** and **Like** ChatBox events fire when the polled counter *increases*;
+  they are not per-user events and carry no username.
+- There is **no Gift event**: gifts are only available over the signed websocket stream.
+- TikTok rate-limits or serves a challenge page from time to time. Every failure is logged,
+  the module keeps the last known values and retries with exponential backoff (5 s doubling
+  up to the configured maximum). Nothing crashes the module or VRCOSC.
+- TikTok can change its page markup or endpoint at any time; if the room id or follower
+  count stop being found, the module logs it and reports offline.
+- **Host** accepts the @name with or without the @; a profile URL also works.
 
 ## Module Settings
 
