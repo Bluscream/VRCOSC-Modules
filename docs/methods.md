@@ -946,21 +946,21 @@ Every method and constructor, grouped by module and file. The Owner column is th
 |---|---|---|---|
 | [48](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L48) | `TwitchStatsModule` | protected | `protected override void OnPreLoad()` |
 | [61](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L61) | `TwitchStatsModule` | protected | `protected override void OnPostLoad()` |
-| [80](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L80) | `TwitchStatsModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [104](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L104) | `TwitchStatsModule` | protected | `protected override Task OnModuleStop()` |
-| [114](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L114) | `TwitchStatsModule` | private | `private void Tick()` |
-| [132](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L132) | `TwitchStatsModule` | private | `private async Task RunGuarded(Func<Task> work, Action done)` |
-| [155](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L155) | `TwitchStatsModule` | private | `private async Task AuthenticateAsync(CancellationToken ct)` |
-| [167](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L167) | `TwitchStatsModule` | private | `private async Task<bool> TryUseTokenAsync(string token, string source, CancellationToken ct)` |
-| [186](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L186) | `TwitchStatsModule` | private | `private async Task<bool> TryRefreshAsync(CancellationToken ct)` |
-| [200](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L200) | `TwitchStatsModule` | private | `private async Task DeviceCodeLoginAsync(CancellationToken ct)` |
-| [253](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L253) | `TwitchStatsModule` | private | `private async Task PollAsync(CancellationToken ct)` |
-| [275](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L275) | `TwitchStatsModule` | private | `private async Task PollOnceAsync(CancellationToken ct)` |
-| [301](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L301) | `TwitchStatsModule` | private | `private async Task<int?> FetchFollowersAsync(string token, string broadcasterId, CancellationToken ct)` |
-| [316](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L316) | `TwitchStatsModule` | private | `private void Apply(HelixStream? stream, HelixChannel? channel, int? followers)` |
-| [336](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L336) | `TwitchStatsModule` | private | `private static string FormatUptime(TimeSpan uptime)` |
-| [342](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L342) | `TwitchStatsModule` | private | `private TimeSpan Interval() => TimeSpan.FromSeconds(Math.Max(5, GetSettingValue<int>(TwitchSetting.PollInterval)));` |
-| [344](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L344) | `TwitchStatsModule` | private | `private string ClientId()` |
+| [79](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L79) | `TwitchStatsModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [103](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L103) | `TwitchStatsModule` | protected | `protected override Task OnModuleStop()` |
+| [113](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L113) | `TwitchStatsModule` | private | `private void Tick()` |
+| [131](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L131) | `TwitchStatsModule` | private | `private async Task RunGuarded(Func<Task> work, Action done)` |
+| [154](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L154) | `TwitchStatsModule` | private | `private async Task AuthenticateAsync(CancellationToken ct)` |
+| [166](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L166) | `TwitchStatsModule` | private | `private async Task<bool> TryUseTokenAsync(string token, string source, CancellationToken ct)` |
+| [185](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L185) | `TwitchStatsModule` | private | `private async Task<bool> TryRefreshAsync(CancellationToken ct)` |
+| [199](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L199) | `TwitchStatsModule` | private | `private async Task DeviceCodeLoginAsync(CancellationToken ct)` |
+| [252](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L252) | `TwitchStatsModule` | private | `private async Task PollAsync(CancellationToken ct)` |
+| [274](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L274) | `TwitchStatsModule` | private | `private async Task PollOnceAsync(CancellationToken ct)` |
+| [302](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L302) | `TwitchStatsModule` | private | `private async Task<int?> FetchFollowersAsync(string token, string broadcasterId, CancellationToken ct)` |
+| [317](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L317) | `TwitchStatsModule` | private | `private void Apply(HelixStream? stream, HelixChannel? channel, int? followers)` |
+| [337](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L337) | `TwitchStatsModule` | private | `private static string FormatUptime(TimeSpan uptime)` |
+| [343](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L343) | `TwitchStatsModule` | private | `private TimeSpan Interval() => TimeSpan.FromSeconds(Math.Max(5, GetSettingValue<int>(TwitchSetting.PollInterval)));` |
+| [345](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L345) | `TwitchStatsModule` | private | `private string ClientId()` |
 
 
 ## Utilities

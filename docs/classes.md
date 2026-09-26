@@ -688,10 +688,10 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [15](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L15) | public | `public class TwitchStatsModule : Module` |
-| [350](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L350) | private | `private enum TwitchSetting { Channel, PollInterval, ClientId, ManualToken, ForgetToken }` |
-| [352](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L352) | private | `private enum TwitchParameter { Live }` |
-| [354](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L354) | private | `private enum TwitchState { Live, Offline, Unauthenticated }` |
-| [356](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L356) | private | `private enum TwitchEvent { WentLive, WentOffline }` |
+| [351](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L351) | private | `private enum TwitchSetting { Channel, PollInterval, ClientId, ManualToken, ForgetToken }` |
+| [353](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L353) | private | `private enum TwitchParameter { Live }` |
+| [355](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L355) | private | `private enum TwitchState { Live, Offline, Unauthenticated }` |
+| [357](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L357) | private | `private enum TwitchEvent { WentLive, WentOffline }` |
 
 
 ## Utilities
