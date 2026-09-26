@@ -731,13 +731,13 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [13](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L13) | `OpenXRRuntime` | private | `private bool TryInitialise()` |
-| [52](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L52) | `OpenXRRuntime` | private | `private HashSet<string>? EnumerateExtensions()` |
-| [85](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L85) | `OpenXRRuntime` | private | `private bool CreateInstance(IReadOnlyList<string> extensions)` |
-| [125](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L125) | `OpenXRRuntime` | private | `private bool QuerySystem()` |
-| [144](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L144) | `OpenXRRuntime` | private | `private bool CreateSession(bool overlay)` |
-| [181](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L181) | `OpenXRRuntime` | private | `private bool CreateSpaces()` |
-| [203](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L203) | `OpenXRRuntime` | private | `private void ResolveExtensionFunctions(IReadOnlyCollection<string> enabled)` |
-| [221](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L221) | `OpenXRRuntime` | private | `private nint GetProc(string name)` |
+| [56](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L56) | `OpenXRRuntime` | private | `private HashSet<string>? EnumerateExtensions()` |
+| [89](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L89) | `OpenXRRuntime` | private | `private bool CreateInstance(IReadOnlyList<string> extensions)` |
+| [129](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L129) | `OpenXRRuntime` | private | `private bool QuerySystem()` |
+| [148](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L148) | `OpenXRRuntime` | private | `private bool CreateSession(bool overlay)` |
+| [185](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L185) | `OpenXRRuntime` | private | `private bool CreateSpaces()` |
+| [207](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L207) | `OpenXRRuntime` | private | `private void ResolveExtensionFunctions(IReadOnlyCollection<string> enabled)` |
+| [225](../VRCOSC.Modules/OpenXR/OpenXRRuntime.Init.cs#L225) | `OpenXRRuntime` | private | `private nint GetProc(string name)` |
 
 ### `OpenXR/OpenXRRuntime.cs`
 
@@ -757,8 +757,8 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [333](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L333) | `OpenXRRuntime` | private | `private void UpdateFrameData(long time)` |
 | [342](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L342) | `OpenXRRuntime` | private | `private bool LocateHead(long time)` |
 | [350](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L350) | `OpenXRRuntime` | private | `private void PollRefreshRate()` |
-| [364](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L364) | `OpenXRRuntime` | private | `private void Publish()` |
-| [393](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L393) | `OpenXRRuntime` | private | `private void TearDown()` |
+| [369](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L369) | `OpenXRRuntime` | private | `private void Publish()` |
+| [398](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L398) | `OpenXRRuntime` | private | `private void TearDown()` |
 
 ### `OpenXR/OpenXRStatisticsModule.cs`
 

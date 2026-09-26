@@ -44,7 +44,11 @@ internal sealed unsafe partial class OpenXRRuntime
 
         _sinceLastFrame.Restart();
         _lastPredictedTime = 0;
-        _waitFrameWorks = true;
+        // Monado's headless sessions have no frame loop: xrWaitFrame answers once, then
+        // xrBeginFrame/xrEndFrame return CALL_ORDER_INVALID and the next xrWaitFrame blocks
+        // forever. When the runtime can convert QPC to XrTime we never touch the frame calls.
+        _waitFrameWorks = _convertWin32Time is null;
+        if (!_waitFrameWorks) Log("Using xrConvertWin32PerformanceCounterToTimeKHR for timing; frame calls are skipped (headless).");
         Log($"OpenXR ready: runtime '{_runtimeName}', system '{_systemName}', overlay={_overlaySession}. Waiting for the session to become ready.");
         return true;
     }

@@ -310,7 +310,7 @@ internal sealed unsafe partial class OpenXRRuntime
 
     private TimeSpan FramePeriod()
     {
-        if (_refreshRate > 1f) return TimeSpan.FromSeconds(1d / _refreshRate);
+        if (_refreshRate > 1f) return TimeSpan.FromSeconds(1d / Math.Min(_refreshRate, 120f));
         if (_lastPredictedPeriod > 0) return TimeSpan.FromTicks(_lastPredictedPeriod / 100);
         return FallbackFramePeriod;
     }
@@ -353,8 +353,13 @@ internal sealed unsafe partial class OpenXRRuntime
         _nextRefreshRatePoll = DateTime.UtcNow + TimeSpan.FromSeconds(1);
 
         float rate = 0f;
-        if (_getDisplayRefreshRate(_session, &rate) == Result.Success && rate > 0f) _refreshRate = rate;
-        else if (_lastPredictedPeriod > 0) _refreshRate = 1_000_000_000f / _lastPredictedPeriod;
+        var r = _getDisplayRefreshRate(_session, &rate);
+        if (r == Result.Success && rate > 0f) _refreshRate = rate;
+        else
+        {
+            LogOnce($"xrGetDisplayRefreshRateFB returned {r} with {rate} Hz");
+            if (_lastPredictedPeriod > 0) _refreshRate = 1_000_000_000f / _lastPredictedPeriod;
+        }
     }
 
     // ─────────────────────────── Publish / teardown ───────────────────────────

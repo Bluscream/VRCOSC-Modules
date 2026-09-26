@@ -637,7 +637,7 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [65](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L65) | `OpenXRRuntime` | private | `private bool _headTracked;` |
 | [69](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L69) | `OpenXRRuntime` | private | `private volatile OpenXRSnapshot _snapshot = OpenXRSnapshot.Empty;` |
 | [128](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L128) | `OpenXRRuntime` | private | `private readonly Dictionary<string, DateTime> _lastLogged = new();` |
-| [362](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L362) | `OpenXRRuntime` | private | `private DateTime _nextSnapshotLog = DateTime.MinValue;` |
+| [367](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L367) | `OpenXRRuntime` | private | `private DateTime _nextSnapshotLog = DateTime.MinValue;` |
 
 ### `OpenXR/OpenXRStatisticsModule.cs`
 
