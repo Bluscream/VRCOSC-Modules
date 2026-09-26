@@ -1,8 +1,26 @@
-# HeartrateStats
+# Heartrate Stats
 
-HeartrateStats module for VRCOSC.
+Heart rate with session **min/max** and a **trend arrow** as ChatBox variables (MagicChatbox parity). VRCOSC modules cannot read each other's variables, so this module cannot sit on top of the official Pulsoid/HypeRate modules; it speaks the same protocols itself and sends the same `VRCOSC/Heartrate/*` avatar parameters, so existing prefabs keep working. Run it **instead of** the official heartrate module, not next to it.
 
 **Repository**: https://github.com/Bluscream/VRCOSC-Modules
+
+## Providers
+
+| Provider | What you need |
+|---|---|
+| **Pulsoid** | An access token from https://pulsoid.net/ui/keys with the *Data: Heart Rate: Read* scope. |
+| **HypeRate** | Your session ID from the HypeRate app plus an application API key (HypeRate issues these on request at https://www.hyperate.io/api; the official module ships its own key, which is not public). |
+| **Osc** | Nothing. Point any other tool at VRChat's OSC input with the parameter name from *OSC Input Parameter* (int or float bpm). The module reads it from VRChat's parameter stream, so with an avatar parameter of that name it also works for values set on the avatar. |
+
+Websocket providers reconnect automatically with exponential backoff (2 s doubling to 60 s). A provider counts as *disconnected* after 30 s without a reading, regardless of socket state.
+
+## Statistics
+
+- `heartrate_min` / `heartrate_max` reset on module start, via the **Reset Min/Max** toggle (flip it either way) and via the `VRCOSC/Heartrate/ResetStats` parameter.
+- `heartrate_trend` is `↑`, `→` or `↓`: the mean of the newer half of the trend window compared with the older half; a difference of at least the threshold (bpm) gives an arrow.
+- MagicChatbox placeholders map to `{bluscream.vrcosc.modules.heartratestatsmodule_<key>}` with the lookup keys listed below.
+
+Smoothing of the Value/Average parameters (an option of the official module) is not implemented; values jump to the latest reading.
 
 ## Module Settings
 
