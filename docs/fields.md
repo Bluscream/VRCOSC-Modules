@@ -4,7 +4,7 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**524** total across **17** modules.
+**525** total across **17** modules.
 
 | Module | Count |
 |---|---|
@@ -20,7 +20,7 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [Notifications](#notifications) | 37 |
 | [OpenXR](#openxr) | 77 |
 | [Status](#status) | 7 |
-| [Utilities](#utilities) | 32 |
+| [Utilities](#utilities) | 33 |
 | [VRCExtras](#vrcextras) | 1 |
 | [VRCXBridge](#vrcxbridge) | 48 |
 | [VRChatSettings](#vrchatsettings) | 48 |
@@ -708,6 +708,7 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 |---|---|---|---|
 | [19](../VRCOSC.Modules/Utilities/OpenVRCompatFix.cs#L19) | `OpenVRCompatFix` | private | `private static readonly object Lock = new();` |
 | [20](../VRCOSC.Modules/Utilities/OpenVRCompatFix.cs#L20) | `OpenVRCompatFix` | private | `private static bool _patched;` |
+| [53](../VRCOSC.Modules/Utilities/OpenVRCompatFix.cs#L53) | `OpenVRCompatFix` | private | `private static bool _initPatched;` |
 
 ### `Utilities/ReflectionUtils.cs`
 

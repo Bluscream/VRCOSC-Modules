@@ -4,7 +4,7 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**804** total across **18** modules.
+**806** total across **18** modules.
 
 | Module | Count |
 |---|---|
@@ -21,7 +21,7 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [Notifications](#notifications) | 25 |
 | [OpenXR](#openxr) | 79 |
 | [Status](#status) | 23 |
-| [Utilities](#utilities) | 247 |
+| [Utilities](#utilities) | 249 |
 | [VRCExtras](#vrcextras) | 6 |
 | [VRCXBridge](#vrcxbridge) | 34 |
 | [VRChatSettings](#vrchatsettings) | 77 |
@@ -72,30 +72,30 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [27](../VRCOSC.Modules/Debug/DebugModule.cs#L27) | `DebugModule` | protected | `protected override void OnPreLoad()` |
-| [68](../VRCOSC.Modules/Debug/DebugModule.cs#L68) | `DebugModule` | protected | `protected override void OnPostLoad()` |
-| [155](../VRCOSC.Modules/Debug/DebugModule.cs#L155) | `DebugModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [190](../VRCOSC.Modules/Debug/DebugModule.cs#L190) | `DebugModule` | protected | `protected override Task OnModuleStop()` |
-| [198](../VRCOSC.Modules/Debug/DebugModule.cs#L198) | `DebugModule` | private | `private void OnIncomingTracked(ParameterData data)` |
-| [203](../VRCOSC.Modules/Debug/DebugModule.cs#L203) | `DebugModule` | private | `private void OnOutgoingTracked(ParameterData data)` |
-| [208](../VRCOSC.Modules/Debug/DebugModule.cs#L208) | `DebugModule` | private | `private void OnIncomingReceived(string path, string type, object? value)` |
-| [216](../VRCOSC.Modules/Debug/DebugModule.cs#L216) | `DebugModule` | private | `private void OnOutgoingSent(string path, string type, object? value)` |
-| [224](../VRCOSC.Modules/Debug/DebugModule.cs#L224) | `DebugModule` | private | `private void OnMaxLimitReached(string path)` |
-| [229](../VRCOSC.Modules/Debug/DebugModule.cs#L229) | `DebugModule` | private | `private void OnTrackingCleared()` |
-| [234](../VRCOSC.Modules/Debug/DebugModule.cs#L234) | `DebugModule` | protected | `protected override void OnAnyParameterReceived(VRChatParameter parameter)` |
-| [242](../VRCOSC.Modules/Debug/DebugModule.cs#L242) | `DebugModule` | protected | `protected void SendParameter(string name, object value)` |
-| [244](../VRCOSC.Modules/Debug/DebugModule.cs#L244) | `DebugModule` | protected | `protected new void SendParameter(string name, object value)` |
-| [258](../VRCOSC.Modules/Debug/DebugModule.cs#L258) | `DebugModule` | protected | `protected void SendParameter(Enum lookup, object value)` |
-| [260](../VRCOSC.Modules/Debug/DebugModule.cs#L260) | `DebugModule` | protected | `protected new void SendParameter(Enum lookup, object value)` |
-| [289](../VRCOSC.Modules/Debug/DebugModule.cs#L289) | `DebugModule` | protected | `protected override void OnRegisteredParameterReceived(RegisteredParameter parameter)` |
-| [304](../VRCOSC.Modules/Debug/DebugModule.cs#L304) | `DebugModule` | public | `public async Task<string> DumpParametersAsync(bool includeIncoming = true, bool includeOutgoing = true, string? customFilePath = null)` |
-| [418](../VRCOSC.Modules/Debug/DebugModule.cs#L418) | `DebugModule` | public | `public void ClearTracking()` |
-| [431](../VRCOSC.Modules/Debug/DebugModule.cs#L431) | `DebugModule` | private | `private void UpdateCounts()` |
-| [447](../VRCOSC.Modules/Debug/DebugModule.cs#L447) | `DebugModule` | public | `public Dictionary<string, ParameterData> GetIncomingParameters()` |
-| [452](../VRCOSC.Modules/Debug/DebugModule.cs#L452) | `DebugModule` | public | `public Dictionary<string, ParameterData> GetOutgoingParameters()` |
-| [458](../VRCOSC.Modules/Debug/DebugModule.cs#L458) | `DebugModule` | private | `private string GetDumpDirectory()` |
-| [469](../VRCOSC.Modules/Debug/DebugModule.cs#L469) | `DebugModule` | private | `private CsvSortBy GetSortColumn() => GetSettingValue<CsvSortBy>(DebugSetting.SortBy);` |
-| [470](../VRCOSC.Modules/Debug/DebugModule.cs#L470) | `DebugModule` | private | `private CsvSortDirection GetSortDirection() => GetSettingValue<CsvSortDirection>(DebugSetting.SortDirection);` |
-| [478](../VRCOSC.Modules/Debug/DebugModule.cs#L478) | `DebugModule` | private | `private bool IsLoggingEnabled() => GetSettingValue<bool>(DebugSetting.LogParameterUpdates);` |
+| [70](../VRCOSC.Modules/Debug/DebugModule.cs#L70) | `DebugModule` | protected | `protected override void OnPostLoad()` |
+| [157](../VRCOSC.Modules/Debug/DebugModule.cs#L157) | `DebugModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [192](../VRCOSC.Modules/Debug/DebugModule.cs#L192) | `DebugModule` | protected | `protected override Task OnModuleStop()` |
+| [200](../VRCOSC.Modules/Debug/DebugModule.cs#L200) | `DebugModule` | private | `private void OnIncomingTracked(ParameterData data)` |
+| [205](../VRCOSC.Modules/Debug/DebugModule.cs#L205) | `DebugModule` | private | `private void OnOutgoingTracked(ParameterData data)` |
+| [210](../VRCOSC.Modules/Debug/DebugModule.cs#L210) | `DebugModule` | private | `private void OnIncomingReceived(string path, string type, object? value)` |
+| [218](../VRCOSC.Modules/Debug/DebugModule.cs#L218) | `DebugModule` | private | `private void OnOutgoingSent(string path, string type, object? value)` |
+| [226](../VRCOSC.Modules/Debug/DebugModule.cs#L226) | `DebugModule` | private | `private void OnMaxLimitReached(string path)` |
+| [231](../VRCOSC.Modules/Debug/DebugModule.cs#L231) | `DebugModule` | private | `private void OnTrackingCleared()` |
+| [236](../VRCOSC.Modules/Debug/DebugModule.cs#L236) | `DebugModule` | protected | `protected override void OnAnyParameterReceived(VRChatParameter parameter)` |
+| [244](../VRCOSC.Modules/Debug/DebugModule.cs#L244) | `DebugModule` | protected | `protected void SendParameter(string name, object value)` |
+| [246](../VRCOSC.Modules/Debug/DebugModule.cs#L246) | `DebugModule` | protected | `protected new void SendParameter(string name, object value)` |
+| [260](../VRCOSC.Modules/Debug/DebugModule.cs#L260) | `DebugModule` | protected | `protected void SendParameter(Enum lookup, object value)` |
+| [262](../VRCOSC.Modules/Debug/DebugModule.cs#L262) | `DebugModule` | protected | `protected new void SendParameter(Enum lookup, object value)` |
+| [291](../VRCOSC.Modules/Debug/DebugModule.cs#L291) | `DebugModule` | protected | `protected override void OnRegisteredParameterReceived(RegisteredParameter parameter)` |
+| [306](../VRCOSC.Modules/Debug/DebugModule.cs#L306) | `DebugModule` | public | `public async Task<string> DumpParametersAsync(bool includeIncoming = true, bool includeOutgoing = true, string? customFilePath = null)` |
+| [420](../VRCOSC.Modules/Debug/DebugModule.cs#L420) | `DebugModule` | public | `public void ClearTracking()` |
+| [433](../VRCOSC.Modules/Debug/DebugModule.cs#L433) | `DebugModule` | private | `private void UpdateCounts()` |
+| [449](../VRCOSC.Modules/Debug/DebugModule.cs#L449) | `DebugModule` | public | `public Dictionary<string, ParameterData> GetIncomingParameters()` |
+| [454](../VRCOSC.Modules/Debug/DebugModule.cs#L454) | `DebugModule` | public | `public Dictionary<string, ParameterData> GetOutgoingParameters()` |
+| [460](../VRCOSC.Modules/Debug/DebugModule.cs#L460) | `DebugModule` | private | `private string GetDumpDirectory()` |
+| [471](../VRCOSC.Modules/Debug/DebugModule.cs#L471) | `DebugModule` | private | `private CsvSortBy GetSortColumn() => GetSettingValue<CsvSortBy>(DebugSetting.SortBy);` |
+| [472](../VRCOSC.Modules/Debug/DebugModule.cs#L472) | `DebugModule` | private | `private CsvSortDirection GetSortDirection() => GetSettingValue<CsvSortDirection>(DebugSetting.SortDirection);` |
+| [480](../VRCOSC.Modules/Debug/DebugModule.cs#L480) | `DebugModule` | private | `private bool IsLoggingEnabled() => GetSettingValue<bool>(DebugSetting.LogParameterUpdates);` |
 
 ### `Debug/Nodes.cs`
 
@@ -1041,7 +1041,9 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [22](../VRCOSC.Modules/Utilities/OpenVRCompatFix.cs#L22) | `OpenVRCompatFix` | public | `public static void ApplySkipAutoLaunch(Action<string>? log = null)` |
-| [56](../VRCOSC.Modules/Utilities/OpenVRCompatFix.cs#L56) | `SetApplicationAutoLaunchPatch` | public | `public static bool Prefix(ref Valve.VR.EVRApplicationError __result)` |
+| [62](../VRCOSC.Modules/Utilities/OpenVRCompatFix.cs#L62) | `OpenVRCompatFix` | public | `public static void ApplyDisableOpenVR(Action<string>? log = null)` |
+| [93](../VRCOSC.Modules/Utilities/OpenVRCompatFix.cs#L93) | `InitialiseOpenVRPatch` | public | `public static bool Prefix(ref bool __result)` |
+| [103](../VRCOSC.Modules/Utilities/OpenVRCompatFix.cs#L103) | `SetApplicationAutoLaunchPatch` | public | `public static bool Prefix(ref Valve.VR.EVRApplicationError __result)` |
 
 ### `Utilities/OscUtils.cs`
 

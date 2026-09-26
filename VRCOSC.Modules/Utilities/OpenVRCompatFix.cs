@@ -50,6 +50,53 @@ public static class OpenVRCompatFix
         }
     }
 
+    private static bool _initPatched;
+
+    /// <summary>
+    /// Stops VRCOSC's built-in OpenVR manager from initialising at all. Through xrizer that
+    /// initialisation opens a second, full Vulkan OpenXR session on the runtime (VRCOSC is
+    /// treated like a game) and then trips over IVRApplications calls xrizer has not
+    /// implemented, which kills the process. The OpenXR modules cover what the built-in
+    /// manager would have provided.
+    /// </summary>
+    public static void ApplyDisableOpenVR(Action<string>? log = null)
+    {
+        lock (Lock)
+        {
+            if (_initPatched) return;
+            _initPatched = true;
+
+            try
+            {
+                var helperType = Type.GetType("VRCOSC.App.OpenVR.OpenVRHelper, VRCOSC.App");
+                var target = helperType?.GetMethod("InitialiseOpenVR", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+                if (target is null)
+                {
+                    log?.Invoke("[Bluscream] OpenVR compat: OpenVRHelper.InitialiseOpenVR not found; built-in OpenVR left enabled.");
+                    return;
+                }
+
+                var harmony = new Harmony("com.bluscream.vrcosc.openvrcompat.init");
+                var prefix = typeof(InitialiseOpenVRPatch).GetMethod(nameof(InitialiseOpenVRPatch.Prefix), BindingFlags.Static | BindingFlags.Public);
+                harmony.Patch(target, prefix: new HarmonyMethod(prefix));
+                log?.Invoke("[Bluscream] OpenVR compat: built-in OpenVR initialisation disabled (xrizer/WiVRn); the OpenXR modules provide VR data instead.");
+            }
+            catch (Exception ex)
+            {
+                log?.Invoke($"[Bluscream] Warning: failed to disable built-in OpenVR: {ex.Message}");
+            }
+        }
+    }
+
+    public static class InitialiseOpenVRPatch
+    {
+        public static bool Prefix(ref bool __result)
+        {
+            __result = false;
+            return false;
+        }
+    }
+
     public static class SetApplicationAutoLaunchPatch
     {
         // Returning false skips the original; the caller sees "no error".
