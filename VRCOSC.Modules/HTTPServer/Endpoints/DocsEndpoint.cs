@@ -17,7 +17,7 @@ internal static class DocsEndpoint
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "Bluscream.Modules.HTTPServer.swagger-ui.html";
-        
+
         using var stream = assembly.GetManifestResourceStream(resourceName);
         if (stream == null)
         {
@@ -27,7 +27,7 @@ internal static class DocsEndpoint
 
         using var reader = new StreamReader(stream);
         var content = await reader.ReadToEndAsync();
-        
+
         context.Response.ContentType = "text/html";
         var buffer = Encoding.UTF8.GetBytes(content);
         context.Response.ContentLength64 = buffer.Length;
@@ -39,7 +39,7 @@ internal static class DocsEndpoint
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "Bluscream.Modules.HTTPServer.openapi.json";
-        
+
         using var stream = assembly.GetManifestResourceStream(resourceName);
         if (stream == null)
         {
@@ -49,11 +49,11 @@ internal static class DocsEndpoint
 
         using var reader = new StreamReader(stream);
         var content = await reader.ReadToEndAsync();
-        
+
         // Update server URL dynamically - convert + wildcard to localhost for browser compatibility
         var serverUrl = module.GetServerUrl().Replace("http://+:", "http://localhost:");
         content = content.Replace("http://localhost:8080", serverUrl);
-        
+
         context.Response.ContentType = "application/json";
         var buffer = Encoding.UTF8.GetBytes(content);
         context.Response.ContentLength64 = buffer.Length;

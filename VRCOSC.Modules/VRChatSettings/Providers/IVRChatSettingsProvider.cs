@@ -110,9 +110,9 @@ public abstract class VRChatSettingsProviderBase<T> : IVRChatSettingsProvider<T>
 
             var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
-            
+
             var content = await response.Content.ReadAsStringAsync();
-            
+
             if (_module.LogOperations)
             {
                 _module.Log($"Successfully downloaded {content.Length} bytes");

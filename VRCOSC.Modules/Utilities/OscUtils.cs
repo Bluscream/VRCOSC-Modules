@@ -10,10 +10,10 @@ public static class OscUtils
 {
     public static string NormalizeOscAddress(string address)
         => address.StartsWith("/") ? address : "/" + address;
-    
+
     public static bool IsValidOscAddress(string address)
         => !string.IsNullOrEmpty(address) && address.StartsWith("/");
-    
+
     public static string GetOscParameterName(string address)
     {
         var parts = address.Split('/');

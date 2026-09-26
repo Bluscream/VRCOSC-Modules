@@ -28,17 +28,17 @@ public static class ClientDataBuilder
         // Get executing assembly (VRCOSC app) name and version
         var executingAssemblyName = GetExecutingAssemblyName();
         var executingAssemblyVersion = GetExecutingAssemblyVersion();
-        
+
         // Get IrcDotNet version and name
         var (ircLibName, ircLibVersion) = GetIrcDotNetInfo();
-        
+
         // Get module version and name
         var moduleVersion = AssemblyUtils.GetVersion();
         var moduleName = AssemblyUtils.GetAssemblyName();
-        
+
         // Get current Unix timestamp in milliseconds
         var unixTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        
+
         // Build list of CSV values
         var csvValues = new List<string>
         {
@@ -54,24 +54,24 @@ public static class ClientDataBuilder
             userIdHash ?? string.Empty,
             username ?? string.Empty
         };
-        
+
         // Sanitize each value by replacing semicolons with underscores to avoid breaking CSV parsers
         var sanitizedValues = csvValues.Select(v => v.Replace(";", "_")).ToArray();
-        
+
         // Join with semicolons to create CSV line
         return string.Join(";", sanitizedValues);
     }
-    
+
     private static string GetExecutingAssemblyName()
     {
         return AssemblyUtils.GetEntryAssemblyName();
     }
-    
+
     private static string GetExecutingAssemblyVersion()
     {
         return AssemblyUtils.GetEntryAssemblyVersion();
     }
-    
+
     private static (string name, string version) GetIrcDotNetInfo()
     {
         try
@@ -89,7 +89,7 @@ public static class ClientDataBuilder
         }
         return (string.Empty, string.Empty);
     }
-    
+
     /// <summary>
     /// Gets a formatted version string with app, library, and module versions
     /// Format: "AppName Version, LibraryName Version, ModuleName Version"
@@ -97,7 +97,7 @@ public static class ClientDataBuilder
     public static string GetVersionString()
     {
         var parts = new List<string>();
-        
+
         // Get executing assembly (VRCOSC app) name and version
         var executingAssemblyName = GetExecutingAssemblyName();
         var executingAssemblyVersion = GetExecutingAssemblyVersion();
@@ -105,14 +105,14 @@ public static class ClientDataBuilder
         {
             parts.Add($"{executingAssemblyName} {executingAssemblyVersion}");
         }
-        
+
         // Get IrcDotNet version and name
         var (ircLibName, ircLibVersion) = GetIrcDotNetInfo();
         if (!string.IsNullOrEmpty(ircLibName) && !string.IsNullOrEmpty(ircLibVersion))
         {
             parts.Add($"{ircLibName} {ircLibVersion}");
         }
-        
+
         // Get module version and name
         var moduleVersion = AssemblyUtils.GetVersion();
         var moduleName = AssemblyUtils.GetAssemblyName();
@@ -120,7 +120,7 @@ public static class ClientDataBuilder
         {
             parts.Add($"{moduleName} {moduleVersion}");
         }
-        
+
         return string.Join(", ", parts);
     }
 }

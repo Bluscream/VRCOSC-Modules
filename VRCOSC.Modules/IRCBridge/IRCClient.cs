@@ -17,7 +17,7 @@ public class IRCClient : IDisposable
 
     public bool IsConnected => _isConnected && (_client?.IsConnected ?? false);
     public bool IsConnecting => _isConnecting;
-    
+
     // Expose the underlying StandardIrcClient for direct event subscription
     public StandardIrcClient? Client => _client;
 
@@ -35,14 +35,14 @@ public class IRCClient : IDisposable
         {
             throw new ArgumentNullException(nameof(logAction));
         }
-        
+
         _logAction = logAction;
-        
+
         try
         {
             // Initialize the StandardIrcClient immediately so it's available for event subscriptions
             _client = new StandardIrcClient();
-            
+
             // Add flood preventer (best practice from IrcBot sample)
             _client.FloodPreventer = new IrcStandardFloodPreventer(4, 2000);
         }
@@ -51,7 +51,7 @@ public class IRCClient : IDisposable
             _logAction($"Failed to initialize StandardIrcClient: {ex.Message}");
             throw;
         }
-        
+
         // Wire up basic events
         _client.Connected += (sender, e) =>
         {
@@ -192,7 +192,7 @@ public class IRCClient : IDisposable
                 var reason = quitReason ?? "VRCOSC IRC Bridge disconnecting";
                 _client.Quit(reason);
             }
-            
+
             _client?.Disconnect();
             _isConnected = false;
             _isConnecting = false;

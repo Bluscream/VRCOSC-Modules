@@ -15,7 +15,7 @@ public partial class IRCBridgeModule
     public string GetChannelName() => GetVariableValue<string>(IRCBridgeVariable.ChannelName) ?? string.Empty;
     public string GetNickname() => GetVariableValue<string>(IRCBridgeVariable.Nickname) ?? string.Empty;
     public int GetUserCount() => GetVariableValue<int>(IRCBridgeVariable.UserCount);
-    
+
     // Public accessor for GetVariableValue to be used by nodes
     public T? GetVariableValue<T>(IRCBridgeVariable variable) where T : notnull
     {

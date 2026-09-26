@@ -15,12 +15,12 @@ public class IRCISupportParser
     public int ChanLen { get; private set; } = 200;
     public int TopicLen { get; private set; } = 390;
     public int RealNameLen { get; private set; } = 512;
-    
+
     /// <summary>
     /// Action to call when a limit is updated (for logging)
     /// </summary>
     public Action<string>? OnLimitUpdated { get; set; }
-    
+
     /// <summary>
     /// Resets all limits to default values
     /// </summary>
@@ -31,7 +31,7 @@ public class IRCISupportParser
         TopicLen = 390;
         RealNameLen = 512;
     }
-    
+
     /// <summary>
     /// Parses an ISUPPORT (005) message and updates server limits
     /// </summary>
@@ -41,7 +41,7 @@ public class IRCISupportParser
         {
             return;
         }
-        
+
         // ISUPPORT format: :server 005 nickname KEY=VALUE KEY2=VALUE2 ... :are supported on this server
         // Parse each parameter that looks like KEY=VALUE
         foreach (var param in message.Parameters)
@@ -50,16 +50,16 @@ public class IRCISupportParser
             {
                 continue; // Skip trailing text parameter
             }
-            
+
             var parts = param.Split('=', 2);
             if (parts.Length != 2)
             {
                 continue;
             }
-            
+
             var key = parts[0].ToUpperInvariant();
             var value = parts[1];
-            
+
             switch (key)
             {
                 case "NICKLEN":

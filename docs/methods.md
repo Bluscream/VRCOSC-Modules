@@ -4,12 +4,12 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**712** total across **15** modules.
+**715** total across **15** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 1 |
-| [Debug](#debug) | 39 |
+| [Debug](#debug) | 41 |
 | [DesktopFPS](#desktopfps) | 18 |
 | [HTTP](#http) | 9 |
 | [HTTPServer](#httpserver) | 41 |
@@ -20,7 +20,7 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [LinuxProcessManager](#linuxprocessmanager) | 4 |
 | [Notifications](#notifications) | 25 |
 | [OpenXR](#openxr) | 40 |
-| [Utilities](#utilities) | 244 |
+| [Utilities](#utilities) | 245 |
 | [VRCXBridge](#vrcxbridge) | 34 |
 | [VRChatSettings](#vrchatsettings) | 77 |
 
@@ -79,18 +79,20 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [222](../VRCOSC.Modules/Debug/DebugModule.cs#L222) | `DebugModule` | private | `private void OnMaxLimitReached(string path)` |
 | [227](../VRCOSC.Modules/Debug/DebugModule.cs#L227) | `DebugModule` | private | `private void OnTrackingCleared()` |
 | [232](../VRCOSC.Modules/Debug/DebugModule.cs#L232) | `DebugModule` | protected | `protected override void OnAnyParameterReceived(VRChatParameter parameter)` |
-| [239](../VRCOSC.Modules/Debug/DebugModule.cs#L239) | `DebugModule` | protected | `protected new void SendParameter(string name, object value)` |
-| [251](../VRCOSC.Modules/Debug/DebugModule.cs#L251) | `DebugModule` | protected | `protected new void SendParameter(Enum lookup, object value)` |
-| [279](../VRCOSC.Modules/Debug/DebugModule.cs#L279) | `DebugModule` | protected | `protected override void OnRegisteredParameterReceived(RegisteredParameter parameter)` |
-| [294](../VRCOSC.Modules/Debug/DebugModule.cs#L294) | `DebugModule` | public | `public async Task<string> DumpParametersAsync(bool includeIncoming = true, bool includeOutgoing = true, string? customFilePath = null)` |
-| [408](../VRCOSC.Modules/Debug/DebugModule.cs#L408) | `DebugModule` | public | `public void ClearTracking()` |
-| [421](../VRCOSC.Modules/Debug/DebugModule.cs#L421) | `DebugModule` | private | `private void UpdateCounts()` |
-| [437](../VRCOSC.Modules/Debug/DebugModule.cs#L437) | `DebugModule` | public | `public Dictionary<string, ParameterData> GetIncomingParameters()` |
-| [442](../VRCOSC.Modules/Debug/DebugModule.cs#L442) | `DebugModule` | public | `public Dictionary<string, ParameterData> GetOutgoingParameters()` |
-| [448](../VRCOSC.Modules/Debug/DebugModule.cs#L448) | `DebugModule` | private | `private string GetDumpDirectory()` |
-| [459](../VRCOSC.Modules/Debug/DebugModule.cs#L459) | `DebugModule` | private | `private CsvSortBy GetSortColumn() => GetSettingValue<CsvSortBy>(DebugSetting.SortBy);` |
-| [460](../VRCOSC.Modules/Debug/DebugModule.cs#L460) | `DebugModule` | private | `private CsvSortDirection GetSortDirection() => GetSettingValue<CsvSortDirection>(DebugSetting.SortDirection);` |
-| [468](../VRCOSC.Modules/Debug/DebugModule.cs#L468) | `DebugModule` | private | `private bool IsLoggingEnabled() => GetSettingValue<bool>(DebugSetting.LogParameterUpdates);` |
+| [240](../VRCOSC.Modules/Debug/DebugModule.cs#L240) | `DebugModule` | protected | `protected void SendParameter(string name, object value)` |
+| [242](../VRCOSC.Modules/Debug/DebugModule.cs#L242) | `DebugModule` | protected | `protected new void SendParameter(string name, object value)` |
+| [256](../VRCOSC.Modules/Debug/DebugModule.cs#L256) | `DebugModule` | protected | `protected void SendParameter(Enum lookup, object value)` |
+| [258](../VRCOSC.Modules/Debug/DebugModule.cs#L258) | `DebugModule` | protected | `protected new void SendParameter(Enum lookup, object value)` |
+| [287](../VRCOSC.Modules/Debug/DebugModule.cs#L287) | `DebugModule` | protected | `protected override void OnRegisteredParameterReceived(RegisteredParameter parameter)` |
+| [302](../VRCOSC.Modules/Debug/DebugModule.cs#L302) | `DebugModule` | public | `public async Task<string> DumpParametersAsync(bool includeIncoming = true, bool includeOutgoing = true, string? customFilePath = null)` |
+| [416](../VRCOSC.Modules/Debug/DebugModule.cs#L416) | `DebugModule` | public | `public void ClearTracking()` |
+| [429](../VRCOSC.Modules/Debug/DebugModule.cs#L429) | `DebugModule` | private | `private void UpdateCounts()` |
+| [445](../VRCOSC.Modules/Debug/DebugModule.cs#L445) | `DebugModule` | public | `public Dictionary<string, ParameterData> GetIncomingParameters()` |
+| [450](../VRCOSC.Modules/Debug/DebugModule.cs#L450) | `DebugModule` | public | `public Dictionary<string, ParameterData> GetOutgoingParameters()` |
+| [456](../VRCOSC.Modules/Debug/DebugModule.cs#L456) | `DebugModule` | private | `private string GetDumpDirectory()` |
+| [467](../VRCOSC.Modules/Debug/DebugModule.cs#L467) | `DebugModule` | private | `private CsvSortBy GetSortColumn() => GetSettingValue<CsvSortBy>(DebugSetting.SortBy);` |
+| [468](../VRCOSC.Modules/Debug/DebugModule.cs#L468) | `DebugModule` | private | `private CsvSortDirection GetSortDirection() => GetSettingValue<CsvSortDirection>(DebugSetting.SortDirection);` |
+| [476](../VRCOSC.Modules/Debug/DebugModule.cs#L476) | `DebugModule` | private | `private bool IsLoggingEnabled() => GetSettingValue<bool>(DebugSetting.LogParameterUpdates);` |
 
 ### `Debug/Nodes.cs`
 
@@ -295,19 +297,19 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [59](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L59) | `HomeAssistantModule` | protected | `protected override void OnPreLoad()` |
 | [96](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L96) | `HomeAssistantModule` | protected | `protected override void OnPostLoad()` |
 | [146](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L146) | `HomeAssistantModule` | protected | `protected override async Task<bool> OnModuleStart()` |
-| [212](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L212) | `HomeAssistantModule` | protected | `protected override Task OnModuleStop()` |
-| [231](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L231) | `HomeAssistantModule` | private | `private async Task InitializeTemplateVariables()` |
-| [266](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L266) | `HomeAssistantModule` | private | `private void HandleConnectionStatusChanged(bool connected)` |
-| [283](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L283) | `HomeAssistantModule` | private | `private void HandleStateChanged(string entityId, string newState, JsonElement attributes)` |
-| [314](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L314) | `HomeAssistantModule` | private | `private void HandleTemplateRendered(int subId, string renderedText)` |
-| [323](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L323) | `HomeAssistantModule` | private | `private void PushEntityToOscParameter(string entityId, string state, JsonElement attributes)` |
-| [365](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L365) | `HomeAssistantModule` | protected | `protected override void OnAnyParameterReceived(VRChatParameter parameter)` |
-| [414](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L414) | `HomeAssistantModule` | private | `private async Task ProcessOscParameterInput(string path, VRChatParameter parameter)` |
-| [597](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L597) | `HomeAssistantModule` | private | `private void EnsureDynamicVariable(string entityId, string stateValue)` |
-| [603](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L603) | `HomeAssistantModule` | private | `private void EnsureCustomVariable(string varKey, string displayName, string initialValue)` |
-| [613](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L613) | `HomeAssistantModule` | private | `private bool IsEntityAllowed(string entityId)` |
-| [624](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L624) | `HomeAssistantModule` | public | `public async Task<bool> CallService(string domain, string service, string? entityId = null, object? serviceData = null)` |
-| [651](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L651) | `HomeAssistantModule` | public | `public async Task<string> RenderTemplate(string template)` |
+| [212](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L212) | `HomeAssistantModule` | protected | `protected override async Task OnModuleStop()` |
+| [229](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L229) | `HomeAssistantModule` | private | `private async Task InitializeTemplateVariables()` |
+| [264](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L264) | `HomeAssistantModule` | private | `private void HandleConnectionStatusChanged(bool connected)` |
+| [281](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L281) | `HomeAssistantModule` | private | `private void HandleStateChanged(string entityId, string newState, JsonElement attributes)` |
+| [312](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L312) | `HomeAssistantModule` | private | `private void HandleTemplateRendered(int subId, string renderedText)` |
+| [321](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L321) | `HomeAssistantModule` | private | `private void PushEntityToOscParameter(string entityId, string state, JsonElement attributes)` |
+| [363](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L363) | `HomeAssistantModule` | protected | `protected override void OnAnyParameterReceived(VRChatParameter parameter)` |
+| [412](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L412) | `HomeAssistantModule` | private | `private async Task ProcessOscParameterInput(string path, VRChatParameter parameter)` |
+| [595](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L595) | `HomeAssistantModule` | private | `private void EnsureDynamicVariable(string entityId, string stateValue)` |
+| [601](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L601) | `HomeAssistantModule` | private | `private void EnsureCustomVariable(string varKey, string displayName, string initialValue)` |
+| [611](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L611) | `HomeAssistantModule` | private | `private bool IsEntityAllowed(string entityId)` |
+| [622](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L622) | `HomeAssistantModule` | public | `public async Task<bool> CallService(string domain, string service, string? entityId = null, object? serviceData = null)` |
+| [649](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L649) | `HomeAssistantModule` | public | `public async Task<string> RenderTemplate(string template)` |
 
 ### `HomeAssistant/Nodes.cs`
 
@@ -512,21 +514,21 @@ Every method and constructor, grouped by module and file. The Owner column is th
 |---|---|---|---|
 | [26](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L26) | `LinuxHardwareStatsModule` | protected | `protected override void OnPreLoad()` |
 | [66](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L66) | `LinuxHardwareStatsModule` | protected | `protected override void OnPostLoad()` |
-| [129](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L129) | `LinuxHardwareStatsModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [137](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L137) | `LinuxHardwareStatsModule` | private | `private void DeployHelperScript()` |
-| [181](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L181) | `LinuxHardwareStatsModule` | public | `public LinuxCPU GetCPU() => _cpu;` |
-| [182](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L182) | `LinuxHardwareStatsModule` | public | `public LinuxGPU GetGPU() => _gpu;` |
-| [183](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L183) | `LinuxHardwareStatsModule` | public | `public LinuxRAM GetRAM() => _ram;` |
-| [184](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L184) | `LinuxHardwareStatsModule` | public | `public LinuxNetwork GetNetwork() => _network;` |
-| [185](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L185) | `LinuxHardwareStatsModule` | public | `public LinuxOS GetOS() => _os;` |
-| [188](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L188) | `LinuxHardwareStatsModule` | private | `private void UpdateParameters()` |
-| [408](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L408) | `LinuxHardwareStatsModule` | protected | `protected override Task OnModuleStop()` |
-| [413](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L413) | `LinuxHardwareStatsModule` | private | `private static string FormatBytes(float mb)` |
-| [435](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L435) | `LinuxHardwareStatsModule` | private | `private static string FormatBytesPerSecond(float kb)` |
-| [457](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L457) | `LinuxHardwareStatsModule` | private | `private static string ApplyRedaction(string value, string pattern, string redactedText)` |
-| [468](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L468) | `LinuxHardwareStatsModule` | private | `private void LogDiagnostics(int lineCount, int systemTemp)` |
-| [685](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L685) | `HardwareNameParser` | public | `public static CpuInfo ParseCpu(string fullName)` |
-| [731](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L731) | `HardwareNameParser` | public | `public static GpuInfo ParseGpu(string fullName)` |
+| [130](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L130) | `LinuxHardwareStatsModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [138](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L138) | `LinuxHardwareStatsModule` | private | `private void DeployHelperScript()` |
+| [182](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L182) | `LinuxHardwareStatsModule` | public | `public LinuxCPU GetCPU() => _cpu;` |
+| [183](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L183) | `LinuxHardwareStatsModule` | public | `public LinuxGPU GetGPU() => _gpu;` |
+| [184](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L184) | `LinuxHardwareStatsModule` | public | `public LinuxRAM GetRAM() => _ram;` |
+| [185](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L185) | `LinuxHardwareStatsModule` | public | `public LinuxNetwork GetNetwork() => _network;` |
+| [186](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L186) | `LinuxHardwareStatsModule` | public | `public LinuxOS GetOS() => _os;` |
+| [189](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L189) | `LinuxHardwareStatsModule` | private | `private void UpdateParameters()` |
+| [435](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L435) | `LinuxHardwareStatsModule` | protected | `protected override Task OnModuleStop()` |
+| [440](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L440) | `LinuxHardwareStatsModule` | private | `private static string FormatBytes(float mb)` |
+| [462](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L462) | `LinuxHardwareStatsModule` | private | `private static string FormatBytesPerSecond(float kb)` |
+| [484](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L484) | `LinuxHardwareStatsModule` | private | `private static string ApplyRedaction(string value, string pattern, string redactedText)` |
+| [495](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L495) | `LinuxHardwareStatsModule` | private | `private void LogDiagnostics(int lineCount, int systemTemp)` |
+| [714](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L714) | `HardwareNameParser` | public | `public static CpuInfo ParseCpu(string fullName)` |
+| [760](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L760) | `HardwareNameParser` | public | `public static GpuInfo ParseGpu(string fullName)` |
 
 ### `LinuxHardwareStats/Nodes.cs`
 
@@ -661,7 +663,7 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [153](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L153) | `OpenXRHapticControlModule` | private | `private Silk.NET.OpenXR.Action CreateHapticAction(string name, string localName)` |
 | [164](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L164) | `OpenXRHapticControlModule` | private | `private void TearDownOpenXR()` |
 | [177](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L177) | `OpenXRHapticControlModule` | private | `private static float ConvertFrequency(float v) => Math.Clamp(v, 0, 1) * 300f;` |
-| [178](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L178) | `OpenXRHapticControlModule` | private | `private static float ConvertAmplitude (float v) => Math.Clamp(v, 0, 1);` |
+| [178](../VRCOSC.Modules/OpenXR/OpenXRHapticControlModule.cs#L178) | `OpenXRHapticControlModule` | private | `private static float ConvertAmplitude(float v) => Math.Clamp(v, 0, 1);` |
 
 ### `OpenXR/OpenXRHelpers.cs`
 
@@ -745,78 +747,78 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [20](../VRCOSC.Modules/Utilities/Extensions.cs#L20) | `Extensions` | public | `public static bool IsNullOrWhiteSpace(this string? str) => StringUtils.IsNullOrWhiteSpace(str);` |
-| [21](../VRCOSC.Modules/Utilities/Extensions.cs#L21) | `Extensions` | public | `public static bool IsNullOrEmpty(this string? str) => StringUtils.IsNullOrEmpty(str);` |
-| [22](../VRCOSC.Modules/Utilities/Extensions.cs#L22) | `Extensions` | public | `public static string OrDefault(this string? str, string defaultValue) => StringUtils.OrDefault(str, defaultValue);` |
-| [23](../VRCOSC.Modules/Utilities/Extensions.cs#L23) | `Extensions` | public | `public static string Truncate(this string str, int maxLength, string suffix = "...") => StringUtils.Truncate(str, maxLength, suffix);` |
-| [24](../VRCOSC.Modules/Utilities/Extensions.cs#L24) | `Extensions` | public | `public static int ToIntOrDefault(this string? str, int defaultValue = 0) => StringUtils.ToIntOrDefault(str, defaultValue);` |
-| [25](../VRCOSC.Modules/Utilities/Extensions.cs#L25) | `Extensions` | public | `public static float ToFloatOrDefault(this string? str, float defaultValue = 0f) => StringUtils.ToFloatOrDefault(str, defaultValue);` |
-| [26](../VRCOSC.Modules/Utilities/Extensions.cs#L26) | `Extensions` | public | `public static bool ToBoolOrDefault(this string? str, bool defaultValue = false) => StringUtils.ToBoolOrDefault(str, defaultValue);` |
-| [27](../VRCOSC.Modules/Utilities/Extensions.cs#L27) | `Extensions` | public | `public static string RemovePrefix(this string str, string prefix) => StringUtils.RemovePrefix(str, prefix);` |
-| [28](../VRCOSC.Modules/Utilities/Extensions.cs#L28) | `Extensions` | public | `public static string RemoveSuffix(this string str, string suffix) => StringUtils.RemoveSuffix(str, suffix);` |
-| [34](../VRCOSC.Modules/Utilities/Extensions.cs#L34) | `Extensions` | public | `public static void ForEach<T>(this IEnumerable<T> source, Action<T> action) => CollectionUtils.ForEach(source, action);` |
-| [35](../VRCOSC.Modules/Utilities/Extensions.cs#L35) | `Extensions` | public | `public static bool IsNullOrEmpty<T>(this IEnumerable<T>? source) => CollectionUtils.IsNullOrEmpty(source);` |
-| [36](../VRCOSC.Modules/Utilities/Extensions.cs#L36) | `Extensions` | public | `public static TValue? GetValueOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue? defaultValue = default) where TKey : notnull => CollectionUtils.GetValueOrDefault(dict, key, defaultValue);` |
-| [37](../VRCOSC.Modules/Utilities/Extensions.cs#L37) | `Extensions` | public | `public static void AddOrUpdate<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue value) where TKey : notnull => CollectionUtils.AddOrUpdate(dict, key, value);` |
-| [38](../VRCOSC.Modules/Utilities/Extensions.cs#L38) | `Extensions` | public | `public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, int chunkSize) => CollectionUtils.Chunk(source, chunkSize);` |
-| [44](../VRCOSC.Modules/Utilities/Extensions.cs#L44) | `Extensions` | public | `public static void FireAndForget(this Task task, Action<Exception>? onException = null) => TaskUtils.FireAndForget(task, onException);` |
-| [45](../VRCOSC.Modules/Utilities/Extensions.cs#L45) | `Extensions` | public | `public static Task<T> WithTimeout<T>(this Task<T> task, int timeoutMs, T defaultValue = default!) => TaskUtils.WithTimeout(task, timeoutMs, defaultValue);` |
-| [46](../VRCOSC.Modules/Utilities/Extensions.cs#L46) | `Extensions` | public | `public static Task<bool> WithTimeout(this Task task, int timeoutMs) => TaskUtils.WithTimeout(task, timeoutMs);` |
-| [47](../VRCOSC.Modules/Utilities/Extensions.cs#L47) | `Extensions` | public | `public static Task<T?> RetryAsync<T>(Func<Task<T>> action, int maxRetries = 3, int initialDelayMs = 100) => TaskUtils.RetryAsync(action, maxRetries, initialDelayMs);` |
-| [48](../VRCOSC.Modules/Utilities/Extensions.cs#L48) | `Extensions` | public | `public static Task RetryAsync(Func<Task> action, int maxRetries = 3, int initialDelayMs = 100) => TaskUtils.RetryAsync(action, maxRetries, initialDelayMs);` |
-| [49](../VRCOSC.Modules/Utilities/Extensions.cs#L49) | `Extensions` | public | `public static void DelayedAction(int delayMs, Action action) => TaskUtils.DelayedAction(delayMs, action);` |
-| [55](../VRCOSC.Modules/Utilities/Extensions.cs#L55) | `Extensions` | public | `public static string ToJson(this object obj, bool indented = false) => JsonUtils.ToJson(obj, indented);` |
-| [56](../VRCOSC.Modules/Utilities/Extensions.cs#L56) | `Extensions` | public | `public static T? FromJson<T>(this string json) => JsonUtils.FromJson<T>(json);` |
-| [57](../VRCOSC.Modules/Utilities/Extensions.cs#L57) | `Extensions` | public | `public static bool TryGetJsonProperty<T>(this JsonElement element, string propertyName, out T? value) => JsonUtils.TryGetJsonProperty(element, propertyName, out value);` |
-| [63](../VRCOSC.Modules/Utilities/Extensions.cs#L63) | `Extensions` | public | `public static string GetDescription(this Enum value) => EnumUtils.GetDescription(value);` |
-| [64](../VRCOSC.Modules/Utilities/Extensions.cs#L64) | `Extensions` | public | `public static T ToEnumOrDefault<T>(this string? str, T defaultValue = default!) where T : struct, Enum => EnumUtils.ToEnumOrDefault(str, defaultValue);` |
-| [65](../VRCOSC.Modules/Utilities/Extensions.cs#L65) | `Extensions` | public | `public static IEnumerable<T> GetValues<T>() where T : Enum => EnumUtils.GetValues<T>();` |
-| [71](../VRCOSC.Modules/Utilities/Extensions.cs#L71) | `Extensions` | public | `public static T Clamp<T>(this T value, T min, T max) where T : IComparable<T> => NumericUtils.Clamp(value, min, max);` |
-| [72](../VRCOSC.Modules/Utilities/Extensions.cs#L72) | `Extensions` | public | `public static bool IsBetween<T>(this T value, T min, T max) where T : IComparable<T> => NumericUtils.IsBetween(value, min, max);` |
-| [73](../VRCOSC.Modules/Utilities/Extensions.cs#L73) | `Extensions` | public | `public static double Map(this double value, double fromMin, double fromMax, double toMin, double toMax) => NumericUtils.Map(value, fromMin, fromMax, toMin, toMax);` |
-| [74](../VRCOSC.Modules/Utilities/Extensions.cs#L74) | `Extensions` | public | `public static double RoundTo(this double value, int decimals) => NumericUtils.RoundTo(value, decimals);` |
-| [80](../VRCOSC.Modules/Utilities/Extensions.cs#L80) | `Extensions` | public | `public static long ToUnixTimestamp(this DateTime dateTime) => DateTimeUtils.ToUnixTimestamp(dateTime);` |
-| [81](../VRCOSC.Modules/Utilities/Extensions.cs#L81) | `Extensions` | public | `public static long ToUnixTimestampMs(this DateTime dateTime) => DateTimeUtils.ToUnixTimestampMs(dateTime);` |
-| [82](../VRCOSC.Modules/Utilities/Extensions.cs#L82) | `Extensions` | public | `public static DateTime FromUnixTimestamp(this long timestamp) => DateTimeUtils.FromUnixTimestamp(timestamp);` |
-| [83](../VRCOSC.Modules/Utilities/Extensions.cs#L83) | `Extensions` | public | `public static DateTime FromUnixTimestampMs(this long timestamp) => DateTimeUtils.FromUnixTimestampMs(timestamp);` |
-| [84](../VRCOSC.Modules/Utilities/Extensions.cs#L84) | `Extensions` | public | `public static string ToIso8601(this DateTime dateTime) => DateTimeUtils.ToIso8601(dateTime);` |
-| [85](../VRCOSC.Modules/Utilities/Extensions.cs#L85) | `Extensions` | public | `public static string ToTimeAgo(this DateTime dateTime) => DateTimeUtils.ToTimeAgo(dateTime);` |
-| [91](../VRCOSC.Modules/Utilities/Extensions.cs#L91) | `Extensions` | public | `public static T? GetPropertyValue<T>(this object obj, string propertyName, BindingFlags flags = BindingFlags.Public | BindingFlags.Instance) => TypeUtils.GetPropertyValue<T>(obj, propertyName, flags);` |
-| [92](../VRCOSC.Modules/Utilities/Extensions.cs#L92) | `Extensions` | public | `public static bool SetPropertyValue(this object obj, string propertyName, object? value, BindingFlags flags = BindingFlags.Public | BindingFlags.Instance) => TypeUtils.SetPropertyValue(obj, propertyName, value, flags);` |
-| [93](../VRCOSC.Modules/Utilities/Extensions.cs#L93) | `Extensions` | public | `public static T? GetFieldValue<T>(this object obj, string fieldName, BindingFlags flags = BindingFlags.Public | BindingFlags.Instance) => TypeUtils.GetFieldValue<T>(obj, fieldName, flags);` |
-| [94](../VRCOSC.Modules/Utilities/Extensions.cs#L94) | `Extensions` | public | `public static T? InvokeMethod<T>(this object obj, string methodName, object?[]? parameters = null, BindingFlags flags = BindingFlags.Public | BindingFlags.Instance) => TypeUtils.InvokeMethod<T>(obj, methodName, parameters, flags);` |
-| [95](../VRCOSC.Modules/Utilities/Extensions.cs#L95) | `Extensions` | public | `public static bool HasAttribute<T>(this Type type) where T : Attribute => TypeUtils.HasAttribute<T>(type);` |
-| [96](../VRCOSC.Modules/Utilities/Extensions.cs#L96) | `Extensions` | public | `public static T? GetAttribute<T>(this Type type) where T : Attribute => TypeUtils.GetAttribute<T>(type);` |
-| [102](../VRCOSC.Modules/Utilities/Extensions.cs#L102) | `Extensions` | public | `public static string GetFullMessage(this Exception ex) => ExceptionUtils.GetFullMessage(ex);` |
-| [103](../VRCOSC.Modules/Utilities/Extensions.cs#L103) | `Extensions` | public | `public static IEnumerable<Exception> GetInnerExceptions(this Exception ex) => ExceptionUtils.GetInnerExceptions(ex);` |
-| [109](../VRCOSC.Modules/Utilities/Extensions.cs#L109) | `Extensions` | public | `public static T? ConvertTo<T>(this object? value, T? defaultValue = default) => TypeUtils.ConvertTo(value, defaultValue);` |
-| [110](../VRCOSC.Modules/Utilities/Extensions.cs#L110) | `Extensions` | public | `public static T? As<T>(this object? obj) where T : class => TypeUtils.As<T>(obj);` |
-| [111](../VRCOSC.Modules/Utilities/Extensions.cs#L111) | `Extensions` | public | `public static bool Is<T>(this object? obj) => TypeUtils.Is<T>(obj);` |
-| [117](../VRCOSC.Modules/Utilities/Extensions.cs#L117) | `Extensions` | public | `public static T ThrowIfNull<T>(this T? value, string? paramName = null) where T : class => ValidationUtils.ThrowIfNull(value, paramName);` |
-| [118](../VRCOSC.Modules/Utilities/Extensions.cs#L118) | `Extensions` | public | `public static string ThrowIfNullOrEmpty(this string? value, string? paramName = null) => ValidationUtils.ThrowIfNullOrEmpty(value, paramName);` |
-| [119](../VRCOSC.Modules/Utilities/Extensions.cs#L119) | `Extensions` | public | `public static T? IfNotNull<T>(this T? value, Action<T> action) where T : class => ValidationUtils.IfNotNull(value, action);` |
-| [120](../VRCOSC.Modules/Utilities/Extensions.cs#L120) | `Extensions` | public | `public static TResult? IfNotNull<T, TResult>(this T? value, Func<T, TResult> func) where T : class => ValidationUtils.IfNotNull(value, func);` |
-| [126](../VRCOSC.Modules/Utilities/Extensions.cs#L126) | `Extensions` | public | `public static TResult Pipe<T, TResult>(this T value, Func<T, TResult> func) => FunctionalUtils.Pipe(value, func);` |
-| [127](../VRCOSC.Modules/Utilities/Extensions.cs#L127) | `Extensions` | public | `public static T Tap<T>(this T value, Action<T> action) => FunctionalUtils.Tap(value, action);` |
-| [128](../VRCOSC.Modules/Utilities/Extensions.cs#L128) | `Extensions` | public | `public static TResult Match<T, TResult>(this T? value, Func<T, TResult> some, Func<TResult> none) where T : class => FunctionalUtils.Match(value, some, none);` |
-| [134](../VRCOSC.Modules/Utilities/Extensions.cs#L134) | `Extensions` | public | `public static string NormalizeOscAddress(this string address) => OscUtils.NormalizeOscAddress(address);` |
-| [135](../VRCOSC.Modules/Utilities/Extensions.cs#L135) | `Extensions` | public | `public static bool IsValidOscAddress(this string address) => OscUtils.IsValidOscAddress(address);` |
-| [136](../VRCOSC.Modules/Utilities/Extensions.cs#L136) | `Extensions` | public | `public static string GetOscParameterName(this string address) => OscUtils.GetOscParameterName(address);` |
-| [142](../VRCOSC.Modules/Utilities/Extensions.cs#L142) | `Extensions` | public | `public static bool IsVRChatAvatarId(this string? str) => VRCUtils.IsVRChatAvatarId(str);` |
-| [143](../VRCOSC.Modules/Utilities/Extensions.cs#L143) | `Extensions` | public | `public static bool IsVRChatUserId(this string? str) => VRCUtils.IsValidUserId(str);` |
-| [144](../VRCOSC.Modules/Utilities/Extensions.cs#L144) | `Extensions` | public | `public static bool IsVRChatWorldId(this string? str) => VRCUtils.IsVRChatWorldId(str);` |
-| [150](../VRCOSC.Modules/Utilities/Extensions.cs#L150) | `Extensions` | public | `public static string AddQueryParameter(this string url, string key, string value) => HttpUtils.AddQueryParameter(url, key, value);` |
-| [151](../VRCOSC.Modules/Utilities/Extensions.cs#L151) | `Extensions` | public | `public static bool IsValidUrl(this string? str) => HttpUtils.IsValidUrl(str);` |
-| [157](../VRCOSC.Modules/Utilities/Extensions.cs#L157) | `Extensions` | public | `public static string ToFileSize(this long bytes) => FileUtils.ToFileSize(bytes);` |
-| [158](../VRCOSC.Modules/Utilities/Extensions.cs#L158) | `Extensions` | public | `public static TimeSpan MeasureTime(Action action) => FileUtils.MeasureTime(action);` |
-| [159](../VRCOSC.Modules/Utilities/Extensions.cs#L159) | `Extensions` | public | `public static Task<TimeSpan> MeasureTimeAsync(Func<Task> action) => FileUtils.MeasureTimeAsync(action);` |
-| [165](../VRCOSC.Modules/Utilities/Extensions.cs#L165) | `Extensions` | public | `public static bool LoadSettings(this VRCOSC.App.SDK.Modules.Module module) => ReflectionUtils.LoadFromDisk();` |
-| [166](../VRCOSC.Modules/Utilities/Extensions.cs#L166) | `Extensions` | public | `public static string? GetSettingsFilePath(this VRCOSC.App.SDK.Modules.Module module) => ReflectionUtils.GetModuleSettingsFilePath(module);` |
-| [167](../VRCOSC.Modules/Utilities/Extensions.cs#L167) | `Extensions` | public | `public static Dictionary<string, System.Text.Json.JsonElement>? GetSettings(this VRCOSC.App.SDK.Modules.Module module) => ReflectionUtils.GetModuleSettings(module);` |
-| [168](../VRCOSC.Modules/Utilities/Extensions.cs#L168) | `Extensions` | public | `public static T? GetSetting<T>(this VRCOSC.App.SDK.Modules.Module module, string settingName, T? defaultValue = default) => ReflectionUtils.GetModuleSetting(module, settingName, defaultValue);` |
-| [169](../VRCOSC.Modules/Utilities/Extensions.cs#L169) | `Extensions` | public | `public static bool IsEnabled(this VRCOSC.App.SDK.Modules.Module module) => ReflectionUtils.IsModuleEnabled(module);` |
-| [170](../VRCOSC.Modules/Utilities/Extensions.cs#L170) | `Extensions` | public | `public static bool SendParameterSafe(this VRCOSC.App.SDK.Modules.Module module, Enum lookup, object value) => ModuleUtils.SendParameterSafe(module, lookup, value);` |
-| [171](../VRCOSC.Modules/Utilities/Extensions.cs#L171) | `Extensions` | public | `public static bool SendParameterSafe(this VRCOSC.App.SDK.Modules.Module module, string name, object value) => ModuleUtils.SendParameterSafe(module, name, value);` |
+| [21](../VRCOSC.Modules/Utilities/Extensions.cs#L21) | `Extensions` | public | `public static bool IsNullOrWhiteSpace([NotNullWhen(false)] this string? str) => StringUtils.IsNullOrWhiteSpace(str);` |
+| [22](../VRCOSC.Modules/Utilities/Extensions.cs#L22) | `Extensions` | public | `public static bool IsNullOrEmpty([NotNullWhen(false)] this string? str) => StringUtils.IsNullOrEmpty(str);` |
+| [23](../VRCOSC.Modules/Utilities/Extensions.cs#L23) | `Extensions` | public | `public static string OrDefault(this string? str, string defaultValue) => StringUtils.OrDefault(str, defaultValue);` |
+| [24](../VRCOSC.Modules/Utilities/Extensions.cs#L24) | `Extensions` | public | `public static string Truncate(this string str, int maxLength, string suffix = "...") => StringUtils.Truncate(str, maxLength, suffix);` |
+| [25](../VRCOSC.Modules/Utilities/Extensions.cs#L25) | `Extensions` | public | `public static int ToIntOrDefault(this string? str, int defaultValue = 0) => StringUtils.ToIntOrDefault(str, defaultValue);` |
+| [26](../VRCOSC.Modules/Utilities/Extensions.cs#L26) | `Extensions` | public | `public static float ToFloatOrDefault(this string? str, float defaultValue = 0f) => StringUtils.ToFloatOrDefault(str, defaultValue);` |
+| [27](../VRCOSC.Modules/Utilities/Extensions.cs#L27) | `Extensions` | public | `public static bool ToBoolOrDefault(this string? str, bool defaultValue = false) => StringUtils.ToBoolOrDefault(str, defaultValue);` |
+| [28](../VRCOSC.Modules/Utilities/Extensions.cs#L28) | `Extensions` | public | `public static string RemovePrefix(this string str, string prefix) => StringUtils.RemovePrefix(str, prefix);` |
+| [29](../VRCOSC.Modules/Utilities/Extensions.cs#L29) | `Extensions` | public | `public static string RemoveSuffix(this string str, string suffix) => StringUtils.RemoveSuffix(str, suffix);` |
+| [35](../VRCOSC.Modules/Utilities/Extensions.cs#L35) | `Extensions` | public | `public static void ForEach<T>(this IEnumerable<T> source, Action<T> action) => CollectionUtils.ForEach(source, action);` |
+| [36](../VRCOSC.Modules/Utilities/Extensions.cs#L36) | `Extensions` | public | `public static bool IsNullOrEmpty<T>(this IEnumerable<T>? source) => CollectionUtils.IsNullOrEmpty(source);` |
+| [37](../VRCOSC.Modules/Utilities/Extensions.cs#L37) | `Extensions` | public | `public static TValue? GetValueOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue? defaultValue = default) where TKey : notnull => CollectionUtils.GetValueOrDefault(dict, key, defaultValue);` |
+| [38](../VRCOSC.Modules/Utilities/Extensions.cs#L38) | `Extensions` | public | `public static void AddOrUpdate<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue value) where TKey : notnull => CollectionUtils.AddOrUpdate(dict, key, value);` |
+| [39](../VRCOSC.Modules/Utilities/Extensions.cs#L39) | `Extensions` | public | `public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, int chunkSize) => CollectionUtils.Chunk(source, chunkSize);` |
+| [45](../VRCOSC.Modules/Utilities/Extensions.cs#L45) | `Extensions` | public | `public static void FireAndForget(this Task task, Action<Exception>? onException = null) => TaskUtils.FireAndForget(task, onException);` |
+| [46](../VRCOSC.Modules/Utilities/Extensions.cs#L46) | `Extensions` | public | `public static Task<T> WithTimeout<T>(this Task<T> task, int timeoutMs, T defaultValue = default!) => TaskUtils.WithTimeout(task, timeoutMs, defaultValue);` |
+| [47](../VRCOSC.Modules/Utilities/Extensions.cs#L47) | `Extensions` | public | `public static Task<bool> WithTimeout(this Task task, int timeoutMs) => TaskUtils.WithTimeout(task, timeoutMs);` |
+| [48](../VRCOSC.Modules/Utilities/Extensions.cs#L48) | `Extensions` | public | `public static Task<T?> RetryAsync<T>(Func<Task<T>> action, int maxRetries = 3, int initialDelayMs = 100) => TaskUtils.RetryAsync(action, maxRetries, initialDelayMs);` |
+| [49](../VRCOSC.Modules/Utilities/Extensions.cs#L49) | `Extensions` | public | `public static Task RetryAsync(Func<Task> action, int maxRetries = 3, int initialDelayMs = 100) => TaskUtils.RetryAsync(action, maxRetries, initialDelayMs);` |
+| [50](../VRCOSC.Modules/Utilities/Extensions.cs#L50) | `Extensions` | public | `public static void DelayedAction(int delayMs, Action action) => TaskUtils.DelayedAction(delayMs, action);` |
+| [56](../VRCOSC.Modules/Utilities/Extensions.cs#L56) | `Extensions` | public | `public static string ToJson(this object obj, bool indented = false) => JsonUtils.ToJson(obj, indented);` |
+| [57](../VRCOSC.Modules/Utilities/Extensions.cs#L57) | `Extensions` | public | `public static T? FromJson<T>(this string json) => JsonUtils.FromJson<T>(json);` |
+| [58](../VRCOSC.Modules/Utilities/Extensions.cs#L58) | `Extensions` | public | `public static bool TryGetJsonProperty<T>(this JsonElement element, string propertyName, out T? value) => JsonUtils.TryGetJsonProperty(element, propertyName, out value);` |
+| [64](../VRCOSC.Modules/Utilities/Extensions.cs#L64) | `Extensions` | public | `public static string GetDescription(this Enum value) => EnumUtils.GetDescription(value);` |
+| [65](../VRCOSC.Modules/Utilities/Extensions.cs#L65) | `Extensions` | public | `public static T ToEnumOrDefault<T>(this string? str, T defaultValue = default!) where T : struct, Enum => EnumUtils.ToEnumOrDefault(str, defaultValue);` |
+| [66](../VRCOSC.Modules/Utilities/Extensions.cs#L66) | `Extensions` | public | `public static IEnumerable<T> GetValues<T>() where T : Enum => EnumUtils.GetValues<T>();` |
+| [72](../VRCOSC.Modules/Utilities/Extensions.cs#L72) | `Extensions` | public | `public static T Clamp<T>(this T value, T min, T max) where T : IComparable<T> => NumericUtils.Clamp(value, min, max);` |
+| [73](../VRCOSC.Modules/Utilities/Extensions.cs#L73) | `Extensions` | public | `public static bool IsBetween<T>(this T value, T min, T max) where T : IComparable<T> => NumericUtils.IsBetween(value, min, max);` |
+| [74](../VRCOSC.Modules/Utilities/Extensions.cs#L74) | `Extensions` | public | `public static double Map(this double value, double fromMin, double fromMax, double toMin, double toMax) => NumericUtils.Map(value, fromMin, fromMax, toMin, toMax);` |
+| [75](../VRCOSC.Modules/Utilities/Extensions.cs#L75) | `Extensions` | public | `public static double RoundTo(this double value, int decimals) => NumericUtils.RoundTo(value, decimals);` |
+| [81](../VRCOSC.Modules/Utilities/Extensions.cs#L81) | `Extensions` | public | `public static long ToUnixTimestamp(this DateTime dateTime) => DateTimeUtils.ToUnixTimestamp(dateTime);` |
+| [82](../VRCOSC.Modules/Utilities/Extensions.cs#L82) | `Extensions` | public | `public static long ToUnixTimestampMs(this DateTime dateTime) => DateTimeUtils.ToUnixTimestampMs(dateTime);` |
+| [83](../VRCOSC.Modules/Utilities/Extensions.cs#L83) | `Extensions` | public | `public static DateTime FromUnixTimestamp(this long timestamp) => DateTimeUtils.FromUnixTimestamp(timestamp);` |
+| [84](../VRCOSC.Modules/Utilities/Extensions.cs#L84) | `Extensions` | public | `public static DateTime FromUnixTimestampMs(this long timestamp) => DateTimeUtils.FromUnixTimestampMs(timestamp);` |
+| [85](../VRCOSC.Modules/Utilities/Extensions.cs#L85) | `Extensions` | public | `public static string ToIso8601(this DateTime dateTime) => DateTimeUtils.ToIso8601(dateTime);` |
+| [86](../VRCOSC.Modules/Utilities/Extensions.cs#L86) | `Extensions` | public | `public static string ToTimeAgo(this DateTime dateTime) => DateTimeUtils.ToTimeAgo(dateTime);` |
+| [92](../VRCOSC.Modules/Utilities/Extensions.cs#L92) | `Extensions` | public | `public static T? GetPropertyValue<T>(this object obj, string propertyName, BindingFlags flags = BindingFlags.Public | BindingFlags.Instance) => TypeUtils.GetPropertyValue<T>(obj, propertyName, flags);` |
+| [93](../VRCOSC.Modules/Utilities/Extensions.cs#L93) | `Extensions` | public | `public static bool SetPropertyValue(this object obj, string propertyName, object? value, BindingFlags flags = BindingFlags.Public | BindingFlags.Instance) => TypeUtils.SetPropertyValue(obj, propertyName, value, flags);` |
+| [94](../VRCOSC.Modules/Utilities/Extensions.cs#L94) | `Extensions` | public | `public static T? GetFieldValue<T>(this object obj, string fieldName, BindingFlags flags = BindingFlags.Public | BindingFlags.Instance) => TypeUtils.GetFieldValue<T>(obj, fieldName, flags);` |
+| [95](../VRCOSC.Modules/Utilities/Extensions.cs#L95) | `Extensions` | public | `public static T? InvokeMethod<T>(this object obj, string methodName, object?[]? parameters = null, BindingFlags flags = BindingFlags.Public | BindingFlags.Instance) => TypeUtils.InvokeMethod<T>(obj, methodName, parameters, flags);` |
+| [96](../VRCOSC.Modules/Utilities/Extensions.cs#L96) | `Extensions` | public | `public static bool HasAttribute<T>(this Type type) where T : Attribute => TypeUtils.HasAttribute<T>(type);` |
+| [97](../VRCOSC.Modules/Utilities/Extensions.cs#L97) | `Extensions` | public | `public static T? GetAttribute<T>(this Type type) where T : Attribute => TypeUtils.GetAttribute<T>(type);` |
+| [103](../VRCOSC.Modules/Utilities/Extensions.cs#L103) | `Extensions` | public | `public static string GetFullMessage(this Exception ex) => ExceptionUtils.GetFullMessage(ex);` |
+| [104](../VRCOSC.Modules/Utilities/Extensions.cs#L104) | `Extensions` | public | `public static IEnumerable<Exception> GetInnerExceptions(this Exception ex) => ExceptionUtils.GetInnerExceptions(ex);` |
+| [110](../VRCOSC.Modules/Utilities/Extensions.cs#L110) | `Extensions` | public | `public static T? ConvertTo<T>(this object? value, T? defaultValue = default) => TypeUtils.ConvertTo(value, defaultValue);` |
+| [111](../VRCOSC.Modules/Utilities/Extensions.cs#L111) | `Extensions` | public | `public static T? As<T>(this object? obj) where T : class => TypeUtils.As<T>(obj);` |
+| [112](../VRCOSC.Modules/Utilities/Extensions.cs#L112) | `Extensions` | public | `public static bool Is<T>(this object? obj) => TypeUtils.Is<T>(obj);` |
+| [118](../VRCOSC.Modules/Utilities/Extensions.cs#L118) | `Extensions` | public | `public static T ThrowIfNull<T>(this T? value, string? paramName = null) where T : class => ValidationUtils.ThrowIfNull(value, paramName);` |
+| [119](../VRCOSC.Modules/Utilities/Extensions.cs#L119) | `Extensions` | public | `public static string ThrowIfNullOrEmpty(this string? value, string? paramName = null) => ValidationUtils.ThrowIfNullOrEmpty(value, paramName);` |
+| [120](../VRCOSC.Modules/Utilities/Extensions.cs#L120) | `Extensions` | public | `public static T? IfNotNull<T>(this T? value, Action<T> action) where T : class => ValidationUtils.IfNotNull(value, action);` |
+| [121](../VRCOSC.Modules/Utilities/Extensions.cs#L121) | `Extensions` | public | `public static TResult? IfNotNull<T, TResult>(this T? value, Func<T, TResult> func) where T : class => ValidationUtils.IfNotNull(value, func);` |
+| [127](../VRCOSC.Modules/Utilities/Extensions.cs#L127) | `Extensions` | public | `public static TResult Pipe<T, TResult>(this T value, Func<T, TResult> func) => FunctionalUtils.Pipe(value, func);` |
+| [128](../VRCOSC.Modules/Utilities/Extensions.cs#L128) | `Extensions` | public | `public static T Tap<T>(this T value, Action<T> action) => FunctionalUtils.Tap(value, action);` |
+| [129](../VRCOSC.Modules/Utilities/Extensions.cs#L129) | `Extensions` | public | `public static TResult Match<T, TResult>(this T? value, Func<T, TResult> some, Func<TResult> none) where T : class => FunctionalUtils.Match(value, some, none);` |
+| [135](../VRCOSC.Modules/Utilities/Extensions.cs#L135) | `Extensions` | public | `public static string NormalizeOscAddress(this string address) => OscUtils.NormalizeOscAddress(address);` |
+| [136](../VRCOSC.Modules/Utilities/Extensions.cs#L136) | `Extensions` | public | `public static bool IsValidOscAddress(this string address) => OscUtils.IsValidOscAddress(address);` |
+| [137](../VRCOSC.Modules/Utilities/Extensions.cs#L137) | `Extensions` | public | `public static string GetOscParameterName(this string address) => OscUtils.GetOscParameterName(address);` |
+| [143](../VRCOSC.Modules/Utilities/Extensions.cs#L143) | `Extensions` | public | `public static bool IsVRChatAvatarId(this string? str) => VRCUtils.IsVRChatAvatarId(str);` |
+| [144](../VRCOSC.Modules/Utilities/Extensions.cs#L144) | `Extensions` | public | `public static bool IsVRChatUserId(this string? str) => VRCUtils.IsValidUserId(str);` |
+| [145](../VRCOSC.Modules/Utilities/Extensions.cs#L145) | `Extensions` | public | `public static bool IsVRChatWorldId(this string? str) => VRCUtils.IsVRChatWorldId(str);` |
+| [151](../VRCOSC.Modules/Utilities/Extensions.cs#L151) | `Extensions` | public | `public static string AddQueryParameter(this string url, string key, string value) => HttpUtils.AddQueryParameter(url, key, value);` |
+| [152](../VRCOSC.Modules/Utilities/Extensions.cs#L152) | `Extensions` | public | `public static bool IsValidUrl(this string? str) => HttpUtils.IsValidUrl(str);` |
+| [158](../VRCOSC.Modules/Utilities/Extensions.cs#L158) | `Extensions` | public | `public static string ToFileSize(this long bytes) => FileUtils.ToFileSize(bytes);` |
+| [159](../VRCOSC.Modules/Utilities/Extensions.cs#L159) | `Extensions` | public | `public static TimeSpan MeasureTime(Action action) => FileUtils.MeasureTime(action);` |
+| [160](../VRCOSC.Modules/Utilities/Extensions.cs#L160) | `Extensions` | public | `public static Task<TimeSpan> MeasureTimeAsync(Func<Task> action) => FileUtils.MeasureTimeAsync(action);` |
+| [166](../VRCOSC.Modules/Utilities/Extensions.cs#L166) | `Extensions` | public | `public static bool LoadSettings(this VRCOSC.App.SDK.Modules.Module module) => ReflectionUtils.LoadFromDisk();` |
+| [167](../VRCOSC.Modules/Utilities/Extensions.cs#L167) | `Extensions` | public | `public static string? GetSettingsFilePath(this VRCOSC.App.SDK.Modules.Module module) => ReflectionUtils.GetModuleSettingsFilePath(module);` |
+| [168](../VRCOSC.Modules/Utilities/Extensions.cs#L168) | `Extensions` | public | `public static Dictionary<string, System.Text.Json.JsonElement>? GetSettings(this VRCOSC.App.SDK.Modules.Module module) => ReflectionUtils.GetModuleSettings(module);` |
+| [169](../VRCOSC.Modules/Utilities/Extensions.cs#L169) | `Extensions` | public | `public static T? GetSetting<T>(this VRCOSC.App.SDK.Modules.Module module, string settingName, T? defaultValue = default) => ReflectionUtils.GetModuleSetting(module, settingName, defaultValue);` |
+| [170](../VRCOSC.Modules/Utilities/Extensions.cs#L170) | `Extensions` | public | `public static bool IsEnabled(this VRCOSC.App.SDK.Modules.Module module) => ReflectionUtils.IsModuleEnabled(module);` |
+| [171](../VRCOSC.Modules/Utilities/Extensions.cs#L171) | `Extensions` | public | `public static bool SendParameterSafe(this VRCOSC.App.SDK.Modules.Module module, Enum lookup, object value) => ModuleUtils.SendParameterSafe(module, lookup, value);` |
+| [172](../VRCOSC.Modules/Utilities/Extensions.cs#L172) | `Extensions` | public | `public static bool SendParameterSafe(this VRCOSC.App.SDK.Modules.Module module, string name, object value) => ModuleUtils.SendParameterSafe(module, name, value);` |
 
 ### `Utilities/FileUtils.cs`
 
@@ -862,21 +864,22 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [45](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L45) | `LinuxUtils` | public | `public static string GetWineHomeDir()` |
-| [75](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L75) | `LinuxUtils` | public | `public static void RunWine(string command, Action<Exception>? onError = null)` |
-| [100](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L100) | `LinuxUtils` | public | `public static string WrapHostCommand(string command)` |
-| [108](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L108) | `LinuxUtils` | public | `public static void RunHost(string command, Action<Exception>? onError = null)` |
-| [119](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L119) | `LinuxUtils` | public | `public static void RunHostScript(string scriptName, string? arguments = null, Action<Exception>? onError = null)` |
-| [133](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L133) | `LinuxUtils` | public | `public static string RunShell(string command, int timeoutMs = 5000)` |
-| [159](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L159) | `LinuxUtils` | public | `public static string RunShellHost(string command, int timeoutMs = 5000)` |
-| [221](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L221) | `LinuxUtils` | private | `private static UPowerDevice ParseUPowerInfo(string path, string info)` |
-| [261](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L261) | `LinuxUtils` | public | `public static void StartHostProcess(string processName, Action<Exception>? onError = null)` |
-| [267](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L267) | `LinuxUtils` | public | `public static void StopHostProcess(string processName, Action<Exception>? onError = null)` |
-| [281](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L281) | `LinuxUtils` | public | `public static bool IsHostProcessRunning(string processName, bool matchFullCommandLine = false)` |
-| [289](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L289) | `LinuxUtils` | public | `public static string? GetHostProcessId(string processName, bool matchFullCommandLine = false)` |
-| [303](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L303) | `LinuxUtils` | public | `public static string ReadHostFile(string path, int timeoutMs = 5000)` |
-| [329](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L329) | `LinuxUtils` | private | `private static string RunShellViaWine(string command, int timeoutMs = 5000)` |
-| [355](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L355) | `LinuxUtils` | private | `private static string EscapeQuotes(string s) => s.Replace("\"", "\\\"");` |
-| [362](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L362) | `LinuxUtils` | public | `public static void ChmodPlusX(string hostPath, Action<Exception>? onError = null)` |
+| [101](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L101) | `LinuxUtils` | private | `private static bool CanWriteToDirectory(string dirPath)` |
+| [125](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L125) | `LinuxUtils` | public | `public static void RunWine(string command, Action<Exception>? onError = null)` |
+| [150](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L150) | `LinuxUtils` | public | `public static string WrapHostCommand(string command)` |
+| [158](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L158) | `LinuxUtils` | public | `public static void RunHost(string command, Action<Exception>? onError = null)` |
+| [169](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L169) | `LinuxUtils` | public | `public static void RunHostScript(string scriptName, string? arguments = null, Action<Exception>? onError = null)` |
+| [183](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L183) | `LinuxUtils` | public | `public static string RunShell(string command, int timeoutMs = 5000)` |
+| [209](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L209) | `LinuxUtils` | public | `public static string RunShellHost(string command, int timeoutMs = 5000)` |
+| [271](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L271) | `LinuxUtils` | private | `private static UPowerDevice ParseUPowerInfo(string path, string info)` |
+| [311](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L311) | `LinuxUtils` | public | `public static void StartHostProcess(string processName, Action<Exception>? onError = null)` |
+| [317](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L317) | `LinuxUtils` | public | `public static void StopHostProcess(string processName, Action<Exception>? onError = null)` |
+| [331](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L331) | `LinuxUtils` | public | `public static bool IsHostProcessRunning(string processName, bool matchFullCommandLine = false)` |
+| [339](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L339) | `LinuxUtils` | public | `public static string? GetHostProcessId(string processName, bool matchFullCommandLine = false)` |
+| [353](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L353) | `LinuxUtils` | public | `public static string ReadHostFile(string path, int timeoutMs = 5000)` |
+| [379](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L379) | `LinuxUtils` | private | `private static string RunShellViaWine(string command, int timeoutMs = 5000)` |
+| [405](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L405) | `LinuxUtils` | private | `private static string EscapeQuotes(string s) => s.Replace("\"", "\\\"");` |
+| [412](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L412) | `LinuxUtils` | public | `public static void ChmodPlusX(string hostPath, Action<Exception>? onError = null)` |
 
 ### `Utilities/LogSpamFix.cs`
 
@@ -990,15 +993,15 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [13](../VRCOSC.Modules/Utilities/StringUtils.cs#L13) | `StringUtils` | public | `public static bool IsNullOrWhiteSpace(string? str) => string.IsNullOrWhiteSpace(str);` |
-| [15](../VRCOSC.Modules/Utilities/StringUtils.cs#L15) | `StringUtils` | public | `public static bool IsNullOrEmpty(string? str) => string.IsNullOrEmpty(str);` |
-| [17](../VRCOSC.Modules/Utilities/StringUtils.cs#L17) | `StringUtils` | public | `public static string OrDefault(string? str, string defaultValue)` |
-| [20](../VRCOSC.Modules/Utilities/StringUtils.cs#L20) | `StringUtils` | public | `public static string Truncate(string str, int maxLength, string suffix = "...")` |
-| [26](../VRCOSC.Modules/Utilities/StringUtils.cs#L26) | `StringUtils` | public | `public static int ToIntOrDefault(string? str, int defaultValue = 0)` |
-| [29](../VRCOSC.Modules/Utilities/StringUtils.cs#L29) | `StringUtils` | public | `public static float ToFloatOrDefault(string? str, float defaultValue = 0f)` |
-| [32](../VRCOSC.Modules/Utilities/StringUtils.cs#L32) | `StringUtils` | public | `public static bool ToBoolOrDefault(string? str, bool defaultValue = false)` |
-| [35](../VRCOSC.Modules/Utilities/StringUtils.cs#L35) | `StringUtils` | public | `public static string RemovePrefix(string str, string prefix)` |
-| [38](../VRCOSC.Modules/Utilities/StringUtils.cs#L38) | `StringUtils` | public | `public static string RemoveSuffix(string str, string suffix)` |
+| [14](../VRCOSC.Modules/Utilities/StringUtils.cs#L14) | `StringUtils` | public | `public static bool IsNullOrWhiteSpace([NotNullWhen(false)] string? str) => string.IsNullOrWhiteSpace(str);` |
+| [16](../VRCOSC.Modules/Utilities/StringUtils.cs#L16) | `StringUtils` | public | `public static bool IsNullOrEmpty([NotNullWhen(false)] string? str) => string.IsNullOrEmpty(str);` |
+| [18](../VRCOSC.Modules/Utilities/StringUtils.cs#L18) | `StringUtils` | public | `public static string OrDefault(string? str, string defaultValue)` |
+| [21](../VRCOSC.Modules/Utilities/StringUtils.cs#L21) | `StringUtils` | public | `public static string Truncate(string str, int maxLength, string suffix = "...")` |
+| [27](../VRCOSC.Modules/Utilities/StringUtils.cs#L27) | `StringUtils` | public | `public static int ToIntOrDefault(string? str, int defaultValue = 0)` |
+| [30](../VRCOSC.Modules/Utilities/StringUtils.cs#L30) | `StringUtils` | public | `public static float ToFloatOrDefault(string? str, float defaultValue = 0f)` |
+| [33](../VRCOSC.Modules/Utilities/StringUtils.cs#L33) | `StringUtils` | public | `public static bool ToBoolOrDefault(string? str, bool defaultValue = false)` |
+| [36](../VRCOSC.Modules/Utilities/StringUtils.cs#L36) | `StringUtils` | public | `public static string RemovePrefix(string str, string prefix)` |
+| [39](../VRCOSC.Modules/Utilities/StringUtils.cs#L39) | `StringUtils` | public | `public static string RemoveSuffix(string str, string suffix)` |
 
 ### `Utilities/TaskUtils.cs`
 
@@ -1057,44 +1060,44 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [25](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L25) | `VRCXGetOnlineFriendsNode` | protected | `protected override async Task Process(PulseCtx c)` |
-| [68](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L68) | `VRCXSendInviteNode` | protected | `protected override async Task Process(PulseCtx c)` |
-| [117](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L117) | `VRCXGetUserInfoNode` | protected | `protected override async Task Process(PulseCtx c)` |
-| [166](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L166) | `VRCXGetCurrentLocationNode` | protected | `protected override async Task Process(PulseCtx c)` |
-| [208](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L208) | `VRCXShowToastNode` | protected | `protected override async Task Process(PulseCtx c)` |
-| [252](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L252) | `VRCXConnectionStatusNode` | protected | `protected override Task Process(PulseCtx c)` |
+| [69](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L69) | `VRCXSendInviteNode` | protected | `protected override async Task Process(PulseCtx c)` |
+| [119](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L119) | `VRCXGetUserInfoNode` | protected | `protected override async Task Process(PulseCtx c)` |
+| [169](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L169) | `VRCXGetCurrentLocationNode` | protected | `protected override async Task Process(PulseCtx c)` |
+| [212](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L212) | `VRCXShowToastNode` | protected | `protected override async Task Process(PulseCtx c)` |
+| [257](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L257) | `VRCXConnectionStatusNode` | protected | `protected override Task Process(PulseCtx c)` |
 
 ### `VRCXBridge/VRCXBridgeModule.cs`
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [39](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L39) | `VRCXBridgeModule` | protected | `protected override void OnPreLoad()` |
-| [57](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L57) | `VRCXBridgeModule` | protected | `protected override async Task<bool> OnModuleStart()` |
-| [71](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L71) | `VRCXBridgeModule` | private | `private void RestorePersistedVariables()` |
-| [133](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L133) | `VRCXBridgeModule` | protected | `protected override Task OnModuleStop()` |
-| [140](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L140) | `VRCXBridgeModule` | private | `private static string GetVRCXPipeName()` |
-| [150](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L150) | `VRCXBridgeModule` | private | `private async Task ConnectToVRCX()` |
-| [268](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L268) | `VRCXBridgeModule` | private | `private void TryReconnect()` |
-| [293](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L293) | `VRCXBridgeModule` | private | `private void DisconnectFromVRCX()` |
-| [345](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L345) | `VRCXBridgeModule` | private | `private async Task ReadMessages()` |
-| [426](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L426) | `VRCXBridgeModule` | private | `private async Task HandleVRCXMessage(string message)` |
-| [588](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L588) | `VRCXBridgeModule` | private | `private Task SendOSCToVRChat(string address, JsonNode value)` |
-| [654](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L654) | `VRCXBridgeModule` | private | `private void SendChatBox(string text, bool minimalBackground)` |
-| [662](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L662) | `VRCXBridgeModule` | private | `private void SendRawOSC(string address, params object[] args)` |
-| [669](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L669) | `VRCXBridgeModule` | private | `private static object ParseJsonValue(JsonNode? node)` |
-| [681](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L681) | `VRCXBridgeModule` | protected | `protected override void OnAnyParameterReceived(VRChatParameter parameter)` |
-| [733](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L733) | `VRCXBridgeModule` | private | `private async Task SendToVRCX(string msgType, object data)` |
-| [798](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L798) | `VRCXBridgeModule` | public | `public async Task<JsonNode?> SendCommandToVRCX(string command, object args, int timeoutMs = 5000)` |
-| [820](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L820) | `VRCXBridgeModule` | public | `public async Task<JsonNode?> GetOnlineFriends()` |
-| [824](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L824) | `VRCXBridgeModule` | public | `public async Task<JsonNode?> SendInvite(string userId, string instanceId, string worldId, string worldName, string? message = null)` |
-| [828](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L828) | `VRCXBridgeModule` | public | `public async Task<JsonNode?> GetUserInfo(string userId)` |
-| [832](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L832) | `VRCXBridgeModule` | public | `public async Task<JsonNode?> GetCurrentLocation()` |
-| [836](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L836) | `VRCXBridgeModule` | public | `public async Task<JsonNode?> ShowVRCXToast(string message, string type = "info")` |
-| [841](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L841) | `VRCXBridgeModule` | private | `private void EnsureStateExists(string name, string? displayName = null)` |
-| [851](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L851) | `VRCXBridgeModule` | private | `private void EnsureEventExists(string name, string? displayName = null)` |
-| [861](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L861) | `VRCXBridgeModule` | private | `private async Task<object?> HandleVRCXCommand(string command, JsonNode? args, string? requestId)` |
-| [1167](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1167) | `VRCXBridgeModule` | private | `private void StartFlushTimer()` |
-| [1177](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1177) | `VRCXBridgeModule` | private | `private void StopFlushTimer()` |
-| [1186](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1186) | `VRCXBridgeModule` | private | `private void FlushEventBuffer()` |
+| [40](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L40) | `VRCXBridgeModule` | protected | `protected override void OnPreLoad()` |
+| [58](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L58) | `VRCXBridgeModule` | protected | `protected override async Task<bool> OnModuleStart()` |
+| [72](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L72) | `VRCXBridgeModule` | private | `private void RestorePersistedVariables()` |
+| [134](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L134) | `VRCXBridgeModule` | protected | `protected override Task OnModuleStop()` |
+| [141](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L141) | `VRCXBridgeModule` | private | `private static string GetVRCXPipeName()` |
+| [151](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L151) | `VRCXBridgeModule` | private | `private async Task ConnectToVRCX()` |
+| [269](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L269) | `VRCXBridgeModule` | private | `private void TryReconnect()` |
+| [294](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L294) | `VRCXBridgeModule` | private | `private void DisconnectFromVRCX()` |
+| [346](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L346) | `VRCXBridgeModule` | private | `private async Task ReadMessages()` |
+| [427](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L427) | `VRCXBridgeModule` | private | `private async Task HandleVRCXMessage(string message)` |
+| [589](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L589) | `VRCXBridgeModule` | private | `private Task SendOSCToVRChat(string address, JsonNode value)` |
+| [655](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L655) | `VRCXBridgeModule` | private | `private void SendChatBox(string text, bool minimalBackground)` |
+| [663](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L663) | `VRCXBridgeModule` | private | `private void SendRawOSC(string address, params object[] args)` |
+| [670](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L670) | `VRCXBridgeModule` | private | `private static object ParseJsonValue(JsonNode? node)` |
+| [682](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L682) | `VRCXBridgeModule` | protected | `protected override void OnAnyParameterReceived(VRChatParameter parameter)` |
+| [734](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L734) | `VRCXBridgeModule` | private | `private async Task SendToVRCX(string msgType, object data)` |
+| [799](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L799) | `VRCXBridgeModule` | public | `public async Task<JsonNode?> SendCommandToVRCX(string command, object args, int timeoutMs = 5000)` |
+| [821](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L821) | `VRCXBridgeModule` | public | `public async Task<JsonNode?> GetOnlineFriends()` |
+| [825](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L825) | `VRCXBridgeModule` | public | `public async Task<JsonNode?> SendInvite(string userId, string instanceId, string worldId, string worldName, string? message = null)` |
+| [829](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L829) | `VRCXBridgeModule` | public | `public async Task<JsonNode?> GetUserInfo(string userId)` |
+| [833](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L833) | `VRCXBridgeModule` | public | `public async Task<JsonNode?> GetCurrentLocation()` |
+| [837](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L837) | `VRCXBridgeModule` | public | `public async Task<JsonNode?> ShowVRCXToast(string message, string type = "info")` |
+| [842](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L842) | `VRCXBridgeModule` | private | `private void EnsureStateExists(string name, string? displayName = null)` |
+| [852](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L852) | `VRCXBridgeModule` | private | `private void EnsureEventExists(string name, string? displayName = null)` |
+| [862](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L862) | `VRCXBridgeModule` | private | `private async Task<object?> HandleVRCXCommand(string command, JsonNode? args, string? requestId)` |
+| [1168](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1168) | `VRCXBridgeModule` | private | `private void StartFlushTimer()` |
+| [1178](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1178) | `VRCXBridgeModule` | private | `private void StopFlushTimer()` |
+| [1187](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1187) | `VRCXBridgeModule` | private | `private void FlushEventBuffer()` |
 
 
 ## VRChatSettings

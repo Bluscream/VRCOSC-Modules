@@ -15,18 +15,18 @@ namespace VRCOSC.Modules.OpenXR;
 [ModuleInfo("https://vrcosc.com/docs/V2/Modules/gesture-extensions")]
 public class OpenXRGestureExtensionsModule : Module
 {
-    private XR?             _xr;
-    private Instance        _instance;
-    private Session         _session;
-    private ulong           _systemId;
-    private bool            _xrReady;
-    private bool            _handTrackingSupported;
+    private XR? _xr;
+    private Instance _instance;
+    private Session _session;
+    private ulong _systemId;
+    private bool _xrReady;
+    private bool _handTrackingSupported;
 
     private ExtHandTracking? _handTrackingExt;
-    private HandTrackerEXT   _leftTracker;
-    private HandTrackerEXT   _rightTracker;
+    private HandTrackerEXT _leftTracker;
+    private HandTrackerEXT _rightTracker;
 
-    private readonly float[] _leftCurl  = new float[4]; // [Index, Middle, Ring, Pinky]
+    private readonly float[] _leftCurl = new float[4]; // [Index, Middle, Ring, Pinky]
     private readonly float[] _rightCurl = new float[4];
 
     protected override void OnPreLoad()
@@ -37,14 +37,14 @@ public class OpenXRGestureExtensionsModule : Module
             "How far down a finger must be to count as 'down' (0=fully up, 1=fully down)",
             0.5f, 0f, 1f, 0.01f);
 
-        RegisterParameter<int>(GestureParameter.GestureLeft,  "VRCOSC/VR/Gestures/Left",  ParameterMode.Write, "Left Gestures",  "Custom left hand gesture value");
+        RegisterParameter<int>(GestureParameter.GestureLeft, "VRCOSC/VR/Gestures/Left", ParameterMode.Write, "Left Gestures", "Custom left hand gesture value");
         RegisterParameter<int>(GestureParameter.GestureRight, "VRCOSC/VR/Gestures/Right", ParameterMode.Write, "Right Gestures", "Custom right hand gesture value");
     }
 
     protected override Task<bool> OnModuleStart()
     {
         _xrReady = _handTrackingSupported = false;
-        Array.Clear(_leftCurl,  0, 4);
+        Array.Clear(_leftCurl, 0, 4);
         Array.Clear(_rightCurl, 0, 4);
 
         try
@@ -79,7 +79,7 @@ public class OpenXRGestureExtensionsModule : Module
         if (_xrReady && _handTrackingSupported && _handTrackingExt is not null)
             UpdateHandCurls();
 
-        SendParameter(GestureParameter.GestureLeft,  (int)GetGesture(_leftCurl));
+        SendParameter(GestureParameter.GestureLeft, (int)GetGesture(_leftCurl));
         SendParameter(GestureParameter.GestureRight, (int)GetGesture(_rightCurl));
     }
 
@@ -89,16 +89,16 @@ public class OpenXRGestureExtensionsModule : Module
     private GestureName GetGesture(float[] curl)
     {
         float i = curl[0], m = curl[1], r = curl[2], p = curl[3], th = Threshold;
-        if (i < th  && m < th  && r >= th && p >= th) return GestureName.DoubleGun;
-        if (i >= th && m < th  && r >= th && p >= th) return GestureName.MiddleFinger;
-        if (i >= th && m >= th && r >= th && p < th)  return GestureName.PinkyFinger;
+        if (i < th && m < th && r >= th && p >= th) return GestureName.DoubleGun;
+        if (i >= th && m < th && r >= th && p >= th) return GestureName.MiddleFinger;
+        if (i >= th && m >= th && r >= th && p < th) return GestureName.PinkyFinger;
         return GestureName.None;
     }
 
     // ── Hand-tracking polling ────────────────────────────────────
     private void UpdateHandCurls()
     {
-        UpdateSingleHand(_handTrackingExt!, _leftTracker,  _leftCurl);
+        UpdateSingleHand(_handTrackingExt!, _leftTracker, _leftCurl);
         UpdateSingleHand(_handTrackingExt!, _rightTracker, _rightCurl);
     }
 
@@ -109,8 +109,8 @@ public class OpenXRGestureExtensionsModule : Module
         var jointLocations = stackalloc HandJointLocationEXT[OpenXRHelper.HandJointCount];
         var locations = new HandJointLocationsEXT
         {
-            Type           = StructureType.HandJointLocationsExt,
-            JointCount     = (uint)OpenXRHelper.HandJointCount,
+            Type = StructureType.HandJointLocationsExt,
+            JointCount = (uint)OpenXRHelper.HandJointCount,
             JointLocations = jointLocations
         };
         var locateInfo = new HandJointsLocateInfoEXT { Type = StructureType.HandJointsLocateInfoExt, Time = 0 };
@@ -119,7 +119,7 @@ public class OpenXRGestureExtensionsModule : Module
         if (locations.IsActive == 0) return;
 
         // XR_EXT_hand_tracking joint indices: Index prox=7/tip=10, Middle prox=12/tip=15, Ring prox=17/tip=20, Pinky prox=22/tip=25
-        curl[0] = EstimateCurl(jointLocations, 7,  10);
+        curl[0] = EstimateCurl(jointLocations, 7, 10);
         curl[1] = EstimateCurl(jointLocations, 12, 15);
         curl[2] = EstimateCurl(jointLocations, 17, 20);
         curl[3] = EstimateCurl(jointLocations, 22, 25);
@@ -129,7 +129,7 @@ public class OpenXRGestureExtensionsModule : Module
     {
         var validBits = SpaceLocationFlags.PositionValidBit | SpaceLocationFlags.OrientationValidBit;
         if ((joints[proxIdx].LocationFlags & validBits) == 0) return 0f;
-        if ((joints[tipIdx].LocationFlags  & validBits) == 0) return 0f;
+        if ((joints[tipIdx].LocationFlags & validBits) == 0) return 0f;
 
         float dy = joints[tipIdx].Pose.Position.Y - joints[proxIdx].Pose.Position.Y;
         return Math.Clamp(-dy / 0.05f, 0f, 1f);
@@ -167,16 +167,16 @@ public class OpenXRGestureExtensionsModule : Module
 #pragma warning disable CS0618 // Use non-deprecated aliases when available in future SDK versions
         var leftCI = new HandTrackerCreateInfoEXT
         {
-            Type         = StructureType.HandTrackerCreateInfoExt,
-            Hand         = HandEXT.LeftExt,
+            Type = StructureType.HandTrackerCreateInfoExt,
+            Hand = HandEXT.LeftExt,
             HandJointSet = HandJointSetEXT.DefaultExt
         };
         _handTrackingExt.CreateHandTracker(_session, in leftCI, ref _leftTracker);
 
         var rightCI = new HandTrackerCreateInfoEXT
         {
-            Type         = StructureType.HandTrackerCreateInfoExt,
-            Hand         = HandEXT.RightExt,
+            Type = StructureType.HandTrackerCreateInfoExt,
+            Hand = HandEXT.RightExt,
             HandJointSet = HandJointSetEXT.DefaultExt
         };
         _handTrackingExt.CreateHandTracker(_session, in rightCI, ref _rightTracker);
@@ -187,7 +187,7 @@ public class OpenXRGestureExtensionsModule : Module
     {
         if (_handTrackingExt is not null)
         {
-            if (_leftTracker.Handle  != 0) { _handTrackingExt.DestroyHandTracker(_leftTracker);  _leftTracker  = default; }
+            if (_leftTracker.Handle != 0) { _handTrackingExt.DestroyHandTracker(_leftTracker); _leftTracker = default; }
             if (_rightTracker.Handle != 0) { _handTrackingExt.DestroyHandTracker(_rightTracker); _rightTracker = default; }
             _handTrackingExt.Dispose(); _handTrackingExt = null;
         }
@@ -195,7 +195,7 @@ public class OpenXRGestureExtensionsModule : Module
         _xrReady = false;
     }
 
-    private enum GestureSetting   { Threshold }
+    private enum GestureSetting { Threshold }
     private enum GestureParameter { GestureLeft, GestureRight }
-    private enum GestureName      { None = 0, DoubleGun = 1, MiddleFinger = 2, PinkyFinger = 3 }
+    private enum GestureName { None = 0, DoubleGun = 1, MiddleFinger = 2, PinkyFinger = 3 }
 }

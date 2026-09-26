@@ -14,24 +14,24 @@ public static class IRCMessageUtils
     public static string ReconstructRawMessage(IrcDotNet.IrcClient.IrcMessage message)
     {
         var rawMessage = string.Empty;
-        
+
         if (message.Prefix != null)
         {
             rawMessage += $":{message.Prefix} ";
         }
-        
+
         if (message.Command != null)
         {
             rawMessage += message.Command;
         }
-        
+
         if (message.Parameters != null && message.Parameters.Count > 0)
         {
             for (int i = 0; i < message.Parameters.Count; i++)
             {
                 var param = message.Parameters[i];
                 if (param == null) continue;
-                
+
                 if (i == message.Parameters.Count - 1 && param.Contains(' '))
                 {
                     rawMessage += $" :{param}";
@@ -42,10 +42,10 @@ public static class IRCMessageUtils
                 }
             }
         }
-        
+
         return rawMessage;
     }
-    
+
     /// <summary>
     /// Sanitizes a message for logging by replacing control characters with readable representations
     /// </summary>
@@ -55,7 +55,7 @@ public static class IRCMessageUtils
         {
             return message;
         }
-        
+
         // Replace common control characters with readable representations
         return message
             .Replace("\x01", "\\x01")  // SOH (Start of Heading) - used in CTCP/ACTION
@@ -63,7 +63,7 @@ public static class IRCMessageUtils
             .Replace("\r", "\\r")       // Carriage return
             .Replace("\n", "\\n");      // Line feed
     }
-    
+
     /// <summary>
     /// Categorizes an IRC message type for logging purposes
     /// </summary>
@@ -73,9 +73,9 @@ public static class IRCMessageUtils
         {
             return IRCMessageCategory.System;
         }
-        
+
         var upperMessage = rawMessage.ToUpperInvariant();
-        
+
         // Parse the raw message to extract the command
         // Format: [:prefix] COMMAND [params...]
         var parts = rawMessage.TrimStart().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -83,7 +83,7 @@ public static class IRCMessageUtils
         {
             return IRCMessageCategory.System;
         }
-        
+
         // First part might be prefix (starts with :), second part is command
         string command;
         if (parts[0].StartsWith(":"))
@@ -100,7 +100,7 @@ public static class IRCMessageUtils
             // No prefix, command is first part
             command = parts[0];
         }
-        
+
         // Check for numeric responses (001-999) - these are system messages
         if (int.TryParse(command, out int numericCode))
         {
@@ -109,7 +109,7 @@ public static class IRCMessageUtils
                 return IRCMessageCategory.System;
             }
         }
-        
+
         // Check for chat messages (PRIVMSG, NOTICE from users)
         if (command == "PRIVMSG" || command == "NOTICE")
         {
@@ -120,7 +120,7 @@ public static class IRCMessageUtils
             }
             return IRCMessageCategory.Chat;
         }
-        
+
         // Check for IRC events (JOIN, PART, QUIT, NICK, MODE, etc.)
         var eventCommands = new[] { "JOIN", "PART", "QUIT", "NICK", "MODE", "TOPIC", "KICK", "INVITE", "WHOIS", "WHOWAS" };
         foreach (var cmd in eventCommands)
@@ -130,7 +130,7 @@ public static class IRCMessageUtils
                 return IRCMessageCategory.Event;
             }
         }
-        
+
         // Default to system for everything else (PING, PONG, etc.)
         return IRCMessageCategory.System;
     }

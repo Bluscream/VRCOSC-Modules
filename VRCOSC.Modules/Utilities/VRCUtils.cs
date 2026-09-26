@@ -13,7 +13,7 @@ namespace Bluscream;
 public static class VRCUtils
 {
     private static readonly Regex UserIdPattern = new(@"usr_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", RegexOptions.IgnoreCase);
-    
+
     #region User ID Utilities
 
     /// <summary>
@@ -23,7 +23,7 @@ public static class VRCUtils
     {
         if (string.IsNullOrEmpty(userId))
             return false;
-        
+
         return UserIdPattern.IsMatch(userId);
     }
 
@@ -86,7 +86,7 @@ public static class VRCUtils
     /// </summary>
     public static bool IsVRChatAvatarId(string? str)
         => !string.IsNullOrEmpty(str) && str.StartsWith("avtr_") && str.Length == 41;
-    
+
     /// <summary>
     /// Check if string looks like a VRChat world ID
     /// </summary>
@@ -100,7 +100,7 @@ public static class VRCUtils
     public static string ExtractWorldId(string worldInstance)
     {
         if (string.IsNullOrEmpty(worldInstance)) return worldInstance;
-        
+
         var tilde = worldInstance.IndexOf('~');
         return tilde > 0 ? worldInstance.Substring(0, tilde) : worldInstance;
     }

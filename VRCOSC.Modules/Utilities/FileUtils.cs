@@ -17,16 +17,16 @@ public static class FileUtils
         string[] sizes = { "B", "KB", "MB", "GB", "TB" };
         double len = bytes;
         int order = 0;
-        
+
         while (len >= 1024 && order < sizes.Length - 1)
         {
             order++;
             len /= 1024;
         }
-        
+
         return $"{len:0.##} {sizes[order]}";
     }
-    
+
     public static TimeSpan MeasureTime(Action action)
     {
         var sw = Stopwatch.StartNew();
@@ -34,7 +34,7 @@ public static class FileUtils
         sw.Stop();
         return sw.Elapsed;
     }
-    
+
     public static async Task<TimeSpan> MeasureTimeAsync(Func<Task> action)
     {
         var sw = Stopwatch.StartNew();

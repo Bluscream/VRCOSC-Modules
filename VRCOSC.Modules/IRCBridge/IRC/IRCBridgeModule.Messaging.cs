@@ -90,7 +90,7 @@ public partial class IRCBridgeModule
         {
             return;
         }
-        
+
         try
         {
             // Use CtcpClient for proper ACTION message formatting

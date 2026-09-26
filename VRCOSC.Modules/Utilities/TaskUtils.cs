@@ -22,7 +22,7 @@ public static class TaskUtils
             onException?.Invoke(ex);
         }
     }
-    
+
     public static async Task<T> WithTimeout<T>(Task<T> task, int timeoutMs, T defaultValue = default!)
     {
         if (await Task.WhenAny(task, Task.Delay(timeoutMs)) == task)
@@ -31,12 +31,12 @@ public static class TaskUtils
         }
         return defaultValue;
     }
-    
+
     public static async Task<bool> WithTimeout(Task task, int timeoutMs)
     {
         return await Task.WhenAny(task, Task.Delay(timeoutMs)) == task;
     }
-    
+
     public static async Task<T?> RetryAsync<T>(Func<Task<T>> action, int maxRetries = 3, int initialDelayMs = 100)
     {
         for (int i = 0; i < maxRetries; i++)
@@ -53,7 +53,7 @@ public static class TaskUtils
         }
         return default;
     }
-    
+
     public static async Task RetryAsync(Func<Task> action, int maxRetries = 3, int initialDelayMs = 100)
     {
         for (int i = 0; i < maxRetries; i++)
@@ -108,7 +108,7 @@ public static class TaskUtils
         }
         return null;
     }
-    
+
     /// <summary>
     /// Execute an action after a delay (fire and forget)
     /// </summary>

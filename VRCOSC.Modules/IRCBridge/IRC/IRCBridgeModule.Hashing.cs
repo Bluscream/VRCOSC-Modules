@@ -17,13 +17,13 @@ public partial class IRCBridgeModule
         {
             // Always wait at least 1 second after joining channel before broadcasting hashes
             await Task.Delay(1000);
-            
+
             // Initialize last known hashes before first send
             if (string.IsNullOrEmpty(_lastPcHash))
             {
                 // Wait a bit for external IP hash
                 await Task.Delay(500);
-                
+
                 // Initialize tracking hashes (hash on demand)
                 if (_vrchat != null && _hashing != null)
                 {
@@ -33,7 +33,7 @@ public partial class IRCBridgeModule
                     _lastExternalIpHash = _hashing.ExternalIpHash ?? string.Empty;
                 }
             }
-            
+
             await SendClientDataAnnouncementAsync(channelName);
         }
         catch (Exception ex)
@@ -41,14 +41,14 @@ public partial class IRCBridgeModule
             Log($"Error sending client data announcement: {ex.Message}");
         }
     }
-    
+
     private async Task SendClientDataAnnouncementAsync(string channelName)
     {
         if (_ircClient?.Client == null || !_ircClient.IsConnected || _hashing == null || _vrchat == null)
         {
             return;
         }
-        
+
         try
         {
             // Get hashes (hash on demand from cached values)
@@ -56,13 +56,13 @@ public partial class IRCBridgeModule
             var pcHash = _hashing.PcHash ?? string.Empty;
             var userIdHash = !string.IsNullOrEmpty(_vrchat.UserId) ? HashingUtils.GenerateSha256Hash(_vrchat.UserId) : string.Empty;
             var username = _vrchat.Username ?? string.Empty;
-            
+
             // Build CSV line using utility class
             var csvLine = ClientDataBuilder.BuildClientDataCsv(externalIpHash, pcHash, userIdHash, username);
-            
+
             // Send as ACTION message (/me command)
             await SendActionMessageAsync(channelName, csvLine);
-            
+
             // Trigger OnReady event 1 second after join message is sent
             _ = Task.Run(async () =>
             {
@@ -85,7 +85,7 @@ public partial class IRCBridgeModule
             Log($"Error preparing client data announcement: {ex.Message}");
         }
     }
-    
+
     [ModuleUpdate(ModuleUpdateMode.Custom, false, 60000)] // Every 60 seconds
     private async void CheckHashChanges()
     {
@@ -93,18 +93,18 @@ public partial class IRCBridgeModule
         {
             return;
         }
-        
+
         try
         {
             // Wait a bit for external IP hash to be fetched if needed
             await Task.Delay(500);
-            
+
             // Calculate current hashes (hash on demand from cached values)
             var currentUserIdHash = !string.IsNullOrEmpty(_vrchat?.UserId) ? HashingUtils.GenerateSha256Hash(_vrchat.UserId) : string.Empty;
             var currentUsernameHash = !string.IsNullOrEmpty(_vrchat?.Username) ? HashingUtils.GenerateSha256Hash(_vrchat.Username) : string.Empty;
             var currentPcHash = _hashing.PcHash ?? string.Empty;
             var currentExternalIpHash = _hashing.ExternalIpHash ?? string.Empty;
-            
+
             // Check if any hash changed
             bool hashChanged = false;
             if (currentUserIdHash != _lastUserIdHash ||
@@ -115,13 +115,13 @@ public partial class IRCBridgeModule
                 hashChanged = true;
                 Log("Hash change detected, resending welcome message");
             }
-            
+
             // Update last known hashes
             _lastUserIdHash = currentUserIdHash;
             _lastUsernameHash = currentUsernameHash;
             _lastPcHash = currentPcHash;
             _lastExternalIpHash = currentExternalIpHash;
-            
+
             // Resend welcome message if hash changed
             if (hashChanged && _joinedChannel != null)
             {

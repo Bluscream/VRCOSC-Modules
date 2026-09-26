@@ -12,8 +12,8 @@ The Fired column lists every `TriggerEvent` call site; an event with **never** t
 
 | Line | Owner | Lookup | Title | Fired |
 |---|---|---|---|---|
-| [79](../VRCOSC.Modules/Debug/DebugModule.cs#L79) | `DebugModule` | `DebugEvent.OnDumpComplete` | Dump Complete | [DebugModule.cs:372](../VRCOSC.Modules/Debug/DebugModule.cs#L372) |
-| [80](../VRCOSC.Modules/Debug/DebugModule.cs#L80) | `DebugModule` | `DebugEvent.OnTrackingCleared` | Tracking Cleared | [DebugModule.cs:418](../VRCOSC.Modules/Debug/DebugModule.cs#L418) |
+| [79](../VRCOSC.Modules/Debug/DebugModule.cs#L79) | `DebugModule` | `DebugEvent.OnDumpComplete` | Dump Complete | [DebugModule.cs:380](../VRCOSC.Modules/Debug/DebugModule.cs#L380) |
+| [80](../VRCOSC.Modules/Debug/DebugModule.cs#L80) | `DebugModule` | `DebugEvent.OnTrackingCleared` | Tracking Cleared | [DebugModule.cs:426](../VRCOSC.Modules/Debug/DebugModule.cs#L426) |
 
 ## HTTP
 
@@ -36,9 +36,9 @@ The Fired column lists every `TriggerEvent` call site; an event with **never** t
 
 | Line | Owner | Lookup | Title | Fired |
 |---|---|---|---|---|
-| [141](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L141) | `HomeAssistantModule` | `HomeAssistantEvent.OnStateChanged` | On State Changed | [HomeAssistantModule.cs:308](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L308) |
-| [142](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L142) | `HomeAssistantModule` | `HomeAssistantEvent.OnServiceExecuted` | On Service Executed | [HomeAssistantModule.cs:629](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L629) |
-| [143](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L143) | `HomeAssistantModule` | `HomeAssistantEvent.OnError` | On Error | [HomeAssistantModule.cs:631](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L631) |
+| [141](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L141) | `HomeAssistantModule` | `HomeAssistantEvent.OnStateChanged` | On State Changed | [HomeAssistantModule.cs:306](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L306) |
+| [142](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L142) | `HomeAssistantModule` | `HomeAssistantEvent.OnServiceExecuted` | On Service Executed | [HomeAssistantModule.cs:627](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L627) |
+| [143](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L143) | `HomeAssistantModule` | `HomeAssistantEvent.OnError` | On Error | [HomeAssistantModule.cs:629](../VRCOSC.Modules/HomeAssistant/HomeAssistantModule.cs#L629) |
 
 ## IRCBridge
 
@@ -73,7 +73,7 @@ The Fired column lists every `TriggerEvent` call site; an event with **never** t
 
 | Line | Owner | Lookup | Title | Fired |
 |---|---|---|---|---|
-| [856](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L856) | `VRCXBridgeModule` | `eventKey` | (no title) | [VRCXBridgeModule.cs:1096](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1096) |
+| [857](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L857) | `VRCXBridgeModule` | `eventKey` | (no title) | [VRCXBridgeModule.cs:1097](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1097) |
 
 ## VRChatSettings
 

@@ -139,7 +139,7 @@ public class VRChatConfigSettingsProvider : VRChatSettingsProviderBase<VRChatCon
             var category = DetermineCategory(key, description ?? string.Empty);
 
             // Check if requires restart (usually file/path changes do)
-            var requiresRestart = key.Contains("directory") || key.Contains("path") || 
+            var requiresRestart = key.Contains("directory") || key.Contains("path") ||
                                 description?.Contains("restart") == true;
 
             return new VRChatConfigSetting
@@ -186,7 +186,7 @@ public class VRChatConfigSettingsProvider : VRChatSettingsProviderBase<VRChatCon
         if (key.Contains("dynamic_bone") || key.Contains("particle")) return "Performance";
         if (key.Contains("vrcx")) return "VRCX";
         if (key.Contains("discord") || key.Contains("RichPresence")) return "Privacy";
-        
+
         return "General";
     }
 
@@ -194,7 +194,7 @@ public class VRChatConfigSettingsProvider : VRChatSettingsProviderBase<VRChatCon
     {
         // Convert snake_case or camelCase to Title Case
         var words = key.Replace("_", " ").Split(' ');
-        return string.Join(" ", words.Select(w => 
+        return string.Join(" ", words.Select(w =>
             w.Length > 0 ? char.ToUpper(w[0]) + w.Substring(1) : w));
     }
 

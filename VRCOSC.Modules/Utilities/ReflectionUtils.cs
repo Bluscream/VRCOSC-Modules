@@ -340,7 +340,7 @@ public static class ReflectionUtils
     // Field caches
     private static FieldInfo? _moduleParametersField;
     private static FieldInfo? _appManagerOscClientField;
-    
+
     #endregion
 
     #region AppManager Access
@@ -532,7 +532,7 @@ public static class ReflectionUtils
             // Try PulseText first (text set by modules via SendChatBox)
             var pulseTextProp = chatBoxManager.GetType().GetProperty("PulseText", BindingFlags.Public | BindingFlags.Instance);
             var pulseText = pulseTextProp?.GetValue(chatBoxManager) as string;
-            
+
             if (!string.IsNullOrEmpty(pulseText))
                 return pulseText;
 
@@ -765,7 +765,7 @@ public static class ReflectionUtils
 
             // FIX: Initialize the CancellationTokenSource that ForceStart needs
             // ForceStart() calls CancelStartRequest() which tries to cancel this token
-            var tokenSourceField = appManager.GetType().GetField("requestStartCancellationSource", 
+            var tokenSourceField = appManager.GetType().GetField("requestStartCancellationSource",
                 BindingFlags.NonPublic | BindingFlags.Instance);
             if (tokenSourceField != null)
             {
@@ -895,7 +895,7 @@ public static class ReflectionUtils
             if (appManager == null) return null;
 
             // parameterCache is a property, not a field
-            var parameterCacheProp = appManager.GetType().GetProperty("parameterCache", 
+            var parameterCacheProp = appManager.GetType().GetProperty("parameterCache",
                 BindingFlags.NonPublic | BindingFlags.Instance);
             return parameterCacheProp?.GetValue(appManager);
         }
@@ -918,7 +918,7 @@ public static class ReflectionUtils
             foreach (var module in modules)
             {
                 if (module == null) continue;
-                
+
                 var moduleType = module.GetType();
                 if (moduleType.Name == "DebugModule" || moduleType.FullName?.Contains("Debug.DebugModule") == true)
                 {
@@ -946,7 +946,7 @@ public static class ReflectionUtils
             if (debugModule == null) return null;
 
             var debugType = debugModule.GetType();
-            
+
             // Get GetAllIncomingParameters method
             var getIncomingMethod = debugType.GetMethod("GetAllIncomingParameters", BindingFlags.Public | BindingFlags.Instance);
             var getOutgoingMethod = debugType.GetMethod("GetAllOutgoingParameters", BindingFlags.Public | BindingFlags.Instance);
@@ -978,7 +978,7 @@ public static class ReflectionUtils
         {
             var result = new Dictionary<string, object>();
             var dictType = paramDataDict.GetType();
-            
+
             foreach (var kvp in (System.Collections.IDictionary)paramDataDict)
             {
                 var key = kvp.GetType().GetProperty("Key")?.GetValue(kvp) as string;
@@ -1024,7 +1024,7 @@ public static class ReflectionUtils
             // parameterCache is ConcurrentDictionary<ParameterDefinition, VRChatParameter>
             var results = new List<(string, object?, string)>();
             var dictType = cache.GetType();
-            
+
             // Get Values property to iterate VRChatParameter values
             var valuesProperty = dictType.GetProperty("Values");
             if (valuesProperty == null) return null;
@@ -1172,22 +1172,22 @@ public static class ReflectionUtils
             }
 
             // Get Send method - it has multiple overloads, find the one that takes (string, object)
-            var sendMethod = oscClient.GetType().GetMethod("Send", 
+            var sendMethod = oscClient.GetType().GetMethod("Send",
                 BindingFlags.Public | BindingFlags.Instance,
                 null,
                 new[] { typeof(string), typeof(object) },
                 null);
-            
+
             if (sendMethod == null)
             {
                 // Try finding any Send method
                 var allSendMethods = oscClient.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
                     .Where(m => m.Name == "Send").ToArray();
                 System.Diagnostics.Debug.WriteLine($"SendOscParameter: Available Send methods: {string.Join(", ", allSendMethods.Select(m => m.ToString()))}");
-                
+
                 // Use the first Send method with at least 2 parameters
                 sendMethod = allSendMethods.FirstOrDefault(m => m.GetParameters().Length >= 2);
-                
+
                 if (sendMethod == null)
                 {
                     System.Diagnostics.Debug.WriteLine("SendOscParameter: No suitable Send method found on VRChatOscClient");
@@ -1196,8 +1196,8 @@ public static class ReflectionUtils
             }
 
             // Build full address
-            var address = parameterName.StartsWith("/avatar/parameters/") 
-                ? parameterName 
+            var address = parameterName.StartsWith("/avatar/parameters/")
+                ? parameterName
                 : $"/avatar/parameters/{parameterName}";
 
             System.Diagnostics.Debug.WriteLine($"SendOscParameter: Sending {address} = {value} using {sendMethod}");
@@ -1228,9 +1228,9 @@ public static class ReflectionUtils
             }
 
             // Get currentAvatarConfig property (not field)
-            var avatarConfigProp = appManager.GetType().GetProperty("currentAvatarConfig", 
+            var avatarConfigProp = appManager.GetType().GetProperty("currentAvatarConfig",
                 BindingFlags.NonPublic | BindingFlags.Instance);
-            
+
             if (avatarConfigProp == null)
             {
                 System.Diagnostics.Debug.WriteLine("GetCurrentAvatarInfo: currentAvatarConfig property not found");
@@ -1298,10 +1298,10 @@ public static class ReflectionUtils
                 if (module == null) continue;
                 totalModules++;
 
-                    var moduleType = module.GetType();
+                var moduleType = module.GetType();
 
                 // Get basic properties
-                var titleAttr = moduleType.GetCustomAttribute(typeof(System.ComponentModel.DisplayNameAttribute), true) 
+                var titleAttr = moduleType.GetCustomAttribute(typeof(System.ComponentModel.DisplayNameAttribute), true)
                     ?? moduleType.GetCustomAttribute(FindHostType("VRCOSC.App.SDK.Modules.ModuleTitleAttribute", "VRCOSC.App.SDK") ?? typeof(object), true);
                 var descAttr = moduleType.GetCustomAttribute(FindHostType("VRCOSC.App.SDK.Modules.ModuleDescriptionAttribute", "VRCOSC.App.SDK") ?? typeof(object), true);
                 var authorAttr = moduleType.GetCustomAttribute(FindHostType("VRCOSC.App.SDK.Modules.ModuleAuthorAttribute", "VRCOSC.App.SDK") ?? typeof(object), true);
@@ -1329,18 +1329,18 @@ public static class ReflectionUtils
                 var fullId = GetModuleFullId(module);
                 var (packageId, moduleId) = ParseFullId(fullId);
 
-                    modulesList.Add(new
-                    {
-                        name = title,
-                        id = moduleId,
-                        packageId = packageId,
-                        fullId = fullId,
-                        author = author,
-                        description = description,
-                        enabled = enabled,
-                        state = stateStr,
-                        running = stateStr.Equals("Started", StringComparison.OrdinalIgnoreCase)
-                    });
+                modulesList.Add(new
+                {
+                    name = title,
+                    id = moduleId,
+                    packageId = packageId,
+                    fullId = fullId,
+                    author = author,
+                    description = description,
+                    enabled = enabled,
+                    state = stateStr,
+                    running = stateStr.Equals("Started", StringComparison.OrdinalIgnoreCase)
+                });
             }
 
             return modulesList;
@@ -1354,11 +1354,11 @@ public static class ReflectionUtils
     private static (string packageId, string moduleId) ParseFullId(string? fullId)
     {
         if (string.IsNullOrEmpty(fullId)) return ("unknown", "unknown");
-        
+
         var parts = fullId.Split('#');
         if (parts.Length == 2)
             return (parts[0], parts[1]);
-        
+
         return ("unknown", fullId);
     }
 
@@ -1455,7 +1455,7 @@ public static class ReflectionUtils
             // Flatten the dictionary - get all List<Module> values and combine them
             var valuesProperty = modulesDict.GetType().GetProperty("Values");
             var values = valuesProperty?.GetValue(modulesDict) as System.Collections.IEnumerable;
-            
+
             if (values == null) return null;
 
             var allModules = new List<object>();
@@ -1523,7 +1523,7 @@ public static class ReflectionUtils
                 if (module == null) continue;
 
                 var moduleType = module.GetType();
-                
+
                 var serialisationManagerField = moduleType.GetField("moduleSerialisationManager", BindingFlags.NonPublic | BindingFlags.Instance);
                 if (serialisationManagerField == null) continue;
 
@@ -1561,7 +1561,7 @@ public static class ReflectionUtils
 
             var statesProp = chatBoxManager.GetType().GetProperty("States", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
             var statesField = chatBoxManager.GetType().GetField("States", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            
+
             object? statesCollection = statesProp?.GetValue(chatBoxManager) ?? statesField?.GetValue(chatBoxManager);
             if (statesCollection == null) return new List<object>();
 
@@ -1621,7 +1621,7 @@ public static class ReflectionUtils
 
             var eventsProp = chatBoxManager.GetType().GetProperty("Events", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
             var eventsField = chatBoxManager.GetType().GetField("Events", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            
+
             object? eventsCollection = eventsProp?.GetValue(chatBoxManager) ?? eventsField?.GetValue(chatBoxManager);
             if (eventsCollection == null) return new List<object>();
 
@@ -1684,7 +1684,7 @@ public static class ReflectionUtils
         {
             // Try to get current profile's modules directory directly
             var modulesDir = GetCurrentProfileModulesPath();
-            
+
             if (modulesDir != null && Directory.Exists(modulesDir))
             {
                 // Use VRCOSC's actual module ID via reflection
@@ -1783,7 +1783,7 @@ public static class ReflectionUtils
             if (doc.RootElement.TryGetProperty("settings", out var settingsElement))
             {
                 var settings = new Dictionary<string, System.Text.Json.JsonElement>();
-                
+
                 foreach (var property in settingsElement.EnumerateObject())
                 {
                     // Clone the JsonElement so it survives after the JsonDocument is disposed
@@ -1835,7 +1835,7 @@ public static class ReflectionUtils
                 try
                 {
                     var targetType = typeof(T);
-                    
+
                     // Handle nullable types
                     if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Nullable<>))
                     {
@@ -1965,10 +1965,10 @@ public static class ReflectionUtils
         try
         {
             _moduleSendParameterMethod ??= typeof(VRCOSC.App.SDK.Modules.Module).GetMethod(
-                "SendParameter", 
-                BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, 
-                null, 
-                new[] { typeof(string), typeof(object) }, 
+                "SendParameter",
+                BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
+                null,
+                new[] { typeof(string), typeof(object) },
                 null
             );
             return _moduleSendParameterMethod;
@@ -1988,7 +1988,7 @@ public static class ReflectionUtils
         try
         {
             _moduleParametersField ??= typeof(VRCOSC.App.SDK.Modules.Module).GetField(
-                "Parameters", 
+                "Parameters",
                 BindingFlags.Instance | BindingFlags.NonPublic
             );
             return _moduleParametersField?.GetValue(module);
@@ -2059,7 +2059,7 @@ public static class ReflectionUtils
 
             // Convert to dictionary we can work with
             var result = new Dictionary<Enum, object>();
-            
+
             if (parametersField is IDictionary dict)
             {
                 foreach (DictionaryEntry entry in dict)

@@ -149,7 +149,7 @@ public class LinuxMediaModule : Module
 
                 if (_title != oldTitle)
                 {
-                    Log($"Track changed: { (string.IsNullOrEmpty(_artist) ? _title : $"{_artist} - {_title}") }");
+                    Log($"Track changed: {(string.IsNullOrEmpty(_artist) ? _title : $"{_artist} - {_title}")}");
                     TriggerEvent(MediaEvent.OnTrackChange);
                 }
 
@@ -208,17 +208,17 @@ public class LinuxMediaModule : Module
         {
             case MediaParameter.Play:
                 if (parameter.GetValue<bool>())
-                    LinuxUtils.RunHostScript("vrcosc_mpris_query.sh", "control play",   ex => Log($"Error: {ex.Message}"));
+                    LinuxUtils.RunHostScript("vrcosc_mpris_query.sh", "control play", ex => Log($"Error: {ex.Message}"));
                 else
-                    LinuxUtils.RunHostScript("vrcosc_mpris_query.sh", "control pause",  ex => Log($"Error: {ex.Message}"));
+                    LinuxUtils.RunHostScript("vrcosc_mpris_query.sh", "control pause", ex => Log($"Error: {ex.Message}"));
                 break;
 
             case MediaParameter.Next when parameter.GetValue<bool>():
-                LinuxUtils.RunHostScript("vrcosc_mpris_query.sh", "control next",       ex => Log($"Error: {ex.Message}"));
+                LinuxUtils.RunHostScript("vrcosc_mpris_query.sh", "control next", ex => Log($"Error: {ex.Message}"));
                 break;
 
             case MediaParameter.Previous when parameter.GetValue<bool>():
-                LinuxUtils.RunHostScript("vrcosc_mpris_query.sh", "control previous",   ex => Log($"Error: {ex.Message}"));
+                LinuxUtils.RunHostScript("vrcosc_mpris_query.sh", "control previous", ex => Log($"Error: {ex.Message}"));
                 break;
 
             case MediaParameter.Position:
@@ -231,7 +231,7 @@ public class LinuxMediaModule : Module
 
             case MediaParameter.Volume:
                 _volume = parameter.GetValue<float>();
-                LinuxUtils.RunHostScript("vrcosc_mpris_query.sh", $"control volume {_volume}",          ex => Log($"Error: {ex.Message}"));
+                LinuxUtils.RunHostScript("vrcosc_mpris_query.sh", $"control volume {_volume}", ex => Log($"Error: {ex.Message}"));
                 break;
         }
     }

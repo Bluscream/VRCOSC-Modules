@@ -36,7 +36,7 @@ public class OutgoingParameterTracker : ParameterTracker
                 return;
             }
         }
-        
+
         // Fallback to enum name if we can't extract parameter name
         ProcessParameter(lookup.ToString(), value);
     }

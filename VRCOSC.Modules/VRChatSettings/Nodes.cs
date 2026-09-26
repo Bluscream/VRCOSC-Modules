@@ -14,10 +14,10 @@ public sealed class GetRegistryValueNode<T> : FlowModuleNode<VRChatSettingsModul
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
-    
+
     public ValueInput<string> Key = new("Setting Key");
     public ValueInput<string> UserId = new("User ID (Optional)");
-    
+
     public ValueOutput<T> Value = new();
     public ValueOutput<string> Error = new();
 
@@ -27,7 +27,7 @@ public sealed class GetRegistryValueNode<T> : FlowModuleNode<VRChatSettingsModul
         {
             var key = Key.Read(c);
             var userId = UserId.Read(c);
-            
+
             if (string.IsNullOrEmpty(key))
             {
                 Error.Write("Key is required", c);
@@ -64,9 +64,9 @@ public sealed class GetConfigValueNode<T> : FlowModuleNode<VRChatSettingsModule>
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
-    
+
     public ValueInput<string> Key = new("Setting Key");
-    
+
     public ValueOutput<T> Value = new();
     public ValueOutput<string> Error = new();
 
@@ -75,7 +75,7 @@ public sealed class GetConfigValueNode<T> : FlowModuleNode<VRChatSettingsModule>
         try
         {
             var key = Key.Read(c);
-            
+
             if (string.IsNullOrEmpty(key))
             {
                 Error.Write("Key is required", c);
@@ -111,7 +111,7 @@ public sealed class ListAllRegistrySettingsNode : FlowModuleNode<VRChatSettingsM
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
-    
+
     public ValueOutput<Dictionary<string, object>> Settings = new("Settings Dictionary");
     public ValueOutput<int> Count = new("Settings Count");
     public ValueOutput<string> Error = new();
@@ -125,7 +125,7 @@ public sealed class ListAllRegistrySettingsNode : FlowModuleNode<VRChatSettingsM
             {
                 Settings.Write(settings, c);
                 Count.Write(settings.Count, c);
-                
+
                 await Module.SendSuccessParameter();
                 await Next.Execute(c);
             }
@@ -150,7 +150,7 @@ public sealed class ListAllConfigSettingsNode : FlowModuleNode<VRChatSettingsMod
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
-    
+
     public ValueOutput<Dictionary<string, object>> Settings = new("Settings Dictionary");
     public ValueOutput<int> Count = new("Settings Count");
     public ValueOutput<string> Error = new();
@@ -164,7 +164,7 @@ public sealed class ListAllConfigSettingsNode : FlowModuleNode<VRChatSettingsMod
             {
                 Settings.Write(settings, c);
                 Count.Write(settings.Count, c);
-                
+
                 await Module.SendSuccessParameter();
                 await Next.Execute(c);
             }
@@ -191,7 +191,7 @@ public sealed class ObjectToJsonNode<T> : ModuleNode<VRChatSettingsModule>
 {
     public ValueInput<T> Object = new("Input Object");
     public ValueInput<bool> Indented = new("Formatted");
-    
+
     public ValueOutput<string> Json = new("JSON String");
     public ValueOutput<int> Length = new("Length");
 
@@ -209,9 +209,9 @@ public sealed class ObjectToJsonNode<T> : ModuleNode<VRChatSettingsModule>
                 return Task.CompletedTask;
             }
 
-            var options = new System.Text.Json.JsonSerializerOptions 
-            { 
-                WriteIndented = indented 
+            var options = new System.Text.Json.JsonSerializerOptions
+            {
+                WriteIndented = indented
             };
 
             var json = System.Text.Json.JsonSerializer.Serialize(obj, options);
@@ -235,11 +235,11 @@ public sealed class SetRegistryValueNode<T> : FlowModuleNode<VRChatSettingsModul
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
-    
+
     public ValueInput<string> Key = new("Setting Key");
     public ValueInput<T> Value = new();
     public ValueInput<string> UserId = new("User ID (Optional)");
-    
+
     public ValueOutput<string> Error = new();
 
     protected override async Task Process(PulseCtx c)
@@ -249,7 +249,7 @@ public sealed class SetRegistryValueNode<T> : FlowModuleNode<VRChatSettingsModul
             var key = Key.Read(c);
             var value = Value.Read(c);
             var userId = UserId.Read(c);
-            
+
             if (string.IsNullOrEmpty(key))
             {
                 Error.Write("Key is required", c);
@@ -284,10 +284,10 @@ public sealed class SetConfigValueNode<T> : FlowModuleNode<VRChatSettingsModule>
 {
     public FlowContinuation Next = new("Next");
     public FlowContinuation OnError = new("On Error");
-    
+
     public ValueInput<string> Key = new("Setting Key");
     public ValueInput<T> Value = new();
-    
+
     public ValueOutput<string> Error = new();
 
     protected override async Task Process(PulseCtx c)
@@ -296,7 +296,7 @@ public sealed class SetConfigValueNode<T> : FlowModuleNode<VRChatSettingsModule>
         {
             var key = Key.Read(c);
             var value = Value.Read(c);
-            
+
             if (string.IsNullOrEmpty(key))
             {
                 Error.Write("Key is required", c);

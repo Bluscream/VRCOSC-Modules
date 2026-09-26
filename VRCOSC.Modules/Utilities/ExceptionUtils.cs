@@ -15,16 +15,16 @@ public static class ExceptionUtils
     {
         var messages = new List<string> { ex.Message };
         var inner = ex.InnerException;
-        
+
         while (inner != null)
         {
             messages.Add(inner.Message);
             inner = inner.InnerException;
         }
-        
+
         return string.Join(" -> ", messages);
     }
-    
+
     public static IEnumerable<Exception> GetInnerExceptions(Exception ex)
     {
         var inner = ex.InnerException;

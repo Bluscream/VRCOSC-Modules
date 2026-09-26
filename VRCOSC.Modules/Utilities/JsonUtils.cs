@@ -15,7 +15,7 @@ public static class JsonUtils
         var options = new JsonSerializerOptions { WriteIndented = indented };
         return JsonSerializer.Serialize(obj, options);
     }
-    
+
     public static T? FromJson<T>(string json)
     {
         try
@@ -27,7 +27,7 @@ public static class JsonUtils
             return default;
         }
     }
-    
+
     public static bool TryGetJsonProperty<T>(JsonElement element, string propertyName, out T? value)
     {
         value = default;

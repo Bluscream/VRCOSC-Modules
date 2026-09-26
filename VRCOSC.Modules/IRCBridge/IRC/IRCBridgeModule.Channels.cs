@@ -82,7 +82,7 @@ public partial class IRCBridgeModule
         }
 
         await Task.Run(() => _ircClient.Client.LocalUser.SetNickName(newNickname));
-        
+
         // Update variable
         SetVariableValue(IRCBridgeVariable.Nickname, newNickname);
     }

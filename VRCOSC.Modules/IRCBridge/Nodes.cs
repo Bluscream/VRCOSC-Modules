@@ -34,10 +34,10 @@ public sealed class IRCConnectNode : FlowModuleNode<IRCBridgeModule>
             }
 
             await Module.ConnectToIRC();
-            
+
             // Wait a bit for connection to establish
             await Task.Delay(2000);
-            
+
             if (Module.IsConnected)
             {
                 Success.Write(true, c);
@@ -160,7 +160,7 @@ public sealed class IRCSendMessageNode : FlowModuleNode<IRCBridgeModule>
                 // Default: treat as user (backward compatibility)
                 await Module.SendMessageToUserAsync(target, message);
             }
-            
+
             Success.Write(true, c);
             await Next.Execute(c);
         }
@@ -210,7 +210,7 @@ public sealed class IRCJoinChannelNode : FlowModuleNode<IRCBridgeModule>
             }
 
             await Module.JoinChannelAsync(channel);
-            
+
             Success.Write(true, c);
             await Next.Execute(c);
         }
@@ -266,7 +266,7 @@ public sealed class IRCLeaveChannelNode : FlowModuleNode<IRCBridgeModule>
 
             var reason = Reason.Read(c);
             await Module.LeaveChannelAsync(channel, string.IsNullOrEmpty(reason) ? null : reason);
-            
+
             Success.Write(true, c);
             await Next.Execute(c);
         }
@@ -381,7 +381,7 @@ public sealed class IRCGetChannelUserListNode : FlowModuleNode<IRCBridgeModule>
 
             var channel = Channel.Read(c);
             var userList = Module.GetChannelUserList(string.IsNullOrEmpty(channel) ? null : channel);
-            
+
             UserList.Write(userList, c);
             UserCount.Write(userList.Count, c);
             await Next.Execute(c);
@@ -427,7 +427,7 @@ public sealed class IRCChangeNicknameNode : FlowModuleNode<IRCBridgeModule>
             }
 
             await Module.ChangeNicknameAsync(newNickname);
-            
+
             Success.Write(true, c);
             await Next.Execute(c);
         }

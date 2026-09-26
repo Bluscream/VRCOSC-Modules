@@ -20,22 +20,22 @@ internal static class ApiEndpoint
             // Get avatar info
             var avatarInfo = ReflectionUtils.GetCurrentAvatarInfo();
             var (avatarId, avatarName) = avatarInfo ?? (null, null);
-            
+
             // Get chatbox state
             var chatBoxState = ReflectionUtils.GetChatBoxState();
-            
+
             // Get all modules info
             var modulesInfo = ReflectionUtils.GetAllModulesInfo();
-            
+
             // Get all OSC parameters as a dictionary
             var parametersDict = new Dictionary<string, object>();
-            
+
             // Try Debug module first (has both incoming and outgoing)
             var debugParams = ReflectionUtils.GetDebugModuleParameters();
             if (debugParams != null)
             {
                 var (incoming, outgoing) = debugParams.Value;
-                
+
                 // Merge incoming and outgoing into one dict
                 if (incoming != null)
                 {
@@ -44,7 +44,7 @@ internal static class ApiEndpoint
                         parametersDict[kvp.Key] = kvp.Value;
                     }
                 }
-                
+
                 if (outgoing != null)
                 {
                     foreach (var kvp in outgoing)

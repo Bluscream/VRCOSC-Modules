@@ -11,10 +11,10 @@ public abstract class ParameterTracker
 {
     private readonly object _lock = new();
     private readonly Dictionary<string, ParameterData> _parameters = new();
-    
+
     protected int MaxParameters { get; set; }
     protected bool LogUpdates { get; set; }
-    
+
     public int TotalUpdates { get; private set; }
     public int UniqueParameters => _parameters.Count;
 
@@ -40,13 +40,13 @@ public abstract class ParameterTracker
             }
 
             ParameterData paramData;
-            
+
             if (_parameters.ContainsKey(path))
             {
                 var existing = _parameters[path];
-                paramData = existing with 
-                { 
-                    Value = value, 
+                paramData = existing with
+                {
+                    Value = value,
                     LastUpdate = DateTime.Now,
                     UpdateCount = existing.UpdateCount + 1
                 };
@@ -58,7 +58,7 @@ public abstract class ParameterTracker
 
             _parameters[path] = paramData;
             TotalUpdates++;
-            
+
             OnParameterTracked?.Invoke(paramData);
         }
     }
@@ -84,7 +84,7 @@ public abstract class ParameterTracker
     public List<string> ExportToCsvLines(string direction, bool includeHeader = false)
     {
         var lines = new List<string>();
-        
+
         if (includeHeader)
         {
             lines.Add("Parameter Path;Type;Value;First Seen;Last Update;Update Count;Direction");

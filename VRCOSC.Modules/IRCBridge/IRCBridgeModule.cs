@@ -28,23 +28,23 @@ public partial class IRCBridgeModule : Module, IVRCClientEventHandler
     protected IRCClient? _ircClient;
     protected bool _isStopping = false;
     protected static readonly HttpClient _httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
-    
+
     // Store event handler references for proper cleanup
     protected IrcLocalUser? _localUser;
     protected IrcChannel? _joinedChannel;
     protected CtcpClient? _ctcpClient;
-    
+
     // Server limits from ISUPPORT (005) - parsed dynamically
     protected readonly IRCISupportParser _isupportParser = new IRCISupportParser();
-    
+
     // Hash and VRChat management
     protected Hashing? _hashing;
     protected VRChat? _vrchat;
-    
+
     // Nickname management
     protected string? _originalNickname;
     protected int _nicknameConflictCount = 0;
-    
+
     // Hash tracking for change detection
     protected string? _lastUserIdHash;
     protected string? _lastUsernameHash;
@@ -57,23 +57,23 @@ public partial class IRCBridgeModule : Module, IVRCClientEventHandler
         CreateTextBox(IRCBridgeSetting.ServerAddress, "Server Address", "IRC server address (e.g., irc.example.com)", "irc.efnet.org");
         CreateTextBox(IRCBridgeSetting.ServerPort, "Server Port", "IRC server port (typically 6667 for non-SSL, 6697 for SSL)", 6667);
         CreateToggle(IRCBridgeSetting.UseSSL, "Use SSL/TLS", "Enable SSL/TLS encryption", false);
-        
+
         // Channel configuration
         CreateTextBox(IRCBridgeSetting.Channel, "Channel", "IRC channel to join (include # prefix)", "#test");
-        
+
         // User configuration
         CreateTextBox(IRCBridgeSetting.Nickname, "Nickname", "Your IRC nickname (leave empty to use VRC display name)", string.Empty);
         CreateTextBox(IRCBridgeSetting.Username, "Username", "Your IRC username / ident (leave empty to use nickname)", string.Empty);
-        
+
         // Authentication
         CreateTextBox(IRCBridgeSetting.Password, "Server Password", "IRC server password (if required, leave empty if not)", string.Empty);
         CreateTextBox(IRCBridgeSetting.NickServName, "NickServ Name", "NickServ account name (for authentication)", string.Empty);
         CreateTextBox(IRCBridgeSetting.NickServPassword, "NickServ Password", "NickServ account password (for authentication)", string.Empty);
-        
+
         // Connection settings
         CreateToggle(IRCBridgeSetting.AutoReconnect, "Auto Reconnect", "Automatically reconnect if connection is lost", true);
         CreateTextBox(IRCBridgeSetting.ReconnectDelay, "Reconnect Delay (ms)", "Delay before reconnect attempt", 5000);
-        
+
         // Behavior settings
         CreateTextBox(IRCBridgeSetting.MessageCooldown, "Message Cooldown (ms)", "Minimum time between processing same event type", 100);
         CreateToggle(IRCBridgeSetting.LogChatMessages, "Log Chat Messages", "Log incoming and outgoing channel/private messages from users", false);
@@ -134,27 +134,27 @@ public partial class IRCBridgeModule : Module, IVRCClientEventHandler
     {
         SetVariableValue(IRCBridgeVariable.UserCount, 0);
         SetVariableValue(IRCBridgeVariable.ServerStatus, "Disconnected");
-        
+
         // Initialize VRChat instance
         _vrchat = new VRChat(GetClient());
-        
+
         // Subscribe to VRChat change events
         _vrchat.OnUsernameChanged += OnVRChatUsernameChanged;
         _vrchat.OnUserIdChanged += OnVRChatUserIdChanged;
-        
+
         // Initialize VRChat
         await _vrchat.InitializeAsync();
-        
+
         // Initialize hashing instance
         _hashing = new Hashing(_httpClient);
-        
+
         // Subscribe to hash change events
         _hashing.OnExternalIpChanged += OnExternalIpChanged;
         _hashing.OnPcHashChanged += OnPcHashChanged;
-        
+
         // Initialize hashing
         await _hashing.InitializeAsync();
-        
+
         await ConnectToIRC();
         return true;
     }
@@ -162,7 +162,7 @@ public partial class IRCBridgeModule : Module, IVRCClientEventHandler
     protected override async Task OnModuleStop()
     {
         _isStopping = true;
-        
+
         // Unsubscribe from events
         if (_vrchat != null)
         {
@@ -171,7 +171,7 @@ public partial class IRCBridgeModule : Module, IVRCClientEventHandler
             _vrchat.Dispose();
             _vrchat = null;
         }
-        
+
         if (_hashing != null)
         {
             _hashing.OnExternalIpChanged -= OnExternalIpChanged;
@@ -179,10 +179,10 @@ public partial class IRCBridgeModule : Module, IVRCClientEventHandler
             _hashing.Dispose();
             _hashing = null;
         }
-        
+
         await DisconnectFromIRCAsync("Module stopping");
     }
-    
+
     private async void OnVRChatUsernameChanged(string? oldUsername, string? newUsername)
     {
         if (_ircClient?.Client?.LocalUser != null && _ircClient.IsConnected)
@@ -205,7 +205,7 @@ public partial class IRCBridgeModule : Module, IVRCClientEventHandler
                 }
             }
         }
-        
+
         // Resend welcome message if connected
         if (_ircClient?.Client != null && _ircClient.IsConnected && _joinedChannel != null)
         {
@@ -213,7 +213,7 @@ public partial class IRCBridgeModule : Module, IVRCClientEventHandler
             await SendClientDataAnnouncementAsync(_joinedChannel.Name);
         }
     }
-    
+
     private async void OnVRChatUserIdChanged(string? oldUserId, string? newUserId)
     {
         // Resend welcome message if connected
@@ -223,7 +223,7 @@ public partial class IRCBridgeModule : Module, IVRCClientEventHandler
             await SendClientDataAnnouncementAsync(_joinedChannel.Name);
         }
     }
-    
+
     private async void OnExternalIpChanged(System.Net.IPAddress? oldIp, System.Net.IPAddress? newIp)
     {
         // Resend welcome message if connected
@@ -233,7 +233,7 @@ public partial class IRCBridgeModule : Module, IVRCClientEventHandler
             await SendClientDataAnnouncementAsync(_joinedChannel.Name);
         }
     }
-    
+
     private async void OnPcHashChanged(string? oldHash, string? newHash)
     {
         // Resend welcome message if connected
@@ -243,9 +243,9 @@ public partial class IRCBridgeModule : Module, IVRCClientEventHandler
             await SendClientDataAnnouncementAsync(_joinedChannel.Name);
         }
     }
-    
+
     #region IVRCClientEventHandler
-    
+
     public void HandleClientEvent(IVRChatClientEvent @event)
     {
         if (@event is UserAuthenticatedClientEvent userAuthenticatedEvent)
@@ -254,6 +254,6 @@ public partial class IRCBridgeModule : Module, IVRCClientEventHandler
             _vrchat?.HandleClientEvent(userAuthenticatedEvent);
         }
     }
-    
+
     #endregion
 }

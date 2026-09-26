@@ -21,7 +21,7 @@ internal static class ChatBoxEndpoint
         {
             // Get current chatbox text from ChatBoxManager
             var chatBoxText = ReflectionUtils.GetChatBoxText();
-            
+
             if (chatBoxText == null)
             {
                 context.Response.StatusCode = 503;

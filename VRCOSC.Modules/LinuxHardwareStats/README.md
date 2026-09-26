@@ -243,6 +243,7 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | **OS Version** | `osversion` | `string` | `ChatBox variable OS Version` |
 | **OS Kernel** | `oskernel` | `string` | `ChatBox variable OS Kernel` |
 | **OS Pretty Name** | `osprettyname` | `string` | `ChatBox variable OS Pretty Name` |
+| **OS Variant** | `osvariant` | `string` | `ChatBox variable OS Variant` |
 <!-- VARIABLES_TABLE_END -->
 
 ## ChatBox States

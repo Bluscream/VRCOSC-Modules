@@ -69,12 +69,12 @@ public partial class IRCBridgeModule
             {
                 throw new Exception($"Failed to create IRC client: {ex.Message}", ex);
             }
-            
+
             if (_ircClient == null)
             {
                 throw new Exception("Failed to create IRC client: IRCClient instance is null");
             }
-            
+
             var ircClient = _ircClient.Client;
             if (ircClient == null)
             {
@@ -85,10 +85,10 @@ public partial class IRCBridgeModule
             ircClient.RawMessageSent += (sender, e) =>
             {
                 if (e == null) return;
-                
+
                 var rawMessage = e.RawContent ?? IRCMessageUtils.ReconstructRawMessage(e.Message);
                 if (string.IsNullOrEmpty(rawMessage)) return;
-                
+
                 var category = IRCMessageUtils.CategorizeMessage(rawMessage, e.Message);
                 bool shouldLog = category switch
                 {
@@ -97,7 +97,7 @@ public partial class IRCBridgeModule
                     IRCMessageCategory.Event => GetSettingValue<bool>(IRCBridgeSetting.LogEvents),
                     _ => false
                 };
-                
+
                 if (shouldLog)
                 {
                     var sanitizedMessage = IRCMessageUtils.SanitizeForLogging(rawMessage);
@@ -111,13 +111,13 @@ public partial class IRCBridgeModule
                 {
                     return;
                 }
-                
+
                 // Parse ISUPPORT (005) messages to get server limits
                 if (e.Message.Command == "005")
                 {
                     _isupportParser.ParseISupport(e.Message);
                 }
-                
+
                 // Handle 366 (RPL_ENDOFNAMES) - End of /NAMES list - update user count when list is complete
                 if (e.Message.Command == "366" && e.Message.Parameters != null && e.Message.Parameters.Count >= 2)
                 {
@@ -130,7 +130,7 @@ public partial class IRCBridgeModule
                         SendParameterSafePublic(IRCBridgeParameter.UserCount, userCount);
                     }
                 }
-                
+
                 // Handle QUIT - when a user disconnects from IRC, they leave all channels
                 if (e.Message.Command == "QUIT" && _joinedChannel != null)
                 {
@@ -143,11 +143,11 @@ public partial class IRCBridgeModule
                         {
                             nickname = nickname.Substring(1);
                         }
-                        
+
                         // Check if this user was in our channel
-                        var userInChannel = _joinedChannel.Users.FirstOrDefault(u => 
+                        var userInChannel = _joinedChannel.Users.FirstOrDefault(u =>
                             u.User != null && u.User.NickName.Equals(nickname, StringComparison.OrdinalIgnoreCase));
-                        
+
                         if (userInChannel != null && !(userInChannel.User is IrcLocalUser))
                         {
                             // User was in channel, update count
@@ -165,10 +165,10 @@ public partial class IRCBridgeModule
                         }
                     }
                 }
-                
+
                 var rawMessage = e.RawContent ?? IRCMessageUtils.ReconstructRawMessage(e.Message);
                 if (string.IsNullOrEmpty(rawMessage)) return;
-                
+
                 var category = IRCMessageUtils.CategorizeMessage(rawMessage, e.Message);
                 bool shouldLog = category switch
                 {
@@ -177,7 +177,7 @@ public partial class IRCBridgeModule
                     IRCMessageCategory.Event => GetSettingValue<bool>(IRCBridgeSetting.LogEvents),
                     _ => false
                 };
-                
+
                 if (shouldLog)
                 {
                     var sanitizedMessage = IRCMessageUtils.SanitizeForLogging(rawMessage);
@@ -200,32 +200,32 @@ public partial class IRCBridgeModule
                 {
                     return;
                 }
-                
+
                 var serverStatus = $"Connected to {serverAddress}:{serverPort}";
                 SetVariableValue(IRCBridgeVariable.ServerStatus, serverStatus);
                 ChangeState(IRCBridgeState.Connected);
                 this.SendParameterSafe(IRCBridgeParameter.Connected, true);
                 TriggerEvent(IRCBridgeEvent.OnConnected);
-                
+
                 // Update nickname from LocalUser
                 var nickname = client.LocalUser.NickName;
                 SetVariableValue(IRCBridgeVariable.Nickname, nickname);
-                
+
                 // Trigger pulse graph node with server status and nickname
                 _ = TriggerModuleNodeAsync(typeof(OnIRCConnectedNode), new object[] { serverStatus, nickname });
-                
+
                 // Subscribe to LocalUser events (best practice from IrcBot)
                 _localUser = client.LocalUser;
-                
+
                 // Initialize CTCP client for ACTION messages
                 _ctcpClient = new IrcDotNet.Ctcp.CtcpClient(client);
                 _localUser.JoinedChannel += LocalUser_JoinedChannel;
                 _localUser.LeftChannel += LocalUser_LeftChannel;
-                
+
                 // Authenticate with NickServ if configured
                 var nickServName = GetSettingValue<string>(IRCBridgeSetting.NickServName);
                 var nickServPassword = GetSettingValue<string>(IRCBridgeSetting.NickServPassword);
-                
+
                 if (!string.IsNullOrEmpty(nickServName) && !string.IsNullOrEmpty(nickServPassword))
                 {
                     // Wait a bit before authenticating (best practice)
@@ -241,7 +241,7 @@ public partial class IRCBridgeModule
                         }
                     });
                 }
-                
+
                 // Join channel if configured
                 var channel = GetSettingValue<string>(IRCBridgeSetting.Channel);
                 if (!string.IsNullOrEmpty(channel))
@@ -262,20 +262,20 @@ public partial class IRCBridgeModule
                     {
                         return;
                     }
-                    
+
                     // Store original nickname on first conflict
                     if (_originalNickname == null)
                     {
                         _originalNickname = client.LocalUser.NickName;
                     }
-                    
+
                     _nicknameConflictCount++;
-                    
+
                     // Generate new nickname based on conflict count using utility function
                     var baseNick = _originalNickname ?? "User";
                     var maxLength = _isupportParser.NickLen; // Use server's NICKLEN limit
                     var newNick = IRCNicknameUtils.GenerateAlternativeNickname(baseNick, _nicknameConflictCount, maxLength);
-                    
+
                     Log($"Nickname already in use, trying alternative: {newNick} (attempt {_nicknameConflictCount})");
                     if (client.LocalUser != null)
                     {
@@ -295,10 +295,10 @@ public partial class IRCBridgeModule
                     this.SendParameterSafe(IRCBridgeParameter.Connected, false);
                     ChangeState(IRCBridgeState.Disconnected);
                     TriggerEvent(IRCBridgeEvent.OnDisconnected);
-                    
+
                     // Trigger pulse graph node
                     _ = TriggerModuleNodeAsync(typeof(OnIRCDisconnectedNode), new object[] { status });
-                    
+
                     Log("Disconnected from IRC server");
 
                     // Auto-reconnect if enabled
@@ -313,15 +313,15 @@ public partial class IRCBridgeModule
             {
                 var errorMessage = ex.Message;
                 var status = $"Error: {errorMessage}";
-                
+
                 Log($"IRC error: {errorMessage}");
                 SetVariableValue(IRCBridgeVariable.ServerStatus, status);
                 ChangeState(IRCBridgeState.Error);
                 TriggerEvent(IRCBridgeEvent.OnError);
-                
+
                 // Trigger pulse graph node
                 _ = TriggerModuleNodeAsync(typeof(OnIRCErrorNode), new object[] { errorMessage, status });
-                
+
                 this.SendParameterSafe(IRCBridgeParameter.Connected, false);
 
                 // Auto-reconnect if enabled
@@ -356,8 +356,8 @@ public partial class IRCBridgeModule
                 if (!string.IsNullOrEmpty(crc32Hash))
                 {
                     // Truncate CRC32 hash (8 chars) to server's NICKLEN if needed
-                    username = crc32Hash.Length > _isupportParser.NickLen 
-                        ? crc32Hash.Substring(0, _isupportParser.NickLen) 
+                    username = crc32Hash.Length > _isupportParser.NickLen
+                        ? crc32Hash.Substring(0, _isupportParser.NickLen)
                         : crc32Hash;
                 }
                 else
@@ -371,7 +371,7 @@ public partial class IRCBridgeModule
                 // Fallback if PC hash generation failed
                 username = nickname;
             }
-            
+
             // Always use full PC hash for real name (truncated to server limit if needed)
             string realName;
             if (!string.IsNullOrEmpty(pcHash))
@@ -395,7 +395,7 @@ public partial class IRCBridgeModule
             // Reset nickname conflict tracking
             _originalNickname = nickname;
             _nicknameConflictCount = 0;
-            
+
             // Connect to IRC server and send registration commands immediately
             await _ircClient.ConnectAsync(serverAddress, serverPort, useSSL, password, nickname, username, realName);
 
@@ -459,7 +459,7 @@ public partial class IRCBridgeModule
         try
         {
             Log("Stopping");
-            
+
             // Unsubscribe from channel events first
             if (_joinedChannel != null)
             {
@@ -472,7 +472,7 @@ public partial class IRCBridgeModule
                 catch { }
                 _joinedChannel = null;
             }
-            
+
             // Unsubscribe from LocalUser events
             if (_localUser != null)
             {
@@ -485,10 +485,10 @@ public partial class IRCBridgeModule
                 _localUser = null;
                 _ctcpClient = null;
             }
-            
+
             // Disconnect and send QUIT message with reason
             _ircClient.Disconnect(quitReason);
-            
+
             // Wait a short time for QUIT message to be sent before disposing
             await Task.Delay(500);
         }
@@ -507,20 +507,20 @@ public partial class IRCBridgeModule
             Log("Stopped");
         }
     }
-    
+
     public void DisconnectFromIRC(string? quitReason = null)
     {
         // Synchronous version for backwards compatibility
         _ = DisconnectFromIRCAsync(quitReason ?? "Manual disconnect");
     }
-    
+
     private async Task AttemptReconnectAsync()
     {
         if (_isStopping) return;
-        
+
         var delay = GetSettingValue<int>(IRCBridgeSetting.ReconnectDelay);
         await Task.Delay(delay);
-        
+
         if (!_isStopping)
         {
             await ConnectToIRC();

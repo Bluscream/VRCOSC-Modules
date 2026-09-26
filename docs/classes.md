@@ -69,13 +69,13 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [21](../VRCOSC.Modules/Debug/DebugModule.cs#L21) | public | `public class DebugModule : VRCOSC.App.SDK.Modules.Module` |
-| [470](../VRCOSC.Modules/Debug/DebugModule.cs#L470) | private | `private enum DebugSetting` |
-| [487](../VRCOSC.Modules/Debug/DebugModule.cs#L487) | private | `private enum CsvSortBy` |
-| [499](../VRCOSC.Modules/Debug/DebugModule.cs#L499) | private | `private enum CsvSortDirection` |
-| [505](../VRCOSC.Modules/Debug/DebugModule.cs#L505) | private | `private enum DebugParameter` |
-| [514](../VRCOSC.Modules/Debug/DebugModule.cs#L514) | private | `private enum DebugVariable` |
-| [522](../VRCOSC.Modules/Debug/DebugModule.cs#L522) | private | `private enum DebugState` |
-| [528](../VRCOSC.Modules/Debug/DebugModule.cs#L528) | private | `private enum DebugEvent` |
+| [478](../VRCOSC.Modules/Debug/DebugModule.cs#L478) | private | `private enum DebugSetting` |
+| [495](../VRCOSC.Modules/Debug/DebugModule.cs#L495) | private | `private enum CsvSortBy` |
+| [507](../VRCOSC.Modules/Debug/DebugModule.cs#L507) | private | `private enum CsvSortDirection` |
+| [513](../VRCOSC.Modules/Debug/DebugModule.cs#L513) | private | `private enum DebugParameter` |
+| [522](../VRCOSC.Modules/Debug/DebugModule.cs#L522) | private | `private enum DebugVariable` |
+| [530](../VRCOSC.Modules/Debug/DebugModule.cs#L530) | private | `private enum DebugState` |
+| [536](../VRCOSC.Modules/Debug/DebugModule.cs#L536) | private | `private enum DebugEvent` |
 
 ### `Debug/Nodes.cs`
 
@@ -385,18 +385,18 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [17](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L17) | public | `public sealed class LinuxHardwareStatsModule : Module` |
-| [519](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L519) | private | `private enum HardwareStatsSetting` |
-| [529](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L529) | private | `private enum HardwareStatsParameter` |
-| [557](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L557) | private | `private enum HardwareStatsState` |
-| [562](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L562) | private | `private enum HardwareStatsVariable` |
-| [605](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L605) | public | `public class LinuxCPU` |
-| [615](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L615) | public | `public class LinuxGPU` |
-| [629](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L629) | public | `public class LinuxRAM` |
-| [637](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L637) | public | `public class LinuxNetwork` |
-| [645](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L645) | public | `public class LinuxOS` |
-| [661](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L661) | public | `public static class HardwareNameParser` |
-| [663](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L663) | public | `public record CpuInfo(string Manufacturer, string Model, string FullName);` |
-| [664](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L664) | public | `public record GpuInfo(string Manufacturer, string Model, string FullName);` |
+| [546](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L546) | private | `private enum HardwareStatsSetting` |
+| [556](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L556) | private | `private enum HardwareStatsParameter` |
+| [584](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L584) | private | `private enum HardwareStatsState` |
+| [589](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L589) | private | `private enum HardwareStatsVariable` |
+| [633](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L633) | public | `public class LinuxCPU` |
+| [643](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L643) | public | `public class LinuxGPU` |
+| [657](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L657) | public | `public class LinuxRAM` |
+| [665](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L665) | public | `public class LinuxNetwork` |
+| [673](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L673) | public | `public class LinuxOS` |
+| [690](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L690) | public | `public static class HardwareNameParser` |
+| [692](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L692) | public | `public record CpuInfo(string Manufacturer, string Model, string FullName);` |
+| [693](../VRCOSC.Modules/LinuxHardwareStats/LinuxHardwareStatsModule.cs#L693) | public | `public record GpuInfo(string Manufacturer, string Model, string FullName);` |
 
 ### `LinuxHardwareStats/Nodes.cs`
 
@@ -555,7 +555,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
 | Line | Visibility | Declaration |
 |---|---|---|
-| [16](../VRCOSC.Modules/Utilities/Extensions.cs#L16) | public | `public static class Extensions` |
+| [17](../VRCOSC.Modules/Utilities/Extensions.cs#L17) | public | `public static class Extensions` |
 
 ### `Utilities/FileUtils.cs`
 
@@ -592,7 +592,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [25](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L25) | public | `public static class LinuxUtils` |
-| [167](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L167) | public | `public sealed class UPowerDevice` |
+| [217](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L217) | public | `public sealed class UPowerDevice` |
 
 ### `Utilities/LogSpamFix.cs`
 
@@ -632,7 +632,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
 | Line | Visibility | Declaration |
 |---|---|---|
-| [11](../VRCOSC.Modules/Utilities/StringUtils.cs#L11) | public | `public static class StringUtils` |
+| [12](../VRCOSC.Modules/Utilities/StringUtils.cs#L12) | public | `public static class StringUtils` |
 
 ### `Utilities/TaskUtils.cs`
 
@@ -673,21 +673,21 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 |---|---|---|
 | [16](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L16) | public | `public sealed class VRCXGetOnlineFriendsNode : ModuleNode<VRCXBridgeModule>` |
 | [56](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L56) | public | `public sealed class VRCXSendInviteNode : ModuleNode<VRCXBridgeModule>` |
-| [107](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L107) | public | `public sealed class VRCXGetUserInfoNode : ModuleNode<VRCXBridgeModule>` |
-| [155](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L155) | public | `public sealed class VRCXGetCurrentLocationNode : ModuleNode<VRCXBridgeModule>` |
-| [199](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L199) | public | `public sealed class VRCXShowToastNode : ModuleNode<VRCXBridgeModule>` |
-| [247](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L247) | public | `public sealed class VRCXConnectionStatusNode : ModuleNode<VRCXBridgeModule>` |
+| [108](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L108) | public | `public sealed class VRCXGetUserInfoNode : ModuleNode<VRCXBridgeModule>` |
+| [157](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L157) | public | `public sealed class VRCXGetCurrentLocationNode : ModuleNode<VRCXBridgeModule>` |
+| [202](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L202) | public | `public sealed class VRCXShowToastNode : ModuleNode<VRCXBridgeModule>` |
+| [251](../VRCOSC.Modules/VRCXBridge/Nodes.cs#L251) | public | `public sealed class VRCXConnectionStatusNode : ModuleNode<VRCXBridgeModule>` |
 
 ### `VRCXBridge/VRCXBridgeModule.cs`
 
 | Line | Visibility | Declaration |
 |---|---|---|
-| [21](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L21) | public | `public class VRCXBridgeModule : VRCOSCModule` |
-| [1234](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1234) | private | `private class OscEvent` |
-| [1241](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1241) | public | `public enum VRCXBridgeSetting` |
-| [1254](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1254) | public | `public enum VRCXBridgeParameter` |
-| [1258](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1258) | public | `public enum VRCXBridgeState` |
-| [1264](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1264) | public | `public class VariableInfo` |
+| [22](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L22) | public | `public class VRCXBridgeModule : VRCOSCModule` |
+| [1235](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1235) | private | `private class OscEvent` |
+| [1242](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1242) | public | `public enum VRCXBridgeSetting` |
+| [1255](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1255) | public | `public enum VRCXBridgeParameter` |
+| [1259](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1259) | public | `public enum VRCXBridgeState` |
+| [1265](../VRCOSC.Modules/VRCXBridge/VRCXBridgeModule.cs#L1265) | public | `public class VariableInfo` |
 
 
 ## VRChatSettings
