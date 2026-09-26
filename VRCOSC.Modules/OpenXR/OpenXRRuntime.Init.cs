@@ -32,7 +32,7 @@ internal sealed unsafe partial class OpenXRRuntime
         if (available.Contains(ExtWin32Time)) wanted.Add(ExtWin32Time);
 
         if (!CreateInstance(wanted)) return false;
-        LogOnce($"OpenXR instance created with: {string.Join(", ", wanted)}");
+        DebugOnce($"OpenXR instance created with: {string.Join(", ", wanted)}");
 
         if (!QuerySystem()) return false;
         if (!CreateSession(wanted.Contains(ExtOverlay))) return false;
@@ -49,7 +49,7 @@ internal sealed unsafe partial class OpenXRRuntime
         // forever. When the runtime can convert QPC to XrTime we never touch the frame calls.
         _waitFrameWorks = _convertWin32Time is null;
         _probedWaitFrame = false;
-        if (!_waitFrameWorks) Log("Using xrConvertWin32PerformanceCounterToTimeKHR for timing; frame calls are skipped (headless).");
+        if (!_waitFrameWorks) Debug("Using xrConvertWin32PerformanceCounterToTimeKHR for timing; frame calls are skipped (headless).");
         Log($"OpenXR ready: runtime '{_runtimeName}', system '{_systemName}', overlay={_overlaySession}. Waiting for the session to become ready.");
         return true;
     }
@@ -83,7 +83,7 @@ internal sealed unsafe partial class OpenXRRuntime
                 set.Add(OpenXRHelper.ReadUtf8(name, 128));
         }
 
-        LogOnce($"OpenXR runtime extensions: {string.Join(", ", set.Order())}");
+        DebugOnce($"OpenXR runtime extensions: {string.Join(", ", set.Order())}");
         return set;
     }
 

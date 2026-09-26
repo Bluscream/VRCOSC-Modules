@@ -61,7 +61,7 @@ internal sealed unsafe partial class OpenXRRuntime
         var accepted = new List<string>();
         foreach (var (profile, bindings) in ProfileBindings())
             if (SuggestBindings(profile, bindings)) accepted.Add(profile);
-        Log($"Interaction profiles accepted: {string.Join(", ", accepted)}");
+        Debug($"Interaction profiles accepted: {string.Join(", ", accepted)}");
 
         var attachInfo = new SessionActionSetsAttachInfo { Type = StructureType.SessionActionSetsAttachInfo, CountActionSets = 1 };
         fixed (ActionSet* p = &_actionSet)
@@ -246,7 +246,7 @@ internal sealed unsafe partial class OpenXRRuntime
             _profiles[i] = OpenXRHelper.PathToString(_xr, _instance, state.InteractionProfile);
         }
 
-        Log($"Interaction profiles now: left='{_profiles[0]}', right='{_profiles[1]}'");
+        Debug($"Interaction profiles now: left='{_profiles[0]}', right='{_profiles[1]}'");
     }
 
     private void ApplyQueuedHaptics()

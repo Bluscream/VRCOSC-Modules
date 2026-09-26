@@ -62,6 +62,7 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 |---|---|---|---|
 | **Threshold** | `Slider` | `How far down a finger should be to be considered down\n0 being fully up. 1 being fully down` | `0.5f, 0f, 1f, 0.01f` |
 | **Overlay session** | `Toggle` | `Ask the runtime for an overlay session so controller input stays readable while VRChat is focused. Turn off if the runtime refuses to start the session.` | `true` |
+| **Debug logging** | `Toggle` | `Log OpenXR diagnostics: a per-minute tracking snapshot, extension lists, session state changes and frame-loop notes. Failures are always logged.` | `false` |
 <!-- SETTINGS_TABLE_END -->
 
 ## ChatBox Variables

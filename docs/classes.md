@@ -790,10 +790,10 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [14](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L14) | public | `public class OpenXRStatisticsModule : Module` |
-| [199](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L199) | private | `private enum OpenXRSetting { OverlaySession }` |
-| [201](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L201) | private | `private enum OpenXRParameter` |
-| [213](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L213) | private | `private enum OpenXRVariable` |
-| [221](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L221) | private | `private enum OpenXRState { Default, NoRuntime }` |
+| [202](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L202) | private | `private enum OpenXRSetting { OverlaySession, DebugLogging }` |
+| [204](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L204) | private | `private enum OpenXRParameter` |
+| [216](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L216) | private | `private enum OpenXRVariable` |
+| [224](../VRCOSC.Modules/OpenXR/OpenXRStatisticsModule.cs#L224) | private | `private enum OpenXRState { Default, NoRuntime }` |
 
 
 ## Status

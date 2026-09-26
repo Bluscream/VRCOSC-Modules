@@ -24,6 +24,8 @@ public class OpenXRStatisticsModule : Module
 
         CreateToggle(OpenXRSetting.OverlaySession, "Overlay session",
             "Ask the runtime for an overlay session so controller input stays readable while VRChat is focused. Turn off if the runtime refuses to start the session.", true);
+        CreateToggle(OpenXRSetting.DebugLogging, "Debug logging",
+            "Log OpenXR diagnostics: a per-minute tracking snapshot, extension lists, session state changes and frame-loop notes. Failures are always logged.", false);
 
         RegisterParameter<int>(OpenXRParameter.FPS, "VRCOSC/VR/FPS/Value", ParameterMode.Write, "FPS", "Display refresh rate of the headset (OpenXR has no per-app FPS)");
         RegisterParameter<float>(OpenXRParameter.FPSNormalised, "VRCOSC/VR/FPS/Normalised", ParameterMode.Write, "FPS Normalised", "Refresh rate normalised from 0-240 to 0-1");
@@ -85,6 +87,7 @@ public class OpenXRStatisticsModule : Module
     protected override Task<bool> OnModuleStart()
     {
         _runtime.UseOverlaySession = GetSettingValue<bool>(OpenXRSetting.OverlaySession);
+        _runtime.DebugLogging = GetSettingValue<bool>(OpenXRSetting.DebugLogging);
         _runtime.Acquire(Log);
         _probe.Deploy(Log);
         _wasRunning = false;
@@ -196,7 +199,7 @@ public class OpenXRStatisticsModule : Module
 
     private static int Percent(DeviceBattery battery) => battery.Present ? (int)MathF.Round(battery.Charge * 100f) : 0;
 
-    private enum OpenXRSetting { OverlaySession }
+    private enum OpenXRSetting { OverlaySession, DebugLogging }
 
     private enum OpenXRParameter
     {

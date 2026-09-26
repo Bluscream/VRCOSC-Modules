@@ -66,7 +66,7 @@ internal sealed unsafe partial class OpenXRRuntime
             _trackers[i] = tracker;
         }
 
-        Log($"Hand tracking ready (data-source extension: {dataSourceEnabled}).");
+        Debug($"Hand tracking ready (data-source extension: {dataSourceEnabled}).");
     }
 
     private void LocateHands(long time)

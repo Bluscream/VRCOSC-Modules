@@ -4,7 +4,7 @@
 
 Every property (including expression-bodied and auto-properties), grouped by module and file.
 
-**218** total across **20** modules.
+**219** total across **20** modules.
 
 | Module | Count |
 |---|---|
@@ -22,7 +22,7 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | [LinuxMedia](#linuxmedia) | 2 |
 | [MCBParity](#mcbparity) | 4 |
 | [Notifications](#notifications) | 16 |
-| [OpenXR](#openxr) | 10 |
+| [OpenXR](#openxr) | 11 |
 | [Status](#status) | 5 |
 | [StreamStats](#streamstats) | 4 |
 | [Utilities](#utilities) | 7 |
@@ -432,6 +432,7 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | [79](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L79) | `OpenXRRuntime` | public | `public DateTime LastLoopUtc => new(Interlocked.Read(ref _lastLoopTicks), DateTimeKind.Utc);` |
 | [95](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L95) | `OpenXRRuntime` | public | `public OpenXRSnapshot Snapshot => _snapshot;` |
 | [102](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L102) | `OpenXRRuntime` | public | `public bool UseOverlaySession { get; set; } = true;` |
+| [109](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L109) | `OpenXRRuntime` | public | `public bool DebugLogging { get; set; }` |
 
 
 ## Status

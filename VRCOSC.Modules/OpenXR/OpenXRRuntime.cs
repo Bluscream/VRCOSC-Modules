@@ -101,6 +101,13 @@ internal sealed unsafe partial class OpenXRRuntime
     /// </summary>
     public bool UseOverlaySession { get; set; } = true;
 
+    /// <summary>
+    /// Emit verbose diagnostics (per-minute snapshots, extension lists, session state
+    /// transitions, frame-loop notes). Failures and the ready line are always logged.
+    /// Set by the OpenXR Statistics module's "Debug logging" setting.
+    /// </summary>
+    public bool DebugLogging { get; set; }
+
     public void Acquire(Action<string> log)
     {
         lock (_sync)
@@ -138,6 +145,16 @@ internal sealed unsafe partial class OpenXRRuntime
         Action<string>? target;
         lock (_sync) target = _loggers.Count > 0 ? _loggers[0] : null;
         target?.Invoke(message);
+    }
+
+    private void Debug(string message)
+    {
+        if (DebugLogging) Log(message);
+    }
+
+    private void DebugOnce(string message)
+    {
+        if (DebugLogging) LogOnce(message);
     }
 
     /// <summary>Logs a message the first time it is seen; repeated per-frame failures would otherwise flood the log.</summary>
@@ -244,7 +261,7 @@ internal sealed unsafe partial class OpenXRRuntime
 
     private void OnSessionStateChanged(SessionState state)
     {
-        Log($"OpenXR session state: {_state} -> {state}");
+        Debug($"OpenXR session state: {_state} -> {state}");
         _state = state;
 
         switch (state)
@@ -308,7 +325,7 @@ internal sealed unsafe partial class OpenXRRuntime
                 // is harmless here (the next BeginFrame simply reports FRAME_DISCARDED).
                 var beginInfo = new FrameBeginInfo { Type = StructureType.FrameBeginInfo };
                 var br = _xr.BeginFrame(_session, &beginInfo);
-                if (br != Result.Success && br != Result.FrameDiscarded) LogOnce($"xrBeginFrame returned {br}");
+                if (br != Result.Success && br != Result.FrameDiscarded) DebugOnce($"xrBeginFrame returned {br}");
 
                 time = _lastPredictedTime;
                 UpdateFrameData(time);
@@ -322,7 +339,7 @@ internal sealed unsafe partial class OpenXRRuntime
                     Layers = null
                 };
                 r = _xr.EndFrame(_session, &endInfo);
-                if (r != Result.Success) LogOnce($"xrEndFrame returned {r} (expected on a headless session; ignored)");
+                if (r != Result.Success) DebugOnce($"xrEndFrame returned {r} (expected on a headless session; ignored)");
 
                 if (_sinceLastFrame.Elapsed < TimeSpan.FromMilliseconds(1))
                     Thread.Sleep(FramePeriod()); // headless WaitFrame may not pace; do it ourselves
@@ -346,11 +363,11 @@ internal sealed unsafe partial class OpenXRRuntime
             if (wr == Result.Success && frameState.PredictedDisplayPeriod > 0)
             {
                 _lastPredictedPeriod = frameState.PredictedDisplayPeriod;
-                Log($"Display period from xrWaitFrame: {1_000_000_000d / _lastPredictedPeriod:0.#} Hz");
+                Debug($"Display period from xrWaitFrame: {1_000_000_000d / _lastPredictedPeriod:0.#} Hz");
             }
             else
             {
-                Log($"xrWaitFrame probe: {wr}, period {frameState.PredictedDisplayPeriod}; refresh rate will come from the enumerated list.");
+                Debug($"xrWaitFrame probe: {wr}, period {frameState.PredictedDisplayPeriod}; refresh rate will come from the enumerated list.");
             }
         }
 
@@ -437,7 +454,7 @@ internal sealed unsafe partial class OpenXRRuntime
                     if (er == Result.Success && best > 0f)
                     {
                         _refreshRate = best;
-                        LogOnce($"Refresh rate from xrEnumerateDisplayRefreshRatesFB: {best} Hz (highest of {count})");
+                        DebugOnce($"Refresh rate from xrEnumerateDisplayRefreshRatesFB: {best} Hz (highest of {count})");
                     }
                 }
                 if (_refreshRate <= 0f) LogOnce($"xrEnumerateDisplayRefreshRatesFB gave nothing usable ({er}, {count} entries)");
@@ -459,7 +476,7 @@ internal sealed unsafe partial class OpenXRRuntime
             _nextSnapshotLog = DateTime.UtcNow + TimeSpan.FromSeconds(60);
             var l = _handInputs[0];
             var r = _handInputs[1];
-            Log($"OpenXR snapshot: {rate:0} Hz, head tracked={_headTracked}, state={_state}, " +
+            Debug($"OpenXR snapshot: {rate:0} Hz, head tracked={_headTracked}, state={_state}, " +
                 $"L={(l.IsActive ? $"{l.Source} curls {l.Index:0.00}/{l.Middle:0.00}/{l.Ring:0.00}/{l.Pinky:0.00} touch a={l.PrimaryTouch} b={l.SecondaryTouch} stick={l.StickTouch} pad={l.PadTouch}" : "inactive")}, " +
                 $"R={(r.IsActive ? $"{r.Source} curls {r.Index:0.00}/{r.Middle:0.00}/{r.Ring:0.00}/{r.Pinky:0.00} touch a={r.PrimaryTouch} b={r.SecondaryTouch} stick={r.StickTouch} pad={r.PadTouch}" : "inactive")}");
         }
