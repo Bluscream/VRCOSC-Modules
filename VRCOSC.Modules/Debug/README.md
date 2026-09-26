@@ -166,6 +166,7 @@ Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 | **Fix WinRT FilePicker Exception (Linux/Wine)** | `Toggle` | `Patch VRCOSC PickFileAsync with WPF OpenFileDialog fallback to fix 'WinRT.ActivationFactory threw an exception' / REGDB_E_CLASSNOTREG errors on Linux/Wine.` | `true` |
 | **Bypass ChatBox Timeline Validation** | `Toggle` | `Prevent VRCOSC from wiping out your ChatBox timeline clips when dynamic variables change or are unregistered.` | `true` |
 | **Disable Built-in OpenVR (xrizer/WiVRn)** | `Toggle` | `Keep VRCOSC's own OpenVR manager from initialising. Through xrizer it opens a second OpenXR session as if VRCOSC were a game and crashes on unimplemented calls; the OpenXR modules provide the same data. Turn off on real SteamVR.` | `true` |
+| **Guard Client Info Module Exceptions** | `Toggle` | `The official Client Info module can throw from HandleClientEvent on a thread-pool thread when VRChat is already in an instance; that unhandled exception kills VRCOSC a second after start. Logs it instead.` | `true` |
 | **Skip OpenVR Auto-Launch Registration (xrizer)** | `Toggle` | `VRCOSC registers itself for SteamVR auto-launch on every OpenVR update. xrizer (WiVRn/Monado OpenVR shim) has not implemented that call and panics, taking VRCOSC down. Skips the call.` | `true` |
 <!-- SETTINGS_TABLE_END -->
 

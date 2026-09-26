@@ -56,7 +56,7 @@ _None._
 
 Not `event`-qualified, but the same idea in practice: a slot a caller plugs a handler into. The pervasive `Action<Exception>? onError` parameter pattern shows up here when stored as a member.
 
-**8** total.
+**9** total.
 
 ### HomeAssistant
 
@@ -83,6 +83,7 @@ Not `event`-qualified, but the same idea in practice: a slot a caller plugs a ha
 | Line | Owner | Name | Type |
 |---|---|---|---|
 | [375](../VRCOSC.Modules/Utilities/LinuxUtils.cs#L375) | `LinuxUtils` | `onError` | `Action<Exception>?` |
+| [131](../VRCOSC.Modules/Utilities/OpenVRCompatFix.cs#L131) | `OpenVRCompatFix` | `_guardLog` | `Action<string>?` |
 | [315](../VRCOSC.Modules/Utilities/ReflectionUtils.cs#L315) | `ReflectionUtils` | `Logger` | `Action<string>?` |
 | [808](../VRCOSC.Modules/Utilities/ReflectionUtils.cs#L808) | `ReflectionUtils` | `forceStartAction` | `Action` |
 

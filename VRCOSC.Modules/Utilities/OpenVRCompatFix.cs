@@ -88,6 +88,63 @@ public static class OpenVRCompatFix
         }
     }
 
+    private static bool _clientEventPatched;
+
+    /// <summary>
+    /// The official Client Info module throws a NullReferenceException from
+    /// HandleClientEvent on a thread-pool thread when VRChat is already in an instance at
+    /// start. An unhandled exception on a pool thread terminates the process, so VRCOSC dies a
+    /// second after "Started". A Harmony finalizer swallows and logs it instead.
+    /// </summary>
+    public static void ApplyClientEventGuard(Action<string>? log = null)
+    {
+        lock (Lock)
+        {
+            if (_clientEventPatched) return;
+            _clientEventPatched = true;
+
+            try
+            {
+                var type = AppDomain.CurrentDomain.GetAssemblies()
+                    .Select(a => a.GetType("VRCOSC.Modules.ClientInfo.ClientInfoModule", false))
+                    .FirstOrDefault(t => t is not null);
+                var target = type?.GetMethod("HandleClientEvent", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+                if (target is null)
+                {
+                    log?.Invoke("[Bluscream] Client Info guard: ClientInfoModule.HandleClientEvent not found (module not installed?); nothing patched.");
+                    return;
+                }
+
+                var harmony = new Harmony("com.bluscream.vrcosc.clientinfoguard");
+                var finalizer = typeof(ClientEventGuardPatch).GetMethod(nameof(ClientEventGuardPatch.Finalizer), BindingFlags.Static | BindingFlags.Public);
+                harmony.Patch(target, finalizer: new HarmonyMethod(finalizer));
+                _guardLog = log;
+                log?.Invoke("[Bluscream] Client Info guard: exceptions in ClientInfoModule.HandleClientEvent are logged instead of killing VRCOSC.");
+            }
+            catch (Exception ex)
+            {
+                log?.Invoke($"[Bluscream] Warning: failed to apply the Client Info guard: {ex.Message}");
+            }
+        }
+    }
+
+    private static Action<string>? _guardLog;
+    private static DateTime _lastGuardLog = DateTime.MinValue;
+
+    public static class ClientEventGuardPatch
+    {
+        public static Exception? Finalizer(Exception? __exception)
+        {
+            if (__exception is null) return null;
+            if (DateTime.UtcNow - _lastGuardLog > TimeSpan.FromSeconds(30))
+            {
+                _lastGuardLog = DateTime.UtcNow;
+                _guardLog?.Invoke($"[Bluscream] Client Info module threw {__exception.GetType().Name} in HandleClientEvent (suppressed): {__exception.Message}");
+            }
+            return null;
+        }
+    }
+
     public static class InitialiseOpenVRPatch
     {
         public static bool Prefix(ref bool __result)

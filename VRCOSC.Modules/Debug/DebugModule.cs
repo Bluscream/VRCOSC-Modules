@@ -45,10 +45,11 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         CreateToggle(DebugSetting.FixWinRTFilePickerException, "Fix WinRT FilePicker Exception (Linux/Wine)", "Patch VRCOSC PickFileAsync with WPF OpenFileDialog fallback to fix 'WinRT.ActivationFactory threw an exception' / REGDB_E_CLASSNOTREG errors on Linux/Wine.", true);
         CreateToggle(DebugSetting.BypassChatBoxValidation, "Bypass ChatBox Timeline Validation", "Prevent VRCOSC from wiping out your ChatBox timeline clips when dynamic variables change or are unregistered.", true);
         CreateToggle(DebugSetting.DisableBuiltInOpenVR, "Disable Built-in OpenVR (xrizer/WiVRn)", "Keep VRCOSC's own OpenVR manager from initialising. Through xrizer it opens a second OpenXR session as if VRCOSC were a game and crashes on unimplemented calls; the OpenXR modules provide the same data. Turn off on real SteamVR.", true);
+        CreateToggle(DebugSetting.GuardClientInfoModule, "Guard Client Info Module Exceptions", "The official Client Info module can throw from HandleClientEvent on a thread-pool thread when VRChat is already in an instance; that unhandled exception kills VRCOSC a second after start. Logs it instead.", true);
         CreateToggle(DebugSetting.SkipOpenVRAutoLaunch, "Skip OpenVR Auto-Launch Registration (xrizer)", "VRCOSC registers itself for SteamVR auto-launch on every OpenVR update. xrizer (WiVRn/Monado OpenVR shim) has not implemented that call and panics, taking VRCOSC down. Skips the call.", true);
 
         // Settings Groups
-        CreateGroup("Fixes & Patches", "System & Harmony Patches for Linux/Wine & OSC Connection Logging", DebugSetting.SuppressConnectAsyncLogSpam, DebugSetting.FixWinRTFilePickerException, DebugSetting.BypassChatBoxValidation, DebugSetting.DisableBuiltInOpenVR, DebugSetting.SkipOpenVRAutoLaunch);
+        CreateGroup("Fixes & Patches", "System & Harmony Patches for Linux/Wine & OSC Connection Logging", DebugSetting.SuppressConnectAsyncLogSpam, DebugSetting.FixWinRTFilePickerException, DebugSetting.BypassChatBoxValidation, DebugSetting.DisableBuiltInOpenVR, DebugSetting.SkipOpenVRAutoLaunch, DebugSetting.GuardClientInfoModule);
         CreateGroup("Dump Configuration", "CSV Export Settings", DebugSetting.DumpDirectory, DebugSetting.SortBy, DebugSetting.SortDirection);
         CreateGroup("Debug Options", "Logging & Automation", DebugSetting.LogParameterUpdates, DebugSetting.AutoStartModules);
 
@@ -58,6 +59,7 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         if (this.GetSetting("BypassChatBoxValidation", true)) LogSpamFix.ApplyChatBoxValidationFix(Log);
         if (this.GetSetting("DisableBuiltInOpenVR", true)) Bluscream.Modules.Utilities.OpenVRCompatFix.ApplyDisableOpenVR(Log);
         if (this.GetSetting("SkipOpenVRAutoLaunch", true)) Bluscream.Modules.Utilities.OpenVRCompatFix.ApplySkipAutoLaunch(Log);
+        if (this.GetSetting("GuardClientInfoModule", true)) Bluscream.Modules.Utilities.OpenVRCompatFix.ApplyClientEventGuard(Log);
 
         // OSC Parameters
         RegisterParameter<bool>(DebugParameter.DumpNow, "VRCOSC/Debug/DumpNow", ParameterMode.Read, "Dump Now", "Set to true to trigger a parameter dump");
@@ -495,7 +497,8 @@ public class DebugModule : VRCOSC.App.SDK.Modules.Module
         FixWinRTFilePickerException,
         BypassChatBoxValidation,
         SkipOpenVRAutoLaunch,
-        DisableBuiltInOpenVR
+        DisableBuiltInOpenVR,
+        GuardClientInfoModule
     }
 
     private enum CsvSortBy
