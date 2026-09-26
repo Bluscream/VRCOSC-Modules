@@ -1,7 +1,7 @@
 // Copyright (c) Bluscream. Licensed under the GPL-3.0 License.
 // Tails the newest VRChat output_log_*.txt for the two facts the SDK's own log reader does not
 // surface: whether we are the instance master, and the world id of the current instance
-// (which the module turns into a capacity via the public VRChat world endpoint).
+// (which VRCExtras turns into a capacity via the public VRChat world endpoint).
 //
 // Lines matched, quoted from a real log (output_log_2026-09-26_07-11-24.txt):
 //   2026.09.26 07:11:37 Debug      -  [Behaviour] Joining wrld_19af8d89-f5ce-41b1-a06c-94a0e18e2e51:75008~hidden(usr_...)~region(eu)
@@ -26,7 +26,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Bluscream.Modules.MCBParity;
+namespace Bluscream.Modules.VRCExtras;
 
 internal sealed partial class VRChatLogTail
 {

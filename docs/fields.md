@@ -20,13 +20,13 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [LinuxAudioFx](#linuxaudiofx) | 10 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 31 |
 | [LinuxMedia](#linuxmedia) | 15 |
-| [MCBParity](#mcbparity) | 31 |
+| [MCBParity](#mcbparity) | 12 |
 | [Notifications](#notifications) | 37 |
 | [OpenXR](#openxr) | 83 |
 | [Status](#status) | 7 |
 | [StreamStats](#streamstats) | 55 |
 | [Utilities](#utilities) | 36 |
-| [VRCExtras](#vrcextras) | 1 |
+| [VRCExtras](#vrcextras) | 20 |
 | [VRCXBridge](#vrcxbridge) | 48 |
 | [VRChatSettings](#vrchatsettings) | 48 |
 | [Weather](#weather) | 5 |
@@ -687,17 +687,6 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 
 ## MCBParity
 
-### `MCBParity/MCBParityModule.Instance.cs`
-
-| Line | Owner | Visibility | Declaration |
-|---|---|---|---|
-| [16](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L16) | `MCBParityModule` | private | `private const string VRChatWorldUrl = "https://api.vrchat.cloud/api/1/worlds/{0}";` |
-| [18](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L18) | `MCBParityModule` | private | `private VRChatLogTail? _logTail;` |
-| [19](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L19) | `MCBParityModule` | private | `private readonly Dictionary<string, int> _capacityByWorld = new(StringComparer.OrdinalIgnoreCase);` |
-| [20](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L20) | `MCBParityModule` | private | `private string _capacityRequestedFor = string.Empty;` |
-| [21](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L21) | `MCBParityModule` | private | `private bool _capacityFetching;` |
-| [22](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L22) | `MCBParityModule` | private | `private bool _wasInInstance;` |
-
 ### `MCBParity/MCBParityModule.VR.cs`
 
 | Line | Owner | Visibility | Declaration |
@@ -719,24 +708,6 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [26](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L26) | `MCBParityModule` | private | `private DateTime _weatherLastFetch = DateTime.MinValue;` |
 | [27](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L27) | `MCBParityModule` | private | `private bool _weatherFetching;` |
 | [28](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L28) | `MCBParityModule` | private | `private bool _weatherLoggedNoKey;` |
-
-### `MCBParity/VRChatLogTail.cs`
-
-| Line | Owner | Visibility | Declaration |
-|---|---|---|---|
-| [33](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L33) | `VRChatLogTail` | private | `private const string LogFilePattern = "output_log_*.txt";` |
-| [34](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L34) | `VRChatLogTail` | private | `private const int VRChatSteamAppId = 438100;` |
-| [54](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L54) | `VRChatLogTail` | private | `private readonly object _sync = new();` |
-| [55](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L55) | `VRChatLogTail` | private | `private readonly Action<string> _log;` |
-| [56](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L56) | `VRChatLogTail` | private | `private readonly Queue<int> _pendingRemoteActors = new();` |
-| [57](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L57) | `VRChatLogTail` | private | `private readonly Dictionary<string, int> _remoteActors = new(StringComparer.Ordinal);` |
-| [59](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L59) | `VRChatLogTail` | private | `private string? _directory;` |
-| [60](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L60) | `VRChatLogTail` | private | `private string? _file;` |
-| [61](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L61) | `VRChatLogTail` | private | `private long _offset;` |
-| [62](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L62) | `VRChatLogTail` | private | `private bool _expectActorNr;` |
-| [63](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L63) | `VRChatLogTail` | private | `private bool _masterSwitchPending;` |
-| [64](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L64) | `VRChatLogTail` | private | `private int _ownActor = -1;` |
-| [65](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L65) | `VRChatLogTail` | private | `private string _ownName = string.Empty;` |
 
 
 ## Notifications
@@ -1113,7 +1084,31 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [17](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L17) | `VRCExtrasModule` | private | `private string? _lastInstanceId;` |
+| [22](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L22) | `VRCExtrasModule` | private | `private const string VRChatWorldUrl = "https://api.vrchat.cloud/api/1/worlds/{0}";` |
+| [24](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L24) | `VRCExtrasModule` | private | `private static readonly HttpClient Http = CreateHttpClient();` |
+| [26](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L26) | `VRCExtrasModule` | private | `private readonly Dictionary<string, int> _capacityByWorld = new(StringComparer.OrdinalIgnoreCase);` |
+| [27](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L27) | `VRCExtrasModule` | private | `private VRChatLogTail? _logTail;` |
+| [28](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L28) | `VRCExtrasModule` | private | `private string? _lastInstanceId;` |
+| [29](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L29) | `VRCExtrasModule` | private | `private string _capacityRequestedFor = string.Empty;` |
+| [30](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L30) | `VRCExtrasModule` | private | `private bool _capacityFetching;` |
+
+### `VRCExtras/VRChatLogTail.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [33](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L33) | `VRChatLogTail` | private | `private const string LogFilePattern = "output_log_*.txt";` |
+| [34](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L34) | `VRChatLogTail` | private | `private const int VRChatSteamAppId = 438100;` |
+| [54](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L54) | `VRChatLogTail` | private | `private readonly object _sync = new();` |
+| [55](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L55) | `VRChatLogTail` | private | `private readonly Action<string> _log;` |
+| [56](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L56) | `VRChatLogTail` | private | `private readonly Queue<int> _pendingRemoteActors = new();` |
+| [57](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L57) | `VRChatLogTail` | private | `private readonly Dictionary<string, int> _remoteActors = new(StringComparer.Ordinal);` |
+| [59](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L59) | `VRChatLogTail` | private | `private string? _directory;` |
+| [60](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L60) | `VRChatLogTail` | private | `private string? _file;` |
+| [61](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L61) | `VRChatLogTail` | private | `private long _offset;` |
+| [62](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L62) | `VRChatLogTail` | private | `private bool _expectActorNr;` |
+| [63](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L63) | `VRChatLogTail` | private | `private bool _masterSwitchPending;` |
+| [64](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L64) | `VRChatLogTail` | private | `private int _ownActor = -1;` |
+| [65](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L65) | `VRChatLogTail` | private | `private string _ownName = string.Empty;` |
 
 
 ## VRCXBridge

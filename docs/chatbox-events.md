@@ -124,7 +124,7 @@ The Fired column lists every `TriggerEvent` call site; an event with **never** t
 
 | Line | Owner | Lookup | Title | Fired |
 |---|---|---|---|---|
-| [49](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L49) | `VRCExtrasModule` | `VRCExtrasEvent.WorldChanged` | World Changed | [VRCExtrasModule.cs:93](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L93) |
+| [74](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L74) | `VRCExtrasModule` | `VRCExtrasEvent.WorldChanged` | World Changed | [VRCExtrasModule.cs:129](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L129) |
 
 ## VRCXBridge
 

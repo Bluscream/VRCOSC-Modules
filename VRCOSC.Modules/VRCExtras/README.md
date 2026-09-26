@@ -1,6 +1,6 @@
 # VRChat Extras
 
-Current world, instance type, region and player count as ChatBox variables, straight from VRCOSC's VRChat log reader
+Current world, instance type, region, player count, instance master and world capacity as ChatBox variables, from VRCOSC's VRChat log reader plus a minimal log tail
 
 **Repository**: https://github.com/Bluscream/VRCOSC-Modules
 
@@ -9,7 +9,8 @@ Current world, instance type, region and player count as ChatBox variables, stra
 <!-- SETTINGS_TABLE_START -->
 | Setting Name | Type | Description | Default |
 |---|---|---|---|
-| **Instance master icon** | `TextBox` | `Text shown in the Master Icon variable while you are the instance master. VRCOSC cannot tell who the master is, so this stays empty; the setting exists so the variable can be mapped now and filled in later.` | `"\U0001F451"` |
+| **Instance master icon** | `TextBox` | `Text shown in the Master Icon variable while you are the instance master; empty otherwise. Detected from the 'I am MASTER' lines in VRChat's log.` | `"\U0001F451"` |
+| **VRChat log directory** | `TextBox` | `Override for the folder holding output_log_*.txt, as a path VRCOSC can open (Z:\\... under Wine). Leave empty to auto-detect (own prefix's LocalLow, then every Steam library's compatdata/438100).` | `empty` |
 <!-- SETTINGS_TABLE_END -->
 
 ## ChatBox Variables
@@ -27,6 +28,8 @@ Current world, instance type, region and player count as ChatBox variables, stra
 | **Age Gated** | `agegated` | `bool` | `ChatBox variable Age Gated` |
 | **Has Queue** | `hasqueue` | `bool` | `ChatBox variable Has Queue` |
 | **Master Icon** | `mastericon` | `string` | `ChatBox variable Master Icon` |
+| **Master Icon (MagicChatbox key)** | `vrc_master` | `string` | `ChatBox variable Master Icon (MagicChatbox key)` |
+| **Instance Capacity (world capacity)** | `vrc_instance_capacity` | `int` | `ChatBox variable Instance Capacity (world capacity)` |
 <!-- VARIABLES_TABLE_END -->
 
 ## ChatBox States
@@ -55,6 +58,7 @@ Current world, instance type, region and player count as ChatBox variables, stra
 | **VRCOSC/VRChat/Instance/PlayerCount** | `int` | `Write` | `Players currently in the instance` |
 | **VRCOSC/VRChat/Instance/Joined** | `bool` | `Write` | `Whether you are in an instance` |
 | **VRCOSC/VRChat/Instance/AgeGated** | `bool` | `Write` | `Whether the instance is age gated` |
+| **VRCOSC/VRChat/Instance/Master** | `bool` | `Write` | `Whether you are the instance master` |
 <!-- OSC_PARAMETERS_TABLE_END -->
 
 ## Nodes Overview

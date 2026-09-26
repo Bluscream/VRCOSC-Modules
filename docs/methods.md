@@ -21,13 +21,13 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [LinuxHardwareStats](#linuxhardwarestats) | 29 |
 | [LinuxMedia](#linuxmedia) | 14 |
 | [LinuxProcessManager](#linuxprocessmanager) | 4 |
-| [MCBParity](#mcbparity) | 43 |
+| [MCBParity](#mcbparity) | 20 |
 | [Notifications](#notifications) | 25 |
 | [OpenXR](#openxr) | 82 |
 | [Status](#status) | 23 |
 | [StreamStats](#streamstats) | 52 |
 | [Utilities](#utilities) | 251 |
-| [VRCExtras](#vrcextras) | 6 |
+| [VRCExtras](#vrcextras) | 29 |
 | [VRCXBridge](#vrcxbridge) | 34 |
 | [VRChatSettings](#vrchatsettings) | 77 |
 | [Weather](#weather) | 12 |
@@ -947,16 +947,6 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 ## MCBParity
 
-### `MCBParity/MCBParityModule.Instance.cs`
-
-| Line | Owner | Visibility | Declaration |
-|---|---|---|---|
-| [24](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L24) | `MCBParityModule` | private | `private void CreateInstanceSettings()` |
-| [38](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L38) | `MCBParityModule` | private | `private void StartInstance()` |
-| [46](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L46) | `MCBParityModule` | private | `private void StopInstance() => _logTail?.Stop();` |
-| [49](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L49) | `MCBParityModule` | private | `private void UpdateInstance()` |
-| [82](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L82) | `MCBParityModule` | private | `private async Task FetchCapacityAsync(string worldId)` |
-
 ### `MCBParity/MCBParityModule.VR.cs`
 
 | Line | Owner | Visibility | Declaration |
@@ -987,33 +977,10 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [21](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L21) | `MCBParityModule` | protected | `protected override void OnPreLoad()` |
+| [22](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L22) | `MCBParityModule` | protected | `protected override void OnPreLoad()` |
 | [28](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L28) | `MCBParityModule` | protected | `protected override void OnPostLoad()` |
-| [39](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L39) | `MCBParityModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [48](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L48) | `MCBParityModule` | protected | `protected override Task OnModuleStop()` |
-
-### `MCBParity/VRChatLogTail.cs`
-
-| Line | Owner | Visibility | Declaration |
-|---|---|---|---|
-| [37](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L37) | `VRChatLogTail` | private | `private static partial Regex JoiningRegex();` |
-| [40](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L40) | `VRChatLogTail` | private | `private static partial Regex RemotePlayerRegex();` |
-| [43](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L43) | `VRChatLogTail` | private | `private static partial Regex PlayerJoinedRegex();` |
-| [46](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L46) | `VRChatLogTail` | private | `private static partial Regex PlayerLeftRegex();` |
-| [49](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L49) | `VRChatLogTail` | private | `private static partial Regex LocalPlayerRegex();` |
-| [52](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L52) | `VRChatLogTail` | private | `private static partial Regex ActorNrRegex();` |
-| [72](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L72) | `VRChatLogTail` | private | `public VRChatLogTail(Action<string> log)` |
-| [78](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L78) | `VRChatLogTail` | public | `public void Start(string? directoryOverride)` |
-| [90](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L90) | `VRChatLogTail` | public | `public void Stop()` |
-| [100](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L100) | `VRChatLogTail` | public | `public void Poll()` |
-| [135](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L135) | `VRChatLogTail` | private | `private void Reset()` |
-| [150](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L150) | `VRChatLogTail` | private | `private void HandleLine(string line)` |
-| [236](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L236) | `VRChatLogTail` | private | `private void ResolveMasterAfterSwitch()` |
-| [253](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L253) | `VRChatLogTail` | private | `private static string? ResolveDirectory(string? directoryOverride)` |
-| [263](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L263) | `VRChatLogTail` | private | `private static IEnumerable<string> Candidates(string? directoryOverride)` |
-| [277](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L277) | `VRChatLogTail` | private | `private static IEnumerable<string> SteamLibraries()` |
-| [302](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L302) | `VRChatLogTail` | private | `private static partial Regex LibraryPathRegex();` |
-| [304](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L304) | `VRChatLogTail` | private | `private static IEnumerable<string> ParseLibraryPaths(string vdf)` |
+| [36](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L36) | `MCBParityModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [44](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L44) | `MCBParityModule` | protected | `protected override Task OnModuleStop()` |
 
 
 ## Notifications
@@ -1700,12 +1667,40 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [19](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L19) | `VRCExtrasModule` | protected | `protected override void OnPreLoad()` |
-| [33](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L33) | `VRCExtrasModule` | protected | `protected override void OnPostLoad()` |
-| [52](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L52) | `VRCExtrasModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [60](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L60) | `VRCExtrasModule` | private | `private void Update()` |
-| [119](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L119) | `VRCExtrasModule` | private | `private static string TypeText(InstanceType type) => type switch` |
-| [132](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L132) | `VRCExtrasModule` | private | `private static string RegionText(InstanceRegion region) => region switch` |
+| [32](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L32) | `VRCExtrasModule` | private | `private static HttpClient CreateHttpClient()` |
+| [39](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L39) | `VRCExtrasModule` | protected | `protected override void OnPreLoad()` |
+| [56](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L56) | `VRCExtrasModule` | protected | `protected override void OnPostLoad()` |
+| [77](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L77) | `VRCExtrasModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [87](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L87) | `VRCExtrasModule` | protected | `protected override Task OnModuleStop()` |
+| [94](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L94) | `VRCExtrasModule` | private | `private void Update()` |
+| [154](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L154) | `VRCExtrasModule` | private | `private void SetMaster(string icon, bool isMaster)` |
+| [163](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L163) | `VRCExtrasModule` | private | `private void UpdateCapacity(string worldId)` |
+| [183](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L183) | `VRCExtrasModule` | private | `private async Task FetchCapacityAsync(string worldId)` |
+| [210](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L210) | `VRCExtrasModule` | private | `private static string TypeText(InstanceType type) => type switch` |
+| [223](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L223) | `VRCExtrasModule` | private | `private static string RegionText(InstanceRegion region) => region switch` |
+
+### `VRCExtras/VRChatLogTail.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [37](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L37) | `VRChatLogTail` | private | `private static partial Regex JoiningRegex();` |
+| [40](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L40) | `VRChatLogTail` | private | `private static partial Regex RemotePlayerRegex();` |
+| [43](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L43) | `VRChatLogTail` | private | `private static partial Regex PlayerJoinedRegex();` |
+| [46](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L46) | `VRChatLogTail` | private | `private static partial Regex PlayerLeftRegex();` |
+| [49](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L49) | `VRChatLogTail` | private | `private static partial Regex LocalPlayerRegex();` |
+| [52](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L52) | `VRChatLogTail` | private | `private static partial Regex ActorNrRegex();` |
+| [72](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L72) | `VRChatLogTail` | private | `public VRChatLogTail(Action<string> log)` |
+| [78](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L78) | `VRChatLogTail` | public | `public void Start(string? directoryOverride)` |
+| [90](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L90) | `VRChatLogTail` | public | `public void Stop()` |
+| [100](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L100) | `VRChatLogTail` | public | `public void Poll()` |
+| [135](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L135) | `VRChatLogTail` | private | `private void Reset()` |
+| [150](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L150) | `VRChatLogTail` | private | `private void HandleLine(string line)` |
+| [236](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L236) | `VRChatLogTail` | private | `private void ResolveMasterAfterSwitch()` |
+| [253](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L253) | `VRChatLogTail` | private | `private static string? ResolveDirectory(string? directoryOverride)` |
+| [263](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L263) | `VRChatLogTail` | private | `private static IEnumerable<string> Candidates(string? directoryOverride)` |
+| [277](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L277) | `VRChatLogTail` | private | `private static IEnumerable<string> SteamLibraries()` |
+| [302](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L302) | `VRChatLogTail` | private | `private static partial Regex LibraryPathRegex();` |
+| [304](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L304) | `VRChatLogTail` | private | `private static IEnumerable<string> ParseLibraryPaths(string vdf)` |
 
 
 ## VRCXBridge

@@ -108,12 +108,6 @@ Not `event`-qualified, but the same idea in practice: a slot a caller plugs a ha
 | [30](../VRCOSC.Modules/IRCBridge/IRCClient.cs#L30) | `IRCClient` | `_logAction` | `Action<string>` |
 | [22](../VRCOSC.Modules/IRCBridge/Utils/IRCISupportParser.cs#L22) | `IRCISupportParser` | `OnLimitUpdated` | `Action<string>?` |
 
-### MCBParity
-
-| Line | Owner | Name | Type |
-|---|---|---|---|
-| [55](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L55) | `VRChatLogTail` | `_log` | `Action<string>` |
-
 ### OpenXR
 
 | Line | Owner | Name | Type |
@@ -128,4 +122,10 @@ Not `event`-qualified, but the same idea in practice: a slot a caller plugs a ha
 | [131](../VRCOSC.Modules/Utilities/OpenVRCompatFix.cs#L131) | `OpenVRCompatFix` | `_guardLog` | `Action<string>?` |
 | [315](../VRCOSC.Modules/Utilities/ReflectionUtils.cs#L315) | `ReflectionUtils` | `Logger` | `Action<string>?` |
 | [808](../VRCOSC.Modules/Utilities/ReflectionUtils.cs#L808) | `ReflectionUtils` | `forceStartAction` | `Action` |
+
+### VRCExtras
+
+| Line | Owner | Name | Type |
+|---|---|---|---|
+| [55](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L55) | `VRChatLogTail` | `_log` | `Action<string>` |
 

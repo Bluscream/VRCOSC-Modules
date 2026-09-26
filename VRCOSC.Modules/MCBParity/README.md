@@ -1,6 +1,6 @@
 # MagicChatbox Parity
 
-Weather feels-like/wind/emoji as ChatBox variables (MagicChatbox placeholder parity)
+Weather feels-like/wind/emoji and VR reprojection/dropped-frame estimates as ChatBox variables (MagicChatbox placeholder parity)
 
 **Repository**: https://github.com/Bluscream/VRCOSC-Modules
 
@@ -9,8 +9,6 @@ Weather feels-like/wind/emoji as ChatBox variables (MagicChatbox placeholder par
 <!-- SETTINGS_TABLE_START -->
 | Setting Name | Type | Description | Default |
 |---|---|---|---|
-| **Instance master icon** | `TextBox` | `Value of the master variable while you are the instance master; empty otherwise.` | `"\U0001F451"` |
-| **VRChat log directory** | `TextBox` | `Override for the folder holding output_log_*.txt, as a path VRCOSC can open (Z:\\... under Wine). Leave empty to auto-detect (own prefix's LocalLow, then every Steam library's compatdata/438100).` | `empty` |
 | **VR frame estimates** | `Toggle` | `Keep the shared OpenXR session open to estimate reprojection and dropped frames from the runtime's display-period schedule. Off leaves both variables at 0.` | `true` |
 | **weatherapi.com API key** | `TextBox` | `Free key from https://www.weatherapi.com. Leave empty to use Open-Meteo instead (no key needed, but no weatherapi condition texts).` | `empty` |
 | **Weather refresh (minutes)** | `Slider` | `How often the weather is re-fetched.` | `10, 1, 60, 1` |
@@ -23,8 +21,6 @@ Weather feels-like/wind/emoji as ChatBox variables (MagicChatbox placeholder par
 <!-- VARIABLES_TABLE_START -->
 | Variable Name | Lookup Key | Type | Description |
 |---|---|---|---|
-| **Instance Capacity (world capacity)** | `vrc_instance_capacity` | `int` | `ChatBox variable Instance Capacity (world capacity)` |
-| **Instance Master Icon** | `vrc_master` | `string` | `ChatBox variable Instance Master Icon` |
 | **VR Reprojection (% of frames, last second)** | `vr_reprojection` | `int` | `ChatBox variable VR Reprojection (% of frames, last second)` |
 | **VR Dropped Frames (per minute)** | `vr_dropped_frames` | `int` | `ChatBox variable VR Dropped Frames (per minute)` |
 | **Weather Temperature (with unit)** | `weather_temp` | `string` | `ChatBox variable Weather Temperature (with unit)` |
@@ -41,8 +37,6 @@ Weather feels-like/wind/emoji as ChatBox variables (MagicChatbox placeholder par
 | State Name | Lookup Key | Format | Description |
 |---|---|---|---|
 | **Default** | `default` | `{0} {1} (feels {2})\n{3}\nReproj {4}% · Dropped {5}/min` | `Default state` |
-| **In Instance** | `ininstance` | `{0} {1} (feels {2})\n{3} cap {4}` | `In Instance state` |
-| **Not In Instance** | `notininstance` | `{0} {1} (feels {2})\n{3}` | `Not In Instance state` |
 <!-- STATES_TABLE_END -->
 
 ## ChatBox Events

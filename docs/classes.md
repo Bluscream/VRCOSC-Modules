@@ -4,7 +4,7 @@
 
 Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
-**352** total across **23** modules.
+**351** total across **23** modules.
 
 | Module | Count |
 |---|---|
@@ -21,13 +21,13 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [LinuxHardwareStats](#linuxhardwarestats) | 18 |
 | [LinuxMedia](#linuxmedia) | 7 |
 | [LinuxProcessManager](#linuxprocessmanager) | 2 |
-| [MCBParity](#mcbparity) | 11 |
+| [MCBParity](#mcbparity) | 9 |
 | [Notifications](#notifications) | 19 |
 | [OpenXR](#openxr) | 28 |
 | [Status](#status) | 9 |
 | [StreamStats](#streamstats) | 20 |
 | [Utilities](#utilities) | 32 |
-| [VRCExtras](#vrcextras) | 6 |
+| [VRCExtras](#vrcextras) | 7 |
 | [VRCXBridge](#vrcxbridge) | 12 |
 | [VRChatSettings](#vrchatsettings) | 21 |
 | [Weather](#weather) | 7 |
@@ -631,12 +631,6 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
 ## MCBParity
 
-### `MCBParity/MCBParityModule.Instance.cs`
-
-| Line | Visibility | Declaration |
-|---|---|---|
-| [14](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L14) | public | `public sealed partial class MCBParityModule` |
-
 ### `MCBParity/MCBParityModule.VR.cs`
 
 | Line | Visibility | Declaration |
@@ -656,16 +650,10 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
 | Line | Visibility | Declaration |
 |---|---|---|
-| [19](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L19) | public | `public sealed partial class MCBParityModule : Module` |
-| [55](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L55) | private | `private enum MCBParitySetting` |
-| [63](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L63) | private | `private enum MCBParityVariable` |
-| [70](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L70) | private | `private enum MCBParityState { Default, InInstance, NotInInstance }` |
-
-### `MCBParity/VRChatLogTail.cs`
-
-| Line | Visibility | Declaration |
-|---|---|---|
-| [31](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L31) | internal | `internal sealed partial class VRChatLogTail` |
+| [20](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L20) | public | `public sealed partial class MCBParityModule : Module` |
+| [50](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L50) | private | `private enum MCBParitySetting` |
+| [57](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L57) | private | `private enum MCBParityVariable` |
+| [63](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L63) | private | `private enum MCBParityState { Default }` |
 
 
 ## Notifications
@@ -1032,12 +1020,18 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
 | Line | Visibility | Declaration |
 |---|---|---|
-| [15](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L15) | public | `public class VRCExtrasModule : Module` |
-| [141](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L141) | private | `private enum VRCExtrasSetting { MasterIcon }` |
-| [143](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L143) | private | `private enum VRCExtrasParameter { InstanceType, Region, PlayerCount, InInstance, AgeGated }` |
-| [145](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L145) | private | `private enum VRCExtrasVariable` |
-| [151](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L151) | private | `private enum VRCExtrasState { InInstance, NotInInstance }` |
-| [153](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L153) | private | `private enum VRCExtrasEvent { WorldChanged }` |
+| [20](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L20) | public | `public class VRCExtrasModule : Module` |
+| [232](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L232) | private | `private enum VRCExtrasSetting { MasterIcon, VRChatLogDirectory }` |
+| [234](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L234) | private | `private enum VRCExtrasParameter { InstanceType, Region, PlayerCount, InInstance, AgeGated, IsMaster }` |
+| [239](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L239) | private | `private enum VRCExtrasVariable` |
+| [246](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L246) | private | `private enum VRCExtrasState { InInstance, NotInInstance }` |
+| [248](../VRCOSC.Modules/VRCExtras/VRCExtrasModule.cs#L248) | private | `private enum VRCExtrasEvent { WorldChanged }` |
+
+### `VRCExtras/VRChatLogTail.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [31](../VRCOSC.Modules/VRCExtras/VRChatLogTail.cs#L31) | internal | `internal sealed partial class VRChatLogTail` |
 
 
 ## VRCXBridge
