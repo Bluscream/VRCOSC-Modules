@@ -25,6 +25,51 @@ Integrate Home Assistant entity states, Jinja templates, avatar parameters, cust
 | **EntityFilter** | `TextBox` | Comma-separated list of entity IDs or domains to track (empty = all) | `empty` |
 | **RegisterAllEntityVariables** | `Toggle` | Register every HA entity state as an individual ChatBox variable (HAState.{entity_id}) | `false` |
 | **TemplateVariables** | `KeyValuePairList` | Configure custom ChatBox variables mapped to Jinja templates | `empty` |
+| **ParameterRedirects** | `List` | Alias any avatar parameter to any entity (see below) | `empty` |
+| **RedirectRateLimitMs** | `TextBox` | Minimum time between service calls per redirect row for float/int values | `200` |
+
+## Parameter Redirects
+
+The prefix convention above needs the avatar parameter to be named after the entity
+(`HomeAssistant/switch/desk_socket`). Redirects let you keep whatever parameter your avatar
+already has and point it at an entity instead, so nothing on the avatar has to be renamed.
+Each row of the **Parameter Redirects** list has:
+
+| Field | Meaning |
+|---|---|
+| **On** | Enable/disable the row without deleting it |
+| **Source parameter** | The address VRChat sends, without `/avatar/parameters/` (e.g. `HomeAssistant/fan/desk_socket_fan`). Generator prefixes such as VRCFury's `VF52_..._OSC/` are tolerated: the row also matches when the received address *ends* with the source |
+| **Target entity** | The entity id (e.g. `switch.desk_socket`); the domain before the dot picks the service |
+| **Conversion** | How the value is translated, see table below |
+| **Invert** | Flips bools and levels (`true` becomes off, 0.8 becomes 0.2) |
+| **Min / Max** | The float range of the source parameter (default `0`..`1`). Values are mapped from Min..Max onto 0..1 before the entity's own scale is applied; for `StateToFloat` the entity level is mapped back into Min..Max |
+
+Example: the avatar has a bool `HomeAssistant/fan/desk_socket_fan` but the fan hangs off a
+smart plug. A row `HomeAssistant/fan/desk_socket_fan` -> `switch.desk_socket`, conversion
+`Passthrough` (or `BoolToOnOff`), turns the plug on and off.
+
+Conversions and the service used per target domain:
+
+| Conversion | Value in | light | fan | cover / valve | media_player | number / input_number | select / input_select | climate | humidifier | switch, input_boolean, script, automation, siren, remote, water_heater, camera | lock | vacuum | scene | button / input_button |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| **Passthrough** | any | picks `BoolToOnOff`, `FloatToLevel` or `IntToValue` from the received type | | | | | | | | | | | | |
+| **BoolToOnOff** | bool (float >= 0.5, int != 0) | `turn_on` / `turn_off` | `turn_on` / `turn_off` | `open_cover` / `close_cover`, `open_valve` / `close_valve` | `turn_on` / `turn_off` | not applicable | not applicable | `turn_on` / `turn_off` | `turn_on` / `turn_off` | `turn_on` / `turn_off` | `lock` / `unlock` | `start` / `return_to_base` | `turn_on` (false ignored) | `press` (false ignored) |
+| **FloatToLevel** | float Min..Max -> 0..1 | `turn_on` `brightness` 0..255 (0 = `turn_off`) | `set_percentage` 0..100 | `set_cover_position` / `set_valve_position` 0..100 | `volume_set` 0..1 | `set_value` scaled into the entity's `min`..`max` attributes | not applicable | `set_temperature` scaled into `min_temp`..`max_temp` | `set_humidity` 0..100 | on/off at 0.5 | on/off at 0.5 | on/off at 0.5 | on at >= 0.5 | press at >= 0.5 |
+| **IntToValue** | int (raw) | `brightness` 1..255 (0 = `turn_off`) | `set_percentage` | position 0..100 | `volume_set` int / 100 | `set_value` raw | `select_option` by index into the entity's `options` | `set_temperature` raw | `set_humidity` | on/off at != 0 | lock/unlock at != 0 | start/return at != 0 | on at != 0 | press at != 0 |
+
+The other three conversions go the opposite way and write the entity's state to the source
+parameter whenever Home Assistant reports a change for the target (WebSocket must be enabled):
+
+| Conversion | Written to the source parameter |
+|---|---|
+| **StateToBool** | `true` for `on`, `open`, `locked`, `playing`, `home`, `active`, `cleaning`, `running` and climate modes; Invert flips it |
+| **StateToFloat** | The entity's level (brightness/255, percentage/100, position/100, volume, humidity, number and temperature within their min/max) mapped into Min..Max. Entities without a level (sensors) send their numeric state as-is when Min/Max are left at 0..1 |
+| **StateToInt** | Brightness, percentage, position, volume in percent, temperature, the select's option index, or the rounded numeric state (`on` = 1, `off` = 0 for non-numeric states) |
+
+Float and int values are rate-limited per row by **Redirect Rate Limit (ms)** (default 200 ms,
+the last value in the window wins); bools are sent immediately. A row whose target is not a
+valid `domain.object_id` or whose domain has no mapping is logged once and skipped. A matched
+redirect takes precedence over the prefix convention for that address.
 
 ## ChatBox Variables
 
