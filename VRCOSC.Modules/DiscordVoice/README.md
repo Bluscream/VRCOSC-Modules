@@ -12,7 +12,7 @@ DiscordVoice module for VRCOSC.
 | **Default Guild ID** | `TextBox` | `Guild ID used for guild-scoped subscriptions (GUILD_STATUS).` | `empty` |
 | **Default Channel ID** | `TextBox` | `Channel ID used for channel-scoped subscriptions (VOICE_STATE_*, SPEAKING_*, MESSAGE_*).` | `empty` |
 | **Auto Update Defaults** | `Toggle` | `Update the default guild and channel whenever you join a voice channel.` | `false` |
-| **Client ID** | `TextBox` | `Discord application client ID. Leave empty to use the built-in application.` | `empty` |
+| **Client ID** | `TextBox` | `Client ID of your Discord application (Developer Portal, OAuth2 tab). Required for RPC.` | `empty` |
 <!-- SETTINGS_TABLE_END -->
 
 ## ChatBox Variables

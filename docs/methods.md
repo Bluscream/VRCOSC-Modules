@@ -4,14 +4,14 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**982** total across **24** modules.
+**1018** total across **24** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 1 |
 | [Debug](#debug) | 41 |
 | [DesktopFPS](#desktopfps) | 18 |
-| [DiscordVoice](#discordvoice) | 58 |
+| [DiscordVoice](#discordvoice) | 70 |
 | [HTTP](#http) | 9 |
 | [HTTPServer](#httpserver) | 41 |
 | [HeartrateStats](#heartratestats) | 41 |
@@ -21,7 +21,7 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [LinuxHardwareStats](#linuxhardwarestats) | 29 |
 | [LinuxMedia](#linuxmedia) | 14 |
 | [LinuxProcessManager](#linuxprocessmanager) | 4 |
-| [MCBParity](#mcbparity) | 15 |
+| [MCBParity](#mcbparity) | 39 |
 | [Notifications](#notifications) | 25 |
 | [OpenXR](#openxr) | 80 |
 | [Status](#status) | 23 |
@@ -150,6 +150,28 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 ## DiscordVoice
 
+### `DiscordVoice/DiscordVoiceModule.Events.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [12](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Events.cs#L12) | `DiscordVoiceModule` | private | `private void HandleRpcEvent(JsonElement evt)` |
+| [30](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Events.cs#L30) | `DiscordVoiceModule` | private | `private void DispatchRpcEvent(string name, JsonElement data)` |
+| [110](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Events.cs#L110) | `DiscordVoiceModule` | private | `private void OnVoiceChannelSelect(JsonElement data)` |
+| [125](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Events.cs#L125) | `DiscordVoiceModule` | private | `private void SetIdAndTrigger(DiscordVoiceVariable variable, string? snowflake, DiscordVoiceEvent evt)` |
+| [133](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Events.cs#L133) | `DiscordVoiceModule` | private | `private static string? Nested(JsonElement element, params string[] path)` |
+| [143](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Events.cs#L143) | `DiscordVoiceModule` | private | `private static int VoiceStateToInt(string? state) => state switch` |
+| [158](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Events.cs#L158) | `DiscordVoiceModule` | private | `private static int EventNameToInt(string name) => name switch` |
+
+### `DiscordVoice/DiscordVoiceModule.Parameters.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [12](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Parameters.cs#L12) | `DiscordVoiceModule` | protected | `protected override void OnRegisteredParameterReceived(RegisteredParameter parameter)` |
+| [89](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Parameters.cs#L89) | `DiscordVoiceModule` | private | `private static string? Wildcard(RegisteredParameter parameter, int position)` |
+| [92](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Parameters.cs#L92) | `DiscordVoiceModule` | private | `private static object? SubscriptionArgs(string evt, string? id)` |
+| [102](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Parameters.cs#L102) | `DiscordVoiceModule` | private | `private void HandleSetVoiceSettings(RegisteredParameter parameter)` |
+| [129](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Parameters.cs#L129) | `DiscordVoiceModule` | private | `private static object[] ExampleCertifiedDevices() =>` |
+
 ### `DiscordVoice/DiscordVoiceModule.Registration.cs`
 
 | Line | Owner | Visibility | Declaration |
@@ -162,23 +184,23 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [34](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L34) | `DiscordVoiceModule` | protected | `protected override void OnPreLoad()` |
-| [47](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L47) | `DiscordVoiceModule` | protected | `protected override void OnPostLoad() => RegisterChatBox();` |
-| [49](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L49) | `DiscordVoiceModule` | protected | `protected override async Task<bool> OnModuleStart()` |
-| [106](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L106) | `DiscordVoiceModule` | protected | `protected override Task OnModuleStop()` |
-| [134](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L134) | `DiscordVoiceModule` | private | `private async Task<DiscordIpcClient?> ConnectAsync(CancellationToken ct)` |
-| [153](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L153) | `DiscordVoiceModule` | private | `private async Task SubscribeDefaultsAsync(DiscordIpcClient client, CancellationToken ct)` |
-| [165](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L165) | `DiscordVoiceModule` | private | `private async Task SubscribeChannelEventsAsync(DiscordIpcClient client, string channelId, CancellationToken ct)` |
-| [172](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L172) | `DiscordVoiceModule` | private | `private async Task SubscribeAsync(DiscordIpcClient client, string evt, object? args, CancellationToken ct)` |
-| [185](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L185) | `DiscordVoiceModule` | private | `private void OnClientDisconnected(Exception? cause)` |
-| [193](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L193) | `DiscordVoiceModule` | private | `private void Send(RpcCommand command)` |
-| [206](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L206) | `DiscordVoiceModule` | private | `private async Task SendAndLogAsync(DiscordIpcClient client, RpcCommand command, CancellationToken ct)` |
-| [222](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L222) | `DiscordVoiceModule` | private | `private void ApplyCommandResponse(string cmd, JsonElement data)` |
-| [254](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L254) | `DiscordVoiceModule` | private | `private void SetCount(DiscordVoiceParameter parameter, DiscordVoiceVariable variable, int value)` |
-| [260](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L260) | `DiscordVoiceModule` | private | `private void ApplyVoiceSettings(JsonElement data)` |
-| [279](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L279) | `DiscordVoiceModule` | private | `private static int SnowflakeToInt(string? snowflake) => long.TryParse(snowflake, out var id) ? unchecked((int)id) : 0;` |
-| [286](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L286) | `DiscordVoiceModule` | private | `private void ChatBoxUpdate()` |
-| [294](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L294) | `DiscordVoiceModule` | private | `private async Task PollAsync(DiscordIpcClient client, CancellationToken ct)` |
+| [33](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L33) | `DiscordVoiceModule` | protected | `protected override void OnPreLoad()` |
+| [46](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L46) | `DiscordVoiceModule` | protected | `protected override void OnPostLoad() => RegisterChatBox();` |
+| [48](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L48) | `DiscordVoiceModule` | protected | `protected override async Task<bool> OnModuleStart()` |
+| [111](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L111) | `DiscordVoiceModule` | protected | `protected override Task OnModuleStop()` |
+| [129](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L129) | `DiscordVoiceModule` | private | `private async Task<DiscordIpcClient?> ConnectAsync(CancellationToken ct)` |
+| [148](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L148) | `DiscordVoiceModule` | private | `private async Task SubscribeDefaultsAsync(DiscordIpcClient client, CancellationToken ct)` |
+| [160](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L160) | `DiscordVoiceModule` | private | `private async Task SubscribeChannelEventsAsync(DiscordIpcClient client, string channelId, CancellationToken ct)` |
+| [167](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L167) | `DiscordVoiceModule` | private | `private async Task SubscribeAsync(DiscordIpcClient client, string evt, object? args, CancellationToken ct)` |
+| [180](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L180) | `DiscordVoiceModule` | private | `private void OnClientDisconnected(Exception? cause)` |
+| [188](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L188) | `DiscordVoiceModule` | private | `private void Send(RpcCommand command)` |
+| [201](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L201) | `DiscordVoiceModule` | private | `private async Task SendAndLogAsync(DiscordIpcClient client, RpcCommand command, CancellationToken ct)` |
+| [217](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L217) | `DiscordVoiceModule` | private | `private void ApplyCommandResponse(string cmd, JsonElement data)` |
+| [249](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L249) | `DiscordVoiceModule` | private | `private void SetCount(DiscordVoiceParameter parameter, DiscordVoiceVariable variable, int value)` |
+| [255](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L255) | `DiscordVoiceModule` | private | `private void ApplyVoiceSettings(JsonElement data)` |
+| [274](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L274) | `DiscordVoiceModule` | private | `private static int SnowflakeToInt(string? snowflake) => long.TryParse(snowflake, out var id) ? unchecked((int)id) : 0;` |
+| [281](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L281) | `DiscordVoiceModule` | private | `private void ChatBoxUpdate()` |
+| [289](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L289) | `DiscordVoiceModule` | private | `private async Task PollAsync(DiscordIpcClient client, CancellationToken ct)` |
 
 ### `DiscordVoice/Rpc/DiscordAuth.cs`
 
@@ -771,6 +793,16 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 ## MCBParity
 
+### `MCBParity/MCBParityModule.Instance.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [24](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L24) | `MCBParityModule` | private | `private void CreateInstanceSettings()` |
+| [38](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L38) | `MCBParityModule` | private | `private void StartInstance()` |
+| [46](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L46) | `MCBParityModule` | private | `private void StopInstance() => _logTail?.Stop();` |
+| [49](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L49) | `MCBParityModule` | private | `private void UpdateInstance()` |
+| [82](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L82) | `MCBParityModule` | private | `private async Task FetchCapacityAsync(string worldId)` |
+
 ### `MCBParity/MCBParityModule.Weather.cs`
 
 | Line | Owner | Visibility | Declaration |
@@ -792,9 +824,33 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [19](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L19) | `MCBParityModule` | protected | `protected override void OnPreLoad()` |
-| [24](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L24) | `MCBParityModule` | protected | `protected override void OnPostLoad()` |
-| [31](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L31) | `MCBParityModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [20](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L20) | `MCBParityModule` | protected | `protected override void OnPreLoad()` |
+| [26](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L26) | `MCBParityModule` | protected | `protected override void OnPostLoad()` |
+| [36](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L36) | `MCBParityModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [44](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L44) | `MCBParityModule` | protected | `protected override Task OnModuleStop()` |
+
+### `MCBParity/VRChatLogTail.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [37](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L37) | `VRChatLogTail` | private | `private static partial Regex JoiningRegex();` |
+| [40](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L40) | `VRChatLogTail` | private | `private static partial Regex RemotePlayerRegex();` |
+| [43](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L43) | `VRChatLogTail` | private | `private static partial Regex PlayerJoinedRegex();` |
+| [46](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L46) | `VRChatLogTail` | private | `private static partial Regex PlayerLeftRegex();` |
+| [49](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L49) | `VRChatLogTail` | private | `private static partial Regex LocalPlayerRegex();` |
+| [52](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L52) | `VRChatLogTail` | private | `private static partial Regex ActorNrRegex();` |
+| [72](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L72) | `VRChatLogTail` | private | `public VRChatLogTail(Action<string> log)` |
+| [78](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L78) | `VRChatLogTail` | public | `public void Start(string? directoryOverride)` |
+| [90](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L90) | `VRChatLogTail` | public | `public void Stop()` |
+| [100](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L100) | `VRChatLogTail` | public | `public void Poll()` |
+| [135](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L135) | `VRChatLogTail` | private | `private void Reset()` |
+| [150](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L150) | `VRChatLogTail` | private | `private void HandleLine(string line)` |
+| [236](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L236) | `VRChatLogTail` | private | `private void ResolveMasterAfterSwitch()` |
+| [253](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L253) | `VRChatLogTail` | private | `private static string? ResolveDirectory(string? directoryOverride)` |
+| [263](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L263) | `VRChatLogTail` | private | `private static IEnumerable<string> Candidates(string? directoryOverride)` |
+| [277](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L277) | `VRChatLogTail` | private | `private static IEnumerable<string> SteamLibraries()` |
+| [302](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L302) | `VRChatLogTail` | private | `private static partial Regex LibraryPathRegex();` |
+| [304](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L304) | `VRChatLogTail` | private | `private static IEnumerable<string> ParseLibraryPaths(string vdf)` |
 
 
 ## Notifications

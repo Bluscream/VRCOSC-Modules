@@ -72,7 +72,7 @@ _None._
 
 Not `event`-qualified, but the same idea in practice: a slot a caller plugs a handler into. The pervasive `Action<Exception>? onError` parameter pattern shows up here when stored as a member.
 
-**10** total.
+**11** total.
 
 ### HeartrateStats
 
@@ -93,6 +93,12 @@ Not `event`-qualified, but the same idea in practice: a slot a caller plugs a ha
 |---|---|---|---|
 | [30](../VRCOSC.Modules/IRCBridge/IRCClient.cs#L30) | `IRCClient` | `_logAction` | `Action<string>` |
 | [22](../VRCOSC.Modules/IRCBridge/Utils/IRCISupportParser.cs#L22) | `IRCISupportParser` | `OnLimitUpdated` | `Action<string>?` |
+
+### MCBParity
+
+| Line | Owner | Name | Type |
+|---|---|---|---|
+| [55](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L55) | `VRChatLogTail` | `_log` | `Action<string>` |
 
 ### OpenXR
 

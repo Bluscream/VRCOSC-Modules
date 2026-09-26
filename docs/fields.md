@@ -4,7 +4,7 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**646** total across **23** modules.
+**665** total across **23** modules.
 
 | Module | Count |
 |---|---|
@@ -20,7 +20,7 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [LinuxAudioFx](#linuxaudiofx) | 10 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 31 |
 | [LinuxMedia](#linuxmedia) | 15 |
-| [MCBParity](#mcbparity) | 6 |
+| [MCBParity](#mcbparity) | 25 |
 | [Notifications](#notifications) | 37 |
 | [OpenXR](#openxr) | 81 |
 | [Status](#status) | 7 |
@@ -129,15 +129,15 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [22](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L22) | `DiscordVoiceModule` | private | `private static readonly TimeSpan ConnectTimeout = TimeSpan.FromSeconds(2);` |
-| [23](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L23) | `DiscordVoiceModule` | private | `private static readonly TimeSpan CommandTimeout = TimeSpan.FromSeconds(5);` |
-| [25](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L25) | `DiscordVoiceModule` | private | `private DiscordIpcClient? _client;` |
-| [26](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L26) | `DiscordVoiceModule` | private | `private CancellationTokenSource? _lifetime;` |
-| [27](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L27) | `DiscordVoiceModule` | private | `private string _clientId = string.Empty;` |
-| [29](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L29) | `DiscordVoiceModule` | private | `private string _lastGuildId = string.Empty;` |
-| [30](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L30) | `DiscordVoiceModule` | private | `private string _lastChannelId = string.Empty;` |
-| [31](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L31) | `DiscordVoiceModule` | private | `private bool _autoUpdateDefaults;` |
-| [32](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L32) | `DiscordVoiceModule` | private | `private bool _polling;` |
+| [21](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L21) | `DiscordVoiceModule` | private | `private static readonly TimeSpan ConnectTimeout = TimeSpan.FromSeconds(2);` |
+| [22](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L22) | `DiscordVoiceModule` | private | `private static readonly TimeSpan CommandTimeout = TimeSpan.FromSeconds(5);` |
+| [24](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L24) | `DiscordVoiceModule` | private | `private DiscordIpcClient? _client;` |
+| [25](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L25) | `DiscordVoiceModule` | private | `private CancellationTokenSource? _lifetime;` |
+| [26](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L26) | `DiscordVoiceModule` | private | `private string _clientId = string.Empty;` |
+| [28](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L28) | `DiscordVoiceModule` | private | `private string _lastGuildId = string.Empty;` |
+| [29](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L29) | `DiscordVoiceModule` | private | `private string _lastChannelId = string.Empty;` |
+| [30](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L30) | `DiscordVoiceModule` | private | `private bool _autoUpdateDefaults;` |
+| [31](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L31) | `DiscordVoiceModule` | private | `private bool _polling;` |
 
 ### `DiscordVoice/Rpc/DiscordAuth.cs`
 
@@ -589,6 +589,17 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 
 ## MCBParity
 
+### `MCBParity/MCBParityModule.Instance.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [16](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L16) | `MCBParityModule` | private | `private const string VRChatWorldUrl = "https://api.vrchat.cloud/api/1/worlds/{0}";` |
+| [18](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L18) | `MCBParityModule` | private | `private VRChatLogTail? _logTail;` |
+| [19](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L19) | `MCBParityModule` | private | `private readonly Dictionary<string, int> _capacityByWorld = new(StringComparer.OrdinalIgnoreCase);` |
+| [20](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L20) | `MCBParityModule` | private | `private string _capacityRequestedFor = string.Empty;` |
+| [21](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L21) | `MCBParityModule` | private | `private bool _capacityFetching;` |
+| [22](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L22) | `MCBParityModule` | private | `private bool _wasInInstance;` |
+
 ### `MCBParity/MCBParityModule.Weather.cs`
 
 | Line | Owner | Visibility | Declaration |
@@ -599,6 +610,24 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [26](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L26) | `MCBParityModule` | private | `private DateTime _weatherLastFetch = DateTime.MinValue;` |
 | [27](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L27) | `MCBParityModule` | private | `private bool _weatherFetching;` |
 | [28](../VRCOSC.Modules/MCBParity/MCBParityModule.Weather.cs#L28) | `MCBParityModule` | private | `private bool _weatherLoggedNoKey;` |
+
+### `MCBParity/VRChatLogTail.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [33](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L33) | `VRChatLogTail` | private | `private const string LogFilePattern = "output_log_*.txt";` |
+| [34](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L34) | `VRChatLogTail` | private | `private const int VRChatSteamAppId = 438100;` |
+| [54](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L54) | `VRChatLogTail` | private | `private readonly object _sync = new();` |
+| [55](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L55) | `VRChatLogTail` | private | `private readonly Action<string> _log;` |
+| [56](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L56) | `VRChatLogTail` | private | `private readonly Queue<int> _pendingRemoteActors = new();` |
+| [57](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L57) | `VRChatLogTail` | private | `private readonly Dictionary<string, int> _remoteActors = new(StringComparer.Ordinal);` |
+| [59](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L59) | `VRChatLogTail` | private | `private string? _directory;` |
+| [60](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L60) | `VRChatLogTail` | private | `private string? _file;` |
+| [61](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L61) | `VRChatLogTail` | private | `private long _offset;` |
+| [62](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L62) | `VRChatLogTail` | private | `private bool _expectActorNr;` |
+| [63](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L63) | `VRChatLogTail` | private | `private bool _masterSwitchPending;` |
+| [64](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L64) | `VRChatLogTail` | private | `private int _ownActor = -1;` |
+| [65](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L65) | `VRChatLogTail` | private | `private string _ownName = string.Empty;` |
 
 
 ## Notifications

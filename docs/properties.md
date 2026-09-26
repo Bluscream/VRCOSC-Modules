@@ -4,7 +4,7 @@
 
 Every property (including expression-bodied and auto-properties), grouped by module and file.
 
-**192** total across **19** modules.
+**196** total across **20** modules.
 
 | Module | Count |
 |---|---|
@@ -20,6 +20,7 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | [LinuxAudioFx](#linuxaudiofx) | 9 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 40 |
 | [LinuxMedia](#linuxmedia) | 2 |
+| [MCBParity](#mcbparity) | 4 |
 | [Notifications](#notifications) | 16 |
 | [OpenXR](#openxr) | 10 |
 | [Status](#status) | 5 |
@@ -305,6 +306,18 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 |---|---|---|---|
 | [28](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L28) | `LyricsProvider` | public | `public bool HasSyncedLyrics { get { lock (_sync) return _lines.Count > 0; } }` |
 | [31](../VRCOSC.Modules/LinuxMedia/LyricsProvider.cs#L31) | `LyricsProvider` | public | `public bool HasPlainLyricsOnly { get { lock (_sync) return _plainOnly; } }` |
+
+
+## MCBParity
+
+### `MCBParity/VRChatLogTail.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [67](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L67) | `VRChatLogTail` | public | `public bool InInstance { get; private set; }` |
+| [68](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L68) | `VRChatLogTail` | public | `public bool IsMaster { get; private set; }` |
+| [69](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L69) | `VRChatLogTail` | public | `public string WorldId { get; private set; } = string.Empty;` |
+| [70](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L70) | `VRChatLogTail` | public | `public string? LogDirectory => _directory;` |
 
 
 ## Notifications

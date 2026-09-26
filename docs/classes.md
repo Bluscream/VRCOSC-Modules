@@ -4,14 +4,14 @@
 
 Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
-**331** total across **24** modules.
+**335** total across **24** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 5 |
 | [Debug](#debug) | 15 |
 | [DesktopFPS](#desktopfps) | 8 |
-| [DiscordVoice](#discordvoice) | 12 |
+| [DiscordVoice](#discordvoice) | 14 |
 | [HTTP](#http) | 11 |
 | [HTTPServer](#httpserver) | 17 |
 | [HeartrateStats](#heartratestats) | 13 |
@@ -21,7 +21,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [LinuxHardwareStats](#linuxhardwarestats) | 18 |
 | [LinuxMedia](#linuxmedia) | 7 |
 | [LinuxProcessManager](#linuxprocessmanager) | 2 |
-| [MCBParity](#mcbparity) | 8 |
+| [MCBParity](#mcbparity) | 10 |
 | [Notifications](#notifications) | 19 |
 | [OpenXR](#openxr) | 28 |
 | [Status](#status) | 9 |
@@ -138,6 +138,18 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [72](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L72) | public | `public enum DiscordVoiceState` |
 | [77](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L77) | public | `public enum DiscordVoiceEvent` |
 
+### `DiscordVoice/DiscordVoiceModule.Events.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [10](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Events.cs#L10) | public | `public sealed partial class DiscordVoiceModule` |
+
+### `DiscordVoice/DiscordVoiceModule.Parameters.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [10](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Parameters.cs#L10) | public | `public sealed partial class DiscordVoiceModule` |
+
 ### `DiscordVoice/DiscordVoiceModule.Registration.cs`
 
 | Line | Visibility | Declaration |
@@ -148,7 +160,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
 | Line | Visibility | Declaration |
 |---|---|---|
-| [20](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L20) | public | `public sealed partial class DiscordVoiceModule : Module` |
+| [19](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.cs#L19) | public | `public sealed partial class DiscordVoiceModule : Module` |
 
 ### `DiscordVoice/Rpc/DiscordAuth.cs`
 
@@ -552,6 +564,12 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
 ## MCBParity
 
+### `MCBParity/MCBParityModule.Instance.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [14](../VRCOSC.Modules/MCBParity/MCBParityModule.Instance.cs#L14) | public | `public sealed partial class MCBParityModule` |
+
 ### `MCBParity/MCBParityModule.Weather.cs`
 
 | Line | Visibility | Declaration |
@@ -565,10 +583,16 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
 | Line | Visibility | Declaration |
 |---|---|---|
-| [17](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L17) | public | `public sealed partial class MCBParityModule : Module` |
-| [38](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L38) | private | `private enum MCBParitySetting` |
-| [44](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L44) | private | `private enum MCBParityVariable` |
-| [49](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L49) | private | `private enum MCBParityState { Default }` |
+| [18](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L18) | public | `public sealed partial class MCBParityModule : Module` |
+| [50](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L50) | private | `private enum MCBParitySetting` |
+| [57](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L57) | private | `private enum MCBParityVariable` |
+| [63](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L63) | private | `private enum MCBParityState { Default, InInstance, NotInInstance }` |
+
+### `MCBParity/VRChatLogTail.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [31](../VRCOSC.Modules/MCBParity/VRChatLogTail.cs#L31) | internal | `internal sealed partial class VRChatLogTail` |
 
 
 ## Notifications

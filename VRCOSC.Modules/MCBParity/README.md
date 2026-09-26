@@ -13,6 +13,8 @@ Weather feels-like/wind/emoji as ChatBox variables (MagicChatbox placeholder par
 | **Weather refresh (minutes)** | `Slider` | `How often the weather is re-fetched.` | `10, 1, 60, 1` |
 | **Temperature unit** | `Dropdown` | `Unit for the temperature and feels-like variables.` | `TemperatureUnit.Celsius` |
 | **Wind speed unit** | `Dropdown` | `Unit for the wind variable.` | `WindUnit.Kmh` |
+| **Instance master icon** | `TextBox` | `Value of the master variable while you are the instance master; empty otherwise.` | `"\U0001F451"` |
+| **VRChat log directory** | `TextBox` | `Override for the folder holding output_log_*.txt, as a path VRCOSC can open (Z:\\... under Wine). Leave empty to auto-detect (own prefix's LocalLow, then every Steam library's compatdata/438100).` | `empty` |
 <!-- SETTINGS_TABLE_END -->
 
 ## ChatBox Variables
@@ -26,6 +28,8 @@ Weather feels-like/wind/emoji as ChatBox variables (MagicChatbox placeholder par
 | **Weather Emoji** | `weather_emoji` | `string` | `ChatBox variable Weather Emoji` |
 | **Weather Condition** | `weather_condition` | `string` | `ChatBox variable Weather Condition` |
 | **Weather Humidity (%)** | `weather_humidity` | `int` | `ChatBox variable Weather Humidity (%)` |
+| **Instance Capacity (world capacity)** | `vrc_instance_capacity` | `int` | `ChatBox variable Instance Capacity (world capacity)` |
+| **Instance Master Icon** | `vrc_master` | `string` | `ChatBox variable Instance Master Icon` |
 <!-- VARIABLES_TABLE_END -->
 
 ## ChatBox States
@@ -34,6 +38,8 @@ Weather feels-like/wind/emoji as ChatBox variables (MagicChatbox placeholder par
 | State Name | Lookup Key | Format | Description |
 |---|---|---|---|
 | **Default** | `default` | `{0} {1} (feels {2})\n{3}` | `Default state` |
+| **In Instance** | `ininstance` | `{0} {1} (feels {2})\n{3} cap {4}` | `In Instance state` |
+| **Not In Instance** | `notininstance` | `{0} {1} (feels {2})\n{3}` | `Not In Instance state` |
 <!-- STATES_TABLE_END -->
 
 ## ChatBox Events
