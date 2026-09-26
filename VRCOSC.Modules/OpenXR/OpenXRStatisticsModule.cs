@@ -64,6 +64,7 @@ public class OpenXRStatisticsModule : Module
     protected override void OnPostLoad()
     {
         CreateVariable<float>(OpenXRVariable.FPS, "FPS");
+        CreateVariable<int>(OpenXRVariable.TargetHz, "Target Hz (headset refresh rate)");
         CreateVariable<bool>(OpenXRVariable.DashboardVisible, "Dashboard Visible");
         CreateVariable<string>(OpenXRVariable.RuntimeName, "Runtime Name");
         CreateVariable<string>(OpenXRVariable.SystemName, "System Name");
@@ -103,6 +104,7 @@ public class OpenXRStatisticsModule : Module
         var probe = _probe.Latest;
 
         SetVariableValue(OpenXRVariable.FPS, MathF.Round(xr.DisplayRefreshRate));
+        SetVariableValue(OpenXRVariable.TargetHz, (int)MathF.Round(xr.DisplayRefreshRate));
         SetVariableValue(OpenXRVariable.DashboardVisible, IsDashboardVisible(probe));
         SetVariableValue(OpenXRVariable.RuntimeName, xr.RuntimeName);
         SetVariableValue(OpenXRVariable.SystemName, xr.SystemName);
@@ -203,7 +205,7 @@ public class OpenXRStatisticsModule : Module
 
     private enum OpenXRVariable
     {
-        FPS, DashboardVisible, RuntimeName, SystemName, SessionState,
+        FPS, TargetHz, DashboardVisible, RuntimeName, SystemName, SessionState,
         HMD_Battery, HMD_Charging,
         LHand_Battery, LHand_Charging,
         RHand_Battery, RHand_Charging
