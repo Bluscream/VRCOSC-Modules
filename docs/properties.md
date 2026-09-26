@@ -289,10 +289,10 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [27](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L27) | `OpenXRRuntime` | public | `public static OpenXRRuntime Shared { get; } = new();` |
-| [75](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L75) | `OpenXRRuntime` | public | `public string CurrentPhase => _phase;` |
-| [78](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L78) | `OpenXRRuntime` | public | `public DateTime LastLoopUtc => new(Interlocked.Read(ref _lastLoopTicks), DateTimeKind.Utc);` |
-| [83](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L83) | `OpenXRRuntime` | public | `public OpenXRSnapshot Snapshot => _snapshot;` |
-| [90](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L90) | `OpenXRRuntime` | public | `public bool UseOverlaySession { get; set; } = true;` |
+| [76](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L76) | `OpenXRRuntime` | public | `public string CurrentPhase => _phase;` |
+| [79](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L79) | `OpenXRRuntime` | public | `public DateTime LastLoopUtc => new(Interlocked.Read(ref _lastLoopTicks), DateTimeKind.Utc);` |
+| [84](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L84) | `OpenXRRuntime` | public | `public OpenXRSnapshot Snapshot => _snapshot;` |
+| [91](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L91) | `OpenXRRuntime` | public | `public bool UseOverlaySession { get; set; } = true;` |
 
 
 ## Status

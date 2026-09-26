@@ -208,12 +208,15 @@ internal sealed unsafe partial class OpenXRRuntime
     private void ResolveExtensionFunctions(IReadOnlyCollection<string> enabled)
     {
         _getDisplayRefreshRate = null;
+        _enumerateDisplayRefreshRates = null;
         _convertWin32Time = null;
 
         if (enabled.Contains(ExtDisplayRefreshRate))
         {
             var fn = GetProc("xrGetDisplayRefreshRateFB");
             if (fn != 0) _getDisplayRefreshRate = (delegate* unmanaged[Cdecl]<Session, float*, Result>)fn;
+            var en = GetProc("xrEnumerateDisplayRefreshRatesFB");
+            if (en != 0) _enumerateDisplayRefreshRates = (delegate* unmanaged[Cdecl]<Session, uint, uint*, float*, Result>)en;
         }
 
         if (enabled.Contains(ExtWin32Time))

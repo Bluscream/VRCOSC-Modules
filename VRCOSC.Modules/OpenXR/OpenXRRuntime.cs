@@ -65,6 +65,7 @@ internal sealed unsafe partial class OpenXRRuntime
     private float _refreshRate;
     private bool _headTracked;
     private delegate* unmanaged[Cdecl]<Session, float*, Result> _getDisplayRefreshRate;
+    private delegate* unmanaged[Cdecl]<Session, uint, uint*, float*, Result> _enumerateDisplayRefreshRates;
     private delegate* unmanaged[Cdecl]<Instance, long*, long*, Result> _convertWin32Time;
 
     private volatile OpenXRSnapshot _snapshot = OpenXRSnapshot.Empty;
@@ -323,10 +324,15 @@ internal sealed unsafe partial class OpenXRRuntime
             var waitInfo = new FrameWaitInfo { Type = StructureType.FrameWaitInfo };
             var frameState = new FrameState { Type = StructureType.FrameState };
             Phase("xrWaitFrame(probe)");
-            if (_xr!.WaitFrame(_session, &waitInfo, &frameState) == Result.Success && frameState.PredictedDisplayPeriod > 0)
+            var wr = _xr!.WaitFrame(_session, &waitInfo, &frameState);
+            if (wr == Result.Success && frameState.PredictedDisplayPeriod > 0)
             {
                 _lastPredictedPeriod = frameState.PredictedDisplayPeriod;
                 Log($"Display period from xrWaitFrame: {1_000_000_000d / _lastPredictedPeriod:0.#} Hz");
+            }
+            else
+            {
+                Log($"xrWaitFrame probe: {wr}, period {frameState.PredictedDisplayPeriod}; refresh rate will come from the enumerated list.");
             }
         }
 
@@ -398,6 +404,26 @@ internal sealed unsafe partial class OpenXRRuntime
         {
             LogOnce($"xrGetDisplayRefreshRateFB returned {r} with {rate} Hz");
             if (_lastPredictedPeriod > 0) _refreshRate = 1_000_000_000f / _lastPredictedPeriod;
+            else if (_enumerateDisplayRefreshRates is not null && _refreshRate <= 0f)
+            {
+                // Non-rendering clients get 0 from the "current" query on some runtimes; the
+                // enumerated list is still filled, and the highest entry is the headset's mode.
+                uint count = 0;
+                var er = _enumerateDisplayRefreshRates(_session, 0, &count, null);
+                if (er == Result.Success && count > 0)
+                {
+                    var rates = stackalloc float[(int)count];
+                    er = _enumerateDisplayRefreshRates(_session, count, &count, rates);
+                    var best = 0f;
+                    for (var i = 0; i < count; i++) best = MathF.Max(best, rates[i]);
+                    if (er == Result.Success && best > 0f)
+                    {
+                        _refreshRate = best;
+                        LogOnce($"Refresh rate from xrEnumerateDisplayRefreshRatesFB: {best} Hz (highest of {count})");
+                    }
+                }
+                if (_refreshRate <= 0f) LogOnce($"xrEnumerateDisplayRefreshRatesFB gave nothing usable ({er}, {count} entries)");
+            }
         }
     }
 
@@ -456,6 +482,7 @@ internal sealed unsafe partial class OpenXRRuntime
         _lastPredictedTime = 0;
         _lastPredictedPeriod = 0;
         _getDisplayRefreshRate = null;
+        _enumerateDisplayRefreshRates = null;
         _convertWin32Time = null;
         _handInputs[0] = HandInput.Inactive;
         _handInputs[1] = HandInput.Inactive;

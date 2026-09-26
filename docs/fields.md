@@ -636,11 +636,11 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [64](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L64) | `OpenXRRuntime` | private | `private string _systemName = string.Empty;` |
 | [65](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L65) | `OpenXRRuntime` | private | `private float _refreshRate;` |
 | [66](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L66) | `OpenXRRuntime` | private | `private bool _headTracked;` |
-| [70](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L70) | `OpenXRRuntime` | private | `private volatile OpenXRSnapshot _snapshot = OpenXRSnapshot.Empty;` |
-| [71](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L71) | `OpenXRRuntime` | private | `private volatile string _phase = "idle";` |
-| [72](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L72) | `OpenXRRuntime` | private | `private long _lastLoopTicks;` |
-| [139](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L139) | `OpenXRRuntime` | private | `private readonly Dictionary<string, DateTime> _lastLogged = new();` |
-| [406](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L406) | `OpenXRRuntime` | private | `private DateTime _nextSnapshotLog = DateTime.MinValue;` |
+| [71](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L71) | `OpenXRRuntime` | private | `private volatile OpenXRSnapshot _snapshot = OpenXRSnapshot.Empty;` |
+| [72](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L72) | `OpenXRRuntime` | private | `private volatile string _phase = "idle";` |
+| [73](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L73) | `OpenXRRuntime` | private | `private long _lastLoopTicks;` |
+| [140](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L140) | `OpenXRRuntime` | private | `private readonly Dictionary<string, DateTime> _lastLogged = new();` |
+| [432](../VRCOSC.Modules/OpenXR/OpenXRRuntime.cs#L432) | `OpenXRRuntime` | private | `private DateTime _nextSnapshotLog = DateTime.MinValue;` |
 
 ### `OpenXR/OpenXRStatisticsModule.cs`
 
