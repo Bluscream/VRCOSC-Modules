@@ -40,10 +40,23 @@ Note: Vesktop / Equibop implement RPC through arRPC, which only handles Rich Pre
 | **Default Guild ID** | `TextBox` | `Guild ID used for guild-scoped subscriptions (GUILD_STATUS).` | `empty` |
 | **Default Channel ID** | `TextBox` | `Channel ID used for channel-scoped subscriptions (VOICE_STATE_*, SPEAKING_*, MESSAGE_*).` | `empty` |
 | **Auto Update Defaults** | `Toggle` | `Update the default guild and channel whenever you join a voice channel.` | `false` |
+| **Max Speaking Names** | `Slider` | `Configure Max Speaking Names` | `"How many speakers the Speaking variable lists before collapsing the rest into \"+N\". 0 = unlimited.", 3, 0, 10` |
+| **Speaking Hold (ms)** | `TextBox` | `How long a speaker stays listed after they stop talking, so short pauses do not flicker.` | `300` |
 | **Client ID** | `TextBox` | `Client ID of your Discord application (Developer Portal, OAuth2 tab). Required for RPC.` | `empty` |
 <!-- SETTINGS_TABLE_END -->
 
 ## ChatBox Variables
+
+The `discord_*` variables use the MagicChatbox placeholder names so its layouts map 1:1
+(`{bluscream.vrcosc.modules.discordvoicemodule_discord_channel}` and so on):
+
+| Key | Meaning |
+|---|---|
+| `discord_channel` | Name of the voice channel you are in; empty when not in voice. |
+| `discord_speaking` | Display names currently speaking, comma-separated, held for *Speaking Hold* ms after they stop, capped at *Max Speaking Names* with a `+N` tail. |
+| `discord_mute_state` | `""`, `muted` or `deafened` (deafened implies muted). |
+| `discord_muted` / `discord_deafened` | The same as separate booleans. |
+| `discord_users` | Number of users in the voice channel (including you). |
 
 <!-- VARIABLES_TABLE_START -->
 | Variable Name | Lookup Key | Type | Description |
@@ -63,6 +76,12 @@ Note: Vesktop / Equibop implement RPC through arRPC, which only handles Rich Pre
 | **Event User Id** | `eventuserid` | `int` | `ChatBox variable Event User Id` |
 | **Event Message Id** | `eventmessageid` | `int` | `ChatBox variable Event Message Id` |
 | **Last Event Code** | `lasteventcode` | `int` | `ChatBox variable Last Event Code` |
+| **Voice Channel** | `VarChannel` | `string` | `ChatBox variable Voice Channel` |
+| **Speaking** | `VarSpeaking` | `string` | `ChatBox variable Speaking` |
+| **Mute State** | `VarMuteState` | `string` | `ChatBox variable Mute State` |
+| **Muted** | `VarMuted` | `bool` | `ChatBox variable Muted` |
+| **Deafened** | `VarDeafened` | `bool` | `ChatBox variable Deafened` |
+| **Users In Channel** | `VarUsers` | `int` | `ChatBox variable Users In Channel` |
 <!-- VARIABLES_TABLE_END -->
 
 ## ChatBox States
@@ -97,11 +116,6 @@ Note: Vesktop / Equibop implement RPC through arRPC, which only handles Rich Pre
 | **Activity Spectate** | `activityspectateevent` | `Spectate` | `Triggered on Activity Spectate` |
 | **Join Request** | `activityjoinrequestevent` | `User {0}` | `Triggered on Join Request` |
 <!-- EVENTS_TABLE_END -->
-
-## Avatar OSC Parameters
-
-<!-- PARAMETERS_TABLE_START -->
-<!-- PARAMETERS_TABLE_END -->
 
 ## Avatar OSC Parameters
 

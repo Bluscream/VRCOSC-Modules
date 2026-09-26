@@ -4,14 +4,14 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**683** total across **23** modules.
+**694** total across **23** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 1 |
 | [Debug](#debug) | 25 |
 | [DesktopFPS](#desktopfps) | 10 |
-| [DiscordVoice](#discordvoice) | 33 |
+| [DiscordVoice](#discordvoice) | 44 |
 | [HTTP](#http) | 24 |
 | [HTTPServer](#httpserver) | 20 |
 | [HeartrateStats](#heartratestats) | 31 |
@@ -124,6 +124,22 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 
 
 ## DiscordVoice
+
+### `DiscordVoice/DiscordVoiceModule.Voice.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [15](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L15) | `DiscordVoiceModule` | private | `private static readonly string[] ChannelScopedEvents = ["VOICE_STATE_CREATE", "VOICE_STATE_UPDATE", "VOICE_STATE_DELETE", "SPEAKING_START", "SPEAKING_STOP"];` |
+| [18](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L18) | `DiscordVoiceModule` | private | `private const string VarChannel = "discord_channel";` |
+| [19](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L19) | `DiscordVoiceModule` | private | `private const string VarSpeaking = "discord_speaking";` |
+| [20](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L20) | `DiscordVoiceModule` | private | `private const string VarMuteState = "discord_mute_state";` |
+| [21](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L21) | `DiscordVoiceModule` | private | `private const string VarMuted = "discord_muted";` |
+| [22](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L22) | `DiscordVoiceModule` | private | `private const string VarDeafened = "discord_deafened";` |
+| [23](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L23) | `DiscordVoiceModule` | private | `private const string VarUsers = "discord_users";` |
+| [25](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L25) | `DiscordVoiceModule` | private | `private readonly VoiceStateTracker _voice = new();` |
+| [26](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L26) | `DiscordVoiceModule` | private | `private string _trackedChannelId = string.Empty;` |
+| [27](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L27) | `DiscordVoiceModule` | private | `private VoiceSnapshot _lastPublished;` |
+| [28](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L28) | `DiscordVoiceModule` | private | `private string _lastSpeakingText = string.Empty;` |
 
 ### `DiscordVoice/DiscordVoiceModule.cs`
 

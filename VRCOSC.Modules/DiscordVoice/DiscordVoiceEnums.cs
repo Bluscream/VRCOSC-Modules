@@ -47,7 +47,9 @@ public enum DiscordVoiceSetting
     ClientSecret,
     DefaultGuildId,
     DefaultChannelId,
-    AutoUpdateDefaults
+    AutoUpdateDefaults,
+    MaxSpeakingNames,
+    SpeakingHoldMs
 }
 
 public enum DiscordVoiceVariable

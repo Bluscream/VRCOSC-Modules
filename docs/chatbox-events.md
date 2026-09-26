@@ -27,15 +27,15 @@ The Fired column lists every `TriggerEvent` call site; an event with **never** t
 | [76](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L76) | `DiscordVoiceModule` | `DiscordVoiceEvent.VoiceStateCreateEvent` | Voice Join | **never** |
 | [77](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L77) | `DiscordVoiceModule` | `DiscordVoiceEvent.VoiceStateUpdateEvent` | Voice Update | **never** |
 | [78](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L78) | `DiscordVoiceModule` | `DiscordVoiceEvent.VoiceStateDeleteEvent` | Voice Leave | **never** |
-| [79](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L79) | `DiscordVoiceModule` | `DiscordVoiceEvent.VoiceSettingsEvent` | Voice Settings | [DiscordVoiceModule.Events.cs:52](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Events.cs#L52) |
+| [79](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L79) | `DiscordVoiceModule` | `DiscordVoiceEvent.VoiceSettingsEvent` | Voice Settings | [DiscordVoiceModule.Events.cs:53](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Events.cs#L53) |
 | [80](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L80) | `DiscordVoiceModule` | `DiscordVoiceEvent.SpeakingStartEvent` | Speaking Start | **never** |
 | [81](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L81) | `DiscordVoiceModule` | `DiscordVoiceEvent.SpeakingStopEvent` | Speaking Stop | **never** |
 | [82](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L82) | `DiscordVoiceModule` | `DiscordVoiceEvent.MessageCreateEvent` | Message Created | **never** |
 | [83](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L83) | `DiscordVoiceModule` | `DiscordVoiceEvent.MessageUpdateEvent` | Message Updated | **never** |
 | [84](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L84) | `DiscordVoiceModule` | `DiscordVoiceEvent.MessageDeleteEvent` | Message Deleted | **never** |
 | [85](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L85) | `DiscordVoiceModule` | `DiscordVoiceEvent.NotificationEvent` | Notification | **never** |
-| [86](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L86) | `DiscordVoiceModule` | `DiscordVoiceEvent.ActivityJoinEvent` | Activity Join | [DiscordVoiceModule.Events.cs:99](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Events.cs#L99) |
-| [87](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L87) | `DiscordVoiceModule` | `DiscordVoiceEvent.ActivitySpectateEvent` | Activity Spectate | [DiscordVoiceModule.Events.cs:102](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Events.cs#L102) |
+| [86](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L86) | `DiscordVoiceModule` | `DiscordVoiceEvent.ActivityJoinEvent` | Activity Join | [DiscordVoiceModule.Events.cs:105](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Events.cs#L105) |
+| [87](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L87) | `DiscordVoiceModule` | `DiscordVoiceEvent.ActivitySpectateEvent` | Activity Spectate | [DiscordVoiceModule.Events.cs:108](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Events.cs#L108) |
 | [88](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L88) | `DiscordVoiceModule` | `DiscordVoiceEvent.ActivityJoinRequestEvent` | Join Request | **never** |
 
 ## HTTP

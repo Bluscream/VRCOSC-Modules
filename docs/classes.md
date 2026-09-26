@@ -4,14 +4,14 @@
 
 Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
-**339** total across **24** modules.
+**340** total across **24** modules.
 
 | Module | Count |
 |---|---|
 | [(root)](#(root)) | 5 |
 | [Debug](#debug) | 15 |
 | [DesktopFPS](#desktopfps) | 8 |
-| [DiscordVoice](#discordvoice) | 17 |
+| [DiscordVoice](#discordvoice) | 18 |
 | [HTTP](#http) | 11 |
 | [HTTPServer](#httpserver) | 17 |
 | [HeartrateStats](#heartratestats) | 13 |
@@ -134,9 +134,9 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 |---|---|---|
 | [6](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L6) | public | `public enum DiscordVoiceParameter` |
 | [44](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L44) | public | `public enum DiscordVoiceSetting` |
-| [53](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L53) | public | `public enum DiscordVoiceVariable` |
-| [72](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L72) | public | `public enum DiscordVoiceState` |
-| [77](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L77) | public | `public enum DiscordVoiceEvent` |
+| [55](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L55) | public | `public enum DiscordVoiceVariable` |
+| [74](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L74) | public | `public enum DiscordVoiceState` |
+| [79](../VRCOSC.Modules/DiscordVoice/DiscordVoiceEnums.cs#L79) | public | `public enum DiscordVoiceEvent` |
 
 ### `DiscordVoice/DiscordVoiceModule.Events.cs`
 
@@ -155,6 +155,12 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [11](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Registration.cs#L11) | public | `public sealed partial class DiscordVoiceModule` |
+
+### `DiscordVoice/DiscordVoiceModule.Voice.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [13](../VRCOSC.Modules/DiscordVoice/DiscordVoiceModule.Voice.cs#L13) | public | `public sealed partial class DiscordVoiceModule` |
 
 ### `DiscordVoice/DiscordVoiceModule.cs`
 

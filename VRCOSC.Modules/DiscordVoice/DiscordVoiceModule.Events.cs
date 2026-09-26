@@ -49,6 +49,7 @@ public sealed partial class DiscordVoiceModule
                 break;
             case "VOICE_SETTINGS_UPDATE":
                 ApplyVoiceSettings(data);
+                OnVoiceSettings(data);
                 TriggerEvent(DiscordVoiceEvent.VoiceSettingsEvent);
                 break;
             case "VOICE_CONNECTION_STATUS":
@@ -69,18 +70,23 @@ public sealed partial class DiscordVoiceModule
                 SetIdAndTrigger(DiscordVoiceVariable.EventChannelId, Nested(data, "id"), DiscordVoiceEvent.ChannelCreateEvent);
                 break;
             case "VOICE_STATE_CREATE":
+                OnVoiceStateEvent(name, data);
                 SetIdAndTrigger(DiscordVoiceVariable.EventUserId, Nested(data, "user", "id"), DiscordVoiceEvent.VoiceStateCreateEvent);
                 break;
             case "VOICE_STATE_UPDATE":
+                OnVoiceStateEvent(name, data);
                 SetIdAndTrigger(DiscordVoiceVariable.EventUserId, Nested(data, "user", "id"), DiscordVoiceEvent.VoiceStateUpdateEvent);
                 break;
             case "VOICE_STATE_DELETE":
+                OnVoiceStateEvent(name, data);
                 SetIdAndTrigger(DiscordVoiceVariable.EventUserId, Nested(data, "user", "id"), DiscordVoiceEvent.VoiceStateDeleteEvent);
                 break;
             case "SPEAKING_START":
+                OnSpeakingEvent(name, data);
                 SetIdAndTrigger(DiscordVoiceVariable.EventUserId, Nested(data, "user_id"), DiscordVoiceEvent.SpeakingStartEvent);
                 break;
             case "SPEAKING_STOP":
+                OnSpeakingEvent(name, data);
                 SetIdAndTrigger(DiscordVoiceVariable.EventUserId, Nested(data, "user_id"), DiscordVoiceEvent.SpeakingStopEvent);
                 break;
             case "MESSAGE_CREATE":
@@ -112,6 +118,7 @@ public sealed partial class DiscordVoiceModule
         var channelId = Nested(data, "channel_id") ?? string.Empty;
         _lastChannelId = channelId;
         SetCount(DiscordVoiceParameter.SelectedVoiceChannelId, DiscordVoiceVariable.SelectedVoiceChannelId, SnowflakeToInt(channelId));
+        OnVoiceChannelChanged(channelId);
 
         if (!_autoUpdateDefaults || channelId.Length == 0) return;
         SetSettingValue(DiscordVoiceSetting.DefaultChannelId, channelId);

@@ -38,12 +38,19 @@ public sealed partial class DiscordVoiceModule : Module
         CreateTextBox(DiscordVoiceSetting.DefaultChannelId, "Default Channel ID", "Channel ID used for channel-scoped subscriptions (VOICE_STATE_*, SPEAKING_*, MESSAGE_*).", string.Empty);
         CreateToggle(DiscordVoiceSetting.AutoUpdateDefaults, "Auto Update Defaults", "Update the default guild and channel whenever you join a voice channel.", false);
 
+        CreateSlider(DiscordVoiceSetting.MaxSpeakingNames, "Max Speaking Names", "How many speakers the Speaking variable lists before collapsing the rest into \"+N\". 0 = unlimited.", 3, 0, 10);
+        CreateTextBox(DiscordVoiceSetting.SpeakingHoldMs, "Speaking Hold (ms)", "How long a speaker stays listed after they stop talking, so short pauses do not flicker.", 300);
+
         CreateTextBox(DiscordVoiceSetting.ClientId, "Client ID", "Client ID of your Discord application (Developer Portal, OAuth2 tab). Required for RPC.", string.Empty);
         CreatePasswordTextBox(DiscordVoiceSetting.ClientSecret, "Client Secret", "Client secret of the same application. Required for RPC.", string.Empty);
         CreateGroup("Discord Application", "OAuth2 credentials of the application used for the RPC connection.", DiscordVoiceSetting.ClientId, DiscordVoiceSetting.ClientSecret);
     }
 
-    protected override void OnPostLoad() => RegisterChatBox();
+    protected override void OnPostLoad()
+    {
+        RegisterChatBox();
+        RegisterVoiceVariables();
+    }
 
     protected override async Task<bool> OnModuleStart()
     {
@@ -51,6 +58,8 @@ public sealed partial class DiscordVoiceModule : Module
         _autoUpdateDefaults = GetSettingValue<bool>(DiscordVoiceSetting.AutoUpdateDefaults);
         _lastGuildId = GetSettingValue<string>(DiscordVoiceSetting.DefaultGuildId) ?? string.Empty;
         _lastChannelId = GetSettingValue<string>(DiscordVoiceSetting.DefaultChannelId) ?? string.Empty;
+        _voice.SpeakingHold = TimeSpan.FromMilliseconds(Math.Max(0, GetSettingValue<int>(DiscordVoiceSetting.SpeakingHoldMs)));
+        ResetVoice();
 
         var clientId = GetSettingValue<string>(DiscordVoiceSetting.ClientId)?.Trim() ?? string.Empty;
         var clientSecret = GetSettingValue<string>(DiscordVoiceSetting.ClientSecret)?.Trim() ?? string.Empty;
@@ -92,6 +101,8 @@ public sealed partial class DiscordVoiceModule : Module
             Log($"Authenticated with Discord over {client.Transport}.");
 
             await SubscribeDefaultsAsync(client, ct).ConfigureAwait(false);
+            await SendAndLogAsync(client, Payload.GetVoiceSettings(), ct).ConfigureAwait(false);
+            await SendAndLogAsync(client, Payload.GetSelectedVoiceChannel(), ct).ConfigureAwait(false);
             SendParameter(DiscordVoiceParameter.Ready, true);
             SetVariableValue(DiscordVoiceVariable.Ready, true);
             ChangeState(DiscordVoiceState.VoiceState);
@@ -123,6 +134,7 @@ public sealed partial class DiscordVoiceModule : Module
         _lifetime = null;
         SendParameter(DiscordVoiceParameter.Ready, false);
         SetVariableValue(DiscordVoiceVariable.Ready, false);
+        ResetVoice();
         return Task.CompletedTask;
     }
 
@@ -228,8 +240,10 @@ public sealed partial class DiscordVoiceModule : Module
                 var id = data.ValueKind == JsonValueKind.Object && data.TryGetProperty("id", out var idEl) ? idEl.GetString() ?? string.Empty : string.Empty;
                 _lastChannelId = id;
                 SetCount(DiscordVoiceParameter.SelectedVoiceChannelId, DiscordVoiceVariable.SelectedVoiceChannelId, SnowflakeToInt(id));
+                if (id != _trackedChannelId) OnVoiceChannelChanged(id);
                 break;
             case "GET_CHANNEL":
+                if (Nested(data, "id") is { } channelId && channelId == _trackedChannelId) ApplyChannel(channelId, data);
                 if (data.TryGetProperty("voice_states", out var states))
                     SetCount(DiscordVoiceParameter.ChannelUserCount, DiscordVoiceVariable.ChannelUserCount, states.GetArrayLength());
                 if (data.TryGetProperty("type", out var type) && type.TryGetInt32(out var typeValue))
@@ -242,6 +256,7 @@ public sealed partial class DiscordVoiceModule : Module
             case "GET_VOICE_SETTINGS":
             case "SET_VOICE_SETTINGS":
                 ApplyVoiceSettings(data);
+                OnVoiceSettings(data);
                 break;
         }
     }
