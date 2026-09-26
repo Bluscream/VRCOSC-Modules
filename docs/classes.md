@@ -4,7 +4,7 @@
 
 Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
-**267** total across **18** modules.
+**303** total across **22** modules.
 
 | Module | Count |
 |---|---|
@@ -13,14 +13,18 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [DesktopFPS](#desktopfps) | 8 |
 | [HTTP](#http) | 11 |
 | [HTTPServer](#httpserver) | 17 |
+| [HeartrateStats](#heartratestats) | 6 |
 | [HomeAssistant](#homeassistant) | 12 |
 | [IRCBridge](#ircbridge) | 39 |
+| [LinuxAudioFx](#linuxaudiofx) | 8 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 18 |
 | [LinuxMedia](#linuxmedia) | 7 |
 | [LinuxProcessManager](#linuxprocessmanager) | 2 |
 | [Notifications](#notifications) | 19 |
 | [OpenXR](#openxr) | 28 |
 | [Status](#status) | 9 |
+| [TikTokLive](#tiktoklive) | 8 |
+| [TwitchStats](#twitchstats) | 14 |
 | [Utilities](#utilities) | 32 |
 | [VRCExtras](#vrcextras) | 6 |
 | [VRCXBridge](#vrcxbridge) | 12 |
@@ -214,6 +218,35 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [16](../VRCOSC.Modules/HTTPServer/RestWebModule.cs#L16) | internal | `internal sealed class RestWebModule : WebModuleBase` |
 
 
+## HeartrateStats
+
+### `HeartrateStats/HeartrateSession.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [7](../VRCOSC.Modules/HeartrateStats/HeartrateSession.cs#L7) | internal | `internal sealed class HeartrateSession` |
+| [13](../VRCOSC.Modules/HeartrateStats/HeartrateSession.cs#L13) | private | `private readonly record struct Sample(DateTimeOffset At, int Bpm);` |
+
+### `HeartrateStats/HeartrateSource.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [13](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L13) | internal | `internal interface IHeartrateSource` |
+| [22](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L22) | internal | `internal abstract class WebSocketHeartrateSource : IHeartrateSource` |
+
+### `HeartrateStats/HypeRateSource.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [10](../VRCOSC.Modules/HeartrateStats/HypeRateSource.cs#L10) | internal | `internal sealed class HypeRateSource : WebSocketHeartrateSource` |
+
+### `HeartrateStats/PulsoidSource.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [8](../VRCOSC.Modules/HeartrateStats/PulsoidSource.cs#L8) | internal | `internal sealed class PulsoidSource : WebSocketHeartrateSource` |
+
+
 ## HomeAssistant
 
 ### `HomeAssistant/Enums.cs`
@@ -379,6 +412,22 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [14](../VRCOSC.Modules/IRCBridge/VRChat.cs#L14) | public | `public class VRChat : IVRCClientEventHandler, IDisposable` |
+
+
+## LinuxAudioFx
+
+### `LinuxAudioFx/LinuxAudioFxModule.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [24](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L24) | public | `public sealed class LinuxAudioFxModule : Module` |
+| [222](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L222) | private | `private sealed class AudioFxReport` |
+| [229](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L229) | private | `private sealed class SoundboardInfo` |
+| [236](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L236) | private | `private sealed class VoiceInfo` |
+| [247](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L247) | private | `private enum AudioFxSetting` |
+| [257](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L257) | private | `private enum AudioFxVariable` |
+| [265](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L265) | private | `private enum AudioFxState` |
+| [271](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L271) | private | `private enum AudioFxEvent` |
 
 
 ## LinuxHardwareStats
@@ -595,6 +644,54 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | Line | Visibility | Declaration |
 |---|---|---|
 | [7](../VRCOSC.Modules/Status/UI/StatusListModuleSettingView.xaml.cs#L7) | public | `public partial class StatusListModuleSettingView` |
+
+
+## TikTokLive
+
+### `TikTokLive/TikTokLiveModule.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [14](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L14) | public | `public class TikTokLiveModule : Module` |
+| [238](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L238) | private | `private enum TikTokSetting { Host, LivePollSeconds, OfflinePollSeconds, FollowersRefreshMinutes, MaxBackoffSeconds }` |
+| [240](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L240) | private | `private enum TikTokParameter { Live, Viewers }` |
+| [242](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L242) | private | `private enum TikTokState { Live, Offline }` |
+| [244](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L244) | private | `private enum TikTokEvent { Follow, Like }` |
+
+### `TikTokLive/TikTokPublicClient.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [14](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L14) | public | `public readonly record struct TikTokRoomInfo(string RoomId, bool IsLive, int Viewers, int Likes, int? Followers, string Title);` |
+| [17](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L17) | public | `public enum FollowerSource { None, RoomInfo, ProfilePage }` |
+| [19](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L19) | public | `public sealed partial class TikTokPublicClient` |
+
+
+## TwitchStats
+
+### `TwitchStats/TwitchHelixClient.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [14](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L14) | internal | `internal enum DevicePollStatus { Pending, SlowDown, Granted, Denied, Expired, Error }` |
+| [16](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L16) | internal | `internal sealed record DeviceCode(string Code, string UserCode, string VerificationUri, TimeSpan ExpiresIn, TimeSpan Interval);` |
+| [18](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L18) | internal | `internal sealed record TokenSet(string AccessToken, string? RefreshToken, TimeSpan ExpiresIn);` |
+| [20](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L20) | internal | `internal sealed record TokenInfo(string Login, string UserId, IReadOnlyList<string> Scopes, TimeSpan ExpiresIn);` |
+| [22](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L22) | internal | `internal sealed record HelixUser(string Id, string Login, string DisplayName);` |
+| [24](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L24) | internal | `internal sealed record HelixStream(string GameName, string Title, int ViewerCount, DateTime StartedAt);` |
+| [26](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L26) | internal | `internal sealed record HelixChannel(string DisplayName, string GameName, string Title);` |
+| [29](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L29) | internal | `internal sealed class HelixException : Exception` |
+| [43](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L43) | internal | `internal sealed class TwitchHelixClient` |
+
+### `TwitchStats/TwitchStatsModule.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [15](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L15) | public | `public class TwitchStatsModule : Module` |
+| [350](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L350) | private | `private enum TwitchSetting { Channel, PollInterval, ClientId, ManualToken, ForgetToken }` |
+| [352](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L352) | private | `private enum TwitchParameter { Live }` |
+| [354](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L354) | private | `private enum TwitchState { Live, Offline, Unauthenticated }` |
+| [356](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L356) | private | `private enum TwitchEvent { WentLive, WentOffline }` |
 
 
 ## Utilities

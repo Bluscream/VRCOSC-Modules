@@ -4,7 +4,7 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**532** total across **17** modules.
+**608** total across **21** modules.
 
 | Module | Count |
 |---|---|
@@ -13,13 +13,17 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [DesktopFPS](#desktopfps) | 10 |
 | [HTTP](#http) | 24 |
 | [HTTPServer](#httpserver) | 20 |
+| [HeartrateStats](#heartratestats) | 22 |
 | [HomeAssistant](#homeassistant) | 34 |
 | [IRCBridge](#ircbridge) | 109 |
+| [LinuxAudioFx](#linuxaudiofx) | 10 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 31 |
 | [LinuxMedia](#linuxmedia) | 15 |
 | [Notifications](#notifications) | 37 |
 | [OpenXR](#openxr) | 81 |
 | [Status](#status) | 7 |
+| [TikTokLive](#tiktoklive) | 21 |
+| [TwitchStats](#twitchstats) | 23 |
 | [Utilities](#utilities) | 36 |
 | [VRCExtras](#vrcextras) | 1 |
 | [VRCXBridge](#vrcxbridge) | 48 |
@@ -200,6 +204,51 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [18](../VRCOSC.Modules/HTTPServer/RestWebModule.cs#L18) | `RestWebModule` | private | `private readonly HTTPServerModule _module;` |
+
+
+## HeartrateStats
+
+### `HeartrateStats/HeartrateSession.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [9](../VRCOSC.Modules/HeartrateStats/HeartrateSession.cs#L9) | `HeartrateSession` | public | `public const string TrendUp = "↑";` |
+| [10](../VRCOSC.Modules/HeartrateStats/HeartrateSession.cs#L10) | `HeartrateSession` | public | `public const string TrendFlat = "→";` |
+| [11](../VRCOSC.Modules/HeartrateStats/HeartrateSession.cs#L11) | `HeartrateSession` | public | `public const string TrendDown = "↓";` |
+| [15](../VRCOSC.Modules/HeartrateStats/HeartrateSession.cs#L15) | `HeartrateSession` | private | `private readonly object _lock = new();` |
+| [16](../VRCOSC.Modules/HeartrateStats/HeartrateSession.cs#L16) | `HeartrateSession` | private | `private readonly List<Sample> _samples = new();` |
+
+### `HeartrateStats/HeartrateSource.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [16](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L16) | `IHeartrateSource` | private | `event Action<int>? HeartrateReceived;` |
+| [17](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L17) | `IHeartrateSource` | private | `event Action<bool>? ConnectionChanged;` |
+| [24](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L24) | `WebSocketHeartrateSource` | private | `private static readonly TimeSpan InitialBackoff = TimeSpan.FromSeconds(2);` |
+| [25](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L25) | `WebSocketHeartrateSource` | private | `private static readonly TimeSpan MaxBackoff = TimeSpan.FromSeconds(60);` |
+| [26](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L26) | `WebSocketHeartrateSource` | private | `private static readonly TimeSpan ConnectTimeout = TimeSpan.FromSeconds(15);` |
+| [28](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L28) | `WebSocketHeartrateSource` | private | `private readonly Action<string> _log;` |
+| [29](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L29) | `WebSocketHeartrateSource` | private | `private readonly SemaphoreSlim _sendLock = new(1, 1);` |
+| [30](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L30) | `WebSocketHeartrateSource` | private | `private CancellationTokenSource? _cts;` |
+| [31](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L31) | `WebSocketHeartrateSource` | private | `private Task? _loop;` |
+| [32](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L32) | `WebSocketHeartrateSource` | private | `private ClientWebSocket? _socket;` |
+| [33](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L33) | `WebSocketHeartrateSource` | private | `private bool _connected;` |
+| [42](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L42) | `WebSocketHeartrateSource` | public | `public event Action<int>? HeartrateReceived;` |
+| [43](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L43) | `WebSocketHeartrateSource` | public | `public event Action<bool>? ConnectionChanged;` |
+
+### `HeartrateStats/HypeRateSource.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [12](../VRCOSC.Modules/HeartrateStats/HypeRateSource.cs#L12) | `HypeRateSource` | private | `private static readonly TimeSpan HeartbeatInterval = TimeSpan.FromSeconds(10);` |
+| [14](../VRCOSC.Modules/HeartrateStats/HypeRateSource.cs#L14) | `HypeRateSource` | private | `private readonly Uri _uri;` |
+| [15](../VRCOSC.Modules/HeartrateStats/HypeRateSource.cs#L15) | `HypeRateSource` | private | `private readonly string _topic;` |
+
+### `HeartrateStats/PulsoidSource.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [10](../VRCOSC.Modules/HeartrateStats/PulsoidSource.cs#L10) | `PulsoidSource` | private | `private readonly Uri _uri;` |
 
 
 ## HomeAssistant
@@ -389,6 +438,24 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [20](../VRCOSC.Modules/IRCBridge/VRChat.cs#L20) | `VRChat` | private | `private string? _cachedVrcUsername;` |
 | [23](../VRCOSC.Modules/IRCBridge/VRChat.cs#L23) | `VRChat` | public | `public event Action<string?, string?>? OnUserIdChanged;` |
 | [24](../VRCOSC.Modules/IRCBridge/VRChat.cs#L24) | `VRChat` | public | `public event Action<string?, string?>? OnUsernameChanged;` |
+
+
+## LinuxAudioFx
+
+### `LinuxAudioFx/LinuxAudioFxModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [26](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L26) | `LinuxAudioFxModule` | private | `private const string ScriptName = "vrcosc_audiofx.sh";` |
+| [27](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L27) | `LinuxAudioFxModule` | private | `private const string OutputFileName = ".vrcosc_audiofx.json";` |
+| [28](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L28) | `LinuxAudioFxModule` | private | `private const int TickMs = 250;` |
+| [30](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L30) | `LinuxAudioFxModule` | private | `private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };` |
+| [32](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L32) | `LinuxAudioFxModule` | private | `private DateTime _lastPoll = DateTime.MinValue;` |
+| [33](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L33) | `LinuxAudioFxModule` | private | `private DateTime _lastSoundStopped = DateTime.MinValue;` |
+| [34](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L34) | `LinuxAudioFxModule` | private | `private string _currentSound = string.Empty;` |
+| [35](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L35) | `LinuxAudioFxModule` | private | `private string _heldSound = string.Empty;` |
+| [36](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L36) | `LinuxAudioFxModule` | private | `private bool _toolsLogged;` |
+| [37](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L37) | `LinuxAudioFxModule` | private | `private bool _missingOutputLogged;` |
 
 
 ## LinuxHardwareStats
@@ -670,6 +737,76 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
 | [9](../VRCOSC.Modules/Status/UI/StatusListModuleSettingView.xaml.cs#L9) | `StatusListModuleSettingView` | private | `private readonly StatusListModuleSetting moduleSetting;` |
+
+
+## TikTokLive
+
+### `TikTokLive/TikTokLiveModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [17](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L17) | `TikTokLiveModule` | private | `private const string VarHost = "tiktok_host";` |
+| [18](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L18) | `TikTokLiveModule` | private | `private const string VarViewers = "tiktok_viewers";` |
+| [19](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L19) | `TikTokLiveModule` | private | `private const string VarLikes = "tiktok_likes";` |
+| [20](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L20) | `TikTokLiveModule` | private | `private const string VarFollowers = "tiktok_followers";` |
+| [21](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L21) | `TikTokLiveModule` | private | `private const string VarLive = "tiktok_live";` |
+| [23](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L23) | `TikTokLiveModule` | private | `private static readonly TimeSpan MinBackoff = TimeSpan.FromSeconds(5);` |
+| [25](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L25) | `TikTokLiveModule` | private | `private readonly TikTokPublicClient _client = new();` |
+| [26](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L26) | `TikTokLiveModule` | private | `private CancellationTokenSource? _cts;` |
+| [27](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L27) | `TikTokLiveModule` | private | `private Task? _worker;` |
+| [29](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L29) | `TikTokLiveModule` | private | `private string _host = string.Empty;` |
+| [30](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L30) | `TikTokLiveModule` | private | `private string? _roomId;` |
+| [31](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L31) | `TikTokLiveModule` | private | `private bool _live;` |
+| [32](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L32) | `TikTokLiveModule` | private | `private int _likes;` |
+| [33](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L33) | `TikTokLiveModule` | private | `private int _followers;` |
+| [34](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L34) | `TikTokLiveModule` | private | `private bool _haveLikes;` |
+| [35](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L35) | `TikTokLiveModule` | private | `private bool _haveFollowers;` |
+| [36](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L36) | `TikTokLiveModule` | private | `private int _failures;` |
+| [37](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L37) | `TikTokLiveModule` | private | `private DateTime _lastProfileFetch = DateTime.MinValue;` |
+
+### `TikTokLive/TikTokPublicClient.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [21](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L21) | `TikTokPublicClient` | private | `private const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";` |
+| [22](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L22) | `TikTokPublicClient` | private | `private const int RoomStatusLive = 2;` |
+| [24](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L24) | `TikTokPublicClient` | private | `private static readonly HttpClient Http = CreateClient();` |
+
+
+## TwitchStats
+
+### `TwitchStats/TwitchHelixClient.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [45](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L45) | `TwitchHelixClient` | private | `private const string AuthBase = "https://id.twitch.tv/oauth2/";` |
+| [46](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L46) | `TwitchHelixClient` | private | `private const string HelixBase = "https://api.twitch.tv/helix/";` |
+| [47](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L47) | `TwitchHelixClient` | private | `private const string DeviceGrantType = "urn:ietf:params:oauth:grant-type:device_code";` |
+| [49](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L49) | `TwitchHelixClient` | private | `private static readonly HttpClient Http = CreateClient();` |
+| [51](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L51) | `TwitchHelixClient` | private | `private readonly string _clientId;` |
+
+### `TwitchStats/TwitchStatsModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [18](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L18) | `TwitchStatsModule` | private | `private const string DefaultClientId = "6y51jdzkdtlwv56akwerab47wwov1w";` |
+| [20](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L20) | `TwitchStatsModule` | private | `private const string Scopes = "moderator:read:followers";` |
+| [23](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L23) | `TwitchStatsModule` | private | `private const string VarLive = "twitch_live";` |
+| [24](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L24) | `TwitchStatsModule` | private | `private const string VarChannel = "twitch_channel";` |
+| [25](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L25) | `TwitchStatsModule` | private | `private const string VarGame = "twitch_game";` |
+| [26](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L26) | `TwitchStatsModule` | private | `private const string VarTitle = "twitch_title";` |
+| [27](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L27) | `TwitchStatsModule` | private | `private const string VarViewers = "twitch_viewers";` |
+| [28](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L28) | `TwitchStatsModule` | private | `private const string VarFollowers = "twitch_followers";` |
+| [29](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L29) | `TwitchStatsModule` | private | `private const string VarUptime = "twitch_uptime";` |
+| [37](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L37) | `TwitchStatsModule` | private | `private TwitchHelixClient? _client;` |
+| [38](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L38) | `TwitchStatsModule` | private | `private CancellationTokenSource? _cts;` |
+| [39](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L39) | `TwitchStatsModule` | private | `private TokenInfo? _tokenInfo;` |
+| [40](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L40) | `TwitchStatsModule` | private | `private HelixUser? _channelUser;` |
+| [41](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L41) | `TwitchStatsModule` | private | `private string _resolvedChannelFor = string.Empty;` |
+| [43](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L43) | `TwitchStatsModule` | private | `private bool _authenticating;` |
+| [44](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L44) | `TwitchStatsModule` | private | `private bool _polling;` |
+| [45](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L45) | `TwitchStatsModule` | private | `private bool? _wasLive;` |
+| [46](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L46) | `TwitchStatsModule` | private | `private DateTime _nextPoll = DateTime.MinValue;` |
 
 
 ## Utilities

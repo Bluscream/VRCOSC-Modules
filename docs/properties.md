@@ -4,7 +4,7 @@
 
 Every property (including expression-bodied and auto-properties), grouped by module and file.
 
-**157** total across **15** modules.
+**185** total across **18** modules.
 
 | Module | Count |
 |---|---|
@@ -13,13 +13,16 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | [DesktopFPS](#desktopfps) | 2 |
 | [HTTP](#http) | 4 |
 | [HTTPServer](#httpserver) | 3 |
+| [HeartrateStats](#heartratestats) | 15 |
 | [HomeAssistant](#homeassistant) | 10 |
 | [IRCBridge](#ircbridge) | 14 |
+| [LinuxAudioFx](#linuxaudiofx) | 9 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 40 |
 | [LinuxMedia](#linuxmedia) | 2 |
 | [Notifications](#notifications) | 16 |
 | [OpenXR](#openxr) | 10 |
 | [Status](#status) | 5 |
+| [TwitchStats](#twitchstats) | 4 |
 | [Utilities](#utilities) | 7 |
 | [VRCXBridge](#vrcxbridge) | 7 |
 | [VRChatSettings](#vrchatsettings) | 31 |
@@ -100,6 +103,44 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 | [25](../VRCOSC.Modules/HTTPServer/RestWebModule.cs#L25) | `RestWebModule` | public | `public override bool IsFinalHandler => true;` |
 
 
+## HeartrateStats
+
+### `HeartrateStats/HeartrateSession.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [18](../VRCOSC.Modules/HeartrateStats/HeartrateSession.cs#L18) | `HeartrateSession` | public | `public int Current { get; private set; }` |
+| [19](../VRCOSC.Modules/HeartrateStats/HeartrateSession.cs#L19) | `HeartrateSession` | public | `public int Min { get; private set; }` |
+| [20](../VRCOSC.Modules/HeartrateStats/HeartrateSession.cs#L20) | `HeartrateSession` | public | `public int Max { get; private set; }` |
+| [21](../VRCOSC.Modules/HeartrateStats/HeartrateSession.cs#L21) | `HeartrateSession` | public | `public DateTimeOffset LastSampleAt { get; private set; } = DateTimeOffset.MinValue;` |
+| [24](../VRCOSC.Modules/HeartrateStats/HeartrateSession.cs#L24) | `HeartrateSession` | public | `public TimeSpan Retention { get; set; } = TimeSpan.FromMinutes(2);` |
+
+### `HeartrateStats/HeartrateSource.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [15](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L15) | `IHeartrateSource` | private | `bool IsConnected { get; }` |
+| [40](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L40) | `WebSocketHeartrateSource` | public | `public bool IsConnected => _connected;` |
+| [45](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L45) | `WebSocketHeartrateSource` | protected | `protected abstract string Name { get; }` |
+| [46](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L46) | `WebSocketHeartrateSource` | protected | `protected abstract Uri Uri { get; }` |
+| [49](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L49) | `WebSocketHeartrateSource` | protected | `protected virtual TimeSpan? KeepAliveInterval => null;` |
+
+### `HeartrateStats/HypeRateSource.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [24](../VRCOSC.Modules/HeartrateStats/HypeRateSource.cs#L24) | `HypeRateSource` | protected | `protected override string Name => "HypeRate";` |
+| [25](../VRCOSC.Modules/HeartrateStats/HypeRateSource.cs#L25) | `HypeRateSource` | protected | `protected override Uri Uri => _uri;` |
+| [26](../VRCOSC.Modules/HeartrateStats/HypeRateSource.cs#L26) | `HypeRateSource` | protected | `protected override TimeSpan? KeepAliveInterval => HeartbeatInterval;` |
+
+### `HeartrateStats/PulsoidSource.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [18](../VRCOSC.Modules/HeartrateStats/PulsoidSource.cs#L18) | `PulsoidSource` | protected | `protected override string Name => "Pulsoid";` |
+| [19](../VRCOSC.Modules/HeartrateStats/PulsoidSource.cs#L19) | `PulsoidSource` | protected | `protected override Uri Uri => _uri;` |
+
+
 ## HomeAssistant
 
 ### `HomeAssistant/HomeAssistantClient.cs`
@@ -168,6 +209,23 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 |---|---|---|---|
 | [32](../VRCOSC.Modules/IRCBridge/VRChat.cs#L32) | `VRChat` | public | `public string? UserId => _cachedVrcUserId;` |
 | [33](../VRCOSC.Modules/IRCBridge/VRChat.cs#L33) | `VRChat` | public | `public string? Username => _cachedVrcUsername;` |
+
+
+## LinuxAudioFx
+
+### `LinuxAudioFx/LinuxAudioFxModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [224](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L224) | `AudioFxReport` | public | `public SoundboardInfo? Soundboard { get; set; }` |
+| [225](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L225) | `AudioFxReport` | public | `public VoiceInfo? Voice { get; set; }` |
+| [226](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L226) | `AudioFxReport` | public | `public Dictionary<string, bool>? Tools { get; set; }` |
+| [231](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L231) | `SoundboardInfo` | public | `public bool Playing { get; set; }` |
+| [232](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L232) | `SoundboardInfo` | public | `public string? App { get; set; }` |
+| [233](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L233) | `SoundboardInfo` | public | `public string? Sound { get; set; }` |
+| [239](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L239) | `VoiceInfo` | public | `public bool EasyEffectsRunning { get; set; }` |
+| [242](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L242) | `VoiceInfo` | public | `public string? InputPreset { get; set; }` |
+| [244](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L244) | `VoiceInfo` | public | `public List<string>? Filters { get; set; }` |
 
 
 ## LinuxHardwareStats
@@ -311,6 +369,23 @@ Every property (including expression-bodied and auto-properties), grouped by mod
 |---|---|---|---|
 | [20](../VRCOSC.Modules/Status/StatusModule.cs#L20) | `StatusModule` | public | `public string ActiveText { get; set; } = string.Empty;` |
 | [24](../VRCOSC.Modules/Status/StatusModule.cs#L24) | `StatusModule` | public | `public Dictionary<string, DateTime> LastUsed { get; set; } = new();` |
+
+
+## TwitchStats
+
+### `TwitchStats/TwitchHelixClient.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [31](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L31) | `HelixException` | public | `public HttpStatusCode StatusCode { get; }` |
+| [34](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L34) | `HelixException` | public | `public DateTime? RateLimitReset { get; }` |
+
+### `TwitchStats/TwitchStatsModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [32](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L32) | `TwitchStatsModule` | public | `public string AccessToken { get; set; } = string.Empty;` |
+| [35](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L35) | `TwitchStatsModule` | public | `public string RefreshToken { get; set; } = string.Empty;` |
 
 
 ## Utilities

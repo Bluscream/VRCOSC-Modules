@@ -10,7 +10,7 @@ For the user-facing VRCOSC ChatBox events (`CreateEvent` / `TriggerEvent`, binda
 
 Members declared with the `event` keyword — the real .NET event slots.
 
-**17** total.
+**21** total.
 
 ### Debug
 
@@ -21,6 +21,15 @@ Members declared with the `event` keyword — the real .NET event slots.
 | [22](../VRCOSC.Modules/Debug/Classes/ParameterTracker.cs#L22) | `ParameterTracker` | `OnParameterTracked` | `Action<ParameterData>?` |
 | [23](../VRCOSC.Modules/Debug/Classes/ParameterTracker.cs#L23) | `ParameterTracker` | `OnMaxLimitReached` | `Action<string>?` |
 | [24](../VRCOSC.Modules/Debug/Classes/ParameterTracker.cs#L24) | `ParameterTracker` | `OnCleared` | `Action?` |
+
+### HeartrateStats
+
+| Line | Owner | Name | Type |
+|---|---|---|---|
+| [16](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L16) | `IHeartrateSource` | `HeartrateReceived` | `Action<int>?` |
+| [17](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L17) | `IHeartrateSource` | `ConnectionChanged` | `Action<bool>?` |
+| [42](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L42) | `WebSocketHeartrateSource` | `HeartrateReceived` | `Action<int>?` |
+| [43](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L43) | `WebSocketHeartrateSource` | `ConnectionChanged` | `Action<bool>?` |
 
 ### HomeAssistant
 
@@ -56,7 +65,13 @@ _None._
 
 Not `event`-qualified, but the same idea in practice: a slot a caller plugs a handler into. The pervasive `Action<Exception>? onError` parameter pattern shows up here when stored as a member.
 
-**9** total.
+**10** total.
+
+### HeartrateStats
+
+| Line | Owner | Name | Type |
+|---|---|---|---|
+| [28](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L28) | `WebSocketHeartrateSource` | `_log` | `Action<string>` |
 
 ### HomeAssistant
 

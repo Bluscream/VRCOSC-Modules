@@ -4,7 +4,7 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**809** total across **18** modules.
+**894** total across **22** modules.
 
 | Module | Count |
 |---|---|
@@ -13,14 +13,18 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [DesktopFPS](#desktopfps) | 18 |
 | [HTTP](#http) | 9 |
 | [HTTPServer](#httpserver) | 41 |
+| [HeartrateStats](#heartratestats) | 27 |
 | [HomeAssistant](#homeassistant) | 42 |
 | [IRCBridge](#ircbridge) | 103 |
+| [LinuxAudioFx](#linuxaudiofx) | 10 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 29 |
 | [LinuxMedia](#linuxmedia) | 14 |
 | [LinuxProcessManager](#linuxprocessmanager) | 4 |
 | [Notifications](#notifications) | 25 |
 | [OpenXR](#openxr) | 80 |
 | [Status](#status) | 23 |
+| [TikTokLive](#tiktoklive) | 19 |
+| [TwitchStats](#twitchstats) | 29 |
 | [Utilities](#utilities) | 251 |
 | [VRCExtras](#vrcextras) | 6 |
 | [VRCXBridge](#vrcxbridge) | 34 |
@@ -256,6 +260,56 @@ Every method and constructor, grouped by module and file. The Owner column is th
 |---|---|---|---|
 | [20](../VRCOSC.Modules/HTTPServer/RestWebModule.cs#L20) | `RestWebModule` | private | `public RestWebModule(string baseRoute, HTTPServerModule module) : base(baseRoute)` |
 | [27](../VRCOSC.Modules/HTTPServer/RestWebModule.cs#L27) | `RestWebModule` | protected | `protected override Task OnRequestAsync(IHttpContext context) => _module.HandleRequest(context);` |
+
+
+## HeartrateStats
+
+### `HeartrateStats/HeartrateSession.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [26](../VRCOSC.Modules/HeartrateStats/HeartrateSession.cs#L26) | `HeartrateSession` | public | `public void Reset()` |
+| [39](../VRCOSC.Modules/HeartrateStats/HeartrateSession.cs#L39) | `HeartrateSession` | public | `public void ResetExtremes()` |
+| [48](../VRCOSC.Modules/HeartrateStats/HeartrateSession.cs#L48) | `HeartrateSession` | public | `public void Add(int bpm, DateTimeOffset now)` |
+| [65](../VRCOSC.Modules/HeartrateStats/HeartrateSession.cs#L65) | `HeartrateSession` | public | `public bool IsReceiving(TimeSpan timeout, DateTimeOffset now) => LastSampleAt != DateTimeOffset.MinValue && LastSampleAt + timeout >= now;` |
+| [67](../VRCOSC.Modules/HeartrateStats/HeartrateSession.cs#L67) | `HeartrateSession` | public | `public int Average(TimeSpan period, DateTimeOffset now)` |
+| [90](../VRCOSC.Modules/HeartrateStats/HeartrateSession.cs#L90) | `HeartrateSession` | public | `public string Trend(TimeSpan window, int threshold, DateTimeOffset now)` |
+
+### `HeartrateStats/HeartrateSource.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [18](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L18) | `IHeartrateSource` | private | `void Start();` |
+| [19](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L19) | `IHeartrateSource` | private | `Task StopAsync();` |
+| [35](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L35) | `WebSocketHeartrateSource` | private | `protected WebSocketHeartrateSource(Action<string> log)` |
+| [51](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L51) | `WebSocketHeartrateSource` | protected | `protected virtual Task OnConnectedAsync(CancellationToken ct) => Task.CompletedTask;` |
+| [52](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L52) | `WebSocketHeartrateSource` | protected | `protected virtual Task OnKeepAliveAsync(CancellationToken ct) => Task.CompletedTask;` |
+| [55](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L55) | `WebSocketHeartrateSource` | protected | `protected abstract int? ParseHeartrate(string message);` |
+| [57](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L57) | `WebSocketHeartrateSource` | protected | `protected void Log(string message) => _log($"[{Name}] {message}");` |
+| [59](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L59) | `WebSocketHeartrateSource` | public | `public void Start()` |
+| [67](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L67) | `WebSocketHeartrateSource` | public | `public async Task StopAsync()` |
+| [87](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L87) | `WebSocketHeartrateSource` | protected | `protected async Task SendAsync(string payload, CancellationToken ct)` |
+| [106](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L106) | `WebSocketHeartrateSource` | private | `private async Task RunAsync(CancellationToken ct)` |
+| [176](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L176) | `WebSocketHeartrateSource` | private | `private async Task ReceiveLoopAsync(ClientWebSocket socket, CancellationToken ct)` |
+| [218](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L218) | `WebSocketHeartrateSource` | private | `private async Task KeepAliveLoopAsync(TimeSpan interval, CancellationToken ct)` |
+| [227](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L227) | `WebSocketHeartrateSource` | private | `private void HandleMessage(string message)` |
+| [244](../VRCOSC.Modules/HeartrateStats/HeartrateSource.cs#L244) | `WebSocketHeartrateSource` | private | `private void SetConnected(bool connected)` |
+
+### `HeartrateStats/HypeRateSource.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [17](../VRCOSC.Modules/HeartrateStats/HypeRateSource.cs#L17) | `HypeRateSource` | private | `public HypeRateSource(string sessionId, string apiKey, Action<string> log)` |
+| [28](../VRCOSC.Modules/HeartrateStats/HypeRateSource.cs#L28) | `HypeRateSource` | protected | `protected override Task OnConnectedAsync(CancellationToken ct) =>` |
+| [31](../VRCOSC.Modules/HeartrateStats/HypeRateSource.cs#L31) | `HypeRateSource` | protected | `protected override Task OnKeepAliveAsync(CancellationToken ct) =>` |
+| [34](../VRCOSC.Modules/HeartrateStats/HypeRateSource.cs#L34) | `HypeRateSource` | protected | `protected override int? ParseHeartrate(string message)` |
+
+### `HeartrateStats/PulsoidSource.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [12](../VRCOSC.Modules/HeartrateStats/PulsoidSource.cs#L12) | `PulsoidSource` | private | `public PulsoidSource(string accessToken, Action<string> log)` |
+| [21](../VRCOSC.Modules/HeartrateStats/PulsoidSource.cs#L21) | `PulsoidSource` | protected | `protected override int? ParseHeartrate(string message)` |
 
 
 ## HomeAssistant
@@ -507,6 +561,24 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [40](../VRCOSC.Modules/IRCBridge/VRChat.cs#L40) | `VRChat` | public | `public async Task UpdateUserInfoAsync()` |
 | [74](../VRCOSC.Modules/IRCBridge/VRChat.cs#L74) | `VRChat` | public | `public async void HandleClientEvent(IVRChatClientEvent @event)` |
 | [108](../VRCOSC.Modules/IRCBridge/VRChat.cs#L108) | `VRChat` | public | `public void Dispose()` |
+
+
+## LinuxAudioFx
+
+### `LinuxAudioFx/LinuxAudioFxModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [39](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L39) | `LinuxAudioFxModule` | protected | `protected override void OnPreLoad()` |
+| [47](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L47) | `LinuxAudioFxModule` | protected | `protected override void OnPostLoad()` |
+| [59](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L59) | `LinuxAudioFxModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [71](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L71) | `LinuxAudioFxModule` | protected | `protected override Task OnModuleStop() => Task.CompletedTask;` |
+| [73](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L73) | `LinuxAudioFxModule` | private | `private void DeployHelperScript()` |
+| [105](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L105) | `LinuxAudioFxModule` | private | `private void Update()` |
+| [126](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L126) | `LinuxAudioFxModule` | private | `private void Poll()` |
+| [160](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L160) | `LinuxAudioFxModule` | private | `private void ApplySoundboard(SoundboardInfo? sb)` |
+| [188](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L188) | `LinuxAudioFxModule` | private | `private void ApplyVoice(VoiceInfo? voice)` |
+| [202](../VRCOSC.Modules/LinuxAudioFx/LinuxAudioFxModule.cs#L202) | `LinuxAudioFxModule` | private | `private void LogToolsOnce(Dictionary<string, bool>? tools)` |
 
 
 ## LinuxHardwareStats
@@ -815,6 +887,80 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [11](../VRCOSC.Modules/Status/UI/StatusListModuleSettingView.xaml.cs#L11) | `StatusListModuleSettingView` | private | `public StatusListModuleSettingView(StatusModule _, StatusListModuleSetting moduleSetting)` |
 | [18](../VRCOSC.Modules/Status/UI/StatusListModuleSettingView.xaml.cs#L18) | `StatusListModuleSettingView` | private | `private void AddButton_OnClick(object sender, RoutedEventArgs e) => moduleSetting.Add();` |
 | [20](../VRCOSC.Modules/Status/UI/StatusListModuleSettingView.xaml.cs#L20) | `StatusListModuleSettingView` | private | `private void RemoveButton_OnClick(object sender, RoutedEventArgs e)` |
+
+
+## TikTokLive
+
+### `TikTokLive/TikTokLiveModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [39](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L39) | `TikTokLiveModule` | protected | `protected override void OnPreLoad()` |
+| [52](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L52) | `TikTokLiveModule` | protected | `protected override void OnPostLoad()` |
+| [67](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L67) | `TikTokLiveModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [95](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L95) | `TikTokLiveModule` | protected | `protected override async Task OnModuleStop()` |
+| [117](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L117) | `TikTokLiveModule` | private | `private async Task RunAsync(CancellationToken token)` |
+| [144](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L144) | `TikTokLiveModule` | private | `private TimeSpan Backoff()` |
+| [151](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L151) | `TikTokLiveModule` | private | `private async Task PollOnceAsync(CancellationToken token)` |
+| [183](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L183) | `TikTokLiveModule` | private | `private async Task RefreshFollowersFromProfileAsync(CancellationToken token)` |
+| [202](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L202) | `TikTokLiveModule` | private | `private void ApplyFollowers(int followers, FollowerSource source)` |
+| [211](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L211) | `TikTokLiveModule` | private | `private void PublishLive(TikTokRoomInfo info)` |
+| [226](../VRCOSC.Modules/TikTokLive/TikTokLiveModule.cs#L226) | `TikTokLiveModule` | private | `private void PublishOffline()` |
+
+### `TikTokLive/TikTokPublicClient.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [26](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L26) | `TikTokPublicClient` | private | `private static HttpClient CreateClient()` |
+| [36](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L36) | `TikTokPublicClient` | private | `private static partial Regex RoomIdRegex();` |
+| [39](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L39) | `TikTokPublicClient` | private | `private static partial Regex FollowerCountRegex();` |
+| [42](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L42) | `TikTokPublicClient` | public | `public static string NormaliseHost(string? raw)` |
+| [56](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L56) | `TikTokPublicClient` | public | `public async Task<string?> GetRoomIdAsync(string host, CancellationToken token)` |
+| [64](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L64) | `TikTokPublicClient` | public | `public async Task<TikTokRoomInfo?> GetRoomInfoAsync(string roomId, CancellationToken token)` |
+| [91](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L91) | `TikTokPublicClient` | public | `public async Task<int?> GetProfileFollowersAsync(string host, CancellationToken token)` |
+| [98](../VRCOSC.Modules/TikTokLive/TikTokPublicClient.cs#L98) | `TikTokPublicClient` | private | `private static int? ReadInt(JsonElement element, string key)` |
+
+
+## TwitchStats
+
+### `TwitchStats/TwitchHelixClient.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [36](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L36) | `HelixException` | private | `public HelixException(HttpStatusCode statusCode, string message, DateTime? rateLimitReset = null) : base(message)` |
+| [53](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L53) | `TwitchHelixClient` | private | `public TwitchHelixClient(string clientId)` |
+| [58](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L58) | `TwitchHelixClient` | private | `private static HttpClient CreateClient()` |
+| [129](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L129) | `TwitchHelixClient` | public | `public async Task<TokenInfo?> ValidateAsync(string accessToken, CancellationToken ct)` |
+| [150](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L150) | `TwitchHelixClient` | private | `private static TokenSet ParseToken(string body)` |
+| [160](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L160) | `TwitchHelixClient` | private | `private static string ErrorMessage(string body)` |
+| [179](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L179) | `TwitchHelixClient` | public | `public async Task<HelixUser?> GetUserAsync(string accessToken, string? login, CancellationToken ct)` |
+| [190](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L190) | `TwitchHelixClient` | public | `public async Task<HelixStream?> GetStreamAsync(string accessToken, string login, CancellationToken ct)` |
+| [202](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L202) | `TwitchHelixClient` | public | `public async Task<HelixChannel?> GetChannelAsync(string accessToken, string broadcasterId, CancellationToken ct)` |
+| [212](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L212) | `TwitchHelixClient` | public | `public async Task<int> GetFollowerTotalAsync(string accessToken, string broadcasterId, CancellationToken ct)` |
+| [218](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L218) | `TwitchHelixClient` | private | `private async Task<JsonDocument> GetAsync(string accessToken, string path, CancellationToken ct)` |
+| [237](../VRCOSC.Modules/TwitchStats/TwitchHelixClient.cs#L237) | `TwitchHelixClient` | private | `private static string Str(JsonElement e, string key) => e.TryGetProperty(key, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() ?? string.Empty : string.Empty;` |
+
+### `TwitchStats/TwitchStatsModule.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [48](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L48) | `TwitchStatsModule` | protected | `protected override void OnPreLoad()` |
+| [61](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L61) | `TwitchStatsModule` | protected | `protected override void OnPostLoad()` |
+| [80](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L80) | `TwitchStatsModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [104](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L104) | `TwitchStatsModule` | protected | `protected override Task OnModuleStop()` |
+| [114](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L114) | `TwitchStatsModule` | private | `private void Tick()` |
+| [132](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L132) | `TwitchStatsModule` | private | `private async Task RunGuarded(Func<Task> work, Action done)` |
+| [155](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L155) | `TwitchStatsModule` | private | `private async Task AuthenticateAsync(CancellationToken ct)` |
+| [167](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L167) | `TwitchStatsModule` | private | `private async Task<bool> TryUseTokenAsync(string token, string source, CancellationToken ct)` |
+| [186](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L186) | `TwitchStatsModule` | private | `private async Task<bool> TryRefreshAsync(CancellationToken ct)` |
+| [200](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L200) | `TwitchStatsModule` | private | `private async Task DeviceCodeLoginAsync(CancellationToken ct)` |
+| [253](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L253) | `TwitchStatsModule` | private | `private async Task PollAsync(CancellationToken ct)` |
+| [275](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L275) | `TwitchStatsModule` | private | `private async Task PollOnceAsync(CancellationToken ct)` |
+| [301](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L301) | `TwitchStatsModule` | private | `private async Task<int?> FetchFollowersAsync(string token, string broadcasterId, CancellationToken ct)` |
+| [316](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L316) | `TwitchStatsModule` | private | `private void Apply(HelixStream? stream, HelixChannel? channel, int? followers)` |
+| [336](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L336) | `TwitchStatsModule` | private | `private static string FormatUptime(TimeSpan uptime)` |
+| [342](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L342) | `TwitchStatsModule` | private | `private TimeSpan Interval() => TimeSpan.FromSeconds(Math.Max(5, GetSettingValue<int>(TwitchSetting.PollInterval)));` |
+| [344](../VRCOSC.Modules/TwitchStats/TwitchStatsModule.cs#L344) | `TwitchStatsModule` | private | `private string ClientId()` |
 
 
 ## Utilities
