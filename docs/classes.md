@@ -4,7 +4,7 @@
 
 Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
-**347** total across **23** modules.
+**348** total across **23** modules.
 
 | Module | Count |
 |---|---|
@@ -21,7 +21,7 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 | [LinuxHardwareStats](#linuxhardwarestats) | 18 |
 | [LinuxMedia](#linuxmedia) | 7 |
 | [LinuxProcessManager](#linuxprocessmanager) | 2 |
-| [MCBParity](#mcbparity) | 5 |
+| [MCBParity](#mcbparity) | 6 |
 | [Notifications](#notifications) | 19 |
 | [OpenXR](#openxr) | 28 |
 | [Status](#status) | 9 |
@@ -631,6 +631,12 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
 ## MCBParity
 
+### `MCBParity/MCBParityModule.Timezone.cs`
+
+| Line | Visibility | Declaration |
+|---|---|---|
+| [19](../VRCOSC.Modules/MCBParity/MCBParityModule.Timezone.cs#L19) | public | `public sealed partial class MCBParityModule` |
+
 ### `MCBParity/MCBParityModule.VR.cs`
 
 | Line | Visibility | Declaration |
@@ -641,10 +647,10 @@ Every type declared in `VRCOSC.Modules/`, grouped by module and file.
 
 | Line | Visibility | Declaration |
 |---|---|---|
-| [17](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L17) | public | `public sealed partial class MCBParityModule : Module` |
-| [44](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L44) | private | `private enum MCBParitySetting { VrFrameStats }` |
-| [47](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L47) | private | `private enum MCBParityVariable { vr_reprojection, vr_dropped_frames }` |
-| [49](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L49) | private | `private enum MCBParityState { Default }` |
+| [18](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L18) | public | `public sealed partial class MCBParityModule : Module` |
+| [48](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L48) | private | `private enum MCBParitySetting { VrFrameStats, TimezoneOverride }` |
+| [51](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L51) | private | `private enum MCBParityVariable { vr_reprojection, vr_dropped_frames, timezone, timezone_offset }` |
+| [53](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L53) | private | `private enum MCBParityState { Default }` |
 
 
 ## Notifications

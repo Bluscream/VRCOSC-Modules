@@ -4,7 +4,7 @@
 
 Every field, including `const` and `readonly`, grouped by module and file. Note VRCOSC node pins are declared as fields, so node types are field-heavy.
 
-**742** total across **22** modules.
+**747** total across **22** modules.
 
 | Module | Count |
 |---|---|
@@ -20,7 +20,7 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 | [LinuxAudioFx](#linuxaudiofx) | 10 |
 | [LinuxHardwareStats](#linuxhardwarestats) | 31 |
 | [LinuxMedia](#linuxmedia) | 15 |
-| [MCBParity](#mcbparity) | 6 |
+| [MCBParity](#mcbparity) | 11 |
 | [Notifications](#notifications) | 37 |
 | [OpenXR](#openxr) | 83 |
 | [Status](#status) | 7 |
@@ -686,6 +686,16 @@ Every field, including `const` and `readonly`, grouped by module and file. Note 
 
 
 ## MCBParity
+
+### `MCBParity/MCBParityModule.Timezone.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [21](../VRCOSC.Modules/MCBParity/MCBParityModule.Timezone.cs#L21) | `MCBParityModule` | private | `private const string HostTimezoneFile = ".vrcosc_timezone.txt";` |
+| [22](../VRCOSC.Modules/MCBParity/MCBParityModule.Timezone.cs#L22) | `MCBParityModule` | private | `private static readonly TimeSpan HostTimezoneRefresh = TimeSpan.FromMinutes(10);` |
+| [53](../VRCOSC.Modules/MCBParity/MCBParityModule.Timezone.cs#L53) | `MCBParityModule` | private | `private DateTime _hostTimezoneRequested = DateTime.MinValue;` |
+| [54](../VRCOSC.Modules/MCBParity/MCBParityModule.Timezone.cs#L54) | `MCBParityModule` | private | `private bool _hostTimezoneFetching;` |
+| [55](../VRCOSC.Modules/MCBParity/MCBParityModule.Timezone.cs#L55) | `MCBParityModule` | private | `private volatile string _hostTimezone = string.Empty;` |
 
 ### `MCBParity/MCBParityModule.VR.cs`
 

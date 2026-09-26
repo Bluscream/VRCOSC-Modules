@@ -4,7 +4,7 @@
 
 Every method and constructor, grouped by module and file. The Owner column is the declaring type.
 
-**1121** total across **23** modules.
+**1128** total across **23** modules.
 
 | Module | Count |
 |---|---|
@@ -21,7 +21,7 @@ Every method and constructor, grouped by module and file. The Owner column is th
 | [LinuxHardwareStats](#linuxhardwarestats) | 29 |
 | [LinuxMedia](#linuxmedia) | 14 |
 | [LinuxProcessManager](#linuxprocessmanager) | 4 |
-| [MCBParity](#mcbparity) | 8 |
+| [MCBParity](#mcbparity) | 15 |
 | [Notifications](#notifications) | 25 |
 | [OpenXR](#openxr) | 82 |
 | [Status](#status) | 23 |
@@ -947,6 +947,18 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 ## MCBParity
 
+### `MCBParity/MCBParityModule.Timezone.cs`
+
+| Line | Owner | Visibility | Declaration |
+|---|---|---|---|
+| [57](../VRCOSC.Modules/MCBParity/MCBParityModule.Timezone.cs#L57) | `MCBParityModule` | private | `private void CreateTimezoneSettings()` |
+| [63](../VRCOSC.Modules/MCBParity/MCBParityModule.Timezone.cs#L63) | `MCBParityModule` | private | `private void CreateTimezoneVariables()` |
+| [69](../VRCOSC.Modules/MCBParity/MCBParityModule.Timezone.cs#L69) | `MCBParityModule` | private | `private void StartTimezone()` |
+| [76](../VRCOSC.Modules/MCBParity/MCBParityModule.Timezone.cs#L76) | `MCBParityModule` | private | `private void UpdateTimezone()` |
+| [101](../VRCOSC.Modules/MCBParity/MCBParityModule.Timezone.cs#L101) | `MCBParityModule` | private | `private void FetchHostTimezone()` |
+| [134](../VRCOSC.Modules/MCBParity/MCBParityModule.Timezone.cs#L134) | `MCBParityModule` | private | `private static string FormatOffset(TimeSpan offset)` |
+| [137](../VRCOSC.Modules/MCBParity/MCBParityModule.Timezone.cs#L137) | `MCBParityModule` | private | `private static string FallbackAbbreviation(DateTime now, TimeSpan offset)` |
+
 ### `MCBParity/MCBParityModule.VR.cs`
 
 | Line | Owner | Visibility | Declaration |
@@ -960,10 +972,10 @@ Every method and constructor, grouped by module and file. The Owner column is th
 
 | Line | Owner | Visibility | Declaration |
 |---|---|---|---|
-| [19](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L19) | `MCBParityModule` | protected | `protected override void OnPreLoad()` |
-| [24](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L24) | `MCBParityModule` | protected | `protected override void OnPostLoad()` |
-| [31](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L31) | `MCBParityModule` | protected | `protected override Task<bool> OnModuleStart()` |
-| [38](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L38) | `MCBParityModule` | protected | `protected override Task OnModuleStop()` |
+| [20](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L20) | `MCBParityModule` | protected | `protected override void OnPreLoad()` |
+| [26](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L26) | `MCBParityModule` | protected | `protected override void OnPostLoad()` |
+| [34](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L34) | `MCBParityModule` | protected | `protected override Task<bool> OnModuleStart()` |
+| [42](../VRCOSC.Modules/MCBParity/MCBParityModule.cs#L42) | `MCBParityModule` | protected | `protected override Task OnModuleStop()` |
 
 
 ## Notifications

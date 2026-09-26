@@ -1,6 +1,6 @@
 # MagicChatbox Parity
 
-VR reprojection and dropped-frame estimates as ChatBox variables (MagicChatbox placeholder parity)
+VR reprojection/dropped-frame estimates and the local timezone abbreviation/offset as ChatBox variables (MagicChatbox placeholder parity)
 
 **Repository**: https://github.com/Bluscream/VRCOSC-Modules
 
@@ -10,6 +10,7 @@ VR reprojection and dropped-frame estimates as ChatBox variables (MagicChatbox p
 | Setting Name | Type | Description | Default |
 |---|---|---|---|
 | **VR frame estimates** | `Toggle` | `Keep the shared OpenXR session open to estimate reprojection and dropped frames from the runtime's display-period schedule. Off leaves both variables at 0.` | `true` |
+| **Timezone abbreviation override** | `TextBox` | `Text to show as the timezone variable instead of the detected abbreviation (e.g. CEST). Leave empty to detect.` | `empty` |
 <!-- SETTINGS_TABLE_END -->
 
 ## ChatBox Variables
@@ -19,6 +20,8 @@ VR reprojection and dropped-frame estimates as ChatBox variables (MagicChatbox p
 |---|---|---|---|
 | **VR Reprojection (% of frames, last second)** | `vr_reprojection` | `int` | `ChatBox variable VR Reprojection (% of frames, last second)` |
 | **VR Dropped Frames (per minute)** | `vr_dropped_frames` | `int` | `ChatBox variable VR Dropped Frames (per minute)` |
+| **Timezone Abbreviation (e.g. CEST)** | `timezone` | `string` | `ChatBox variable Timezone Abbreviation (e.g. CEST)` |
+| **Timezone Offset (e.g. +02:00)** | `timezone_offset` | `string` | `ChatBox variable Timezone Offset (e.g. +02:00)` |
 <!-- VARIABLES_TABLE_END -->
 
 ## ChatBox States
